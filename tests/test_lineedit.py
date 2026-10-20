@@ -97,6 +97,34 @@ class LineEditTests(unittest.TestCase):
         self.assertEqual(m.calls, 1)
         self.assertIn('"editable_lines": [2]', m.prompt)
 
+    def test_root_level_test_file_cannot_be_patched(self):
+        target = self.root / "test_hidden.py"
+        target.write_text("def regression():\n    return False\n")
+        digest = hashlib.sha256(target.read_bytes()).hexdigest()
+        with self.assertRaises(DraftRejected):
+            stage_lines(json.dumps({"changes": [{"line": 2, "new": "    return True"}]}),
+                        self.root, "test_hidden.py", [2], digest)
+
+    def test_context_includes_enclosing_function_signature(self):
+        source = "def join_args(args, sep=' '):\n" + ("    value = None\n" * 11) + "    return args\n"
+        (self.root / "app.py").write_text(source)
+        model = MockModel(json.dumps({"changes": [{"line": 13, "new": "    return list(args)"}]}))
+        propose_lines({"verification": "unverified_candidate"}, self.root, "app.py", [13], model)
+        self.assertIn("1: def join_args(args, sep=' '):", model.prompt)
+
+    def test_validator_preserves_original_indentation(self):
+        result = self.stage(self.request(new="       return a + b"))
+        self.assertIn("\n    return a + b\n", result["files"][0]["content"])
+        self.assertEqual(result["indentation_normalization"], "original_base_indent_preserved")
+
+    def test_invalid_relative_outdent_rejected(self):
+        with self.assertRaises(DraftRejected):
+            self.stage(self.request(new="    if True:\nreturn a + b"))
+
+    def test_tab_indent_rejected(self):
+        with self.assertRaises(DraftRejected):
+            self.stage(self.request(new="\treturn a+b"))
+
     def test_wrong_schema_rejected(self):
         with self.assertRaises(DraftRejected):
             self.stage(json.dumps({"edits": []}))

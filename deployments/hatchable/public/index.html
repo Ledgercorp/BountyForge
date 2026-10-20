@@ -47,10 +47,11 @@ input{background:#10171b;border:1px solid #50605c;border-radius:9px;color:var(--
   <div class="details" style="margin-top:14px;line-height:2">
     <div><strong style="color:#c6ee9c">Implemented</strong> · Bounded code-proposal worker and patch safety checks</div>
     <div><strong style="color:#c6ee9c">Tested</strong> · 20 offline tests for new AI worker and security boundary</div>
-    <div><strong style="color:#e4c38e">Not active</strong> · Model weights and actual Qwen inference on a Linux host</div>
+    <div><strong style="color:#c6ee9c">Real inference verified</strong> · Qwen generated a valid JSON code patch in a free Linux CPU session</div>
+    <div><strong style="color:#e4c38e">Not hosted</strong> · Unattended Qwen worker still needs a persistent free Linux runtime</div>
     <div><strong style="color:#e4c38e">Not enabled</strong> · Running generated code, submitting work or collecting payouts</div>
   </div>
-  <p class="foot">The private hosted scanner runs independently. The coding AI must run on a verified free Linux host. <a href="https://github.com/Ledgercorp/BountyForge/blob/main/docs/AI_WORKER.md" target="_blank" rel="noopener noreferrer" style="color:#c6ee9c">View AI worker documentation</a></p>
+  <p class="foot">Real Qwen CPU inference passed a constrained JSON patch test on October 20, 2026. No generated code has been executed or submitted. The cloud-hosted scanner operates independently. <a href="https://github.com/Ledgercorp/BountyForge/blob/main/evidence/local-qwen-b11750-2026-10-20.json" target="_blank" rel="noopener noreferrer" style="color:#c6ee9c">View acceptance evidence</a></p>
 </section>
 <p class="foot">Source code <a href="https://github.com/Ledgercorp/BountyForge" rel="noopener noreferrer" target="_blank" style="color:#c6ee9c">Ledgercorp/BountyForge</a> · The private dashboard is hosted separately from its GitHub code. Local Qwen inference is configured in the repository and not running on this hosting tier.</p>
 </main>

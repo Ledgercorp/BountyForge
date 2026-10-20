@@ -21,6 +21,7 @@ import time
 from pathlib import Path
 
 from bountyforge.coder import propose_draft
+from bountyforge.minimal import propose_minimal
 from bountyforge.drafts import DraftRejected, _verify_existing, safe_path
 
 MAX_ATTEMPTS = 2
@@ -92,13 +93,15 @@ def _fixture_hash(root: Path) -> str:
 
 
 def repair_fixture(issue: dict, fixture_root: Path, approved_paths: list[str], model,
-                   *, max_attempts: int = MAX_ATTEMPTS) -> dict:
+                   *, max_attempts: int = MAX_ATTEMPTS, strategy: str = 'full') -> dict:
     """Prepare patch evidence, never commit, push, submit or run outside fixture.
 
     First test must reproduce a failure. Every model attempt is validated,
     then applied solely in its own disposable copy of a fixture. A test-passing
     proposal is reviewable, but not necessarily a legitimate real-world fix.
     """
+    if strategy not in {'full', 'minimal'}:
+        raise ValueError('Only known patch strategies permitted')
     if not 1 <= max_attempts <= 2:
         raise ValueError('max_attempts must be 1 or 2')
     if not isinstance(issue, dict) or issue.get('verification') != 'unverified_candidate':
@@ -135,8 +138,12 @@ def repair_fixture(issue: dict, fixture_root: Path, approved_paths: list[str], m
                         str(issue.get('description_excerpt', ''))[:900] +
                         '\nPrevious attempt failed: ' + feedback[:420]
                     )
+                if strategy == 'minimal':
+                    adapted['test_failure_excerpt'] = initial['output'][-700:]
+                    adapted['prior_error'] = feedback or ''
                 report['model_calls'] += 1
-                result = propose_draft(adapted, work, allowed, model=model)
+                result = (propose_minimal(adapted, work, allowed, model=model)
+                          if strategy == 'minimal' else propose_draft(adapted, work, allowed, model=model))
                 # Every path is individually checked by stage_draft; never
                 # execute a model-provided shell command or alter test files.
                 for entry in result['files']:

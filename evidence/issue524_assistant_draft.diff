@@ -1,0 +1,13 @@
+--- a/boltons/strutils.py
++++ b/boltons/strutils.py
+@@ -27,6 +27,10 @@
+         if abs_bytes < next_size:
+             break
+     hnbytes = float(nbytes) / size
++    # If rounding would display 1024 of this unit, promote before formatting.
++    if next_size != float('inf') and abs(round(hnbytes, ndigits)) >= 1024:
++        size, symbol = next_size, next_symbol
++        hnbytes = float(nbytes) / size
+     return '{hnbytes:.{ndigits}f}{symbol}'.format(hnbytes=hnbytes,
+                                                   ndigits=ndigits,
+                                                   symbol=symbol)

@@ -1,0 +1,39 @@
+{
+  "issue": "https://github.com/mahmoud/boltons/issues/524",
+  "source": "https://github.com/mahmoud/boltons/blob/master/boltons/strutils.py",
+  "source_blob_sha": "74441c7e39dc5a666d76ca559f2ea6b80b3372c6",
+  "extraction": "exact upstream constants+bytes2human function, not full upstream repository",
+  "baseline": {
+    "total": 5,
+    "failures": 3,
+    "passed": 2
+  },
+  "model_attempts": [
+    {
+      "status": "model_or_patch_failed",
+      "error": "Unapproved or duplicated patch target",
+      "exception_type": "DraftRejected",
+      "model_calls": 1,
+      "original_issue": "https://github.com/mahmoud/boltons/issues/524"
+    },
+    {
+      "status": "model_or_patch_failed",
+      "error": "Python proposal did not pass syntax validation",
+      "exception_type": "DraftRejected",
+      "model_calls": 1,
+      "original_issue": "https://github.com/mahmoud/boltons/issues/524"
+    }
+  ],
+  "assistant_developed_patch": {
+    "test_status": "pass",
+    "isolation": "user+net+mount+pid namespaces, chroot, dropped capabilities, seccomp, tmpfs, rlimits",
+    "tests_output": "test_boundary_fractional_kib (test_strutils.Bytes2HumanUpstreamIssue524.test_boundary_fractional_kib) ... ok\ntest_boundary_fractional_ndigits (test_strutils.Bytes2HumanUpstreamIssue524.test_boundary_fractional_ndigits) ... ok\ntest_boundary_just_below_megabyte (test_strutils.Bytes2HumanUpstreamIssue524.test_boundary_just_below_megabyte) ... ok\ntest_existing_example (test_strutils.Bytes2HumanUpstreamIssue524.test_existing_example) ... ok\ntest_existing_magnitude (test_strutils.Bytes2HumanUpstreamIssue524.test_existing_magnitude) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.001s\n\nOK\n",
+    "diff": "--- a/boltons/strutils.py\n+++ b/boltons/strutils.py\n@@ -27,6 +27,10 @@\n         if abs_bytes < next_size:\n             break\n     hnbytes = float(nbytes) / size\n+    # If rounding would display 1024 of this unit, promote before formatting.\n+    if next_size != float('inf') and abs(round(hnbytes, ndigits)) >= 1024:\n+        size, symbol = next_size, next_symbol\n+        hnbytes = float(nbytes) / size\n     return '{hnbytes:.{ndigits}f}{symbol}'.format(hnbytes=hnbytes,\n                                                   ndigits=ndigits,\n                                                   symbol=symbol)\n"
+  },
+  "model_successes": 0,
+  "real_repo_full_suite_run": false,
+  "funded": false,
+  "revenue_usd": 0,
+  "external_pr": false,
+  "caveat": "Target source is a faithful excerpt, not the complete Git checkout; no upstream CI acceptance established."
+}

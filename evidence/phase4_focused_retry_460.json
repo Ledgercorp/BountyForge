@@ -1,0 +1,18 @@
+{
+  "issue": "https://github.com/mahmoud/boltons/pull/460",
+  "phase": "prompt_v2_micro_scope",
+  "passed": false,
+  "no_reference_fix_supplied": true,
+  "submissions": 0,
+  "usage": {
+    "completion_tokens": 23,
+    "prompt_tokens": 192,
+    "total_tokens": 215,
+    "prompt_tokens_details": {
+      "cached_tokens": 3
+    }
+  },
+  "generation_seconds": 22.54,
+  "reason": "ValueError",
+  "error": "not_unique_or_missing"
+}

@@ -1,0 +1,25 @@
+Phase 4 context tests, source validated with local DraftRejected exception shim
+test_budget_gate (test_context.ContextTests.test_budget_gate) ... ok
+test_dependency_expansion_without_evaluation (test_context.ContextTests.test_dependency_expansion_without_evaluation) ... ok
+test_does_not_execute_code (test_context.ContextTests.test_does_not_execute_code) ... ok
+test_duplicate_symbol_rejected (test_context.ContextTests.test_duplicate_symbol_rejected) ... ok
+test_invalid_symbol_rejected (test_context.ContextTests.test_invalid_symbol_rejected) ... ok
+test_missing_target_rejected (test_context.ContextTests.test_missing_target_rejected) ... ok
+test_remove_docstring_preserve_function (test_context.ContextTests.test_remove_docstring_preserve_function) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.005s
+
+OK
+
+Phase 4 benchmark manifest+validator tests
+test_duplicate_old_rejected (test_benchmark.BenchmarkTests.test_duplicate_old_rejected) ... ok
+test_exact_valid_patch (test_benchmark.BenchmarkTests.test_exact_valid_patch) ... ok
+test_five_historical_tasks_grounded (test_benchmark.BenchmarkTests.test_five_historical_tasks_grounded) ... ok
+test_invalid_python (test_benchmark.BenchmarkTests.test_invalid_python) ... ok
+test_unauthorized_path (test_benchmark.BenchmarkTests.test_unauthorized_path) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.001s
+
+OK

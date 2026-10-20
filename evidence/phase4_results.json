@@ -1,0 +1,218 @@
+{
+  "benchmark": "boltons_26.1.0_curated_excerpts",
+  "run_type": "real_qwen_cpu",
+  "historical_source_tag": "26.1.0",
+  "verification_scope": "excerpt_only_no_full_upstream_suite",
+  "isolation": "network_PID_user_mount_namespaces_rlimits; host FS NOT chroot isolated; only vetted extracts",
+  "external_submission": false,
+  "paid_inference": false,
+  "tasks": [
+    {
+      "id": "454",
+      "issue": "https://github.com/mahmoud/boltons/pull/454",
+      "blob": "5df8cf6f2e067ce5a11691304f67faf6c2bac7cb",
+      "status": "failed",
+      "model_calls": 1,
+      "model_generated_success": false,
+      "attempts": [
+        {
+          "number": 1,
+          "status": "failed",
+          "failure_reason": "inference_unavailable_or_timeout",
+          "message": "TimeoutError"
+        }
+      ],
+      "baseline": {
+        "passed": false,
+        "returncode": 1,
+        "timeout": false,
+        "elapsed_seconds": 4.662,
+        "output": "======================================================================\nFAIL: test_cmd_separator (test_regression.T.test_cmd_separator)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/bf-historical-6wxsbd2v/base/tests/test_regression.py\", line 5, in test_cmd_separator\n    def test_cmd_separator(self): self.assertEqual(args2cmd(['aa','bb'],sep='|'),'aa|bb')\n                                  ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'aa bb' != 'aa|bb'\n- aa bb\n?   ^\n+ aa|bb\n?   ^\n\n\n======================================================================\nFAIL: test_sh_separator (test_regression.T.test_sh_separator)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/bf-historical-6wxsbd2v/base/tests/test_regression.py\", line 4, in test_sh_separator\n    def test_sh_separator(self): self.assertEqual(args2sh(['aa','bb'],sep='|'),'aa|bb')\n                                 ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'aa bb' != 'aa|bb'\n- aa bb\n?   ^\n+ aa|bb\n?   ^\n\n\n----------------------------------------------------------------------\nRan 4 tests in 0.003s\n\nFAILED (failures=2)\n"
+      },
+      "elapsed_seconds": 69.86
+    },
+    {
+      "id": "459",
+      "issue": "https://github.com/mahmoud/boltons/pull/459",
+      "blob": "5df8cf6f2e067ce5a11691304f67faf6c2bac7cb",
+      "status": "failed",
+      "model_calls": 2,
+      "model_generated_success": false,
+      "attempts": [
+        {
+          "number": 1,
+          "status": "failed",
+          "generation_seconds": 31.9,
+          "tokens": {
+            "completion_tokens": 56,
+            "prompt_tokens": 331,
+            "total_tokens": 387,
+            "prompt_tokens_details": {
+              "cached_tokens": 75
+            }
+          },
+          "test": {
+            "passed": false,
+            "returncode": 1,
+            "timeout": false,
+            "elapsed_seconds": 7.332,
+            "output": "f): self.assertEqual(bytes2human(5*1024**8),'5Y')\n                               ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '5120Z' != '5Y'\n- 5120Z\n+ 5Y\n\n\n======================================================================\nFAIL: test_yotta (test_regression.T.test_yotta)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/bf-historical-4skidl7r/attempt1/tests/test_regression.py\", line 4, in test_yotta\n    def test_yotta(self): self.assertEqual(bytes2human(1024**8),'1Y')\n                          ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '1024Z' != '1Y'\n- 1024Z\n+ 1Y\n\n\n======================================================================\nFAIL: test_zetta (test_regression.T.test_zetta)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/bf-historical-4skidl7r/attempt1/tests/test_regression.py\", line 6, in test_zetta\n    def test_zetta(self): self.assertEqual(bytes2human(1024**7),'1Z')\n                          ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '1024E' != '1Z'\n- 1024E\n+ 1Z\n\n\n----------------------------------------------------------------------\nRan 3 tests in 0.008s\n\nFAILED (failures=3)\n"
+          },
+          "failure_reason": "targeted_tests_failed"
+        },
+        {
+          "number": 2,
+          "status": "failed",
+          "generation_seconds": 40.54,
+          "tokens": {
+            "completion_tokens": 56,
+            "prompt_tokens": 331,
+            "total_tokens": 387,
+            "prompt_tokens_details": {
+              "cached_tokens": 294
+            }
+          },
+          "test": {
+            "passed": false,
+            "returncode": 1,
+            "timeout": false,
+            "elapsed_seconds": 6.994,
+            "output": "f): self.assertEqual(bytes2human(5*1024**8),'5Y')\n                               ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '5120Z' != '5Y'\n- 5120Z\n+ 5Y\n\n\n======================================================================\nFAIL: test_yotta (test_regression.T.test_yotta)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/bf-historical-4skidl7r/attempt2/tests/test_regression.py\", line 4, in test_yotta\n    def test_yotta(self): self.assertEqual(bytes2human(1024**8),'1Y')\n                          ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '1024Z' != '1Y'\n- 1024Z\n+ 1Y\n\n\n======================================================================\nFAIL: test_zetta (test_regression.T.test_zetta)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/bf-historical-4skidl7r/attempt2/tests/test_regression.py\", line 6, in test_zetta\n    def test_zetta(self): self.assertEqual(bytes2human(1024**7),'1Z')\n                          ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '1024E' != '1Z'\n- 1024E\n+ 1Z\n\n\n----------------------------------------------------------------------\nRan 3 tests in 0.008s\n\nFAILED (failures=3)\n"
+          },
+          "failure_reason": "targeted_tests_failed"
+        }
+      ],
+      "baseline": {
+        "passed": false,
+        "returncode": 1,
+        "timeout": false,
+        "elapsed_seconds": 9.535,
+        "output": "======================================================================\nFAIL: test_five_yotta (test_regression.T.test_five_yotta)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/bf-historical-4skidl7r/base/tests/test_regression.py\", line 5, in test_five_yotta\n    def test_five_yotta(self): self.assertEqual(bytes2human(5*1024**8),'5Y')\n                               ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '5120Z' != '5Y'\n- 5120Z\n+ 5Y\n\n\n======================================================================\nFAIL: test_yotta (test_regression.T.test_yotta)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/bf-historical-4skidl7r/base/tests/test_regression.py\", line 4, in test_yotta\n    def test_yotta(self): self.assertEqual(bytes2human(1024**8),'1Y')\n                          ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '1024Z' != '1Y'\n- 1024Z\n+ 1Y\n\n\n----------------------------------------------------------------------\nRan 3 tests in 0.017s\n\nFAILED (failures=2)\n"
+      },
+      "elapsed_seconds": 96.41
+    },
+    {
+      "id": "460",
+      "issue": "https://github.com/mahmoud/boltons/pull/460",
+      "blob": "856bf195483aafbfcdb8f6f93a168daf0c9b5857",
+      "status": "failed",
+      "model_calls": 1,
+      "model_generated_success": false,
+      "attempts": [
+        {
+          "number": 1,
+          "status": "failed",
+          "failure_reason": "inference_unavailable_or_timeout",
+          "message": "TimeoutError"
+        }
+      ],
+      "baseline": {
+        "passed": false,
+        "returncode": 1,
+        "timeout": false,
+        "elapsed_seconds": 8.002,
+        "output": "======================================================================\nFAIL: test_omitted (test_regression.T.test_omitted)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/bf-historical-5rkuzevc/base/tests/test_regression.py\", line 4, in test_omitted\n    def test_omitted(self): self.assertEqual(ThresholdCounter({'a':2,'b':4}).most_common(),[('b',4),('a',2)])\n                            ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Lists differ: [] != [('b', 4), ('a', 2)]\n\nSecond list contains 2 additional elements.\nFirst extra element 0:\n('b', 4)\n\n- []\n+ [('b', 4), ('a', 2)]\n\n----------------------------------------------------------------------\nRan 3 tests in 0.005s\n\nFAILED (failures=1)\n"
+      },
+      "elapsed_seconds": 73.27
+    },
+    {
+      "id": "475",
+      "issue": "https://github.com/mahmoud/boltons/pull/475",
+      "blob": "5df8cf6f2e067ce5a11691304f67faf6c2bac7cb",
+      "status": "failed",
+      "model_calls": 2,
+      "model_generated_success": false,
+      "attempts": [
+        {
+          "number": 1,
+          "status": "failed",
+          "generation_seconds": 37.96,
+          "tokens": {
+            "completion_tokens": 115,
+            "prompt_tokens": 267,
+            "total_tokens": 382,
+            "prompt_tokens_details": {
+              "cached_tokens": 53
+            }
+          },
+          "failure_reason": "JSONDecodeError",
+          "message": "Expecting property name enclosed in double quotes: line 6 column 1 (char 336)"
+        },
+        {
+          "number": 2,
+          "status": "failed",
+          "generation_seconds": 54.48,
+          "tokens": {
+            "completion_tokens": 115,
+            "prompt_tokens": 242,
+            "total_tokens": 357,
+            "prompt_tokens_details": {
+              "cached_tokens": 208
+            }
+          },
+          "failure_reason": "JSONDecodeError",
+          "message": "Unterminated string starting at: line 6 column 14 (char 163)"
+        }
+      ],
+      "baseline": {
+        "passed": false,
+        "returncode": 1,
+        "timeout": false,
+        "elapsed_seconds": 4.595,
+        "output": "y 28, 2026'])\n                                 ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Lists differ: ['February', ', 2026'] != ['February 28, 2026']\n\nFirst differing element 0:\n'February'\n'February 28, 2026'\n\nFirst list contains 1 additional elements.\nFirst extra element 1:\n', 2026'\n\n- ['February', ', 2026']\n?           ^ ---\n\n+ ['February 28, 2026']\n?           ^^^\n\n\n======================================================================\nFAIL: test_unicode (test_regression.T.test_unicode)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/bf-historical-l8pyhzdr/base/tests/test_regression.py\", line 4, in test_unicode\n    def test_unicode(self): self.assertEqual(list(iter_splitlines('A\\u2028B\\u2029C')),['A','B','C'])\n                            ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Lists differ: ['A\\u2028B\\u2029C'] != ['A', 'B', 'C']\n\nFirst differing element 0:\n'A\\u2028B\\u2029C'\n'A'\n\nSecond list contains 2 additional elements.\nFirst extra element 1:\n'B'\n\n- ['A\\u2028B\\u2029C']\n+ ['A', 'B', 'C']\n\n----------------------------------------------------------------------\nRan 3 tests in 0.003s\n\nFAILED (failures=2)\n"
+      },
+      "elapsed_seconds": 97.23
+    },
+    {
+      "id": "524",
+      "issue": "https://github.com/mahmoud/boltons/issues/524",
+      "blob": "5df8cf6f2e067ce5a11691304f67faf6c2bac7cb",
+      "status": "failed",
+      "model_calls": 2,
+      "model_generated_success": false,
+      "attempts": [
+        {
+          "number": 1,
+          "status": "failed",
+          "generation_seconds": 54.12,
+          "tokens": {
+            "completion_tokens": 100,
+            "prompt_tokens": 357,
+            "total_tokens": 457,
+            "prompt_tokens_details": {
+              "cached_tokens": 74
+            }
+          },
+          "failure_reason": "SyntaxError",
+          "message": "invalid syntax (strutils.py, line 23)"
+        },
+        {
+          "number": 2,
+          "status": "failed",
+          "generation_seconds": 29.04,
+          "tokens": {
+            "completion_tokens": 76,
+            "prompt_tokens": 340,
+            "total_tokens": 416,
+            "prompt_tokens_details": {
+              "cached_tokens": 316
+            }
+          },
+          "failure_reason": "ValueError",
+          "message": "invalid_change"
+        }
+      ],
+      "baseline": {
+        "passed": false,
+        "returncode": 1,
+        "timeout": false,
+        "elapsed_seconds": 3.662,
+        "output": "^^^\nAssertionError: '1024B' != '1K'\n- 1024B\n+ 1K\n\n\n======================================================================\nFAIL: test_rounded_megabyte (test_regression.T.test_rounded_megabyte)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/bf-historical-bjy1yaqs/base/tests/test_regression.py\", line 4, in test_rounded_megabyte\n    def test_rounded_megabyte(self): self.assertEqual(bytes2human(1048575),'1M')\n                                     ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '1024K' != '1M'\n- 1024K\n+ 1M\n\n\n======================================================================\nFAIL: test_rounded_one_digit (test_regression.T.test_rounded_one_digit)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/bf-historical-bjy1yaqs/base/tests/test_regression.py\", line 6, in test_rounded_one_digit\n    def test_rounded_one_digit(self): self.assertEqual(bytes2human(1023.99,1),'1.0K')\n                                      ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '1024.0B' != '1.0K'\n- 1024.0B\n+ 1.0K\n\n\n----------------------------------------------------------------------\nRan 4 tests in 0.004s\n\nFAILED (failures=3)\n"
+      },
+      "elapsed_seconds": 86.9
+    }
+  ],
+  "completed": 5,
+  "attempted": 5,
+  "passed": 0
+}

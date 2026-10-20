@@ -1,0 +1,93 @@
+{
+  "recorded_date_utc": "2026-10-20",
+  "phase": "4",
+  "benchmark_source": "mahmoud/boltons 26.1.0 curated excerpts",
+  "historical_issues_attempted": 5,
+  "upstream_repositories": 1,
+  "original_baselines_reproduced": 5,
+  "autonomous_repairs_passed": 0,
+  "real_qwen_calls_in_primary_benchmark": 8,
+  "elapsed_seconds_primary": 423.67,
+  "request_failures": {
+    "inference_unavailable_or_timeout": 2,
+    "targeted_tests_failed": 2,
+    "JSONDecodeError": 2,
+    "SyntaxError": 1,
+    "ValueError": 1
+  },
+  "recorded_completion_tokens": 518,
+  "recorded_prompt_tokens": 1868,
+  "note_token_counts": "Tokens omit requests that timed out before returning usage.",
+  "focused_followups": 2,
+  "focused_followup_successes": 0,
+  "model_improvement_vs_phase3": "not_demonstrated",
+  "verification": "targeted excerpt tests only; full upstream suite not executed",
+  "third_party_executions": "limited to publicly audited historical code excerpts, never hostile arbitrary repositories",
+  "production_worker": "not deployed; no serverless Qwen inference",
+  "verified_paid_bounties": 0,
+  "approval_ready_submissions": 0,
+  "confirmed_revenue_usd": 0,
+  "paid_inference_api_calls": 0,
+  "provider_billing_audited": false,
+  "additional_paid_resources_provisioned": false,
+  "temporary_linux_llama_model_loaded": true,
+  "source_paths": {
+    "benchmark": "benchmarks/phase4",
+    "reports": "evidence/phase4_results.json"
+  },
+  "cases": [
+    {
+      "id": "454",
+      "issue": "https://github.com/mahmoud/boltons/pull/454",
+      "calls": 1,
+      "outcome": "failed",
+      "reasons": [
+        "inference_unavailable_or_timeout"
+      ],
+      "elapsed_seconds": 69.86
+    },
+    {
+      "id": "459",
+      "issue": "https://github.com/mahmoud/boltons/pull/459",
+      "calls": 2,
+      "outcome": "failed",
+      "reasons": [
+        "targeted_tests_failed",
+        "targeted_tests_failed"
+      ],
+      "elapsed_seconds": 96.41
+    },
+    {
+      "id": "460",
+      "issue": "https://github.com/mahmoud/boltons/pull/460",
+      "calls": 1,
+      "outcome": "failed",
+      "reasons": [
+        "inference_unavailable_or_timeout"
+      ],
+      "elapsed_seconds": 73.27
+    },
+    {
+      "id": "475",
+      "issue": "https://github.com/mahmoud/boltons/pull/475",
+      "calls": 2,
+      "outcome": "failed",
+      "reasons": [
+        "JSONDecodeError",
+        "JSONDecodeError"
+      ],
+      "elapsed_seconds": 97.23
+    },
+    {
+      "id": "524",
+      "issue": "https://github.com/mahmoud/boltons/issues/524",
+      "calls": 2,
+      "outcome": "failed",
+      "reasons": [
+        "SyntaxError",
+        "ValueError"
+      ],
+      "elapsed_seconds": 86.9
+    }
+  ]
+}

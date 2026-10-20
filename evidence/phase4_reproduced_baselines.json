@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-20",
+  "scope": "curated Boltons upstream-derived excerpt tests; no full upstream suite",
+  "runner": "unprivileged namespaces + RLIMIT, no chroot; hostile-code sandbox not certified",
+  "results": {
+    "454": {
+      "test_cases": 4,
+      "expected_failures_observed": 2,
+      "returncode": 1,
+      "timeout": false,
+      "elapsed_seconds": 7.12,
+      "baseline_reproduced": true
+    },
+    "459": {
+      "test_cases": 3,
+      "expected_failures_observed": 2,
+      "returncode": 1,
+      "timeout": false,
+      "elapsed_seconds": 5.21,
+      "baseline_reproduced": true
+    },
+    "460": {
+      "test_cases": 3,
+      "expected_failures_observed": 1,
+      "returncode": 1,
+      "timeout": false,
+      "elapsed_seconds": 3.504,
+      "baseline_reproduced": true
+    },
+    "475": {
+      "test_cases": 3,
+      "expected_failures_observed": 2,
+      "returncode": 1,
+      "timeout": false,
+      "elapsed_seconds": 3.094,
+      "baseline_reproduced": true
+    },
+    "524": {
+      "test_cases": 4,
+      "expected_failures_observed": 3,
+      "returncode": 1,
+      "timeout": false,
+      "elapsed_seconds": 2.489,
+      "baseline_reproduced": true
+    }
+  }
+}

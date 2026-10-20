@@ -1,0 +1,106 @@
+{
+  "date": "2026-10-20",
+  "phase": 4,
+  "scope": "Manually localized, vetted historical upstream Python excerpts in disposable Linux namespaces",
+  "model": "Qwen2.5-Coder-1.5B-Instruct Q4_K_M",
+  "runtime": "llama.cpp b11750 CPU loopback 127.0.0.1:18080",
+  "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+  "previous_comparable_benchmark": {
+    "historical_issues": 5,
+    "successful_complete_repairs": 0,
+    "model_calls": 8,
+    "unchanged": true
+  },
+  "new_probes": [
+    {
+      "issue": "https://github.com/mahmoud/boltons/pull/460",
+      "scope": "most_common historical function with a synthetic class wrapper",
+      "model_calls": 3,
+      "successful_repair": false,
+      "reasons": [
+        "Source line replacement used wrong indentation and referenced ret before initialization, 4.14s",
+        "Retry repeated the same wrong patch, 3.80s",
+        "Narrow expression generated n is None or n >= len(ret), rejected for unsafe function call, 2.58s"
+      ],
+      "baseline": "4 passed, 1 failed"
+    },
+    {
+      "issue": "https://github.com/mahmoud/boltons/pull/475",
+      "scope": "Unicode regex and iter_splitlines historical excerpt",
+      "model_calls": 2,
+      "successful_repair": false,
+      "reasons": [
+        "Placeholder echoed instead of source, 3.06s",
+        "Regex literal was proposed without assignment, causing syntax error, 4.74s"
+      ],
+      "baseline": "1 passed, 4 failed"
+    },
+    {
+      "issue": "https://github.com/mahmoud/boltons/pull/454",
+      "scope": "args2sh subfunction excerpt only",
+      "model_calls": 1,
+      "source_sha256": "21d8ceec464b960f0d47e44a0fef2e8d713adee4f20460eb2ac2e441cff586c2",
+      "qwen_raw_response": "{\"changes\":[{\"line\":15,\"new\":\"     return sep.join(ret_list)\"}]}",
+      "original_raw_stage": "rejected: indentation error",
+      "deterministic_posthoc_formatting": "explicitly preserved trusted original source-line indentation without changing model-authored expression",
+      "verified_diff": "-    return ' '.join(ret_list)\n+    return sep.join(ret_list)\n",
+      "baseline": {
+        "passed": 2,
+        "failed": 2
+      },
+      "repaired": {
+        "passed": 4,
+        "failed": 0
+      },
+      "real_model_seconds": 2.754,
+      "completion_tokens": 38,
+      "verification": "targeted tests only; not independent holdout"
+    },
+    {
+      "issue": "https://github.com/mahmoud/boltons/pull/454",
+      "scope": "args2cmd subfunction excerpt only",
+      "model_calls": 2,
+      "source_sha256": "2d56a03e57a4868255879dbfbd60b031be48be86de92405861b81e6707fd2ed6",
+      "first_response": "{\"changes\":[{\"line\":11,\"new\":\"result.append('|')\"}]}",
+      "first_test_failure": "Default separator broke: aa|bb rather than aa bb",
+      "retry_response": "{\"changes\":[{\"line\":11,\"new\":\"result.append(sep)\"}]}",
+      "verified_diff": "-            result.append(' ')\n+            result.append(sep)\n",
+      "baseline": {
+        "passed": 2,
+        "failed": 3
+      },
+      "repaired": {
+        "passed": 5,
+        "failed": 0
+      },
+      "real_model_seconds_first": 2.692,
+      "real_model_seconds_retry": 1.694,
+      "completion_tokens_first": 35,
+      "completion_tokens_retry": 36,
+      "verification": "targeted tests after test-guided bounded retry"
+    }
+  ],
+  "verification": {
+    "line_validator_tests_passed": 16,
+    "line_validator_tests_total": 16,
+    "live_model_calls_this_followup": 8,
+    "successful_curated_subfunctions": 2,
+    "successful_complete_historical_issues": 0,
+    "full_repo_suite_run": false,
+    "benchmark_suite_rerun": false
+  },
+  "safety": {
+    "source_modified_in_place": false,
+    "external_submission": false,
+    "paid_model_calls": 0,
+    "confirmed_revenue_usd": 0,
+    "untrusted_external_repo_execution": false
+  },
+  "limitations": [
+    "Original five-issue benchmark remains 0/5; subtask result is not comparable",
+    "Original upstream full checkout not used, synthetic wrappers and shortened docstrings",
+    "Manual safe line selection provided to model",
+    "First args2sh success relied on deterministic formatting improvement developed after failure",
+    "Unattended hosting and hostile-code cgroup isolation not established"
+  ]
+}

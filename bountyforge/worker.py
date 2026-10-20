@@ -23,6 +23,7 @@ from pathlib import Path
 from bountyforge.coder import propose_draft
 from bountyforge.minimal import propose_minimal
 from bountyforge.lineedit import propose_lines
+from bountyforge.line_scope import infer_editable_lines
 from bountyforge.drafts import DraftRejected, _verify_existing, safe_path
 
 MAX_ATTEMPTS = 2
@@ -102,7 +103,7 @@ def repair_fixture(issue: dict, fixture_root: Path, approved_paths: list[str], m
     then applied solely in its own disposable copy of a fixture. A test-passing
     proposal is reviewable, but not necessarily a legitimate real-world fix.
     """
-    if strategy not in {'full', 'minimal', 'line'}:
+    if strategy not in {'full', 'minimal', 'line', 'auto_line'}:
         raise ValueError('Only known patch strategies permitted')
     if not 1 <= max_attempts <= 2:
         raise ValueError('max_attempts must be 1 or 2')
@@ -111,9 +112,9 @@ def repair_fixture(issue: dict, fixture_root: Path, approved_paths: list[str], m
     allowed = [safe_path(x) for x in approved_paths]
     if not allowed or len(set(allowed)) != len(allowed) or len(allowed) > 3:
         raise DraftRejected('Invalid allowlist')
-    if strategy == 'line':
-        if len(allowed) != 1 or not isinstance(editable_lines, dict) or set(editable_lines) != set(allowed):
-            raise DraftRejected('Line strategy requires one trusted path and explicit editable lines')
+    if strategy in {'line', 'auto_line'}:
+        if len(allowed) != 1 or (strategy == 'line' and (not isinstance(editable_lines, dict) or set(editable_lines) != set(allowed))):
+            raise DraftRejected('Line strategy requires one trusted path; explicit lines required for manual line mode')
     start = time.monotonic()
     with tempfile.TemporaryDirectory(prefix='bountyforge-worker-') as temp:
         root = Path(temp) / 'base'
@@ -131,6 +132,14 @@ def repair_fixture(issue: dict, fixture_root: Path, approved_paths: list[str], m
             report['error'] = 'baseline_does_not_reproduce'; return report
         if initial['timeout']:
             report['error'] = 'baseline_timeout'; return report
+        if strategy == 'auto_line':
+            try:
+                editable_lines = {allowed[0]: infer_editable_lines(root, allowed[0], initial['output'])}
+            except (DraftRejected, SyntaxError, ValueError, OSError) as exc:
+                report['error'] = 'automatic_scope_rejected'
+                report['scope_reason'] = type(exc).__name__
+                return report
+            report['inferred_editable_lines'] = editable_lines[allowed[0]]
         feedback = None
         for number in range(1, max_attempts + 1):
             attempt = {'number': number, 'status': 'failed'}
@@ -143,11 +152,11 @@ def repair_fixture(issue: dict, fixture_root: Path, approved_paths: list[str], m
                         str(issue.get('description_excerpt', ''))[:900] +
                         '\nPrevious attempt failed: ' + feedback[:420]
                     )
-                if strategy in {'minimal', 'line'}:
+                if strategy in {'minimal', 'line', 'auto_line'}:
                     adapted['test_failure_excerpt'] = initial['output'][-700:]
                     adapted['prior_error'] = feedback or ''
                 report['model_calls'] += 1
-                if strategy == 'line':
+                if strategy in {'line', 'auto_line'}:
                     result = propose_lines(adapted, work, allowed[0], editable_lines[allowed[0]], model=model)
                 elif strategy == 'minimal':
                     result = propose_minimal(adapted, work, allowed, model=model)

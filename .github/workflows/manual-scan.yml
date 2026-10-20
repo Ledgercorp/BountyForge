@@ -1,0 +1,28 @@
+name: BountyForge manual discovery (read only)
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bountyforge-manual-scan
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Scan public GitHub issue candidates without writes
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -m bountyforge.cli scan --limit 8 --output reports/scan.json --summary "${GITHUB_STEP_SUMMARY}"

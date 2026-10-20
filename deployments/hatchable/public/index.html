@@ -69,6 +69,25 @@ input{background:#10171b;border:1px solid #50605c;border-radius:9px;color:var(--
   <p id="ops-status" class="foot">Loading status from private Postgres; local Linux test receipts are separate, not active hosted jobs.</p>
   <p class="foot"><a href="https://github.com/Ledgercorp/BountyForge/blob/main/evidence/phase2_bounty_evaluation.json" style="color:#c6ee9c" rel="noopener noreferrer" target="_blank">Audited opportunity rejections</a></p>
 </section>
+<section class="panel" aria-labelledby="phase3-heading">
+  <div class="panel-head"><h2 id="phase3-heading">Phase 3 · Verified engineering</h2><span class="flag">EVIDENCE SNAPSHOT</span></div>
+  <p class="foot" style="margin:12px 0">Historical local Linux results, not actively running jobs on this host. Snapshot dated October 20, 2026.</p>
+  <div class="stats" style="margin-top:15px">
+   <div class="metric"><span>Complete regression tests</span><strong>61/61</strong></div>
+   <div class="metric"><span>Isolation boundary tests</span><strong>7/7</strong></div>
+   <div class="metric"><span>Eligible paid bounties</span><strong>0</strong></div>
+  </div>
+  <div class="details" style="margin-top:15px;line-height:2">
+    <div><strong>Real upstream issue:</strong> <a href="https://github.com/mahmoud/boltons/issues/524" target="_blank" rel="noopener noreferrer" style="color:#c6ee9c">Boltons #524</a>, source-function excerpt tested, full repo not tested</div>
+    <div><strong>Baseline:</strong> 3 failing and 2 passing cases</div>
+    <div><strong>Qwen attempts:</strong> 2 rejected (unauthorized path, invalid Python). Successful real-issue AI repairs: 0</div>
+    <div><strong>Separate assistant-authored fix:</strong> 5/5 isolated tests passed, unsubmitted</div>
+    <div><strong>Reward tiers:</strong> 0 Tier A escrow verified; 1 Tier B advertised but ineligible; 5 Tier C unsuitable</div>
+    <div><strong>Execution safety:</strong> namespace sandbox tested, cgroup controls unavailable, hostile-code execution not certified</div>
+    <div><strong>Paid hosting:</strong> no new paid inference or worker deployment; provider bills not audited</div>
+  </div>
+  <p class="foot"><a href="https://github.com/Ledgercorp/BountyForge/tree/main/evidence" target="_blank" rel="noopener noreferrer" style="color:#c6ee9c">Review technical receipts and market audit</a></p>
+</section>
 <p class="foot">Source code <a href="https://github.com/Ledgercorp/BountyForge" rel="noopener noreferrer" target="_blank" style="color:#c6ee9c">Ledgercorp/BountyForge</a> · The private dashboard is hosted separately from its GitHub code. Local Qwen inference is configured in the repository and not running on this hosting tier.</p>
 </main>
 <script>

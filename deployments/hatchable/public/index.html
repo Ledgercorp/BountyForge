@@ -42,6 +42,16 @@ input{background:#10171b;border:1px solid #50605c;border-radius:9px;color:var(--
 <div class="stats"><div class="metric"><span>Issue candidates</span><strong id="candidateCount">0</strong></div><div class="metric"><span>Verified paid bounties</span><strong>0</strong></div><div class="metric"><span>Revenue received</span><strong>$0</strong></div></div>
 <div class="note">A bounty label, proposed dollar amount or GitHub comment does not establish real funding, availability or payment eligibility. Listings require independent verification before we pursue them.</div>
 <section class="panel"><div class="panel-head"><h2>Review queue</h2><input id="filter" placeholder="Filter by repository or task" aria-label="Filter issue candidates"></div><div id="records"><p class="foot">Select “Scan GitHub issues” to fetch current public candidates.</p></div></section>
+<section class="panel" aria-labelledby="worker-heading">
+  <div class="panel-head"><h2 id="worker-heading">Local AI worker</h2><span class="flag">REVIEW-ONLY</span></div>
+  <div class="details" style="margin-top:14px;line-height:2">
+    <div><strong style="color:#c6ee9c">Implemented</strong> · Bounded code-proposal worker and patch safety checks</div>
+    <div><strong style="color:#c6ee9c">Tested</strong> · 20 offline tests for new AI worker and security boundary</div>
+    <div><strong style="color:#e4c38e">Not active</strong> · Model weights and actual Qwen inference on a Linux host</div>
+    <div><strong style="color:#e4c38e">Not enabled</strong> · Running generated code, submitting work or collecting payouts</div>
+  </div>
+  <p class="foot">The private hosted scanner runs independently. The coding AI must run on a verified free Linux host. <a href="https://github.com/Ledgercorp/BountyForge/blob/main/docs/AI_WORKER.md" target="_blank" rel="noopener noreferrer" style="color:#c6ee9c">View AI worker documentation</a></p>
+</section>
 <p class="foot">Source code <a href="https://github.com/Ledgercorp/BountyForge" rel="noopener noreferrer" target="_blank" style="color:#c6ee9c">Ledgercorp/BountyForge</a> · The private dashboard is hosted separately from its GitHub code. Local Qwen inference is configured in the repository and not running on this hosting tier.</p>
 </main>
 <script>

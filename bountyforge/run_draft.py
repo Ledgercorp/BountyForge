@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 from bountyforge.coder import propose_draft
 from bountyforge.drafts import DraftRejected
+from bountyforge.model import LocalModel
 
 
 def main(argv=None) -> int:
@@ -15,6 +16,8 @@ def main(argv=None) -> int:
     p.add_argument('--workspace',required=True,help='Read-only checkout of an approved target repo')
     p.add_argument('--file',required=True,action='append',dest='files',help='Approved existing file (repeat up to three)')
     p.add_argument('--output',required=True,help='Review manifest output outside the target checkout')
+    p.add_argument('--local-port', type=int, choices=(8080,18080), default=8080,
+                   help='Approved local llama.cpp port')
     args=p.parse_args(argv)
     source=Path(args.report).resolve(strict=True)
     report=json.loads(source.read_text(encoding='utf-8'))
@@ -26,7 +29,8 @@ def main(argv=None) -> int:
     destination=Path(args.output).resolve()
     if destination.is_relative_to(root) or destination==source or destination.is_symlink():
         raise DraftRejected('Refusing to write review manifest inside target checkout or over source')
-    result=propose_draft(matched[0],root,args.files)
+    local=LocalModel(endpoint=f'http://127.0.0.1:{args.local_port}/v1/chat/completions')
+    result=propose_draft(matched[0],root,args.files,model=local)
     destination.parent.mkdir(parents=True,exist_ok=True)
     # Avoid overwriting a pre-existing report, even when it is not a symlink.
     with destination.open('x',encoding='utf-8') as handle:

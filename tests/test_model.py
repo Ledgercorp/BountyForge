@@ -31,6 +31,7 @@ class ModelTests(unittest.TestCase):
 
     def test_accepts_local_endpoint(self):
         ensure_loopback("http://127.0.0.1:8080/v1/chat/completions")
+        ensure_loopback("http://127.0.0.1:18080/v1/chat/completions")
 
     def test_response_shape(self):
         fake = FakeResponse(json.dumps({"choices": [{"message": {"content": "Write tests first."}}]}).encode())

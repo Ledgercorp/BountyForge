@@ -20,7 +20,13 @@ class ModelProposalTests(unittest.TestCase):
             self.assertEqual(payload['max_tokens'],1500)
             self.assertEqual(build.call_args.args[0].proxies,{})
             self.assertEqual(payload['model'],'local')
+            self.assertEqual(payload['response_format']['type'],'json_schema')
+            self.assertEqual(payload['response_format']['json_schema']['schema']['required'],['files'])
         self.assertEqual(answer,'{"files":[]}')
+
+    def test_verified_alternate_loopback_port(self):
+        model=LocalModel('http://127.0.0.1:18080/v1/chat/completions')
+        self.assertTrue(model.endpoint.endswith(':18080/v1/chat/completions'))
 
     def test_remote_endpoints_rejected(self):
         for url in ('https://api.openai.com/v1/chat/completions','http://localhost:8080/v1/chat/completions','http://127.0.0.1:8081/v1/chat/completions'):

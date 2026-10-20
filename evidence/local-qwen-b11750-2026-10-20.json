@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-20",
+  "status": "independent_cpu_inference_and_schema_patch_confirmed",
+  "model": {
+    "id": "Qwen2.5-Coder-1.5B-Instruct-GGUF",
+    "bytes": 1117320768,
+    "sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046"
+  },
+  "runtime": {
+    "project": "ggml-org/llama.cpp",
+    "release": "b11750",
+    "archive_sha256": "152e33221c9c9d37816a8ee9943f8d87339199197c80cb692559c9756b2027d8",
+    "local_endpoint": "127.0.0.1:18080",
+    "health_status": 200
+  },
+  "tests": [
+    {
+      "kind": "colab_receipt",
+      "observed": "Python addition fix, exit code 0; 8.9 output tokens/s",
+      "note": "Distinct Colab environment"
+    },
+    {
+      "kind": "local_smoke",
+      "observed": "2 + 2 = 4",
+      "elapsed_seconds": 6.7,
+      "tokens_predicted": 3
+    },
+    {
+      "kind": "freeform_code",
+      "observed": "Correct change wrapped in prose and Markdown; raw Python AST rejected",
+      "elapsed_seconds": 11.56,
+      "tokens_predicted": 24
+    },
+    {
+      "kind": "structured_code",
+      "observed": "Valid files/path/content JSON with syntactically correct Python and review-only unified diff",
+      "elapsed_seconds": 20.73,
+      "prompt_tokens": 67,
+      "completion_tokens": 46,
+      "proposed_file": {
+        "path": "approved.py",
+        "content": "def add(a, b):\n    return a + b\n"
+      },
+      "unified_diff": "--- a/approved.py\n+++ b/approved.py\n@@ -1,2 +1,2 @@\n def add(a, b):\n-    return a - b\n+    return a + b\n"
+    }
+  ],
+  "safety": {
+    "paid_inference_api_calls": 0,
+    "additional_spending_usd": 0,
+    "mac_access": false,
+    "generated_code_executed": false,
+    "external_prs_created": 0,
+    "verified_income_usd": 0
+  },
+  "limitations": [
+    "Temporary Linux environment only",
+    "Validated a standalone JSON and diff harness, not a full end-to-end production BountyForge worker execution",
+    "Updated GitHub client and tests require a fresh test run"
+  ]
+}

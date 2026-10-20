@@ -1,0 +1,33 @@
+{
+  "date_utc": "2026-10-20",
+  "host": "temporary Linux container, x86-64 CPython 3.13",
+  "controls": [
+    "unprivileged user, network, PID, mount namespaces",
+    "minimal filesystem and chroot",
+    "32 MiB tmpfs /work",
+    "capability drop and no_new_privs",
+    "seccomp syscall denylist including socket and fork",
+    "RLIMIT_AS 512 MiB; RLIMIT_CPU 8 seconds; RLIMIT_FSIZE 1 MiB",
+    "parent wall-timeout 2-30 sec; process group kill",
+    "host environment and credentials not mounted"
+  ],
+  "verified_security_probes": 7,
+  "security_probe_passes": 7,
+  "limitations": [
+    "cgroup filesystem read-only, so no independent pids/memory/IO cgroups",
+    "seccomp denylist not complete allowlist",
+    "kernel namespace escape resistance not independently audited",
+    "no arbitrary third-party repository authorization",
+    "only Python 3.13 x86-64 image tested"
+  ],
+  "test_suite": {
+    "tests": 61,
+    "passes": 61,
+    "failed": 0,
+    "elapsed_seconds": 11.092,
+    "python": "/usr/bin/python3.13",
+    "log": "evidence/phase3_regression_61_tests.log"
+  },
+  "unexpected_cost_usd": "not independently audited",
+  "known_paid_api_calls": 0
+}

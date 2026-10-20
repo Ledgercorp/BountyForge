@@ -1,0 +1,78 @@
+{
+  "date_utc": "2026-10-20",
+  "method": "read-only source comparison of original GitHub issues and platform listings",
+  "checked_count": 6,
+  "actionable_count": 0,
+  "tier_a": 0,
+  "tier_b": 1,
+  "tier_c": 5,
+  "recipients_contacted": 0,
+  "revenue_confirmed_usd": 0,
+  "sources": [
+    {
+      "platform": "Algora",
+      "platform_url": "https://algora.io/projectdiscovery/bounties?status=open",
+      "issue_url": "https://github.com/projectdiscovery/nuclei/issues/6674",
+      "reported_reward_usd": 100,
+      "observed_github_state": "closed",
+      "tier": "C",
+      "decision": "reject",
+      "reason": "GitHub confirms completed, despite platform open listing; Go project"
+    },
+    {
+      "platform": "Algora",
+      "platform_url": "https://algora.io/projectdiscovery/bounties?status=open",
+      "issue_url": "https://github.com/projectdiscovery/nuclei/issues/6532",
+      "reported_reward_usd": 100,
+      "observed_github_state": "closed",
+      "tier": "C",
+      "decision": "reject",
+      "reason": "Original issue closed as completed; stale listed opportunity"
+    },
+    {
+      "platform": "Algora",
+      "platform_url": "https://algora.io/spaceandtimelabs/bounties?status=open",
+      "issue_url": "https://github.com/spaceandtimefdn/sxt-proof-of-sql/issues/560",
+      "reported_reward_usd": 200,
+      "observed_github_state": "closed",
+      "tier": "C",
+      "decision": "reject",
+      "reason": "Original Rust code coverage issue closed; large scope and competition"
+    },
+    {
+      "platform": "Algora",
+      "platform_url": "https://algora.io/highlight/bounties?status=open",
+      "issue_url": "https://github.com/highlight/highlight/issues/8032",
+      "reported_reward_usd": 20,
+      "observed_github_state": "open",
+      "tier": "B",
+      "decision": "hold",
+      "reason": "Identifiable creator and source claim, but competing existing PRs, unclear remaining scope; TypeScript/JavaScript, US payout and AI rules unverified; not eligible for execution"
+    },
+    {
+      "platform": "GitHub",
+      "platform_url": null,
+      "issue_url": "https://github.com/mahmoud/boltons/issues/524",
+      "reported_reward_usd": null,
+      "observed_github_state": "open",
+      "tier": "C",
+      "decision": "engineering_only",
+      "reason": "Reproducible Python bug; no independently verified monetary bounty; used for private excerpt-based engineering demonstration"
+    },
+    {
+      "platform": "Opire",
+      "platform_url": "https://app.opire.dev/issues/01KWQ0VT1N2TKGCY1CK9T61C1Z",
+      "issue_url": null,
+      "reported_reward_usd": null,
+      "observed_github_state": "not_independently_verified",
+      "tier": "C",
+      "decision": "reject",
+      "reason": "Large unpaid amounts displayed, no independently verified funds, original issue eligibility unresolved"
+    }
+  ],
+  "notes": [
+    "Tier B is an advertised offer, not guaranteed payment or independently verified escrow.",
+    "The tier B candidate does not pass language, AI, US and acceptance checks; no execution authorized.",
+    "Opire says payments are arranged directly between contributors and bounty creators."
+  ]
+}

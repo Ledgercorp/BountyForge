@@ -24,7 +24,7 @@ from bountyforge.coder import propose_draft
 from bountyforge.drafts import DraftRejected, _verify_existing, safe_path
 
 MAX_ATTEMPTS = 2
-MAX_SECONDS = 12
+MAX_SECONDS = 25
 MAX_OUTPUT = 12000
 FIXTURE_MARKER = '.bountyforge-controlled-fixture'
 

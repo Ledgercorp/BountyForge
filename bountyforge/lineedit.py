@@ -122,9 +122,18 @@ def stage_lines(raw: str, workspace: Path, approved_path: str,
     if len(revised.encode("utf-8")) > 12000:
         raise DraftRejected("Result exceeds review size limit")
     try:
-        ast.parse(revised, filename=path)
+        revised_tree = ast.parse(revised, filename=path)
+        original_tree = ast.parse(original, filename=path)
     except SyntaxError as exc:
         raise DraftRejected("Proposed Python source does not parse") from exc
+    # Reject syntactically valid edits that insert misplaced definitions.
+    declarations = (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
+    before = [(type(n).__name__, n.name) for n in ast.walk(original_tree)
+              if isinstance(n, declarations)]
+    after = [(type(n).__name__, n.name) for n in ast.walk(revised_tree)
+             if isinstance(n, declarations)]
+    if before != after:
+        raise DraftRejected("Line edit changed function or class declarations")
     diff = "".join(difflib.unified_diff(
         original.splitlines(keepends=True), revised.splitlines(keepends=True),
         fromfile="a/" + path, tofile="b/" + path,

@@ -247,7 +247,7 @@ class T(unittest.TestCase):
 index=[]
 for x in CASES:
  p=ROOT/x['id'];(p/'tests').mkdir(parents=True,exist_ok=True)
- (p/x['file']).write_text(x['source'],encoding='utf-8')
+ (p/x['file']).write_text('# Copyright (c) 2013, Mahmoud Hashemi\n# Adapted excerpt from boltons 26.1.0; see ../LICENSE.upstream\n'+x['source'],encoding='utf-8')
  (p/'tests/test_regression.py').write_text(x['tests'],encoding='utf-8')
  index.append({k:x[k] for k in ('id','issue','file','symbols','description','blob')})
 index=sorted(index,key=lambda x:x['id'])

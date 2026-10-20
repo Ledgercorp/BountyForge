@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "project": "BountyForge",
+  "artifact": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+  "source": "Google Drive file 1L9Srfc-X0sRQaVRJTYFcZ7dZmkEf3ijZ",
+  "transfer": "six Colab-produced Drive chunks and manifest; original Drive model unchanged",
+  "expected_size_bytes": 1117320768,
+  "measured_size_bytes": 1117320768,
+  "expected_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+  "measured_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+  "per_chunk_sha256": "6/6 matched manifest",
+  "model_format": "GGUF v3",
+  "gguf_tensor_count": 339,
+  "gguf_metadata_fields": 26,
+  "independently_verified_in_linux_cpu_environment": true,
+  "actual_inference_executed": false,
+  "native_inference_runtime_present": false,
+  "charging_enabled": false,
+  "notes": "The exact registered model was recovered and hashes matched. Does not attest working inference, model output quality, or task competence."
+}

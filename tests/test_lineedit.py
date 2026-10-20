@@ -127,7 +127,7 @@ class LineEditTests(unittest.TestCase):
 
     def test_nested_function_in_line_edit_rejected(self):
         with self.assertRaises(DraftRejected):
-            self.stage(self.request(new="    def add(a, b):\\n        return a + b"))
+            self.stage(self.request(new="    def add(a, b):\n        return a + b"))
 
     def test_wrong_schema_rejected(self):
         with self.assertRaises(DraftRejected):

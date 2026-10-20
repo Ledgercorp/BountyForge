@@ -75,6 +75,12 @@ def normalize_issue(item: dict) -> dict | None:
     if any(x in lower for x in ("first come first served", "already claimed", "closed bounty")):
         score -= 35
         reasons.append("Potential competition or unavailable reward")
+    if any(x in title_lower for x in ("proposal", "alert", "radar", "bounty board", "discovery")):
+        score -= 40
+        reasons.append("May be a proposal or aggregator, not claimable paid work")
+    if any(x in lower for x in ("claude api", "openai api", "paid subscription", "gpu required", "hardware required")):
+        score -= 25
+        reasons.append("May require paid APIs or special compute; reject for $0 budget")
     score = max(0, min(score, 100))
     return {
         "id": str(item.get("id") or url),

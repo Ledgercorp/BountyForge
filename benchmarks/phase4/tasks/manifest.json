@@ -1,0 +1,59 @@
+{
+  "project": "boltons",
+  "historical_tag": "26.1.0",
+  "upstream_repo": "https://github.com/mahmoud/boltons/tree/26.1.0",
+  "verification_scope": "curated upstream-derived excerpts with deterministic tests, not full upstream repository",
+  "tasks": [
+    {
+      "id": "454",
+      "issue": "https://github.com/mahmoud/boltons/pull/454",
+      "file": "strutils.py",
+      "symbols": [
+        "args2sh",
+        "args2cmd"
+      ],
+      "description": "The documented sep parameter is ignored. Both args2sh and args2cmd should join using the supplied custom separator while preserving quoting.",
+      "blob": "5df8cf6f2e067ce5a11691304f67faf6c2bac7cb"
+    },
+    {
+      "id": "459",
+      "issue": "https://github.com/mahmoud/boltons/pull/459",
+      "file": "strutils.py",
+      "symbols": [
+        "bytes2human"
+      ],
+      "description": "The largest yottabyte (Y) unit is unreachable; bytes2human(1024**8) should return '1Y' and 5 times that should produce '5Y' without changing smaller units.",
+      "blob": "5df8cf6f2e067ce5a11691304f67faf6c2bac7cb"
+    },
+    {
+      "id": "460",
+      "issue": "https://github.com/mahmoud/boltons/pull/460",
+      "file": "cacheutils.py",
+      "symbols": [
+        "most_common"
+      ],
+      "description": "ThresholdCounter.most_common() with no n argument unexpectedly returns an empty list rather than all pairs sorted descending. Explicit n=0 and negative values still return empty.",
+      "blob": "856bf195483aafbfcdb8f6f93a168daf0c9b5857"
+    },
+    {
+      "id": "475",
+      "issue": "https://github.com/mahmoud/boltons/pull/475",
+      "file": "strutils.py",
+      "symbols": [
+        "iter_splitlines"
+      ],
+      "description": "iter_splitlines should split U+2028 and U+2029 Unicode separators. Ordinary text containing 28 or 29 must not be split accidentally.",
+      "blob": "5df8cf6f2e067ce5a11691304f67faf6c2bac7cb"
+    },
+    {
+      "id": "524",
+      "issue": "https://github.com/mahmoud/boltons/issues/524",
+      "file": "strutils.py",
+      "symbols": [
+        "bytes2human"
+      ],
+      "description": "When the number rounds to 1024 in the current unit, promote to the next unit: bytes2human(1048575) -> '1M', (1023.5) -> '1K', (1023.99,1) -> '1.0K'.",
+      "blob": "5df8cf6f2e067ce5a11691304f67faf6c2bac7cb"
+    }
+  ]
+}

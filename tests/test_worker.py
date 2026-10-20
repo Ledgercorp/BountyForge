@@ -48,6 +48,13 @@ class WorkerTests(unittest.TestCase):
     def test_forged_test_patch_denied(self):
         model=ScriptedModel([json.dumps({'files':[{'path':'tests/test_calc.py','content':'pass'}]})]*2)
         result=repair_fixture(self.issue,self.root,['calc.py'],model); self.assertEqual(result['status'],'failed')
+    def test_explicit_process_timeout_is_failure(self):
+        from bountyforge.worker import _run_tests
+        (self.root/'tests'/'test_calc.py').write_text('import unittest,time\nclass T(unittest.TestCase):\n def test_sleep(self): time.sleep(30)\n')
+        outcome=_run_tests(self.root,timeout=1)
+        self.assertTrue(outcome['timeout'])
+        self.assertFalse(outcome['passed'])
+
     def test_timeout(self):
         (self.root/'tests'/'test_calc.py').write_text('import unittest,time\nclass Test(unittest.TestCase):\n def test_hang(self): time.sleep(0.3)\n')
         # time-bound baseline with an internal zero baseline failure prevention

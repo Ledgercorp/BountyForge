@@ -20,6 +20,7 @@ class ModelTests(unittest.TestCase):
             "https://api.openai.com/v1/chat/completions",
             "http://127.0.0.2:8080/v1/chat/completions",
             "http://localhost:9999/v1/chat/completions",
+            "http://localhost:8080/v1/chat/completions",
             "http://127.0.0.1:8080/private",
             "http://user:password@localhost:8080/v1/chat/completions",
         ]
@@ -33,10 +34,12 @@ class ModelTests(unittest.TestCase):
 
     def test_response_shape(self):
         fake = FakeResponse(json.dumps({"choices": [{"message": {"content": "Write tests first."}}]}).encode())
-        with patch("urllib.request.urlopen", return_value=fake) as requester:
+        with patch("urllib.request.build_opener") as build:
+            build.return_value.open.return_value = fake
             result = LocalModel().analyze({"title": "sample", "url": "https://github.com/a/b/issues/1"})
+            req = build.return_value.open.call_args.args[0]
+            self.assertEqual(build.call_args.args[0].proxies, {})
         self.assertEqual(result, "Write tests first.")
-        req = requester.call_args.args[0]
         self.assertEqual(req.full_url, "http://127.0.0.1:8080/v1/chat/completions")
         payload = json.loads(req.data)
         self.assertEqual(payload["model"], "local")

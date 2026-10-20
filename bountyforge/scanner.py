@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import re
+from decimal import Decimal
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -17,8 +18,8 @@ SEARCH_QUERIES = (
     "is:issue is:open paid in:title",
 )
 _AMOUNTS = (
-    re.compile(r"(?<!\w)\$\s*([1-9][\d,]{0,8})(?!\d)"),
-    re.compile(r"\bUSD\s+([1-9][\d,]{0,8})(?!\d)", re.I),
+    re.compile(r"(?<!\w)\$\s*([1-9][\d,]{0,8}(?:\.\d{1,2})?)\s*([kKmM])?(?!\w)"),
+    re.compile(r"\bUSD\s+([1-9][\d,]{0,8}(?:\.\d{1,2})?)\s*([kKmM])?(?!\w)", re.I),
 )
 
 
@@ -31,11 +32,12 @@ def payout_mentions(text: str) -> list[int]:
     for expression in _AMOUNTS:
         for match in expression.finditer(text[:16000]):
             try:
-                value = int(match.group(1).replace(",", ""))
-            except ValueError:
+                multiplier = {"k": 1000, "m": 1000000}.get((match.group(2) or "").lower(), 1)
+                amount = Decimal(match.group(1).replace(",", "")) * multiplier
+            except (ValueError, ArithmeticError):
                 continue
-            if 1 <= value <= 100000:
-                amounts.add(value)
+            if amount == int(amount) and 1 <= amount <= 100000:
+                amounts.add(int(amount))
     return sorted(amounts)
 
 
@@ -78,6 +80,14 @@ def normalize_issue(item: dict) -> dict | None:
     if any(x in title_lower for x in ("proposal", "alert", "radar", "bounty board", "discovery")):
         score -= 40
         reasons.append("May be a proposal or aggregator, not claimable paid work")
+    if title_lower.startswith("application:") or "i would like to apply for" in lower:
+        score -= 50
+        reasons.append("Applicant post, not an available task")
+    if not amounts and any(x in lower for x in (
+        "bounty on you", "bounty hunter", "player bounty", "nation's bounty", "wanted bounty"
+    )):
+        score -= 55
+        reasons.append("Game mechanic, not paid development work")
     if any(x in lower for x in ("claude api", "openai api", "paid subscription", "gpu required", "hardware required")):
         score -= 25
         reasons.append("May require paid APIs or special compute; reject for $0 budget")

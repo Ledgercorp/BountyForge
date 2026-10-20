@@ -20,7 +20,7 @@ def ensure_loopback(endpoint: str) -> None:
     parsed = urllib.parse.urlsplit(endpoint)
     if (
         parsed.scheme != "http"
-        or parsed.hostname not in {"127.0.0.1", "localhost", "::1"}
+        or parsed.hostname not in {"127.0.0.1", "::1"}
         or parsed.username is not None
         or parsed.password is not None
         or parsed.port != 8080
@@ -28,6 +28,11 @@ def ensure_loopback(endpoint: str) -> None:
         or parsed.query or parsed.fragment
     ):
         raise ValueError("Inference must use the approved loopback llama.cpp endpoint, port 8080")
+
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        raise RuntimeError("Local inference redirects are forbidden")
 
 
 class LocalModel:
@@ -56,7 +61,9 @@ class LocalModel:
             headers={"Content-Type": "application/json"},
         )
         try:
-            with urllib.request.urlopen(req, timeout=120) as response:
+            # No system proxy and no redirect to a remote server; only numeric loopback hosts.
+            opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoRedirect())
+            with opener.open(req, timeout=120) as response:
                 result = json.load(response)
         except Exception as exc:
             raise RuntimeError(

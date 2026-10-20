@@ -16,6 +16,8 @@ def issue(title="Bounty: $250 to fix parser"):
 class ScannerTests(unittest.TestCase):
     def test_amounts(self):
         self.assertEqual(payout_mentions("Pay $1,200 and USD 30, not $0"), [30, 1200])
+        self.assertEqual(payout_mentions("$5k and $1.5K and $250"), [250, 1500, 5000])
+        self.assertEqual(payout_mentions("$1m"), [])
 
     def test_conservative_verification(self):
         candidate = normalize_issue(issue())
@@ -53,6 +55,14 @@ class ScannerTests(unittest.TestCase):
         paid = issue("Bounty: $250 CSV parser fix")
         paid["body"] += " Requires Claude API calls and billing."
         self.assertLess(normalize_issue(paid)["score"], normal["score"])
+
+    def test_application_issue_is_not_a_paid_job(self):
+        candidate = normalize_issue(issue("Application: bounty item 27 — Employee Directory ($150)"))
+        self.assertLess(candidate["score"], normalize_issue(issue("Bounty: $150 build directory"))["score"])
+
+    def test_gameplay_bounties_are_penalized(self):
+        candidate = normalize_issue(issue("When attacking a merchant, there is a bounty on you"))
+        self.assertEqual(candidate["score"], 0)
 
     def test_scan_bounds(self):
         with self.assertRaises(ValueError):

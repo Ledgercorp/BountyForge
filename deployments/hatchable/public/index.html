@@ -53,6 +53,22 @@ input{background:#10171b;border:1px solid #50605c;border-radius:9px;color:var(--
   </div>
   <p class="foot">Real Qwen CPU inference passed a constrained JSON patch test on October 20, 2026. No generated code has been executed or submitted. The cloud-hosted scanner operates independently. <a href="https://github.com/Ledgercorp/BountyForge/blob/main/evidence/local-qwen-b11750-2026-10-20.json" target="_blank" rel="noopener noreferrer" style="color:#c6ee9c">View acceptance evidence</a></p>
 </section>
+<section class="panel" aria-labelledby="ops-heading">
+  <div class="panel-head"><h2 id="ops-heading">Operations & revenue ledger</h2><span class="flag">OWNER-ONLY</span></div>
+  <div class="details" style="margin-top:13px;line-height:2.1">
+    <div>Hosted worker: <strong id="worker-host-state">Checking…</strong></div>
+    <div>Model on hosting platform: <strong id="worker-model-state">Checking…</strong></div>
+    <div>Saved discovery scans: <strong id="saved-scan-count">Checking…</strong></div>
+    <div>Verified funded and eligible opportunities: <strong>0</strong></div>
+    <div>Live external repair attempts: <strong>0</strong></div>
+    <div>Pending external submissions: <strong>0</strong></div>
+    <div>Confirmed revenue: <strong>$0</strong></div>
+    <div>Paid AI API calls: <strong>0</strong></div>
+    <div>Hosting bill: <strong>Not independently retrieved</strong></div>
+  </div>
+  <p id="ops-status" class="foot">Loading status from private Postgres; local Linux test receipts are separate, not active hosted jobs.</p>
+  <p class="foot"><a href="https://github.com/Ledgercorp/BountyForge/blob/main/evidence/phase2_bounty_evaluation.json" style="color:#c6ee9c" rel="noopener noreferrer" target="_blank">Audited opportunity rejections</a></p>
+</section>
 <p class="foot">Source code <a href="https://github.com/Ledgercorp/BountyForge" rel="noopener noreferrer" target="_blank" style="color:#c6ee9c">Ledgercorp/BountyForge</a> · The private dashboard is hosted separately from its GitHub code. Local Qwen inference is configured in the repository and not running on this hosting tier.</p>
 </main>
 <script>
@@ -102,4 +118,17 @@ async function loadSaved(){
  }catch(e){/* The owner can still run a fresh scan manually. */}
 }
 nodes.button.addEventListener('click',scan);nodes.filter.addEventListener('input',draw);loadSaved();
+async function loadOperations(){
+ try {
+   const response=await fetch('/api/operator-status',{cache:'no-store',redirect:'manual'});
+   if(!response.ok)return;
+   const data=await response.json();
+   if(data.state!=='ok')return;
+   document.getElementById('worker-host-state').textContent='Not deployed (temporary Linux tests only)';
+   document.getElementById('worker-model-state').textContent='Not running here';
+   document.getElementById('saved-scan-count').textContent=String(data.saved_discovery_scans);
+   document.getElementById('ops-status').textContent='Live Postgres status · Last scan: '+(data.last_scan_at?new Date(data.last_scan_at).toLocaleString():'None')+'. Synthetic Linux acceptance is independent evidence, not hosted job activity.';
+ } catch(err){document.getElementById('ops-status').textContent='Status unavailable; no values have been inferred.';}
+}
+loadOperations();
 </script></body></html>

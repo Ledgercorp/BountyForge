@@ -43,6 +43,17 @@ class ScannerTests(unittest.TestCase):
         report = make_report([normalize_issue(issue())], "unit test")
         self.assertIn("unverified", report["disclaimer"].lower())
 
+    def test_proposals_rank_below_actionable_candidates(self):
+        normal = normalize_issue(issue("Bounty: $250 CSV parser fix"))
+        proposed = normalize_issue(issue("Bounty proposal: $250 CSV parser fix"))
+        self.assertLess(proposed["score"], normal["score"])
+
+    def test_paid_api_requirement_penalty(self):
+        normal = normalize_issue(issue("Bounty: $250 CSV parser fix"))
+        paid = issue("Bounty: $250 CSV parser fix")
+        paid["body"] += " Requires Claude API calls and billing."
+        self.assertLess(normalize_issue(paid)["score"], normal["score"])
+
     def test_scan_bounds(self):
         with self.assertRaises(ValueError):
             scan_github(31)

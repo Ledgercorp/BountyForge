@@ -2,6 +2,20 @@
 
 A local-first bounty research workbench from LeftSock Labs. Zero paid AI API calls. **No automatic submissions, financial transactions, repository changes outside this repo, or promises of earnings.**
 
+## Live private dashboard
+
+**https://leftsock-bountyforge.hatchable.site**
+
+Deployed Hatchable v3 source is mirrored in `deployments/hatchable/` (the hosted app has its own deployment history).
+
+- Private owner-only dashboard and read-only GitHub Search adapter.
+- Daily 12:00 UTC Hatchable Free cron scan, scheduler-only endpoint; latest successful scan saved to Postgres.
+- Live scan and cached read were successfully tested; unauthorized requests return HTTP 401.
+- No remote or paid model inference, no automated issue claiming or bounty submission, and no payment handling.
+- Qwen2.5-Coder-1.5B-Instruct GGUF SHA-256 pinned and independently verified against official file metadata, but weights have not yet been downloaded or executed.
+- Isolated Linux Python test suite: **14/14 passed**.
+- Every opportunity is unverified until funding, availability, payout method and terms are checked.
+
 ## What works in v0.1
 - Read-only GitHub issue discovery using the public GitHub Search API.
 - Deduplicated and explainable candidate scoring. **Every payout is unverified.**

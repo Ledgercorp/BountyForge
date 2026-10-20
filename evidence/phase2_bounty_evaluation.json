@@ -1,0 +1,171 @@
+{
+  "as_of_utc": "2026-10-20",
+  "source": "manual cross-check of original GitHub issues against original Algora/Opire listings",
+  "identified": 5,
+  "verified_funded_and_eligible": 0,
+  "verified_payment_received_usd": 0,
+  "ready_for_external_attempt": 0,
+  "candidates": [
+    {
+      "id": "opire-phpunit-4440",
+      "issue_url": "https://github.com/sebastianbergmann/phpunit/issues/4440",
+      "platform_url": "https://app.opire.dev/issues/01HWX4P9F1935V3ZXN4TY7VDEQ",
+      "platform_status": "available",
+      "github_open": false,
+      "reward_usd": 50,
+      "languages": [
+        "PHP"
+      ],
+      "ai_policy": "unverified",
+      "us_eligibility": null,
+      "no_payment_required": null,
+      "acceptance_criteria": "Improve coverage warning",
+      "already_solved": true,
+      "note": "Original issue closed completed March 31 2026, despite Opire available listing.",
+      "decision": {
+        "state": "rejected",
+        "score": 34,
+        "reasons": [
+          "GitHub issue closure/availability unverified",
+          "Python not listed as an implementation language",
+          "AI assistance permission unverified",
+          "US eligibility unverified",
+          "Zero-cost participation unverified",
+          "Competition/completion status unverified"
+        ],
+        "eligible_for_execution": false,
+        "funding_verified": false
+      }
+    },
+    {
+      "id": "algora-grit-416",
+      "issue_url": "https://github.com/biomejs/gritql/issues/416",
+      "platform_url": "https://algora.io/grit/bounties",
+      "platform_status": "completed",
+      "github_open": false,
+      "reward_usd": 50,
+      "languages": [
+        "Rust",
+        "Python"
+      ],
+      "ai_policy": "unverified",
+      "us_eligibility": null,
+      "no_payment_required": null,
+      "acceptance_criteria": "Remove dangling comma",
+      "already_solved": true,
+      "note": "Issue rewarded to another contributor Oct 2024; current Algora shows zero open for Grit.",
+      "decision": {
+        "state": "rejected",
+        "score": 34,
+        "reasons": [
+          "Platform does not confirm available reward",
+          "GitHub issue closure/availability unverified",
+          "AI assistance permission unverified",
+          "US eligibility unverified",
+          "Zero-cost participation unverified",
+          "Competition/completion status unverified"
+        ],
+        "eligible_for_execution": false,
+        "funding_verified": false
+      }
+    },
+    {
+      "id": "algora-zod-2654",
+      "issue_url": "https://github.com/colinhacks/zod/issues/2654",
+      "platform_url": "https://algora.io/triggerdotdev/bounties",
+      "platform_status": "available",
+      "github_open": false,
+      "reward_usd": 25,
+      "languages": [
+        "TypeScript"
+      ],
+      "ai_policy": "unverified",
+      "us_eligibility": null,
+      "no_payment_required": null,
+      "acceptance_criteria": "TS inference",
+      "already_solved": true,
+      "note": "GitHub issue closed completed Aug 13 2026; listed bounty misleading.",
+      "decision": {
+        "state": "rejected",
+        "score": 34,
+        "reasons": [
+          "GitHub issue closure/availability unverified",
+          "Python not listed as an implementation language",
+          "AI assistance permission unverified",
+          "US eligibility unverified",
+          "Zero-cost participation unverified",
+          "Competition/completion status unverified"
+        ],
+        "eligible_for_execution": false,
+        "funding_verified": false
+      }
+    },
+    {
+      "id": "opire-udiowrapper-7",
+      "issue_url": "https://github.com/flowese/UdioWrapper/issues/7",
+      "platform_url": "https://app.opire.dev/issues/01HW8CK374Y67WDDZG22BYVZQ4",
+      "platform_status": "available",
+      "github_open": true,
+      "reward_usd": 120,
+      "languages": [
+        "Python"
+      ],
+      "title": "500 Server Error - Auto Solve hcaptcha",
+      "requirements": "captcha bypass of third party website; reverse engineered API",
+      "ai_policy": "unverified",
+      "us_eligibility": null,
+      "no_payment_required": null,
+      "acceptance_criteria": null,
+      "already_solved": null,
+      "note": "Open but captcha bypass, unauthorized API and high claimant competition; no permitted technical path.",
+      "decision": {
+        "state": "rejected",
+        "score": 34,
+        "reasons": [
+          "High-risk or paid-resource dependency",
+          "AI assistance permission unverified",
+          "US eligibility unverified",
+          "Zero-cost participation unverified",
+          "Missing acceptance criteria",
+          "Competition/completion status unverified"
+        ],
+        "eligible_for_execution": false,
+        "funding_verified": false
+      }
+    },
+    {
+      "id": "github-claude-bounty-1",
+      "issue_url": "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1",
+      "platform_url": "",
+      "platform_status": "unknown",
+      "github_open": true,
+      "reward_usd": 50,
+      "languages": [
+        "Bash",
+        "Python"
+      ],
+      "title": "Changelog skill",
+      "requirements": "generate changelog",
+      "ai_policy": "unverified",
+      "us_eligibility": null,
+      "no_payment_required": null,
+      "acceptance_criteria": "generate changelog",
+      "already_solved": null,
+      "note": "GitHub issue advertises Opire, but no specific primary Opire funding record verified and significant PR competition.",
+      "decision": {
+        "state": "rejected",
+        "score": 34,
+        "reasons": [
+          "No original platform listing",
+          "Platform does not confirm available reward",
+          "AI assistance permission unverified",
+          "US eligibility unverified",
+          "Zero-cost participation unverified",
+          "Competition/completion status unverified"
+        ],
+        "eligible_for_execution": false,
+        "funding_verified": false
+      }
+    }
+  ]
+}

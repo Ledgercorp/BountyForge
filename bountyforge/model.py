@@ -82,6 +82,41 @@ class LocalModel:
         if not isinstance(content,str) or not content.strip():raise RuntimeError('Empty model response')
         return content.strip()[:12000]
 
+    def complete_line(self, system: str, user: str, max_tokens: int = 125) -> str:
+        """Strict line-change JSON, local numerical loopback only, no remote fallback."""
+        from bountyforge.lineedit import LINE_SCHEMA
+        if (not isinstance(system, str) or not isinstance(user, str)
+                or len(user.encode("utf-8")) > 3600 or not 1 <= max_tokens <= 150):
+            raise ValueError("Invalid line-change request or generation budget")
+        body = json.dumps({
+            "model": "local",
+            "messages": [{"role": "system", "content": system},
+                         {"role": "user", "content": user}],
+            "max_tokens": max_tokens, "temperature": 0, "stream": False,
+            "response_format": {"type": "json_schema", "json_schema": {
+                "name": "bounded_line_patch", "strict": True, "schema": LINE_SCHEMA,
+            }},
+        }).encode("utf-8")
+        request = urllib.request.Request(
+            self.endpoint, data=body, method="POST",
+            headers={"Content-Type": "application/json"})
+        try:
+            opener = urllib.request.build_opener(
+                urllib.request.ProxyHandler({}), _NoRedirect())
+            with opener.open(request, timeout=45) as response:
+                result = json.load(response)
+        except Exception as exc:
+            raise RuntimeError("Local CPU model unavailable or timed out; no remote fallback") from exc
+        try:
+            answer = result["choices"][0]["message"]["content"]
+        except (KeyError, IndexError, TypeError) as exc:
+            raise RuntimeError("Malformed local model response") from exc
+        if not isinstance(answer, str) or not answer.strip():
+            raise RuntimeError("Empty local model response")
+        if len(answer.encode("utf-8")) > 3000:
+            raise RuntimeError("Local model response exceeds size bound")
+        return answer.strip()
+
     def analyze(self, issue: dict) -> str:
         prompt=json.dumps({'candidate_url':issue.get('url',''), 'issue_title':issue.get('title','')[:240],
                             'issue_text_untrusted':issue.get('description_excerpt','')[:2200]}, ensure_ascii=False)

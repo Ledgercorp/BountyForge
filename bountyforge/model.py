@@ -40,6 +40,33 @@ class LocalModel:
         ensure_loopback(endpoint)
         self.endpoint = endpoint
 
+    def complete(self, system: str, user: str, max_tokens: int = 420) -> str:
+        """Call a local-only model with custom prompts for bounded draft proposals."""
+        if not isinstance(system, str) or not isinstance(user, str):
+            raise ValueError("Prompts must be strings")
+        if len(user.encode("utf-8")) > 16000 or not 1 <= max_tokens <= 1500:
+            raise ValueError("Prompt or token budget is too large")
+        data = json.dumps({
+            "model": "local",
+            "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
+            "max_tokens": max_tokens, "temperature": 0.1, "stream": False,
+        }).encode("utf-8")
+        request = urllib.request.Request(self.endpoint, data=data, method="POST",
+                                         headers={"Content-Type": "application/json"})
+        try:
+            opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoRedirect())
+            with opener.open(request, timeout=120) as response:
+                result = json.load(response)
+        except Exception as exc:
+            raise RuntimeError("Local model unavailable on 127.0.0.1:8080; no remote fallback.") from exc
+        try:
+            answer = result["choices"][0]["message"]["content"]
+        except (KeyError, IndexError, TypeError) as exc:
+            raise RuntimeError("Unexpected local model response") from exc
+        if not isinstance(answer, str) or not answer.strip():
+            raise RuntimeError("Local model returned no draft")
+        return answer.strip()[:12000]
+
     def analyze(self, issue: dict) -> str:
         prompt = json.dumps({
             "candidate_url": issue.get("url", ""),

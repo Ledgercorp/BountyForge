@@ -5,6 +5,7 @@ import difflib
 import json
 from pathlib import Path
 from bountyforge.drafts import DraftRejected, safe_path, _verify_existing
+from bountyforge.context import select_python_context
 
 EDIT_SCHEMA = {'type':'object','properties':{
  'edits':{'type':'array','minItems':1,'maxItems':3,'items':{'type':'object',
@@ -67,7 +68,11 @@ def propose_minimal(issue:dict, workspace:Path, allowed_paths:list[str], model)-
     sources=[]
     for file in allow:
         text=_verify_existing(workspace,file)
-        if len(text.encode())>4000:raise DraftRejected('Source exceeds context limit')
+        targets=issue.get('target_symbols')
+        if targets is not None:
+            text=select_python_context(text,targets,budget=3200)
+        elif len(text.encode())>4000:
+            raise DraftRejected('Source exceeds context limit; provide vetted target_symbols')
         sources.append({'path':file,'exact_source_text':text})
     prompt=json.dumps({'file_paths_exact':allow,'source_files_untrusted':sources,
                        'bug':str(issue.get('description_excerpt') or '')[:850],

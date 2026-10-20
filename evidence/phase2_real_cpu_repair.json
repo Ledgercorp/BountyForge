@@ -1,0 +1,37 @@
+{
+  "kind": "actual_local_qwen_controlled_fixture_acceptance",
+  "date_utc": "2026-10-20",
+  "source": "Independent Linux execution of BountyForge repair_fixture; local runtime artifact retained in transient workspace",
+  "model": "Qwen2.5-Coder-1.5B-Instruct-Q4_K_M",
+  "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+  "model_calls": 1,
+  "elapsed_seconds": 18.888,
+  "baseline": {
+    "passed": false,
+    "exit_code": 1,
+    "failing_tests": 2,
+    "seconds": 2.505
+  },
+  "repair": {
+    "status": "review_ready",
+    "attempts": 1,
+    "tests_passed": 2,
+    "exit_code": 0,
+    "seconds": 2.628,
+    "diff": "--- a/calc.py\n+++ b/calc.py\n@@ -1,2 +1,2 @@\n def add(a, b):\n-    return a - b\n+    return a + b\n"
+  },
+  "fixture_sha256": "2170525f36e4388420b47cf72b1de359a4145fc76b958ab85c717a0d43d6c9e6",
+  "guardrails": {
+    "trusted_synthetic_only": true,
+    "original_fixture_modified": false,
+    "third_party_repo_modified": false,
+    "external_submission": false,
+    "confirmed_payment_usd": 0,
+    "paid_model_calls": 0
+  },
+  "limitations": [
+    "No hostile third-party-code sandbox verified",
+    "Disposable workspace not persistent hosting",
+    "Demonstration does not establish commercial bounty completion"
+  ]
+}

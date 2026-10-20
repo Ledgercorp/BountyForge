@@ -1,0 +1,1 @@
+Intentionally broken synthetic addition benchmark. Never treat this as a real GitHub bounty. Its initial tests must fail. Only the bounded controlled-fixture worker is permitted to execute tests here.

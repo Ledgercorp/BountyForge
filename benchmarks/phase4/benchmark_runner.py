@@ -6,6 +6,8 @@ certified untrusted-code isolation or full upstream suite verification.
 from __future__ import annotations
 import ast, difflib, json, os, shutil, signal, subprocess, tempfile, time, urllib.request, urllib.error, resource, sys, re
 from pathlib import Path
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+  def redirect_request(self, req, fp, code, msg, headers, url): raise RuntimeError('Loopback inference redirect forbidden')
 ROOT=Path(__file__).resolve().parent
 MANIFEST=json.loads((ROOT/'tasks/manifest.json').read_text())
 SCHEMA={'type':'object','properties':{'edits':{'type':'array','minItems':1,'maxItems':3,'items':{'type':'object','properties':{'path':{'type':'string'},'old':{'type':'string'},'new':{'type':'string'}},'required':['path','old','new'],'additionalProperties':False}}},'required':['edits'],'additionalProperties':False}
@@ -47,7 +49,7 @@ def propose(issue, source, filename, feedback):
   prompt=json.dumps({'file':filename,'symptom':issue['description'][:280], 'source_excerpt':focus(issue['id'],source)[:1150],'last_failure':feedback[:120]},ensure_ascii=False)
   data=json.dumps({'model':'local','messages':[{'role':'system','content':SYSTEM+' Exact path: '+filename},{'role':'user','content':prompt}], 'max_tokens':115,'temperature':0,'stream':False,'response_format':{'type':'json_schema','json_schema':{'name':'minimal_edit','strict':True,'schema':SCHEMA}}}).encode()
   req=urllib.request.Request('http://127.0.0.1:18080/v1/chat/completions',data=data,headers={'Content-Type':'application/json'},method='POST')
-  opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),urllib.request.HTTPHandler())
+  opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),_NoRedirect())
   start=time.monotonic()
   with opener.open(req,timeout=65) as rsp: info=json.loads(rsp.read())
   return info['choices'][0]['message']['content'],info.get('usage',{}),round(time.monotonic()-start,2)
@@ -106,7 +108,7 @@ def run():
     report['tasks'].append(item)
     report['completed']=len(report['tasks']);report['attempted']=sum(1 for x in report['tasks'] if x['model_calls'])
     report['passed']=sum(x['model_generated_success'] for x in report['tasks'])
-    (ROOT/'evidence/phase4_results.json').write_text(json.dumps(report,indent=2,ensure_ascii=False)+'\n')
+    (ROOT.parents[1]/'evidence/phase4_results.json').write_text(json.dumps(report,indent=2,ensure_ascii=False)+'\n')
     print('case',task['id'],item['status'],'calls',item['model_calls'],'seconds',item['elapsed_seconds'],flush=True)
   return report
 if __name__=='__main__':

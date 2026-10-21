@@ -38,4 +38,19 @@ class BenchmarkTests(unittest.TestCase):
    self.assertEqual(result['blocked'],5)
    self.assertNotEqual(result['run_type'],'real_qwen_cpu')
    self.assertEqual(json.loads(out.read_text())['blocked'],5)
+ def test_rejected_calls_retain_transcript_and_latency(self):
+  class InvalidModel:
+   last_call={'finish_reason':'stop'}
+   def complete_line(self,*args,**kwargs):return '{"changes":[]}'
+  baseline={'passed':False,'returncode':1,'output':'FAILED (failures=1)'}
+  with tempfile.TemporaryDirectory() as d,patch.dict('os.environ',{'BOUNTYFORGE_CURATED_DOCKER':'1'}),patch.object(runner,'tests',return_value=baseline),patch('bountyforge.curated_docker.verify_runtime_boundary',return_value={'test_only':True}):
+   result=runner.run(model=InvalidModel(),output=Path(d)/'calls.json')
+  calls=[c for t in result['tasks'] for a in t['attempts'] for c in a['calls']]
+  self.assertGreater(len(calls),0)
+  self.assertEqual(len(calls),result['model_calls'])
+  for c in calls:
+   self.assertEqual(c['response'],'{"changes":[]}')
+   self.assertEqual(c['stage'],'source_rejected')
+   self.assertGreaterEqual(c['seconds'],0)
+   self.assertIn('target_symbol',json.loads(c['prompt']))
 if __name__=='__main__': unittest.main()

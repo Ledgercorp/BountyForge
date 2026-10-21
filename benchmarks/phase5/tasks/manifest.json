@@ -1,0 +1,46 @@
+{
+  "kind": "owned_development_only",
+  "schema": 1,
+  "tasks": [
+    {
+      "id": "inclusive_span",
+      "file": "subject.py",
+      "symbol": "integer_span",
+      "description": "Return an inclusive integer span; reversed endpoints produce an empty list.",
+      "sha256": {
+        "subject.py": "b118148ae718ab9dde1e74fb7eb4fbb4cf213013ad5c42ff4e5358ebbe0cbc8f",
+        "tests/test_regression.py": "08d741059f1e1a9e21b59cd4271041d40dc019d47c7cfbc1ee1726d115aed177"
+      }
+    },
+    {
+      "id": "first_value",
+      "file": "subject.py",
+      "symbol": "first_values",
+      "description": "Preserve the first value of each key while collecting pairs into a dictionary.",
+      "sha256": {
+        "subject.py": "8d52d8cd8e772d2c94ea90eadd96c3ad58124d2c128ec9136764bc7b56096d42",
+        "tests/test_regression.py": "8e3dbd1ffb90bb7a322cd19ab88d7c822765519604d819cd6b999603b38d34f7"
+      }
+    },
+    {
+      "id": "descending_rank",
+      "file": "subject.py",
+      "symbol": "rank_scores",
+      "description": "Rank scores from highest to lowest without mutating the original list.",
+      "sha256": {
+        "subject.py": "7ffcd1d6cf35024bf90515b5fc5c4b22a7bc66c33403f0ccfbd14d1005139806",
+        "tests/test_regression.py": "b2f15b679c3fd74420af83198d2dc38f08805c4af7af845113553861bf5fd942"
+      }
+    },
+    {
+      "id": "trim_tokens",
+      "file": "subject.py",
+      "symbol": "nonblank_tokens",
+      "description": "Strip whitespace from tokens and omit tokens that become empty after stripping.",
+      "sha256": {
+        "subject.py": "3a9b8b83b588bff95a91a3d7efb8a8bbd9fa897c392d0ba84826811d0a9c56c7",
+        "tests/test_regression.py": "a1dcc88714a96f8d60167339d9342426c04789ad95496d55a0dd7ded170eafe1"
+      }
+    }
+  ]
+}

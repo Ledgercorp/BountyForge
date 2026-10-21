@@ -1,6 +1,6 @@
 name: BountyForge historical curated benchmark
 
-# Symbol context and dynamic line-enum experiment; original inputs/tests unchanged.
+# Phase5: separate owned development trials before frozen historical evaluation.
 # One explicit internal trial of the original 5 curated Boltons excerpts.
 # No automatic schedule, no arbitrary downloaded repositories, no submissions.
 on:
@@ -8,6 +8,12 @@ on:
     branches: [engineering/bounded-autonomy-20261020]
     paths: ['.github/workflows/curated-boltons-benchmark.yml']
   workflow_dispatch:
+    inputs:
+      evaluation:
+        description: 'Run owned development fixtures or the fixed independent historical evaluation'
+        type: choice
+        options: [development, historical]
+        default: development
 
 permissions:
   contents: read
@@ -25,6 +31,7 @@ jobs:
       BOUNTYFORGE_SUBMIT_ENABLED: '0'
       BOUNTYFORGE_PORT: '18080'
       BOUNTYFORGE_CURATED_DOCKER: '1'
+      BOUNTYFORGE_EVALUATION: ${{ inputs.evaluation || 'development' }}
     steps:
       - name: Checkout trusted benchmark without reusable credentials
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -78,9 +85,15 @@ jobs:
             sleep 2
           done
           [[ "$ready" == 1 ]] || { echo 'Pinned local model did not start'; exit 2; }
-      - name: Reproduce five historical curated benchmark tasks
+      - name: Execute selected bounded evaluation
         run: |
           set -euo pipefail
+          if [[ "$BOUNTYFORGE_EVALUATION" == development ]]; then
+            python -m benchmarks.phase5.development_runner --protocol legacy --output evidence-run/phase5_development_legacy.json
+            python -m benchmarks.phase5.development_runner --output evidence-run/phase5_development.json
+            exit 0
+          fi
+          [[ "$BOUNTYFORGE_EVALUATION" == historical ]] || exit 2
           python -m benchmarks.phase4.benchmark_runner --output evidence-run/phase4_results.json
           python - <<'PY'
           import json
@@ -100,5 +113,7 @@ jobs:
           path: |
             evidence-run/curated_sandbox_preflight.json
             evidence-run/phase4_results.json
+            evidence-run/phase5_development.json
+            evidence-run/phase5_development_legacy.json
           if-no-files-found: warn
           retention-days: 2

@@ -9,6 +9,7 @@ from unittest.mock import patch
 
 from bountyforge import paid_intake
 from bountyforge.paid_review_store import SQLitePaidReviewStore
+from bountyforge.paid_review_ledger import ReviewLedgerRejected
 from test_stripe_order_gate import CFG, SESSION_ID, Response, record
 
 
@@ -98,6 +99,17 @@ class PaidIntakeTests(unittest.TestCase):
             self.assertEqual(code, 2)
             self.assertEqual(result['reason'], 'payment_not_verified')
             self.assertEqual(build.return_value.open.call_count, 1)
+
+    def test_failed_durable_write_never_emits_ready_or_retries_blindly(self):
+        with patch('urllib.request.build_opener') as build, \
+                patch.object(SQLitePaidReviewStore, 'write',
+                             side_effect=ReviewLedgerRejected(CFG['STRIPE_SECRET_KEY'])) as write:
+            build.return_value.open.side_effect = [Response(json.dumps(x).encode()) for x in record()]
+            code, result = self.run_command()
+        self.assertEqual(code, 2)
+        self.assertEqual(result['status'], 'rejected')
+        self.assertEqual(write.call_count, 1)
+        self.assertEqual(SQLitePaidReviewStore(self.path).read(), (None, None))
 
 
 if __name__ == '__main__':

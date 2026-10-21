@@ -107,3 +107,11 @@ Six integration tests passed with mocked HTTPS and real ephemeral private
 SQLite files; full local regression **319 tests, 312 passed, seven skipped**.
 This is not a private deployment, payment verification or customer-code
 execution certification. No actual Stripe request or order was processed.
+
+A subsequent durable-write fault injection passed: even after successful mocked
+provider checks, a CAS/store write rejection emits no review-ready result and
+makes no blind retry. Full local regression is now **320 tests, 313 passed,
+seven existing rootfs skips**. The prior 319-case source passed hosted regression
+[39681184050](https://github.com/Ledgercorp/BountyForge/actions/runs/39681184050)
+at `7acfe00c84c9e5e0bc5d104327f3142332652ad8`. Historical evaluation code remains
+exactly frozen at `c2d8f24d2a3e1e5871ac5b654e4ce8db90978d71`.

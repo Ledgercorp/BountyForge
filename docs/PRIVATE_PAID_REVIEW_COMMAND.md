@@ -39,10 +39,12 @@ An old review remains historical evidence if a later check rejects; it does
 not authorize work. Fresh payment checks remain required at any future
 fulfillment boundary.
 
-Six integration tests use mocked fixed-origin GET responses and real ephemeral
+Seven integration tests use mocked fixed-origin GET responses and real ephemeral
 private SQLite files: completed-order persistence/restart and duplicate fresh
 reads, refund after review, unpaid rejection, bounded invalid/source input,
 mixed credentials/unapproved environment, and privacy/provider failure.
+An injected durable-write rejection also proves that no success is emitted
+and no blind retry occurs after payment verification.
 These are not live payments or production durability evidence.
 
 Remaining fulfillment gates: separately approved persistent private deployment,

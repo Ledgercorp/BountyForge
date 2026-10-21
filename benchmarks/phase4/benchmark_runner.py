@@ -153,7 +153,7 @@ def run(model=None, output=None, protocol='ast_contract_v5', *, backend='local_q
         item['failure_reason']='inference_disabled_after_endpoint_failure'
       else:
         item['status']='failed'
-        previous=baseline['output']; previous_proposals={}
+        previous=baseline['output']; previous_proposals={}; previous_rejected={}
         for number in range(1,3):
           # The hosted hard cap remains eight. Reserve first-attempt coverage
           # for later cases rather than spending all calls on early retries.
@@ -175,12 +175,15 @@ def run(model=None, output=None, protocol='ast_contract_v5', *, backend='local_q
                      'prior_error':previous if number>1 else '',
                      'target_symbol':symbol,'repair_protocol':protocol,
                      'test_contract_untrusted':(base/'tests/test_regression.py').read_text(),
-                     'previous_proposal':previous_proposals.get(symbol,'')}
+                     'previous_proposal':previous_proposals.get(symbol,''),
+                     'previous_proposal_rejected':previous_rejected.get(symbol,False)}
               recorder=RecordingModel(symbol)
               generated=time.monotonic()
               result=propose_lines(issue,work,task['file'],editable_scope(source,symbol),recorder)
               one['calls'][-1]['stage']='source_validated'
               previous_proposals[symbol]=recorder.response
+              # A sibling's rejection does not reject this validated proposal.
+              previous_rejected[symbol]=False
               receipts.append({'symbol':symbol,'response':recorder.response})
               one['generations'].append({'symbol':symbol,'seconds':round(time.monotonic()-generated,3),
                                           'response_sha256':hashlib.sha256(recorder.response.encode()).hexdigest(),
@@ -208,6 +211,7 @@ def run(model=None, output=None, protocol='ast_contract_v5', *, backend='local_q
               one['calls'][-1]['stage']='source_rejected'
               one['calls'][-1]['validation_error']=str(exc)[:150]
               previous_proposals[symbol]=one['calls'][-1]['response']
+              previous_rejected[symbol]=True
           except (RuntimeError,TimeoutError,urllib.error.URLError) as exc:
             one['failure_reason']='inference_unavailable_or_timeout';one['message']=type(exc).__name__
             item['status']='blocked';item['failure_reason']=one['failure_reason']

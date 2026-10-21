@@ -220,7 +220,8 @@ def propose_lines(issue: dict, workspace: Path, approved_path: str,
             if len(prompt.encode()) > 3600:
                 raise DraftRejected('Diagnosis context exceeds inference budget')
         response = model.complete_line(system, prompt, max_tokens=150)
-        if issue.get('repair_protocol') == 'ast_contract_v7' and issue.get('previous_proposal'):
+        if (issue.get('repair_protocol') == 'ast_contract_v7' and issue.get('previous_proposal')
+                and issue.get('previous_proposal_rejected', True) is True):
             try:
                 repeated = json.loads(response) == json.loads(issue['previous_proposal'])
             except (ValueError, TypeError):

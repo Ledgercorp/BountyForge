@@ -1,0 +1,146 @@
+{
+  "schema": 1,
+  "run_id": 39680884997,
+  "job_id": 119502751100,
+  "artifact_id": 12384047110,
+  "artifact_sha256": "1e42ebaa1c5caa5750f20c182cc78cab4dceab077f2c91117b62926441941bc6",
+  "evaluated_revision": "c2d8f24d2a3e1e5871ac5b654e4ce8db90978d71",
+  "protocol": "ast_contract_v7",
+  "scope": "previously_exposed_fixed_historical_excerpts",
+  "attempted": 5,
+  "passed": 1,
+  "blocked": 0,
+  "model_calls": 8,
+  "tokens": {
+    "prompt_tokens": 8627,
+    "completion_tokens": 3284,
+    "reasoning_tokens": 2681,
+    "total_tokens": 11911
+  },
+  "adapter_wall_seconds_including_pacing": 419.444,
+  "provider_inference_seconds": null,
+  "github_job_seconds": 451,
+  "independent_replay_ids": [
+    "460"
+  ],
+  "commercial_candidate": false,
+  "full_upstream_suites": 0,
+  "billing_independently_verified": false,
+  "cases": [
+    {
+      "id": "454",
+      "calls": 3,
+      "passed": false,
+      "elapsed_seconds": 127.29,
+      "reasons": [
+        "First symbol source-validated, second symbol rejected: IndentationError unexpected indent at candidate line 87.",
+        "Retry wrongly treated source-validated sibling as a rejected proposal; corrected after evaluation using neutral owned tests."
+      ],
+      "calls_detail": [
+        {
+          "number": 1,
+          "symbol": "args2sh",
+          "stage": "source_validated",
+          "response_sha256": "3ad6931cba51b7758b77c9efebf2b0e525454a11e196783eca456f624dcaf363",
+          "error": null
+        },
+        {
+          "number": 2,
+          "symbol": "args2cmd",
+          "stage": "source_rejected",
+          "response_sha256": "ff72e671896c970b8320d29af014f059ec6a57d7587746044f032851d9f52054",
+          "error": "Proposed Python source does not parse"
+        },
+        {
+          "number": 3,
+          "symbol": "args2sh",
+          "stage": "source_rejected",
+          "response_sha256": "3ad6931cba51b7758b77c9efebf2b0e525454a11e196783eca456f624dcaf363",
+          "error": "Repeated rejected proposal; no candidate execution"
+        }
+      ]
+    },
+    {
+      "id": "459",
+      "calls": 2,
+      "passed": false,
+      "elapsed_seconds": 121.15,
+      "reasons": [
+        "First candidate failed unchanged tests: UnboundLocalError for hnbytes on zetta case.",
+        "Second candidate rejected: IndentationError unexpected indent at candidate line 26."
+      ],
+      "calls_detail": [
+        {
+          "number": 4,
+          "symbol": "bytes2human",
+          "stage": "source_validated",
+          "response_sha256": "d4e990f306f21a0058818783e8c04c849e221cc2f5f716623357e782a9d74f92",
+          "error": null
+        },
+        {
+          "number": 5,
+          "symbol": "bytes2human",
+          "stage": "source_rejected",
+          "response_sha256": "38f16dea9b52dc1ec513e8f0dca674de41a01352d684e7cf48756ef0afeaabe8",
+          "error": "Proposed Python source does not parse"
+        }
+      ]
+    },
+    {
+      "id": "460",
+      "calls": 1,
+      "passed": true,
+      "elapsed_seconds": 59.13,
+      "reasons": [
+        "Passed all three excerpt tests and independent Docker replay."
+      ],
+      "calls_detail": [
+        {
+          "number": 6,
+          "symbol": "most_common",
+          "stage": "source_validated",
+          "response_sha256": "288be8f564830121a6404421dda7718cbdcf315d3aa0c73190eb2516cbfd48a5",
+          "error": null
+        }
+      ]
+    },
+    {
+      "id": "475",
+      "calls": 1,
+      "passed": false,
+      "elapsed_seconds": 60.25,
+      "reasons": [
+        "Rejected: replacing first line of a multiline assignment left original continuation; IndentationError unexpected indent at candidate line 5.",
+        "Retry omitted to reserve remaining-case coverage within eight calls."
+      ],
+      "calls_detail": [
+        {
+          "number": 7,
+          "symbol": "iter_splitlines",
+          "stage": "source_rejected",
+          "response_sha256": "699acdce3fdb5cd54edd1151b33a8c506b2910026ff998cd617c6f27d5052d8a",
+          "error": "Proposed Python source does not parse"
+        }
+      ]
+    },
+    {
+      "id": "524",
+      "calls": 1,
+      "passed": false,
+      "elapsed_seconds": 59.96,
+      "reasons": [
+        "Rejected before parsing: five physical replacement lines exceed the unchanged three-line limit.",
+        "No retry budget remained."
+      ],
+      "calls_detail": [
+        {
+          "number": 8,
+          "symbol": "bytes2human",
+          "stage": "source_rejected",
+          "response_sha256": "7d77801d36fc54750f95849d0b97a4053c6722c986b57b591d31bd58bb1feab3",
+          "error": "Unsafe replacement text"
+        }
+      ]
+    }
+  ]
+}

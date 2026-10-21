@@ -104,7 +104,9 @@ def build_prompt(source, path, editable, issue, *, budget=3600):
     return SYSTEM, prompt
 
 
-ITERATIVE_SYSTEM = SYSTEM + (
+ITERATIVE_SYSTEM = SYSTEM.replace(
+    'The prior proposal, when present, failed; use the failure evidence to revise it. ', ''
+) + (
     ' A replacement removes the original statement: preserve its required assignments '
     'when adding another statement. Up to three physical lines per replacement are allowed. '
     'The validator_constraints are trusted limits, not suggestions. New attribute names '
@@ -112,6 +114,8 @@ ITERATIVE_SYSTEM = SYSTEM + (
     'capabilities; do not request expanded scope. The latest failure describes the '
     'previous candidate, while baseline_failure describes the untouched source. '
     'Every retry starts from that untouched source, not from the previous candidate. '
+    'A source_validated_partial proposal passed source checks, while another symbol '
+    'may have failed; it may be reused if still appropriate but is not proven correct. '
     'Do not repeat a rejected proposal; reconsider all control-flow paths and local definitions.'
 )
 
@@ -158,6 +162,8 @@ def build_iterative_prompt(source, path, editable, issue, *, budget=3600):
     data['failure_untrusted'] = diagnostic_summary(issue.get('test_failure_excerpt', ''))
     data['previous_error'] = diagnostic_summary(issue.get('prior_error', ''), 250)
     data['previous_proposal'] = str(issue.get('previous_proposal', ''))[:600]
+    data['previous_proposal_status'] = ('rejected_candidate'
+        if issue.get('previous_proposal_rejected', True) is True else 'source_validated_partial')
     units = _test_units(str(issue.get('test_contract_untrusted', '')),
                         data['failure_untrusted'])
     included = []

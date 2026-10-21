@@ -115,3 +115,69 @@ seven existing rootfs skips**. The prior 319-case source passed hosted regressio
 [39681184050](https://github.com/Ledgercorp/BountyForge/actions/runs/39681184050)
 at `7acfe00c84c9e5e0bc5d104327f3142332652ad8`. Historical evaluation code remains
 exactly frozen at `c2d8f24d2a3e1e5871ac5b654e4ce8db90978d71`.
+
+## Completed independent historical evaluation
+
+[Run 39680884997](https://github.com/Ledgercorp/BountyForge/actions/runs/39680884997),
+job `119502751100`, evaluated frozen commit
+`c2d8f24d2a3e1e5871ac5b654e4ce8db90978d71`. **1/5 passed, eight calls,
+5/5 reproduced and attempted, zero blocked.** Independent credential-free
+Docker replay passed exactly case **460**, with its three unchanged excerpt
+regression tests. All admission controls, including CPU/PID pressure checks,
+passed. This is a model/worker result, not an admission failure.
+
+| Fixed historical case | Calls | Result and precise failure |
+| --- | ---: | --- |
+| 454 | 3 | second symbol: unexpected indent at candidate line 87; retry falsely deduplicated the already source-validated first symbol |
+| 459 | 2 | first candidate: unbound `hnbytes` in zetta test; retry: unexpected indent at candidate line 26 |
+| 460 | 1 | **pass**, independently replayed |
+| 475 | 1 | complete assignment substituted for one physical line left a continuation; unexpected indent at line 5; retry budget reserved |
+| 524 | 1 | five physical replacement lines exceeded unchanged three-line limit; no retry budget |
+
+All eight responses finished normally. No inference-limit truncation or
+provider error was recorded. Model usage: **8,627 prompt + 3,284 completion =
+11,911 total tokens**, including 2,681 reasoning tokens within completions.
+Adapter wall time including rate waits: **419.444 s**; GitHub job: **451 s**.
+Pure provider inference duration is unavailable. No cost amount can be inferred
+from token usage: Free Plan is owner-attested, billing independently unresolved.
+
+Before/after on the original fixed five tasks: Qwen v5 **0/5, twelve calls**
+([39599906768](https://github.com/Ledgercorp/BountyForge/actions/runs/39599906768)),
+GPT-OSS v7 **1/5, eight calls**. Prompt protocol, backend and retry allocation
+changed, so this is a system comparison. The historical cases were previously
+exposed, not newly secret holdouts. Fixtures, defects and tests are unchanged;
+no upstream fixes/manual answers were supplied. No full upstream suite ran.
+The original owned GPT-OSS score remains **2/4**; the new context has not been
+remeasured on those development cases.
+
+Raw reports and failure audit: `evidence/revenue/groq-historical-v7/`.
+Artifact `12384047110`, ZIP SHA-256
+`1e42ebaa1c5caa5750f20c182cc78cab4dceab077f2c91117b62926441941bc6`.
+The archive hash, report/replay binding, usage accounting and frozen source
+hashes were checked locally without executing target source. The original
+reports are unmodified. Syntax causes above were independently inspected with
+AST parsing only. No extra live experiment was dispatched.
+
+## Post-evaluation coordinator correction (not live-measured)
+
+The 454 transcript revealed an orchestration bug: an earlier source-validated
+sibling was classified as rejected when a different symbol failed. The retry
+metadata now distinguishes `source_validated_partial` from `rejected_candidate`.
+A validated partial proposal can recur while its sibling is revised; duplicate
+rejected proposals still fail closed. A separate neutral two-function fixture
+reproduces the orchestration sequence with mocked inference/tests. It supplies
+no historical repair answer and is not counted as autonomous success.
+
+This follow-up changes the current orchestration/context after the frozen
+measurement; **1/5 is the frozen commit's score, not a newly measured score for
+the follow-up**. The immutable freeze remains tied to c2d8f24. Further clean
+quality assessment needs separate evaluation material rather than tuning and
+rerunning this exposed set. Multiline-statement patching and output-shape
+compliance remain measured weaknesses; validators/scope are preserved.
+
+Local follow-up regression: **321 tests, 314 passed, seven skipped**; ten
+historical harness tests passed. The seven skipped namespace/rootfs checks are
+still unexecuted. Current Docker admission applies to owned/curated excerpts;
+arbitrary customer code remains prohibited. No private production volume,
+customer source, real order, sales deployment, repair schedule, external
+submission or financial commitment. Confirmed received revenue remains **$0**.

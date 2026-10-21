@@ -46,8 +46,8 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p evidence-run
-          python scripts/autonomous_cycle.py --scan "$MODE" --output evidence-run/cycle.json
-          python scripts/validate_evidence.py evidence-run/cycle.json
+          python -m scripts.autonomous_cycle --scan "$MODE" --output evidence-run/cycle.json
+          python -m scripts.validate_evidence evidence-run/cycle.json
       - name: Upload sanitized evidence only
         if: success()
         uses: actions/upload-artifact@v4

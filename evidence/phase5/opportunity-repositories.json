@@ -1,0 +1,2642 @@
+{
+  "retrieved_at": "2026-10-21T12:18:18.781091+00:00",
+  "source": "GitHub connector metadata plus gh read-only REST languages and tree (connector metadata omits these fields)",
+  "repositories": [
+    {
+      "repository_full_name": "vaipakam/vaipakam",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:08.040712+00:00",
+      "languages": {
+        "Solidity": 18551080,
+        "TypeScript": 10994017,
+        "JavaScript": 4895460,
+        "Shell": 667703,
+        "CSS": 160806,
+        "Python": 37535,
+        "HTML": 15353
+      },
+      "repository_description": "Decentralized P2P Lending, Borrowing and NFT Rental Platform",
+      "head_tree_sha": "ddd611494a10959541573529bf7a8e1e8b73251e",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 5963,
+      "python_file_count": 8,
+      "selected_files": [
+        {
+          "path": ".codex",
+          "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+          "size": 0
+        },
+        {
+          "path": ".editorconfig",
+          "sha": "b9d52464cf1f99b27036019fcd7861aa4fbcbb9c",
+          "size": 2041
+        },
+        {
+          "path": ".gitattributes",
+          "sha": "fad77e2c5775de0227ba3ae368ea8fd4bfba6666",
+          "size": 3707
+        },
+        {
+          "path": ".gitignore",
+          "sha": "5fc37d6238a24e941c6827ec917e64794aed54e8",
+          "size": 7066
+        },
+        {
+          "path": ".gitmodules",
+          "sha": "396a121115b02849306abcc81b6154222f57718e",
+          "size": 861
+        },
+        {
+          "path": ".pre-commit-config.yaml",
+          "sha": "948b96133a327116aca3ec8cb52a88d16cb01ee4",
+          "size": 3215
+        },
+        {
+          "path": "AGENTS.md",
+          "sha": "e9fb22f3a19c6895532099b485dab2b56e41491e",
+          "size": 19990
+        },
+        {
+          "path": "CHANGELOG.md",
+          "sha": "1d3a6f79d7b30dde7c78cae1f0899530db718b43",
+          "size": 8988
+        },
+        {
+          "path": "CLAUDE.md",
+          "sha": "1aa21d8e09ebd7931bcfcaf13c6a49347164e18e",
+          "size": 141913
+        },
+        {
+          "path": "CODE_OF_CONDUCT.md",
+          "sha": "77051a3d6f72969393decd5450d4cb46dd900af6",
+          "size": 5835
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "sha": "dd56661650c9ea00b3bc3fcf09d40966958610b5",
+          "size": 5599
+        },
+        {
+          "path": "LICENSE",
+          "sha": "0cd2cc1cfa23fda64dc08d797932b7c217f1a8e7",
+          "size": 4035
+        },
+        {
+          "path": "README.md",
+          "sha": "6f4d44c555e354be1024ac08ec13a217e7c49dfa",
+          "size": 6080
+        },
+        {
+          "path": "SECURITY.md",
+          "sha": "7a5fbd4d852a95c5b93d2a0eed665af97c4382ef",
+          "size": 25090
+        },
+        {
+          "path": "contracts/lib/forge-std/CONTRIBUTING.md",
+          "sha": "9f643ecec7c05cd656f82478e972de91c0ab819d",
+          "size": 11630
+        },
+        {
+          "path": "contracts/lib/openzeppelin-contracts-upgradeable/CONTRIBUTING.md",
+          "sha": "1a44cc27dfccb4a1efc2d0770e81a5a9ba36b917",
+          "size": 2234
+        },
+        {
+          "path": "contracts/lib/openzeppelin-contracts-upgradeable/lib/forge-std/CONTRIBUTING.md",
+          "sha": "89b75f3f7856b5f79ea4217e5aac4fb86fab1e9e",
+          "size": 11630
+        },
+        {
+          "path": "contracts/lib/openzeppelin-contracts-upgradeable/lib/openzeppelin-contracts/CONTRIBUTING.md",
+          "sha": "1a44cc27dfccb4a1efc2d0770e81a5a9ba36b917",
+          "size": 2234
+        },
+        {
+          "path": "contracts/lib/openzeppelin-contracts-upgradeable/lib/openzeppelin-contracts/lib/forge-std/CONTRIBUTING.md",
+          "sha": "89b75f3f7856b5f79ea4217e5aac4fb86fab1e9e",
+          "size": 11630
+        },
+        {
+          "path": "package.json",
+          "sha": "98891a17fb779993cfcbfcebaf69f36607205039",
+          "size": 761
+        },
+        {
+          "path": "pnpm-lock.yaml",
+          "sha": "f7d997d04a8c745e331da68af86836c8ae8f2b96",
+          "size": 369552
+        },
+        {
+          "path": "pnpm-workspace.yaml",
+          "sha": "584ef4dabae39a1fc4773d5f65f5a39d23480950",
+          "size": 6319
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "paraspell/xcm-tools",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:08.053990+00:00",
+      "languages": {
+        "TypeScript": 3705909,
+        "CSS": 43188,
+        "JavaScript": 16143,
+        "HTML": 3007
+      },
+      "repository_description": "ParaSpell\u2728 - The Hub of XCM Tools \ud83e\uddf0: Seamlessly Integrate Interoperability into Your Application Within Seconds",
+      "head_tree_sha": "de8d2266ced92c755655e861d17c7dddcc00a25a",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 1442,
+      "python_file_count": 0,
+      "selected_files": [
+        {
+          "path": ".gitignore",
+          "sha": "d8b540a1f0c5feb3bf9a34ffe759e26dd9095aed",
+          "size": 136
+        },
+        {
+          "path": ".nvmrc",
+          "sha": "166aae1151bff5f181a08ba6329836c39eddb335",
+          "size": 9
+        },
+        {
+          "path": ".release-please-manifest.json",
+          "sha": "f4ac44e384cd36b838ae44f0eef18d16fcb271ac",
+          "size": 455
+        },
+        {
+          "path": "CODE-OF-CONDUCT.md",
+          "sha": "e8d0a4c109c915f25c6fd1163784bbd667d075d3",
+          "size": 5242
+        },
+        {
+          "path": "LICENSE",
+          "sha": "042223dc11553f883521315e3598e242ee5835d0",
+          "size": 1066
+        },
+        {
+          "path": "README.md",
+          "sha": "8be137656866dc49e71b2dbe99adfaad1e2fb649",
+          "size": 5321
+        },
+        {
+          "path": "codecov.yml",
+          "sha": "611c08248c101a22edd810111f3bb43ad8a135de",
+          "size": 1417
+        },
+        {
+          "path": "eslint.config.js",
+          "sha": "db99c1dc237597d999a4737ac89b777206a9b18d",
+          "size": 3593
+        },
+        {
+          "path": "package.json",
+          "sha": "762c1bef70a0c56e980b94660eb00304e07e24bd",
+          "size": 1475
+        },
+        {
+          "path": "pnpm-lock.yaml",
+          "sha": "b287bef45c2ef32cc7d174cd750df69d39564761",
+          "size": 907827
+        },
+        {
+          "path": "pnpm-workspace.yaml",
+          "sha": "53aad78fed20143b134ff604e9a78c38f04d3584",
+          "size": 686
+        },
+        {
+          "path": "release-please-config.json",
+          "sha": "522fd8ef822c5c5a3c17361dc0a321f934c2d320",
+          "size": 2174
+        },
+        {
+          "path": "turbo.json",
+          "sha": "fedd5aad363feafdfc6bcae1ff81480ba08d9cb3",
+          "size": 433
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "zhangjiayang6835-cyber/bounty-plaza",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:07.626041+00:00",
+      "languages": {
+        "Python": 83735,
+        "Shell": 1980,
+        "Batchfile": 1408
+      },
+      "repository_description": "Bounty Plaza - Real bug bounty aggregation and distribution platform",
+      "head_tree_sha": "51f2f6b5e4f466915bd7c5a6bf7ee6c90c79ff9b",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 42,
+      "python_file_count": 12,
+      "selected_files": [
+        {
+          "path": ".env.example",
+          "sha": "1c9b22afaa784837a1e6e6555fc4de6c436eb48b",
+          "size": 496
+        },
+        {
+          "path": ".gitignore",
+          "sha": "e244184a20e14d6e8a47730ae7e4ba6381ca75d3",
+          "size": 60
+        },
+        {
+          "path": "AUTOMATION_GUIDE.md",
+          "sha": "533218efabb8493eeb4400d3f9be6bb005462f31",
+          "size": 2469
+        },
+        {
+          "path": "BOUNTY_CONFIG.json",
+          "sha": "65cdea728c5077755115cda1c4771aa55ff81d3d",
+          "size": 1525
+        },
+        {
+          "path": "LEADERBOARD.md",
+          "sha": "34540c92c66176a6c271a118734823e352c17a00",
+          "size": 179
+        },
+        {
+          "path": "README.en.md",
+          "sha": "593ba182e006f07fe7fb54c728a27205b53ad3b2",
+          "size": 1665
+        },
+        {
+          "path": "README.md",
+          "sha": "dd7e64efba41344a95d3645dd062c1449eadbe65",
+          "size": 2704
+        },
+        {
+          "path": "REWARD_POLICY.en.md",
+          "sha": "1fc42a1dcc26e9e938152e4ee80d0c8e4453a26f",
+          "size": 2053
+        },
+        {
+          "path": "REWARD_POLICY.md",
+          "sha": "9005ad8cbaaea13881b1d8f1849fbcd255145a7a",
+          "size": 1926
+        },
+        {
+          "path": "RULES.en.md",
+          "sha": "286743c833e95b5c215170c1cb11233a86782eec",
+          "size": 3179
+        },
+        {
+          "path": "RULES.md",
+          "sha": "c371a23a4ebb85320bb751e97876c0df15858ddf",
+          "size": 7256
+        },
+        {
+          "path": "docker-compose.yml",
+          "sha": "2fa150791c823c1d882e6737c7b1365f826a93b2",
+          "size": 415
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "taverns-red/toast-stats",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:08.062231+00:00",
+      "languages": {
+        "TypeScript": 14349059,
+        "HTML": 3400929,
+        "CSS": 585418,
+        "Shell": 191274,
+        "JavaScript": 145570,
+        "jq": 763
+      },
+      "repository_description": "Toast Stats",
+      "head_tree_sha": "b5793e8fb1c9da4198686bed673a07128fafbcd7",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 2785,
+      "python_file_count": 0,
+      "selected_files": [
+        {
+          "path": ".env.production.example",
+          "sha": "af9e93afd92d8a72ce735c7857ecc006d73734bd",
+          "size": 570
+        },
+        {
+          "path": ".eslintignore",
+          "sha": "d0aa9ff9bf2bfcf1c9f8189ecdd7011b1bff3ca9",
+          "size": 98
+        },
+        {
+          "path": ".firebaserc",
+          "sha": "eca282d104dd278799becf6920ce6302c8f70a2c",
+          "size": 282
+        },
+        {
+          "path": ".gcloudignore",
+          "sha": "db4b6d8ce54b431a2df9a13d899a81587222fe3f",
+          "size": 594
+        },
+        {
+          "path": ".gitignore",
+          "sha": "3e73506c987898cefa69f59c2139d3c37eec42a3",
+          "size": 1538
+        },
+        {
+          "path": ".npmignore",
+          "sha": "c4b812f46982ec1db711ccd01b074e3631bd73b5",
+          "size": 172
+        },
+        {
+          "path": ".npmrc",
+          "sha": "2105cf878dfd2b51ad4f2bbddb1dc524f00f6816",
+          "size": 576
+        },
+        {
+          "path": ".nvmrc",
+          "sha": "f9e7451e77154a175f7247041a35d1b08d85f8c2",
+          "size": 8
+        },
+        {
+          "path": ".prettierignore",
+          "sha": "0a393ce1e863c1502fd46ce6eb8f0a48a1beb945",
+          "size": 1874
+        },
+        {
+          "path": ".prettierrc",
+          "sha": "ea386fcc0dcc3aadc51421fd598c7a2a97f5cec1",
+          "size": 132
+        },
+        {
+          "path": ".red-barkeep-version",
+          "sha": "feba3a4577f390679b0e47fa8e5adbce4df1172a",
+          "size": 14
+        },
+        {
+          "path": ".release-please-manifest.json",
+          "sha": "d6c00d40b6edbf4fd4d49f3a9d72e749cf504ec1",
+          "size": 197
+        },
+        {
+          "path": ".yamllint.yml",
+          "sha": "eeb6c074196521f35e6c6765ac9a8e3a0a9b735e",
+          "size": 1178
+        },
+        {
+          "path": "AGENTS.md",
+          "sha": "1fe26dc500e023595128e20925e185670a63ad57",
+          "size": 2792
+        },
+        {
+          "path": "CHANGELOG.md",
+          "sha": "50f12bb0cb379ccf810e9abe56097622d39165d1",
+          "size": 362661
+        },
+        {
+          "path": "CLAUDE.md",
+          "sha": "50d93b0cbe4b35995963e3453de91936fdc1ee23",
+          "size": 16279
+        },
+        {
+          "path": "DEPLOYMENT.md",
+          "sha": "7eaa4045bdb85ff62980efe12556c30fd6647aa5",
+          "size": 2439
+        },
+        {
+          "path": "LICENSE",
+          "sha": "23e022b0903540316c6842947e0f8883d6234cde",
+          "size": 1071
+        },
+        {
+          "path": "README.md",
+          "sha": "a53a6443fbc8454970cb53c71f3738e71d056426",
+          "size": 10267
+        },
+        {
+          "path": "SECURITY.md",
+          "sha": "078e897b939d9023c33f4673bef3f96e05637f4c",
+          "size": 467
+        },
+        {
+          "path": "TOASTMASTERS_DASHBOARD_KNOWLEDGE.md",
+          "sha": "555b96aac14df388a1174212bf7f15b5f5127db1",
+          "size": 55788
+        },
+        {
+          "path": "elite-clubs-10yr.html",
+          "sha": "b978b73b1232d6dedd4affef928a189bb4dae52d",
+          "size": 27052
+        },
+        {
+          "path": "firebase.json",
+          "sha": "628df5b2d1ba477929a718286727d9fc94eec33d",
+          "size": 6425
+        },
+        {
+          "path": "lighthouserc.js",
+          "sha": "7fdf103e225632967464de90eeecff9f9ead18fa",
+          "size": 4689
+        },
+        {
+          "path": "lighthouserc.mobile.js",
+          "sha": "f63344561da99c25f01c5e533c3229fa4a24606b",
+          "size": 6802
+        },
+        {
+          "path": "package-lock.json",
+          "sha": "9803b74b67f49dd291b44f415fb350d094b8f10a",
+          "size": 341179
+        },
+        {
+          "path": "package.json",
+          "sha": "e7d7298876c3021deb07709b1185af3d4fc4acd9",
+          "size": 4409
+        },
+        {
+          "path": "release-please-config.json",
+          "sha": "2a49872d4cef374c3486fb721c86b7e97ad6bee5",
+          "size": 2605
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "kwilson21/tally",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:07.506950+00:00",
+      "languages": {
+        "TypeScript": 8470871,
+        "JavaScript": 217919,
+        "CSS": 41940,
+        "Shell": 10025
+      },
+      "repository_description": "A budgeting app built with AI coding agents. In development, with a public demo using fictional data.",
+      "head_tree_sha": "a17b1ff5f452721aeaf347d4c571d0c61a690e18",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 706,
+      "python_file_count": 0,
+      "selected_files": [
+        {
+          "path": ".dev.vars.example",
+          "sha": "95475501a588d3302c683f87969466f9aae95dca",
+          "size": 337
+        },
+        {
+          "path": ".gitignore",
+          "sha": "a34b12dd7e34a9bf762b21c2fa4bc2e9ef8c5611",
+          "size": 134
+        },
+        {
+          "path": "CLAUDE.md",
+          "sha": "22970e1e4d0c922342d010343801eb312c11a8f6",
+          "size": 8047
+        },
+        {
+          "path": "DESIGN.md",
+          "sha": "0215d597df03aebf3ba42fb629a289c39c069a28",
+          "size": 134002
+        },
+        {
+          "path": "README.md",
+          "sha": "aaa1ed48927d239940dbf327c7e36a8716dee47a",
+          "size": 5012
+        },
+        {
+          "path": "ROADMAP.md",
+          "sha": "c916c5c1defbb0efc50de4604b7fcb4c2fbdd087",
+          "size": 18433
+        },
+        {
+          "path": "biome.json",
+          "sha": "7c992081732dbbf5bd6ece12681527a8a0a26bc3",
+          "size": 685
+        },
+        {
+          "path": "package-lock.json",
+          "sha": "fd267b081fc39c86fe828648fa360cc9d4bd9042",
+          "size": 130579
+        },
+        {
+          "path": "package.json",
+          "sha": "f44fb0c796bb0b5f1ebcc33607091f2b46307161",
+          "size": 1353
+        },
+        {
+          "path": "tsconfig.json",
+          "sha": "7409650eeccc83d913fdc1bd31c32acd4d59be70",
+          "size": 393
+        },
+        {
+          "path": "vitest.config.ts",
+          "sha": "9d674bb5398669e7919764bf11179b0e5d89a4f3",
+          "size": 835
+        },
+        {
+          "path": "vitest.feedback.config.ts",
+          "sha": "80781b8932dc70a92e76a13b93d016bd0ea0c351",
+          "size": 636
+        },
+        {
+          "path": "worker-configuration.d.ts",
+          "sha": "87aff9ba15ac3d0191665c206d598003cdd4ba9a",
+          "size": 604440
+        },
+        {
+          "path": "wrangler.jsonc",
+          "sha": "67b5f118d2cf2caa75bb7143fe36170055aa3705",
+          "size": 4634
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "Naris404/clash_royale_rl_agent",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:09.569394+00:00",
+      "languages": {
+        "Python": 305258,
+        "TypeScript": 73190,
+        "CSS": 16661,
+        "Shell": 11639,
+        "PowerShell": 2962,
+        "Dockerfile": 1224,
+        "HTML": 598
+      },
+      "repository_description": null,
+      "head_tree_sha": "ea43f4c376e73a6cbd5afd7806b2914f52f73861",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 213,
+      "python_file_count": 54,
+      "selected_files": [
+        {
+          "path": ".dockerignore",
+          "sha": "dc8dbbf85b683ef1afe4638f11803025866632db",
+          "size": 234
+        },
+        {
+          "path": ".gitignore",
+          "sha": "b8bda42228cdac14403b4b3d327e2c409b3e29d5",
+          "size": 669
+        },
+        {
+          "path": ".mcp.json",
+          "sha": "9aa490eaf0743ed6896c8c19ecd5603f92d93dd3",
+          "size": 176
+        },
+        {
+          "path": "AGENTS.md",
+          "sha": "aa72bb382fa3e2e7ffd01dcd3d92feea549db323",
+          "size": 3441
+        },
+        {
+          "path": "CONTEXT.md",
+          "sha": "6cbadab810e155836b4ba7b1b9c6815cc6aa7fe6",
+          "size": 5453
+        },
+        {
+          "path": "DEPLOYMENT.md",
+          "sha": "56fb471d6b68507ac6b0d31cce58ada182323910",
+          "size": 1270
+        },
+        {
+          "path": "Dockerfile",
+          "sha": "3c5f7d36d3e90db0bb35840031a520b30d50fbee",
+          "size": 1224
+        },
+        {
+          "path": "README.md",
+          "sha": "b51b8f1942043953adee7db533da764a0fcd0318",
+          "size": 5976
+        },
+        {
+          "path": "conftest.py",
+          "sha": "443cd404a47393f1f90a8f06083e44b85f224cda",
+          "size": 218
+        },
+        {
+          "path": "pyproject.toml",
+          "sha": "c107ed25cb84ec260dda75edc5200f6a2522228c",
+          "size": 1205
+        },
+        {
+          "path": "pytest.ini",
+          "sha": "5ee6477165727539aa0701c22b47da2ceaedeff5",
+          "size": 27
+        },
+        {
+          "path": "requirements-prod.txt",
+          "sha": "10df74140b3a5352eceb504a15f5adc41ef68a86",
+          "size": 143
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "auscaster/frantic-board",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:09.638329+00:00",
+      "languages": {
+        "Shell": 12679,
+        "JavaScript": 2949
+      },
+      "repository_description": "HELP WANTED: AI AGENTS. Real bounties, real money, every payout sealed to a public ledger. The notice board for gofrantic.com",
+      "head_tree_sha": "613a72868a0ab069a219d03b4bcff9b098485856",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 24,
+      "python_file_count": 0,
+      "selected_files": [
+        {
+          "path": ".gitignore",
+          "sha": "6f05fa75fad8ad0048ced7842984ff4b225440b7",
+          "size": 172
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "sha": "4cc641f2f01acdeda546eba3202e7d18d109e69c",
+          "size": 3000
+        },
+        {
+          "path": "LICENSE",
+          "sha": "033eea9d7b4c1116fd19826c43def3814f493a38",
+          "size": 1065
+        },
+        {
+          "path": "README.md",
+          "sha": "07401c564f0f002e1fb0c965f3d10810d24ed6d8",
+          "size": 6280
+        },
+        {
+          "path": "RULES.md",
+          "sha": "ebdadcd2cbf0fff91dcde43a2523d2c350e948dc",
+          "size": 3238
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "valerielinc-ops/frontaliere-si-o-no",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:13.021392+00:00",
+      "languages": {
+        "TypeScript": 378106814,
+        "JavaScript": 43979926,
+        "Shell": 823157,
+        "HTML": 276586,
+        "CSS": 275903,
+        "Python": 82021,
+        "Typst": 5087,
+        "Dockerfile": 1665,
+        "Nix": 413
+      },
+      "repository_description": "Calcolatore per capire se \u00e8 meglio essere frontaliere o residente in Svizzera",
+      "head_tree_sha": "a88ca3f182dabbc881b538e762f2e5dfacb4f727",
+      "tree_truncated": true,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 56631,
+      "python_file_count": 10,
+      "selected_files": [
+        {
+          "path": ".audit-action-plan.md",
+          "sha": "e3499d9883321ef64de4b07ce24762e30c7897ab",
+          "size": 6111
+        },
+        {
+          "path": ".env.example",
+          "sha": "91bdaa83e134a744525f512f37b02391870d7978",
+          "size": 875
+        },
+        {
+          "path": ".firebaserc",
+          "sha": "b3f3980cc343f527ec79c2059e835fd8fefd8fb0",
+          "size": 60
+        },
+        {
+          "path": ".gitattributes",
+          "sha": "880688b9682c777f45aebf413d1eb69c3ea0c83d",
+          "size": 7095
+        },
+        {
+          "path": ".gitignore",
+          "sha": "2ea86f75b7173e619740383774513342371eaba6",
+          "size": 6221
+        },
+        {
+          "path": ".impeccable.md",
+          "sha": "41b4c0b7de8da2d420437e66d6a3ce54a7189f43",
+          "size": 2851
+        },
+        {
+          "path": ".mcp.json",
+          "sha": "0e49480c81bdc5b8039919a2fa6f4e02c43616e9",
+          "size": 173
+        },
+        {
+          "path": ".npmrc",
+          "sha": "26fe84938d3b6fe6c44238bffe18ad95f26e5104",
+          "size": 905
+        },
+        {
+          "path": ".pr-body-address-alias.md",
+          "sha": "3c6faa4b5714ab9ab462a5aef812340950f0d476",
+          "size": 853
+        },
+        {
+          "path": ".pr-body-editorial-profiles-places.md",
+          "sha": "5682a38fdb15352090b23f3589be754245168401",
+          "size": 3064
+        },
+        {
+          "path": ".pr-body-issue-10777.md",
+          "sha": "fedf488b58196c385d813f021a2130f39cf959a8",
+          "size": 984
+        },
+        {
+          "path": ".pr-body-issue-13821.md",
+          "sha": "2eaa55a6f0dce07169388fe6d3380186fffcfd80",
+          "size": 1289
+        },
+        {
+          "path": ".pr-body-rewarded-application-ui.md",
+          "sha": "a5b9121276de01256eb800daa73f2298a52a6f04",
+          "size": 12900
+        },
+        {
+          "path": ".pr-body-seo-crawl-global-rescue.md",
+          "sha": "e5228435ec008b7158e89edf998c9c5ce4c2ef72",
+          "size": 5891
+        },
+        {
+          "path": ".pr-body-seo-crawl-global-throttle-v2.md",
+          "sha": "83607fdce0394b4ee9c9d2b892938d3bfadd46e2",
+          "size": 819
+        },
+        {
+          "path": ".pr-body-seo-crawl-global-throttle.md",
+          "sha": "5c553d139431c4121672285e194b26ce2891b39c",
+          "size": 509
+        },
+        {
+          "path": ".pr-body-seo-crawl-rescue-window.md",
+          "sha": "6b64d384d6f549d72f90b027cccb6b5df718c342",
+          "size": 4793
+        },
+        {
+          "path": ".pr-body-seo-crawl-rescue.md",
+          "sha": "9f9f85d58d28adc548c2121446a33f2ac4f8123c",
+          "size": 5201
+        },
+        {
+          "path": "AGENTS.md",
+          "sha": "afc0249e148876eccdf2eb3820f627542fd8638f",
+          "size": 30000
+        },
+        {
+          "path": "App.tsx",
+          "sha": "01ed6da8704b78a380f326a0701be18d398132e1",
+          "size": 206660
+        },
+        {
+          "path": "DECISIONS-ARCHIVE.md",
+          "sha": "5f0ed8b37275e3736926474201529f622b6bcd28",
+          "size": 1608
+        },
+        {
+          "path": "DECISIONS.md",
+          "sha": "5e262b22d10526ef85e43084c16e2c1b98dc50f7",
+          "size": 12016
+        },
+        {
+          "path": "DESIGN.md",
+          "sha": "855034bf175f14728da441a42962fa4ccebf6a88",
+          "size": 9769
+        },
+        {
+          "path": "FIREBASE_SETUP.md",
+          "sha": "e6c764657aad1404a780d1f586605f07d3605e4e",
+          "size": 7362
+        },
+        {
+          "path": "FOLLOWUP.md",
+          "sha": "98c446a49bcb5dc06cb11c9a99befb8108fc2b86",
+          "size": 18982
+        },
+        {
+          "path": "ISSUES.md",
+          "sha": "e2eb9c107cadc1dd65ee0974a45194dce2c1d20e",
+          "size": 21998
+        },
+        {
+          "path": "LICENSE.md",
+          "sha": "668e2f530c0f584954a934bc30bbc7d2dd17d9d2",
+          "size": 4312
+        },
+        {
+          "path": "NEWSLETTER_SYSTEM_ANALYSIS.md",
+          "sha": "e5f3fa2b601f728f290e4f7eda92148ef803ee64",
+          "size": 23602
+        },
+        {
+          "path": "PRODUCT.md",
+          "sha": "15f1865a31275952f13d6557f8d08d9b0e7cf4eb",
+          "size": 5409
+        },
+        {
+          "path": "README.md",
+          "sha": "6bd1d098a9afcaac7de5e4eac753d2c7c2006c89",
+          "size": 4088
+        }
+      ],
+      "selected_files_omitted": 160
+    },
+    {
+      "repository_full_name": "bodanator/Lockdown-Browser-Reversal",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:10.355478+00:00",
+      "languages": {
+        "C++": 47834
+      },
+      "repository_description": "Complete analysis on findings from my time reversing the lockdown browser + driver binaries. ",
+      "head_tree_sha": "dcc3277b1df804407281c1dd2c54c0aebbe32296",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 3,
+      "python_file_count": 0,
+      "selected_files": [
+        {
+          "path": "README.md",
+          "sha": "da9c95e5a949a8ab45a50b155e0bca681cced579",
+          "size": 17849
+        },
+        {
+          "path": "driver_detections.cpp",
+          "sha": "7d1942673ee836b6aeb37ed87ce4581ed299e134",
+          "size": 26070
+        },
+        {
+          "path": "usermode_detections.cpp",
+          "sha": "dfd5fc0115a91e28413322790df587c0d904b4aa",
+          "size": 21764
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "RinoPaw/Genshin-Reverse",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:10.552500+00:00",
+      "languages": {
+        "Python": 1783448,
+        "JavaScript": 5620,
+        "PowerShell": 3926,
+        "Shell": 3801
+      },
+      "repository_description": null,
+      "head_tree_sha": "94fbe26469912b0ffd155c4de61abbee8cf5477e",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 531,
+      "python_file_count": 297,
+      "selected_files": [
+        {
+          "path": ".gitattributes",
+          "sha": "4a73694362d57b167495789b4399ff020da1eff1",
+          "size": 162
+        },
+        {
+          "path": ".gitignore",
+          "sha": "9f3cb11dfc730d2dfa83935cac5f74989e7de30a",
+          "size": 259
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "sha": "1a6743fad18f5b67fe5b9eaa43de1a75162ebe25",
+          "size": 6247
+        },
+        {
+          "path": "LICENSE",
+          "sha": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+          "size": 11357
+        },
+        {
+          "path": "README.md",
+          "sha": "06ce0631298275f705db008fdfda0ba730ff255f",
+          "size": 8738
+        },
+        {
+          "path": "pyproject.toml",
+          "sha": "5540cc613797d66c8a9921a53da310bce403ea28",
+          "size": 1045
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "globe-and-citizen/cnc-portal",
+      "default_branch": "develop",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:11.999362+00:00",
+      "languages": {
+        "TypeScript": 7087920,
+        "Vue": 1599181,
+        "Solidity": 293375,
+        "JavaScript": 277665,
+        "HTML": 175905,
+        "Bru": 56159,
+        "Shell": 13302,
+        "PLpgSQL": 5932,
+        "CSS": 4286,
+        "Dockerfile": 2689,
+        "Batchfile": 629
+      },
+      "repository_description": "The Crypto Native Portal, an app that creates a mechanism to financially acknowledge the micro contributions of Open Source collaborators along with tools that promote effective governance.",
+      "head_tree_sha": "5e2aab22296536df188b062331b06dc89f4a9a62",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 3047,
+      "python_file_count": 0,
+      "selected_files": [
+        {
+          "path": ".gitignore",
+          "sha": "1d0e376160065443072dc60454701939a78f6b51",
+          "size": 1329
+        },
+        {
+          "path": ".markdownlint-cli2.yaml",
+          "sha": "d6666347511bfec68901215f5c19120895346612",
+          "size": 456
+        },
+        {
+          "path": ".prettier-markdown.json",
+          "sha": "51f875b548a3f4056893c26c4786cba6d7d3c687",
+          "size": 144
+        },
+        {
+          "path": ".prettierignore",
+          "sha": "a5eb58beeaec699dc56bae774c200fabf3068f44",
+          "size": 49
+        },
+        {
+          "path": "AGENTS.md",
+          "sha": "876a401d0d31625aaa61ffdf9b326f9c9b39a81d",
+          "size": 10327
+        },
+        {
+          "path": "CHANGELOG.md",
+          "sha": "f8f0cd01cc9cb3aeb5f8130386c0d3a9dd718419",
+          "size": 728148
+        },
+        {
+          "path": "CLAUDE.md",
+          "sha": "4ff699c24b33dc074d8cab89c927161722b1b848",
+          "size": 417
+        },
+        {
+          "path": "CONTRIBUTION.md",
+          "sha": "f95187f7def7969a2840c55891613a172941e114",
+          "size": 973
+        },
+        {
+          "path": "Dockerfile",
+          "sha": "63b7e9ae6eb674856ed934316ad09a6728aa4daf",
+          "size": 645
+        },
+        {
+          "path": "README.md",
+          "sha": "e82fe349631fa9b2ea22d65c197710024f9345a9",
+          "size": 8284
+        },
+        {
+          "path": "apache-config.conf",
+          "sha": "895d7ee820277c2dba5c57dc22b7f917edd4b1fd",
+          "size": 123
+        },
+        {
+          "path": "codecov.yml",
+          "sha": "6e96f3329dddc347820a4da857e518a58f5f3358",
+          "size": 2181
+        },
+        {
+          "path": "dangerfile.js",
+          "sha": "3cd12ac3a6eb0f97ac2a855ac1ed5edc054dcdc9",
+          "size": 8384
+        },
+        {
+          "path": "docker-compose.dev.yml",
+          "sha": "86012237b4f53f1a78bda1df1f9a4b82bf6146ad",
+          "size": 1007
+        },
+        {
+          "path": "docker-compose.yml",
+          "sha": "ed11ac6b8dfff2be7d137174eff536a2fce27955",
+          "size": 1161
+        },
+        {
+          "path": "knip.json",
+          "sha": "0ac7c700fdd17676479bd9441bc0cc13ee23220f",
+          "size": 1833
+        },
+        {
+          "path": "package-lock.json",
+          "sha": "10355ac09dc2d25d998318aa291c35e954c60654",
+          "size": 165062
+        },
+        {
+          "path": "package.json",
+          "sha": "e58fcecb243994718030e77b84ceaa5125135366",
+          "size": 1956
+        },
+        {
+          "path": "scrip.bat",
+          "sha": "fca2d36dac4888c270f9ad0961a74a850b91552a",
+          "size": 126
+        },
+        {
+          "path": "script.sh",
+          "sha": "b54173953427179eb72c7d7d0c19c5e4725a3278",
+          "size": 85
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "ahaqqu/KajianQ",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:12.027553+00:00",
+      "languages": {
+        "TypeScript": 2647912,
+        "JavaScript": 949566,
+        "Shell": 88344,
+        "PLpgSQL": 25154,
+        "Gherkin": 16885,
+        "CSS": 4326,
+        "Python": 3133,
+        "Nix": 654,
+        "HTML": 447
+      },
+      "repository_description": "KajianQ \u2014 open-source Islamic classical-knowledge chatbot (RAG) built on the DARS engine",
+      "head_tree_sha": "0c5f2743b58bdfa3c32b3d7f902b1488da7bd35f",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 640,
+      "python_file_count": 1,
+      "selected_files": [
+        {
+          "path": ".env.example",
+          "sha": "60978925c3913740715814a142e5cd10eb35b984",
+          "size": 3623
+        },
+        {
+          "path": ".gitignore",
+          "sha": "55ad76613293bb2b43f3b3da4f76e049a7c95480",
+          "size": 679
+        },
+        {
+          "path": ".prettierignore",
+          "sha": "ab23322e0c1c47200b8967a922aa9682a899049f",
+          "size": 211
+        },
+        {
+          "path": "AGENTS.md",
+          "sha": "55e7c1b47b415b5a39812b251d70a638678eaeae",
+          "size": 15959
+        },
+        {
+          "path": "CONTEXT.md",
+          "sha": "df6343be20453a2e371f2ad8c42b7ff04cca61c5",
+          "size": 31846
+        },
+        {
+          "path": "INITIAL_IDEA.md",
+          "sha": "3b63c4b1e6f544db26ed8934cc403769c25b3ae4",
+          "size": 42530
+        },
+        {
+          "path": "LICENSE",
+          "sha": "5fa882582a062dc70727e206df94fef881de885a",
+          "size": 1063
+        },
+        {
+          "path": "README.md",
+          "sha": "25413c044a90a65e170c052eab5fd1276c0d0e04",
+          "size": 10427
+        },
+        {
+          "path": "SPECS.md",
+          "sha": "23c52765a1255ec63a44baae54f16a7bbe614701",
+          "size": 89817
+        },
+        {
+          "path": "bun.lock",
+          "sha": "32be7a440442bfd608394d552efdd0217762f022",
+          "size": 222114
+        },
+        {
+          "path": "flake.nix",
+          "sha": "ec13b793503ac4bffde122cb932d3de3720e115e",
+          "size": 654
+        },
+        {
+          "path": "package.json",
+          "sha": "c650ce6362c7f2c7e825dc7f0eac983509f898ad",
+          "size": 3546
+        },
+        {
+          "path": "playwright.config.ts",
+          "sha": "7b7aceba951bf52ee0b7fca2140239fa12c15261",
+          "size": 1994
+        },
+        {
+          "path": "schemathesis.toml",
+          "sha": "647ed7e1ad9c6a1ee59187ce116863dbd66110eb",
+          "size": 2601
+        },
+        {
+          "path": "tsconfig.base.json",
+          "sha": "2a30db697c2f0987b6e62fa0eb5ae369f30b4db2",
+          "size": 421
+        },
+        {
+          "path": "tsconfig.json",
+          "sha": "11961fc177709d3234c8f895e8fc988ae2286ae7",
+          "size": 176
+        },
+        {
+          "path": "vite.config.ts",
+          "sha": "3d750beba6846cb1300176d5161a5f91b2240ef7",
+          "size": 363
+        },
+        {
+          "path": "vitest.config.ts",
+          "sha": "c62d22336cea17331f5b19c8d81a041600ffb1c0",
+          "size": 2625
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "SoroWill/sorowill-contracts",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:12.370311+00:00",
+      "languages": {
+        "Rust": 1346457,
+        "Shell": 14251,
+        "Just": 1253
+      },
+      "repository_description": "Soroban smart contracts for SoroWill \u2014 on-chain will creation, check-in mechanism, automatic USDC inheritance release, and guardian multisig on Stellar.",
+      "head_tree_sha": "9e4914fe3fe13a5217f72d36e68e4bc1ead3b2a2",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 193,
+      "python_file_count": 0,
+      "selected_files": [
+        {
+          "path": ".gitignore",
+          "sha": "c48a087887284e07769bf8659d7d81e725df43d2",
+          "size": 705
+        },
+        {
+          "path": "CHANGELOG.md",
+          "sha": "d348dda6d0f0ebeeccb221d0e2b03620d50a448c",
+          "size": 22622
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "sha": "b99a8837e84954e12d4075d7ac1386004763d8ef",
+          "size": 10140
+        },
+        {
+          "path": "Cargo.lock",
+          "sha": "68d5c279ec32f48636ae00e9bd2b271514028fca",
+          "size": 58626
+        },
+        {
+          "path": "Cargo.toml",
+          "sha": "aa821b967b6d6f0d5214ce100d9d02f84ae8714e",
+          "size": 1347
+        },
+        {
+          "path": "LICENSE",
+          "sha": "5b7bddb3cdb22e9d8df9f79f669c5532db69035c",
+          "size": 1078
+        },
+        {
+          "path": "PR_DESCRIPTION_502_505.md",
+          "sha": "f2683c126857472186c15df139ac12724f47ac73",
+          "size": 5128
+        },
+        {
+          "path": "README.md",
+          "sha": "c805823c5290106414a6edd78d467c30fc7ad588",
+          "size": 30791
+        },
+        {
+          "path": "SECURITY.md",
+          "sha": "7a38fcce34a25ef0cf64cf65170bba45eb2717c2",
+          "size": 4675
+        },
+        {
+          "path": "audit.toml",
+          "sha": "32190cfdf570557a2aa06272531049b68fd78d9b",
+          "size": 611
+        },
+        {
+          "path": "justfile",
+          "sha": "12b6f0d124ab5fc138d1a8f20c78a1de660ebacd",
+          "size": 1253
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "AgesEmpire/StellarSwipe-Contract",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:13.189040+00:00",
+      "languages": {
+        "Rust": 6278090,
+        "TypeScript": 135423,
+        "Python": 130670,
+        "Shell": 77687,
+        "CSS": 6452,
+        "Makefile": 1115,
+        "JavaScript": 141
+      },
+      "repository_description": "Soroban smart contracts powering StellarSwipe \u2014 a decentralized, swipe-to-copy-trade DApp on the Stellar network.",
+      "head_tree_sha": "4d67f0447020f007e21aa94fa1803404ea3e093a",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 11452,
+      "python_file_count": 14,
+      "selected_files": [
+        {
+          "path": ".gitignore",
+          "sha": "4af09a6cb85fb463f744f0d8dc024c5bb7b2234f",
+          "size": 98
+        },
+        {
+          "path": "ANALYTICS_ENGINE_SUMMARY.md",
+          "sha": "69e3ad2b92571f9a3a1c4b6cbbaf0d8c48699a8a",
+          "size": 13629
+        },
+        {
+          "path": "BATCH_PROCESSING_SUMMARY.md",
+          "sha": "84705e3c09bf0b2da350ee0353ed4827e866d441",
+          "size": 15438
+        },
+        {
+          "path": "CHANGELOG_REWARD_OPTIMIZATION.md",
+          "sha": "f6a9627910c0e187fd5d975badf736436bac3476",
+          "size": 9289
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "sha": "ced6668e5e1e66d7cf779f797450eb3c1b38f038",
+          "size": 8045
+        },
+        {
+          "path": "IMPLEMENTATION_COMPLETE.md",
+          "sha": "048253f8e31132d0b1930c3e6b4eddc714b0de0c",
+          "size": 14135
+        },
+        {
+          "path": "LICENSE",
+          "sha": "b51e956a13dec25852d7059ed17de05c8c6cd98c",
+          "size": 1067
+        },
+        {
+          "path": "LIQUIDITY_POOL_SUMMARY.md",
+          "sha": "f06a130fa0c16ae78cd0bbeaab4b693c916aad7e",
+          "size": 1065
+        },
+        {
+          "path": "PROVIDER_ONBOARDING_SUMMARY.md",
+          "sha": "013ad60b16891f0d6359f8b6ffc50c5b9f1da607",
+          "size": 15633
+        },
+        {
+          "path": "PR_DESCRIPTION.md",
+          "sha": "a4e96d1ba4afa89ed1a704c0124dc4e2eb16934c",
+          "size": 3741
+        },
+        {
+          "path": "README.md",
+          "sha": "484ed39eb860081d45403c2e87bc1f07218d0b97",
+          "size": 1724
+        },
+        {
+          "path": "REWARD_OPTIMIZATION_SUMMARY.md",
+          "sha": "9b88b129a71f7d858bb07cc6fdb150b0dcd829e1",
+          "size": 9907
+        },
+        {
+          "path": "SECURITY.md",
+          "sha": "214b0dbcc3dc19fae4216130fa1f837bc3e3e21f",
+          "size": 16232
+        },
+        {
+          "path": "SECURITY_PROGRAM_COMPLETE.md",
+          "sha": "faabeb5e9f2242a0d3e2fe3de75c7f8684d7d329",
+          "size": 13076
+        },
+        {
+          "path": "SECURITY_PROGRAM_SUMMARY.md",
+          "sha": "e874374db65b4a2e5ecadaf33337ba426cc81f64",
+          "size": 16719
+        },
+        {
+          "path": "SPONSOR_RECOVERY_SUMMARY.md",
+          "sha": "83b04eff5af147773f1bc437511f75100cf1836b",
+          "size": 2189
+        },
+        {
+          "path": "STATE_MIGRATION_SUMMARY.md",
+          "sha": "441c0190eaa3f963492407ed0d04faf1457b2ae6",
+          "size": 6958
+        },
+        {
+          "path": "package-lock.json",
+          "sha": "e3c69bf6713a2966ffedb3a4f7ca0d496254a770",
+          "size": 100
+        },
+        {
+          "path": "task1.md",
+          "sha": "76ee7fbaa64eccd0a77afb24b06d48a4e418a5e0",
+          "size": 1952
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "Refract-Protocol/refract-contracts",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:14.085933+00:00",
+      "languages": {
+        "Rust": 411660,
+        "Python": 46818
+      },
+      "repository_description": "Soroban (Rust) smart contracts for Refract \u2014 oracle-triggered parametric insurance on Stellar",
+      "head_tree_sha": "b49a8a609f89fe17cb00c585bf85826a28ed39df",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 107,
+      "python_file_count": 8,
+      "selected_files": [
+        {
+          "path": ".editorconfig",
+          "sha": "76fb2ef30b278dadd00e53b772338c9933641100",
+          "size": 223
+        },
+        {
+          "path": ".gitignore",
+          "sha": "b3510727d3716e57300f8202dc0f682f573b33f5",
+          "size": 837
+        },
+        {
+          "path": "AUDIT_TRACKING.md",
+          "sha": "cbf254c2b93f2a444d37b9790367bc178a231ea6",
+          "size": 6838
+        },
+        {
+          "path": "CODE_OF_CONDUCT.md",
+          "sha": "90a32ade38140e1bedac779308f103c7edb65ae8",
+          "size": 1768
+        },
+        {
+          "path": "COMPLIANCE.md",
+          "sha": "ef6d24568b42038a92d4c4a91ca13ba8aa86687d",
+          "size": 2851
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "sha": "ecd25e4e0da7e089d6f45e385f0f75cda472aba9",
+          "size": 2327
+        },
+        {
+          "path": "Cargo.lock",
+          "sha": "11aa1ac4e95f03fb05b45a436c7063644b0e0675",
+          "size": 46857
+        },
+        {
+          "path": "Cargo.toml",
+          "sha": "3d00eb96756287a8e993a1433320c281e51c49fd",
+          "size": 396
+        },
+        {
+          "path": "FUNDING.json",
+          "sha": "c096e0f9c9e17b120a3cb3e5f474fe90671053ab",
+          "size": 86
+        },
+        {
+          "path": "GOVERNANCE.md",
+          "sha": "3929cf2b468ff24a5993c6217a9b2d9276475102",
+          "size": 4410
+        },
+        {
+          "path": "GRIEFING_ANALYSIS.md",
+          "sha": "28a0251464f45ca53721333968fb927862ccd3df",
+          "size": 8832
+        },
+        {
+          "path": "INCIDENT_RESPONSE.md",
+          "sha": "a17b7d2e4e44888f5d83ec6d6a7216b33999e6d1",
+          "size": 7404
+        },
+        {
+          "path": "LICENSE",
+          "sha": "659a9c55c5723ababfe9d42c5b6e2366b1d1b9a0",
+          "size": 1086
+        },
+        {
+          "path": "README.md",
+          "sha": "d4f9fde1f8a567b8a1c6ee70c85fdc1b33f8896a",
+          "size": 9554
+        },
+        {
+          "path": "SECURITY.md",
+          "sha": "8ab6ef07f552c99a6b60607d316e4ee542cfb969",
+          "size": 4623
+        },
+        {
+          "path": "SPEC.md",
+          "sha": "9f3bde25636fd1220070986f9b4279b276b47c3b",
+          "size": 7940
+        },
+        {
+          "path": "audit.toml",
+          "sha": "3e05592a37b1b7a655afc5313d5736676e58854b",
+          "size": 926
+        },
+        {
+          "path": "clippy.toml",
+          "sha": "4ab4cf8b986773c151234564fd0d95c411e4fecc",
+          "size": 845
+        },
+        {
+          "path": "coverage-floor.toml",
+          "sha": "29777ec4c1bf95412a28958ff6d01666cacbf625",
+          "size": 735
+        },
+        {
+          "path": "wasm_sizes.json",
+          "sha": "d735f220c94b3e52cb8030641da0e8db79ba33c8",
+          "size": 273
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "CypherNaught-0x/nodecraft",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:14.403366+00:00",
+      "languages": {
+        "Rust": 10584287,
+        "Shell": 92331,
+        "JavaScript": 24987,
+        "PowerShell": 16518,
+        "WGSL": 12996,
+        "HTML": 1374
+      },
+      "repository_description": "A native, node-based canvas for generative media, written in pure Rust (egui). ComfyUI first-class, any model, Techniques, CLI + MCP.",
+      "head_tree_sha": "20d57adfee528997fa29ae18dd00dbbb01108876",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 1326,
+      "python_file_count": 0,
+      "selected_files": [
+        {
+          "path": ".gitattributes",
+          "sha": "a5abc3b15c62cf6ea50fa20407174506269699db",
+          "size": 167
+        },
+        {
+          "path": ".gitignore",
+          "sha": "acf679c37a5876a21dd25b4f1ce96db625218fdd",
+          "size": 247
+        },
+        {
+          "path": "AGENTS.md",
+          "sha": "523cdf3c5c6cd093bb44e5869fe0ecfab5e2e864",
+          "size": 15845
+        },
+        {
+          "path": "ATTRIBUTION.md",
+          "sha": "b721c91b24f1c381fa51263ee9d88f85a28a08b4",
+          "size": 4373
+        },
+        {
+          "path": "CLAUDE.md",
+          "sha": "43c994c2d3617f947bcb5adf1933e21dabe46bb5",
+          "size": 11
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "sha": "09ef22055a1d4e1a9dfcb16b1a675c1c18dc0389",
+          "size": 12647
+        },
+        {
+          "path": "Cargo.lock",
+          "sha": "8e6aaee6d3687b0e18992d934194e8d4c13ba07a",
+          "size": 165452
+        },
+        {
+          "path": "Cargo.toml",
+          "sha": "df697f836b50bb4817d45f20f85fea2152a164c0",
+          "size": 5829
+        },
+        {
+          "path": "LICENSE-APACHE",
+          "sha": "f433b1a53f5b830a205fd2df78e2b34974656c7b",
+          "size": 10174
+        },
+        {
+          "path": "LICENSE-MIT",
+          "sha": "0d53f72f748e0d28ac53c0fe1a6a5a1104952d0f",
+          "size": 1083
+        },
+        {
+          "path": "NOTICE",
+          "sha": "0b81cc29c20380c4649644cd4d19754eac136b25",
+          "size": 703
+        },
+        {
+          "path": "README.md",
+          "sha": "46d2801f5d5996b204fda9e73dbcf8e40d371a13",
+          "size": 13041
+        },
+        {
+          "path": "ROADMAP.md",
+          "sha": "a3c9847eae4e5343e66cf0e4e79251654b41edee",
+          "size": 13599
+        },
+        {
+          "path": "clippy.toml",
+          "sha": "4b6c79f555a92cdb32920abc4161fa5f2b9a7cac",
+          "size": 125
+        },
+        {
+          "path": "rustfmt.toml",
+          "sha": "cc29303f762a7ef67af82cb4dbef414bab298bbe",
+          "size": 116
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "claude-builders-bounty/claude-builders-bounty",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:14.531613+00:00",
+      "languages": {},
+      "repository_description": "A community bounty board for Claude Code builders \u2014 post tasks, claim rewards, build together.",
+      "head_tree_sha": "1aeae2adc82d33f971fd7731644348dcdd24b5a6",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 2,
+      "python_file_count": 0,
+      "selected_files": [
+        {
+          "path": "LICENSE",
+          "sha": "19f591c09faad54c09b87775128ada9d625ab1fa",
+          "size": 1079
+        },
+        {
+          "path": "README.md",
+          "sha": "7b61dc89e42d3241a3b534df172c2e5ec5fbf470",
+          "size": 1632
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "DLC-link/decentralization-manager",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:15.221418+00:00",
+      "languages": {
+        "Rust": 4981391,
+        "TypeScript": 1170502,
+        "Shell": 77088,
+        "Dockerfile": 5757,
+        "Just": 1942,
+        "CSS": 1704,
+        "HTML": 1220,
+        "JavaScript": 616
+      },
+      "repository_description": "A web application for managing decentralized parties in Canton blockchain networks.",
+      "head_tree_sha": "79085a4466ecbc1076e6d8b746ca7d90b426741f",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 728,
+      "python_file_count": 0,
+      "selected_files": [
+        {
+          "path": ".gitignore",
+          "sha": "8007aaf075dbba8f5725dbf637ec0f7340e331c6",
+          "size": 423
+        },
+        {
+          "path": "Cargo.lock",
+          "sha": "0ac65b9382bcd9379fae522bcfc8cef1395d0b33",
+          "size": 178314
+        },
+        {
+          "path": "Cargo.toml",
+          "sha": "0e53e77153dff5475c0fded016e78dd698d948a7",
+          "size": 6319
+        },
+        {
+          "path": "Dockerfile",
+          "sha": "6d84646fecca29523940073d18223faec63bd515",
+          "size": 2321
+        },
+        {
+          "path": "LICENSE",
+          "sha": "78173fa2e753d614bb0aa5ad125ddbbe70b282c4",
+          "size": 10849
+        },
+        {
+          "path": "NOTICE",
+          "sha": "cad5044c8d7764009237377a581306c949cda64c",
+          "size": 274
+        },
+        {
+          "path": "README.md",
+          "sha": "f5a73c111570a2fc69216a1ca6d492aae3d130cd",
+          "size": 49296
+        },
+        {
+          "path": "USER_GUIDE.md",
+          "sha": "5c1fbf54a5680374a9ae8d74549b274e57a2c4ed",
+          "size": 5607
+        },
+        {
+          "path": "code-coverage.sh",
+          "sha": "54c90e757bb65e12b46224d4b45450925a168da8",
+          "size": 2124
+        },
+        {
+          "path": "deny.toml",
+          "sha": "889da123ca4f83b367221cab6f420953fdaea87a",
+          "size": 2934
+        },
+        {
+          "path": "docs/CONTRIBUTING.md",
+          "sha": "8fdbea10604c55f2feb4930421ca7a08d27df092",
+          "size": 6317
+        },
+        {
+          "path": "justfile",
+          "sha": "7f034b75772f2b35c19ff23247cb8a23f2248172",
+          "size": 1942
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "Drago-Labs/golden-raccoon",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:15.387929+00:00",
+      "languages": {
+        "TypeScript": 5937005,
+        "Rust": 152118,
+        "JavaScript": 140358,
+        "PLpgSQL": 64179,
+        "Solidity": 41420,
+        "CSS": 12203,
+        "Shell": 10883,
+        "Python": 10676
+      },
+      "repository_description": null,
+      "head_tree_sha": "9fd06dfa2cf32a0a2f5f4f4d2b3fbac8970be23f",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 1664,
+      "python_file_count": 7,
+      "selected_files": [
+        {
+          "path": ".gitignore",
+          "sha": "9eaef04f50ca8aae8f8c700e7aac2e9eb81bad49",
+          "size": 757
+        },
+        {
+          "path": ".vercelignore",
+          "sha": "e770a1347561164352c07db32105917c18b3e3e7",
+          "size": 260
+        },
+        {
+          "path": "AGENTS.md",
+          "sha": "07996eea38e7c1483d7b93c44ffd413eb5a63367",
+          "size": 712
+        },
+        {
+          "path": "CODE_OF_CONDUCT.md",
+          "sha": "c14089a5559d78821a05fa7c5eb5d20fd32373ed",
+          "size": 4431
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "sha": "3688a018661e91d996d69b0836ef44714e7ccfb0",
+          "size": 2512
+        },
+        {
+          "path": "LICENSE",
+          "sha": "55cef74867c2041b3dabe49ddfff95cfdae65115",
+          "size": 1067
+        },
+        {
+          "path": "PROJECT_ROADMAP.md",
+          "sha": "e26507c7778abd24d40ea1a0e0d6476e5fa303e1",
+          "size": 22206
+        },
+        {
+          "path": "README.md",
+          "sha": "079c1113bed3d0e0b45126772955b0ee7b4ea81c",
+          "size": 7346
+        },
+        {
+          "path": "SECURITY.md",
+          "sha": "8f8f3d64a153c1a97064153e937c7e75249ed4b0",
+          "size": 2811
+        },
+        {
+          "path": "V2_COMPLETION_REPORT.md",
+          "sha": "59c88d78056e438731578b32357da059f0498b4c",
+          "size": 15936
+        },
+        {
+          "path": "V3_FULL_ACCEPTANCE_REPORT.md",
+          "sha": "b5efc3a31f4facabf3feccc68c81b014ad71efb7",
+          "size": 14383
+        },
+        {
+          "path": "docs-issue-144.md",
+          "sha": "18deac36e1deafb7eaf8cf72c4ba94c833167ed1",
+          "size": 76
+        },
+        {
+          "path": "frontend/AGENTS.md",
+          "sha": "643577dfaef36ee8032915ef80a0f0638f7beda0",
+          "size": 678
+        },
+        {
+          "path": "package-lock.json",
+          "sha": "9d11233373d78a2d3efaee1e1fba1136e17e3843",
+          "size": 31648
+        },
+        {
+          "path": "package.json",
+          "sha": "133388e6f925582e1724294c16028214ce0b76ae",
+          "size": 2641
+        },
+        {
+          "path": "patch_import.py",
+          "sha": "3eb6473e5701e7132dafd1e3846a9525be9d7cdb",
+          "size": 1308
+        },
+        {
+          "path": "patch_index.py",
+          "sha": "40af1e60412e791040293e9f50c9cb77a5f92a93",
+          "size": 1932
+        },
+        {
+          "path": "patch_memory.py",
+          "sha": "46743ec2fe146da034e56769b4f5e7869b5d8a7b",
+          "size": 1311
+        },
+        {
+          "path": "patch_package.py",
+          "sha": "da4223001893723f657fd54ccb9e0d8d6ee22876",
+          "size": 409
+        },
+        {
+          "path": "patch_postgres.py",
+          "sha": "64fff87e3a522d559a18afe2919bb1528d843111",
+          "size": 3203
+        },
+        {
+          "path": "patch_supabase.py",
+          "sha": "68d4255c149a873f05f75b509559e1c2d1dcac8e",
+          "size": 1708
+        },
+        {
+          "path": "patch_types.py",
+          "sha": "04edb08575c2b58a3cf4fca0de878af4890b4bb7",
+          "size": 805
+        },
+        {
+          "path": "review.txt",
+          "sha": "93def743c4778f6cfd5fa0cc759faf8dd5a16cca",
+          "size": 663
+        },
+        {
+          "path": "rust-toolchain.toml",
+          "sha": "2bd54589a7678af171f32f88cba9a808d61f38a3",
+          "size": 114
+        },
+        {
+          "path": "vercel.json",
+          "sha": "d9232b3673775e0ed79ba7cb5d4e1553e3806dab",
+          "size": 212
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "markabramov1993/arbitr",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:16.185985+00:00",
+      "languages": {
+        "Python": 76414,
+        "Rust": 7203,
+        "HTML": 5071,
+        "TypeScript": 2085
+      },
+      "repository_description": null,
+      "head_tree_sha": "86f7ec765a3ef6763b047a1c38029d153a52f332",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 160,
+      "python_file_count": 13,
+      "selected_files": [
+        {
+          "path": "LICENSE",
+          "sha": "f6df73dfeba44c5e0c6e5f6e16c913e06f85a2e5",
+          "size": 1072
+        },
+        {
+          "path": "README.md",
+          "sha": "214897e2c197ecebe3ad06af6ff447eccb3893ec",
+          "size": 1349
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "KatarzynaSzajnaPrimotly/ai_techleaders_project",
+      "default_branch": "ci/status-badge",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:16.590290+00:00",
+      "languages": {
+        "TypeScript": 279375,
+        "HTML": 42705,
+        "CSS": 37051,
+        "Shell": 16053,
+        "JavaScript": 2546
+      },
+      "repository_description": null,
+      "head_tree_sha": "4f667b58898955d13b74641e5e0666423e6698c6",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 652,
+      "python_file_count": 0,
+      "selected_files": [
+        {
+          "path": ".env.example",
+          "sha": "2981249b7a255395fb79680e5f7145d6fbe2aef3",
+          "size": 336
+        },
+        {
+          "path": ".gitignore",
+          "sha": "056105ed101be831322f08523b5ea5e0f51ae565",
+          "size": 687
+        },
+        {
+          "path": ".nvmrc",
+          "sha": "a45fd52cc5891570d6299fab38643103c3955474",
+          "size": 3
+        },
+        {
+          "path": "AGENTS.md",
+          "sha": "f4b0f876c60964448c06a9523ddce6570115bef6",
+          "size": 17860
+        },
+        {
+          "path": "BACKWARD_COMPATIBILITY.md",
+          "sha": "e2d54affb9e9aad637b62d8d50a2b7f7de669c67",
+          "size": 3778
+        },
+        {
+          "path": "CLAUDE.md",
+          "sha": "43c994c2d3617f947bcb5adf1933e21dabe46bb5",
+          "size": 11
+        },
+        {
+          "path": "CODE_REVIEW.md",
+          "sha": "b74a05423d218909c337a6fb4f1aa4edf63a1d50",
+          "size": 5112
+        },
+        {
+          "path": "README.md",
+          "sha": "6953220fdcc9303a74da3e8a0cc6fe53ab095d81",
+          "size": 4889
+        },
+        {
+          "path": "SDLC.md",
+          "sha": "fb2647b6623fde4bc717e948904e6482c7f17be7",
+          "size": 18314
+        },
+        {
+          "path": "eslint.config.mjs",
+          "sha": "d924c2420c296954a2237c1897acd7ba3339e733",
+          "size": 2462
+        },
+        {
+          "path": "mentoring-portal-concept.zip",
+          "sha": "f9a2629564e4ffd9bc2993bbdb646e36b37ea713",
+          "size": 115814
+        },
+        {
+          "path": "openmercato.toml",
+          "sha": "95a20f6a6e3e2e5a7f04b99e2ec2a6708465c76d",
+          "size": 114
+        },
+        {
+          "path": "package-lock.json",
+          "sha": "fe22dd3d36f2a2a0403aad51d4589aaa6efda069",
+          "size": 397257
+        },
+        {
+          "path": "package.json",
+          "sha": "98dded22622a4f9e066a43def44abdec879c5533",
+          "size": 1045
+        },
+        {
+          "path": "packages/app/AGENTS.md",
+          "sha": "643577dfaef36ee8032915ef80a0f0638f7beda0",
+          "size": 678
+        },
+        {
+          "path": "skills-lock.json",
+          "sha": "8b16ea976ac4472ee27d63ea55504c06c7cf016e",
+          "size": 10439
+        },
+        {
+          "path": "tsconfig.base.json",
+          "sha": "04abd170bc90548dc3936a07f5d390a9e1c57012",
+          "size": 407
+        },
+        {
+          "path": "vitest.config.mts",
+          "sha": "a26dab7ce21496dea2f6f812f3d9ccdd04b6c875",
+          "size": 1146
+        },
+        {
+          "path": "vitest.integration.config.mts",
+          "sha": "73e1b8c9a2a0b55ab7e4e869383342ff8e756d50",
+          "size": 334
+        },
+        {
+          "path": "vitest.setup.dom.ts",
+          "sha": "e65e79490c1d27bfe924ec35d3fed1be82420b6a",
+          "size": 122
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "paraloom-labs/paraloom-core",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:16.614919+00:00",
+      "languages": {
+        "Rust": 2410901,
+        "Shell": 22360,
+        "Dockerfile": 2222
+      },
+      "repository_description": "Open privacy Layer 2 for Solana. Groth16 zk-SNARKs, BFT cohort, ~10 ms verification on commodity hardware. Pre-mainnet.",
+      "head_tree_sha": "9e8c8e6d403a4793b841ac1c569eefd11d60c9ad",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 262,
+      "python_file_count": 0,
+      "selected_files": [
+        {
+          "path": ".env.example",
+          "sha": "18150cb640246c9c7853e184935a4b042002769f",
+          "size": 961
+        },
+        {
+          "path": ".gitignore",
+          "sha": "8e4fde8e311f53da10bd3b839c694cbb97bcb89d",
+          "size": 1398
+        },
+        {
+          "path": ".snyk",
+          "sha": "34643d225469a081ff4927e0becedb7ff6f4e41a",
+          "size": 216
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "sha": "b66afaca72a9ea2aa2e69df7b8d5cfae4179aad0",
+          "size": 1114
+        },
+        {
+          "path": "Cargo.lock",
+          "sha": "86c7908f5cead91f1c22c1c876a1d48152b1b070",
+          "size": 249156
+        },
+        {
+          "path": "Cargo.toml",
+          "sha": "46ab780d9efb78853bfab101cdefbc0842da8e1f",
+          "size": 7123
+        },
+        {
+          "path": "Dockerfile",
+          "sha": "1b28fa2dd92cb7c04bf0a7b5430815da3fcde7c6",
+          "size": 2222
+        },
+        {
+          "path": "LICENSE",
+          "sha": "4c2f90b7e584d787d56d24c2a13710bbb381f285",
+          "size": 1065
+        },
+        {
+          "path": "README.md",
+          "sha": "601db7ba1b611940004d22d0614f491702e1d173",
+          "size": 14660
+        },
+        {
+          "path": "SECURITY.md",
+          "sha": "f36f96634ad856108256e4726adf278beb0d5008",
+          "size": 2644
+        },
+        {
+          "path": "codecov.yml",
+          "sha": "3862e30d27fb2ea9cc78d7503ca890a6ac5710fa",
+          "size": 341
+        },
+        {
+          "path": "deny.toml",
+          "sha": "6fccb4cc62026e5989edd0245944489191b0f3eb",
+          "size": 3066
+        },
+        {
+          "path": "docs/bug-bounty.md",
+          "sha": "9c9995ea870f56dfa8bc94aa402601ebc7462a66",
+          "size": 8268
+        },
+        {
+          "path": "renovate.json",
+          "sha": "250fe661c356e263257ed9704e30807e3be29ced",
+          "size": 618
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "louisianahelpr/louisianahelpr",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:17.757791+00:00",
+      "languages": {
+        "TypeScript": 37209385,
+        "PLpgSQL": 10729922,
+        "JavaScript": 8585775,
+        "CSS": 246708,
+        "Shell": 136621,
+        "HTML": 103109,
+        "Ruby": 51572,
+        "Swift": 26588
+      },
+      "repository_description": null,
+      "head_tree_sha": "1c49ea7ca18404bb232c46d5d14f57613a16c1b1",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 6794,
+      "python_file_count": 0,
+      "selected_files": [
+        {
+          "path": ".env.example",
+          "sha": "011f7683582f1b2872e838c0d033776a51685386",
+          "size": 3257
+        },
+        {
+          "path": ".gitattributes",
+          "sha": "2e4cf4466dae63030c8ded37331a5bc21e6be331",
+          "size": 2853
+        },
+        {
+          "path": ".gitignore",
+          "sha": "25109eecea6d42cc10fa0ea3bc3f1880903151d4",
+          "size": 6598
+        },
+        {
+          "path": ".gitleaks.toml",
+          "sha": "40be7ee46357fef5293b4ef74afa24e72cc605bc",
+          "size": 4158
+        },
+        {
+          "path": ".gitleaksignore",
+          "sha": "a7db986342d9576827dfa651f1af1faffdaa0d58",
+          "size": 6808
+        },
+        {
+          "path": ".lighthouserc.json",
+          "sha": "ed59e36efb29e9899a4be18966e58ee1c42829b6",
+          "size": 6230
+        },
+        {
+          "path": ".mcp.json",
+          "sha": "221993bb5bd7d91d2e89c9c601f7609f98b01383",
+          "size": 148
+        },
+        {
+          "path": "AGENTS.md",
+          "sha": "d694c22f2b9d917a3686fd35b8eacea48084715e",
+          "size": 11357
+        },
+        {
+          "path": "CLAUDE.md",
+          "sha": "a26adff5f195a18c1b5e8e7590da2fb93c736db7",
+          "size": 26620
+        },
+        {
+          "path": "Gemfile",
+          "sha": "82d1e3049418f0ccaee2eaa282043c8598877625",
+          "size": 62
+        },
+        {
+          "path": "README.md",
+          "sha": "8e73844484ecadf5627ef35ed2d811426c7b098c",
+          "size": 3277
+        },
+        {
+          "path": "SECURITY.md",
+          "sha": "e020cec960a881498024ea6ad00220b3a07ebcb6",
+          "size": 2191
+        },
+        {
+          "path": "STATUS.md",
+          "sha": "ede28e1b04f4fa6191e292b7f68ebddbda53c24e",
+          "size": 7327
+        },
+        {
+          "path": "capacitor.config.ts",
+          "sha": "84d50cf97b7cbfabd0121946d9661a020b8eeca6",
+          "size": 11032
+        },
+        {
+          "path": "components.json",
+          "sha": "62e101166a31ade477811bd31f6be1ae44d45423",
+          "size": 414
+        },
+        {
+          "path": "deno.lock",
+          "sha": "9b6b7147d30c1dfbc2847429c513160b9ad2aaec",
+          "size": 8826
+        },
+        {
+          "path": "eslint.config.js",
+          "sha": "405e25ada66546ff1d46f8ef02c09faf86355b73",
+          "size": 23531
+        },
+        {
+          "path": "index.html",
+          "sha": "27086491572d2e0ac263cd98a7dbfb8fc39f3dd9",
+          "size": 50850
+        },
+        {
+          "path": "knip.json",
+          "sha": "756dc8da7c09dd0c49dfe23c84ffdb5d7e5f1d28",
+          "size": 1038
+        },
+        {
+          "path": "package-lock.json",
+          "sha": "6e1330615f6273eb74aa0e0899c1d4fb36c72d2e",
+          "size": 536448
+        },
+        {
+          "path": "package.json",
+          "sha": "3d336a0019b7600d266010f48313d2e15849a932",
+          "size": 8468
+        },
+        {
+          "path": "playwright.config.ts",
+          "sha": "eff9f49bec3ec8e17c38d0f638012c42c046f361",
+          "size": 19334
+        },
+        {
+          "path": "postcss.config.js",
+          "sha": "2aa7205d4b402a1bdfbe07110c61df920b370066",
+          "size": 81
+        },
+        {
+          "path": "tailwind.config.ts",
+          "sha": "19d912e6a62c7d850999697d38067d6e1efae1d2",
+          "size": 14844
+        },
+        {
+          "path": "tsconfig.app.json",
+          "sha": "3bab9b06eb0d86e6410609b3f3ec3d573acae60d",
+          "size": 9035
+        },
+        {
+          "path": "tsconfig.e2e.json",
+          "sha": "904976839ae568e020e6436bd24d032b414ba93b",
+          "size": 627
+        },
+        {
+          "path": "tsconfig.json",
+          "sha": "00302c9fb38f532397f5645796703be4b1eee942",
+          "size": 464
+        },
+        {
+          "path": "tsconfig.node.json",
+          "sha": "b9d71d078c2202e8243da2907c6d8ea528bc66f4",
+          "size": 504
+        },
+        {
+          "path": "vercel.json",
+          "sha": "ab7512d7f08a505ec7fb662f4ec30e00c12699f7",
+          "size": 6940
+        },
+        {
+          "path": "vite.config.ts",
+          "sha": "a3f9749702ad9d9d54bc55f72493803a35d0c875",
+          "size": 46075
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "Marko026/luxwebstore",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:17.420067+00:00",
+      "languages": {
+        "TypeScript": 182561,
+        "CSS": 8367,
+        "JavaScript": 2763
+      },
+      "repository_description": null,
+      "head_tree_sha": "bc949ba7d7aec981d0132c9a398f8a57fb144554",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 107,
+      "python_file_count": 0,
+      "selected_files": [
+        {
+          "path": ".coderabbit.yaml",
+          "sha": "4d6a0e23828999715b477fa21998c3c28e8c77a1",
+          "size": 240
+        },
+        {
+          "path": ".env.example",
+          "sha": "9f6767e6bde7a61cf649371a1e9e24e31f7485f9",
+          "size": 892
+        },
+        {
+          "path": ".gitattributes",
+          "sha": "6313b56c57848efce05faa7aa7e901ccfc2886ea",
+          "size": 19
+        },
+        {
+          "path": ".gitignore",
+          "sha": "63af10be202326edfdd0886ae721ea9746e81eec",
+          "size": 676
+        },
+        {
+          "path": ".worktreeinclude",
+          "sha": "e3e475664aa2a1ce82f8520361249886bb4dd748",
+          "size": 139
+        },
+        {
+          "path": "AGENTS.md",
+          "sha": "af3b7c84114bafeee578bf1adff2ef74af2cc6a2",
+          "size": 679
+        },
+        {
+          "path": "CLAUDE.md",
+          "sha": "51274f650a47a05666c1709e3e49cc9d4faa9ff8",
+          "size": 3567
+        },
+        {
+          "path": "CODING_STANDARDS.md",
+          "sha": "afeba515f01e960b1181147f4c38976b965d81c6",
+          "size": 2034
+        },
+        {
+          "path": "GLOSSARY.md",
+          "sha": "c628541ef7167ceafbdb5abb30d449ec0369aa53",
+          "size": 2366
+        },
+        {
+          "path": "README.md",
+          "sha": "e215bc4ccf138bbc38ad58ad57e92135484b3c0f",
+          "size": 1450
+        },
+        {
+          "path": "drizzle.config.ts",
+          "sha": "0cb473d59fc93f49df60acbea49631d23d429329",
+          "size": 240
+        },
+        {
+          "path": "eslint.config.mjs",
+          "sha": "fbfc2bff1198ce2766ae38a39ae88278f5aaa743",
+          "size": 716
+        },
+        {
+          "path": "next.config.ts",
+          "sha": "a0cf0c7313a86b713eb9d9bcac6539bc5d0bd1a9",
+          "size": 318
+        },
+        {
+          "path": "package-lock.json",
+          "sha": "c196ddae8499e98c86d8b488423754204029f59c",
+          "size": 351585
+        },
+        {
+          "path": "package.json",
+          "sha": "cbe03315d99761a4fe8a9f171cdc27c6b3b1ab37",
+          "size": 1185
+        },
+        {
+          "path": "tsconfig.json",
+          "sha": "f9f39f58003cb062058ba438e5debd47fa39827c",
+          "size": 708
+        },
+        {
+          "path": "vitest.config.mts",
+          "sha": "9167136a9a5e6b12189d7445af571d7997d49c66",
+          "size": 261
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "airdropia/earn-ops",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:18.216644+00:00",
+      "languages": {
+        "JavaScript": 51920,
+        "Shell": 1749
+      },
+      "repository_description": "The machine that turns a coding agent into USDC: funded-repo PR pipeline, CI proof, and a daily bounty digest",
+      "head_tree_sha": "5b5bf615070e59197c5ca50f068009677aa3602b",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 24,
+      "python_file_count": 0,
+      "selected_files": [
+        {
+          "path": "README.md",
+          "sha": "5369e8aa3b9e3f3dbd94eee2c16c5ff0e06cb003",
+          "size": 3007
+        }
+      ],
+      "selected_files_omitted": 0
+    },
+    {
+      "repository_full_name": "cashubtc/cdk",
+      "default_branch": "main",
+      "archived": false,
+      "visibility": "public",
+      "observed_at": "2026-10-21T12:18:18.780510+00:00",
+      "languages": {
+        "Rust": 9615288,
+        "Shell": 99951,
+        "Nix": 70804,
+        "Just": 42562,
+        "Python": 41201,
+        "Dart": 9436,
+        "Swift": 4868,
+        "Kotlin": 4736,
+        "Go": 4393,
+        "CSS": 1980,
+        "Dockerfile": 1750,
+        "PLpgSQL": 257
+      },
+      "repository_description": "Cashu Development Kit",
+      "head_tree_sha": "9ab4ad64a8031dd49d03b947d62a73e526f333d4",
+      "tree_truncated": false,
+      "tree_error": null,
+      "metadata_error": null,
+      "total_files": 1153,
+      "python_file_count": 4,
+      "selected_files": [
+        {
+          "path": ".backportrc.json",
+          "sha": "7978aa601877a7238a92a569318e22af8a40b2fb",
+          "size": 174
+        },
+        {
+          "path": ".cargo-mutants.toml",
+          "sha": "da661bbb95a5baa0dac15f2fad4d1c626862ac57",
+          "size": 1452
+        },
+        {
+          "path": ".envrc",
+          "sha": "3550a30f2de389e537ee40ca5e64a77dc185c79b",
+          "size": 10
+        },
+        {
+          "path": ".gitignore",
+          "sha": "f9e36a86d094cc369efa914a0919c3fce5376622",
+          "size": 914
+        },
+        {
+          "path": ".typos.toml",
+          "sha": "1bd5248b14446af231f0c6093980be9d44f2535e",
+          "size": 1097
+        },
+        {
+          "path": "AGENTS.md",
+          "sha": "0df3725620aed9f316d1fc583bd4aa02aba5166d",
+          "size": 11474
+        },
+        {
+          "path": "CHANGELOG.md",
+          "sha": "f5c34aac0acdfafa8e432c555c1e221600644bb5",
+          "size": 88636
+        },
+        {
+          "path": "CODE_STYLE.md",
+          "sha": "732f0dc2588ea1a22c7f7ff0741281626edd071c",
+          "size": 4384
+        },
+        {
+          "path": "Cargo.lock",
+          "sha": "a957c76f8ed5fd8021a1fb64ab7870cedd00e18b",
+          "size": 242512
+        },
+        {
+          "path": "Cargo.lock.msrv",
+          "sha": "cb131b7fa98f8739b52550125c26df5ff1528494",
+          "size": 239999
+        },
+        {
+          "path": "Cargo.toml",
+          "sha": "048370f0759662934311e875b22348b20c18df10",
+          "size": 7515
+        },
+        {
+          "path": "DEVELOPMENT.md",
+          "sha": "219013cb166b7ddbd478f69e6ecaeb79c2d5126b",
+          "size": 23156
+        },
+        {
+          "path": "Dockerfile",
+          "sha": "ed06de19f202034a9530fe3d951579e4a08e9b6e",
+          "size": 1393
+        },
+        {
+          "path": "Dockerfile.arm",
+          "sha": "f256cf73b5e129d2ff6b6c2a1b6a06a8bb89133f",
+          "size": 1515
+        },
+        {
+          "path": "Dockerfile.ldk-node",
+          "sha": "dd825018e509bc68c5d3fed5a40a8297e35dda34",
+          "size": 1413
+        },
+        {
+          "path": "Dockerfile.ldk-node.arm",
+          "sha": "2cb42be7a4721492bb434b8ee810dc4ed8dd3059",
+          "size": 1557
+        },
+        {
+          "path": "Dockerfile.static",
+          "sha": "9497c10313ae67e0a994432eb79f6e452005268f",
+          "size": 117
+        },
+        {
+          "path": "LICENSE-APACHE",
+          "sha": "9af4720b40cad9d8f66fcce557b2f6353cddf9e8",
+          "size": 11319
+        },
+        {
+          "path": "LICENSE-MIT",
+          "sha": "604328316cfbd34cf4e614f6bee296a16ca20cc9",
+          "size": 1134
+        },
+        {
+          "path": "LICENSE.md",
+          "sha": "93f34957d9874e75529c675b3c0809762e085826",
+          "size": 731
+        },
+        {
+          "path": "README.md",
+          "sha": "4c64963dd2355966e52de5673f528c6a72ca547b",
+          "size": 7482
+        },
+        {
+          "path": "REGTEST_GUIDE.md",
+          "sha": "884508a1bd17e5219e9dcc83eb8a81c8e01918f1",
+          "size": 8473
+        },
+        {
+          "path": "SECURITY.md",
+          "sha": "2914c2842cf618db2de0069f5646821841a0c0ea",
+          "size": 612
+        },
+        {
+          "path": "buf.yaml",
+          "sha": "a1737395eca565b807dc86f1bf2874449d29e35e",
+          "size": 119
+        },
+        {
+          "path": "clippy.toml",
+          "sha": "0d0f30fd818169d631b990f53cee248d50a2560b",
+          "size": 155
+        },
+        {
+          "path": "codecov.yml",
+          "sha": "7560f8a268d3937f939b40ad2cbcb5c2bdf70466",
+          "size": 414
+        },
+        {
+          "path": "docker-compose.ldk-node.yaml",
+          "sha": "86f7075e3ebc86b89cf8a6c442837cbd68c7ae55",
+          "size": 3294
+        },
+        {
+          "path": "docker-compose.postgres.yaml",
+          "sha": "cda24c4deffa004ae81ac8e13cec25de6fd41f3f",
+          "size": 1839
+        },
+        {
+          "path": "docker-compose.redis-cluster.yaml",
+          "sha": "a5eb7b5c2ccc383f09ddf3f5015429b434a95131",
+          "size": 2739
+        },
+        {
+          "path": "docker-compose.tor.yaml",
+          "sha": "b067acf0305e93d2eb1c09be324603870705dbc4",
+          "size": 1202
+        }
+      ],
+      "selected_files_omitted": 0
+    }
+  ]
+}

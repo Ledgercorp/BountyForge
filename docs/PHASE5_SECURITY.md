@@ -71,3 +71,20 @@ real bounty execution is admitted by this work. Seven legacy namespace/rootfs
 checks remain skipped in the broader suite; this change does not claim to have
 executed them. Commercial qualification, reproducible safe dependencies and
 specific owner authorization remain independent gates.
+
+## Hosted Phase 5 proof
+
+Commit `c0af34d51df814c08a89a50515e467eb290e1be0` passed
+[hosted development run 39599142565](https://github.com/Ledgercorp/BountyForge/actions/runs/39599142565).
+Its unchanged preflight artifact is retained as
+`evidence/phase5/hosted-curated_sandbox_preflight.json`. PID denial occurred at
+64 tasks (63 sleeping threads), with one denial event. CPU pressure measured
+3.061 s wall / 3.066 s use and 31 throttled periods. All other network,
+filesystem, credential, memory, timeout, output and cleanup controls passed.
+These pressure checks are now hosted-verified for that runner execution.
+
+Four additional owned development fixtures have a separate fixed-hash catalog and
+receipt-replay admission in `benchmarks/phase5/development_runner.py`. They use
+the same hardened Docker execution helper after exact test/source admission;
+the historical admission function still rejects them. No generalized repository
+or dependency execution capability was added.

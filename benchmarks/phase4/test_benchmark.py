@@ -53,4 +53,37 @@ class BenchmarkTests(unittest.TestCase):
    self.assertEqual(c['stage'],'source_rejected')
    self.assertGreaterEqual(c['seconds'],0)
    self.assertIn('target_symbol',json.loads(c['prompt']))
+ def neutral_proposal(self,prompt):
+  data=json.loads(prompt);number=data['editable_lines'][-1]
+  row=next(row.split(': ',1)[1] for row in data['source_lines_untrusted'].split('\n') if row.startswith(str(number)+': '))
+  return json.dumps({'changes':[{'line':number,'new':row+' # neutral'}]})
+ def test_interrupted_active_case_keeps_completed_call_transcripts(self):
+  owner=self
+  class InterruptedModel:
+   count=0
+   def complete_line(self,system,prompt,max_tokens):
+    self.count+=1
+    if self.count==2:raise KeyboardInterrupt()
+    return owner.neutral_proposal(prompt)
+  baseline={'passed':False,'returncode':1,'output':'FAILED (failures=1)'}
+  with tempfile.TemporaryDirectory() as d,patch.dict('os.environ',{'BOUNTYFORGE_CURATED_DOCKER':'1'}),patch.object(runner,'tests',return_value=baseline),patch('bountyforge.curated_docker.verify_runtime_boundary',return_value={}):
+   out=Path(d)/'interrupted.json'
+   with self.assertRaises(KeyboardInterrupt):runner.run(model=InterruptedModel(),output=out)
+   saved=json.loads(out.read_text())
+  self.assertEqual(saved['completed'],0)
+  self.assertEqual(saved['model_calls'],2)
+  calls=saved['tasks'][0]['attempts'][0]['calls']
+  self.assertEqual(calls[0]['stage'],'source_validated')
+  self.assertIsNotNone(calls[0]['response'])
+  self.assertIn('seconds',calls[1])
+ def test_unavailable_sandbox_after_generation_is_not_model_test_failure(self):
+  owner=self
+  class NeutralModel:
+   def complete_line(self,system,prompt,max_tokens):return owner.neutral_proposal(prompt)
+  baseline={'passed':False,'returncode':1,'output':'FAILED (failures=1)'}
+  missing={'passed':False,'error':'CuratedSandboxUnavailable'}
+  with tempfile.TemporaryDirectory() as d,patch.dict('os.environ',{'BOUNTYFORGE_CURATED_DOCKER':'1'}),patch.object(runner,'tests',side_effect=[baseline]+[missing]*5),patch('bountyforge.curated_docker.verify_runtime_boundary',return_value={}):
+   result=runner.run(model=NeutralModel(),output=Path(d)/'missing.json')
+  self.assertEqual(result['blocked'],5)
+  self.assertEqual(result['tasks'][0]['attempts'][0]['failure_reason'],'sandbox_test_execution_unavailable')
 if __name__=='__main__': unittest.main()

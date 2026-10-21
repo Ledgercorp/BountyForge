@@ -46,6 +46,7 @@ def run(model=None, output=None, protocol='ast_contract_v5'):
   from bountyforge.curated_tasks import TASKS, RECEIPT, editable_scope
   from bountyforge.lineedit import propose_lines
   from bountyforge.model import LocalModel
+  from bountyforge.repair_context import physical_lines
   import hashlib
   model = model or LocalModel('http://127.0.0.1:18080/v1/chat/completions')
   output = Path(output or ROOT.parents[1]/'evidence-run/phase4_results.json')
@@ -60,6 +61,19 @@ def run(model=None, output=None, protocol='ast_contract_v5'):
     'isolation':'digest_pinned_docker_no_network_read_only_no_privileges',
     'external_submission':False,'paid_inference':False,'tasks':[]}
   inference_available = True
+
+  def save():
+    report['completed']=sum(t.get('case_completed',False) for t in report['tasks'])
+    report['attempted']=sum(bool(t['model_calls']) for t in report['tasks'])
+    report['passed']=sum(t['model_generated_success'] for t in report['tasks'])
+    report['blocked']=sum(t['status']=='blocked' for t in report['tasks'])
+    report['model_calls']=sum(t['model_calls'] for t in report['tasks'])
+    report['run_type']='real_qwen_cpu' if report['model_calls'] else 'no_inference'
+    if report['model_calls']>report['max_total_model_calls']:
+      raise RuntimeError('Model budget exceeded')
+    temporary=output.with_suffix('.tmp')
+    temporary.write_text(json.dumps(report,indent=2,ensure_ascii=True)+'\n')
+    temporary.replace(output)
 
   class RecordingModel:
     def __init__(self,symbol): self.symbol=symbol
@@ -79,6 +93,8 @@ def run(model=None, output=None, protocol='ast_contract_v5'):
             'system':used_system,'prompt':used_prompt,'max_tokens':max_tokens,
             'response':None,'stage':'inference_started'}
       one['calls'].append(call)
+      if sum(t['model_calls'] for t in report['tasks'])>=report['max_total_model_calls']:
+        raise RuntimeError('Model budget exceeded before inference')
       item['model_calls']+=1
       started=time.monotonic()
       try:
@@ -92,6 +108,7 @@ def run(model=None, output=None, protocol='ast_contract_v5'):
       finally:
         call['seconds']=round(time.monotonic()-started,3)
         call['model_metadata']=getattr(model,'last_call',None)
+        save()
 
   for task in MANIFEST['tasks']:
     start=time.monotonic()
@@ -100,6 +117,7 @@ def run(model=None, output=None, protocol='ast_contract_v5'):
     item.update({'status':'blocked','model_calls':0,'model_generated_success':False,'attempts':[],
                  'source_sha256':hashlib.sha256(original.encode()).hexdigest(),
                  'tests_sha256':hashlib.sha256((TASKS/task['id']/'tests/test_regression.py').read_bytes()).hexdigest()})
+    report['tasks'].append(item)
     with tempfile.TemporaryDirectory(prefix='bf-historical-') as wd:
       wd=Path(wd); base=wd/'base';shutil.copytree(TASKS/task['id'],base)
       (base/MARKER).write_text(task['id'])
@@ -125,6 +143,7 @@ def run(model=None, output=None, protocol='ast_contract_v5'):
         for number in range(1,3):
           work=wd/f'attempt{number}';shutil.copytree(base,work)
           one={'number':number,'status':'failed','generations':[],'calls':[]};receipts=[]
+          item['attempts'].append(one)
           try:
             for symbol in task['symbols']:
               path=work/task['file'];source=path.read_text()
@@ -144,13 +163,20 @@ def run(model=None, output=None, protocol='ast_contract_v5'):
                                           'response_sha256':hashlib.sha256(recorder.response.encode()).hexdigest(),
                                           'model_metadata':getattr(model,'last_call',None)})
               path.write_text(result['files'][0]['content'])
+              save()
             (work/RECEIPT).write_text(json.dumps(receipts))
             check=tests(work);one['test']=check
+            if check.get('error') or check.get('timeout'):
+              one['failure_reason']=('resource_budget_exhausted' if check.get('timeout') or check.get('error')=='output_budget'
+                                     else 'sandbox_test_execution_unavailable')
+              item['status']='blocked'
+              item['failure_reason']=one['failure_reason']
+              save();break
             if check['passed']:
               one['status']='passed';item['status']='historical_excerpt_review_ready'
               item['model_generated_success']=True
-              item['patch']=''.join(difflib.unified_diff(original.splitlines(True),(work/task['file']).read_text().splitlines(True),fromfile='a/'+task['file'],tofile='b/'+task['file']))
-              item['attempts'].append(one);break
+              item['patch']=''.join(difflib.unified_diff(physical_lines(original,True),physical_lines((work/task['file']).read_text(),True),fromfile='a/'+task['file'],tofile='b/'+task['file']))
+              save();break
             one['failure_reason']='targeted_tests_failed';previous=check.get('output',check.get('error',''))
           except (ValueError,SyntaxError,KeyError,TypeError) as exc:
             one['failure_reason']='proposal_rejected';one['message']=str(exc)[:150];previous=one['message']
@@ -162,23 +188,13 @@ def run(model=None, output=None, protocol='ast_contract_v5'):
           except (RuntimeError,TimeoutError,urllib.error.URLError) as exc:
             one['failure_reason']='inference_unavailable_or_timeout';one['message']=type(exc).__name__
             inference_available=False
-            item['attempts'].append(one);break
-          item['attempts'].append(one)
+            save();break
+          save()
     if not item['model_calls']:
       item['status']='blocked'
     item['elapsed_seconds']=round(time.monotonic()-start,2)
-    report['tasks'].append(item)
-    report['completed']=len(report['tasks'])
-    report['attempted']=sum(bool(t['model_calls']) for t in report['tasks'])
-    report['passed']=sum(t['model_generated_success'] for t in report['tasks'])
-    report['blocked']=sum(t['status']=='blocked' for t in report['tasks'])
-    report['model_calls']=sum(t['model_calls'] for t in report['tasks'])
-    report['run_type']='real_qwen_cpu' if report['model_calls'] else 'no_inference'
-    if report['model_calls']>report['max_total_model_calls']:
-      raise RuntimeError('Model budget exceeded')
-    temporary=output.with_suffix('.tmp')
-    temporary.write_text(json.dumps(report,indent=2,ensure_ascii=True)+'\n')
-    temporary.replace(output)
+    item['case_completed']=True
+    save()
     print('case',task['id'],item['status'],'calls',item['model_calls'],'seconds',item['elapsed_seconds'],flush=True)
   return report
 

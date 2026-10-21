@@ -105,6 +105,7 @@ jobs:
           assert r.get('paid_inference') is False
           print('Measured historical model repairs:',r['passed'],'/',r['attempted'])
           PY
+          python -m scripts.verify_phase5_repairs evidence-run/phase4_results.json --output evidence-run/phase5_independent_replay.json
       - name: Upload only bounded benchmark evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -115,5 +116,6 @@ jobs:
             evidence-run/phase4_results.json
             evidence-run/phase5_development.json
             evidence-run/phase5_development_legacy.json
+            evidence-run/phase5_independent_replay.json
           if-no-files-found: warn
           retention-days: 2

@@ -1,0 +1,3320 @@
+{
+  "schema_version": 1,
+  "kind": "phase5_read_only_opportunity_audit",
+  "frozen_pool_source_blob": "803ba112e7d3568180e1e2038763eba8f528ad13",
+  "observed_at": "2026-10-21T12:16:29.230Z",
+  "engineering_baseline_revision": "773b2b0499117956b4c138696c78c1f5d6f834c7",
+  "classification_rule": "Commercial triage separates unsupported/nonavailable postings (rejected) from plausible reward claims lacking proof (unknown). Final qualification rejects any current Python Profile A mismatch even when commercial facts remain unknown.",
+  "counts": {
+    "total": 33,
+    "open": 31,
+    "closed": 2,
+    "commercial_verified": 0,
+    "commercial_rejected": 21,
+    "commercial_unknown": 12,
+    "qualification_verified": 0,
+    "qualification_rejected": 33,
+    "qualification_unknown": 0,
+    "owner_review_candidates": 0,
+    "execution_authorized": 0
+  },
+  "external_actions": [],
+  "additional_spending_usd": 0,
+  "confirmed_revenue_usd": 0,
+  "limitations": [
+    "Funding reserves/escrow, payment finality and LeftSock identity/location eligibility not independently attested.",
+    "Primary Frantic bounty and receipt URLs inaccessible through web retrieval; mirror statements are not verified funds.",
+    "Both referenced Parabola upstream issues return 404; repository package metadata accessible but issue availability unknown.",
+    "Third-party dependencies were statically inspected only where relevant; no target code/tests/packages executed.",
+    "All 33 issue bodies and returned comment collections inspected; bounded selected excerpts retained, not every claim or linked PR verified.",
+    "No inference of AI permission from absence of a prohibition, issue labels or other people's submissions."
+  ],
+  "snapshot_sha256": {
+    "opportunity-primary-comments.json": "19b2b398b95d2a865555a183b8fd1753e923cd0ef9d33c408044e5924b81a92f",
+    "opportunity-primary-issues.json": "3dd5c48163c31ea92affde4210de64b00ed8696e5ff17f38692f10adb6d1fa55",
+    "opportunity-primary-policies.json": "2570994e4f195b665f20df7081a282a2370921e9c28916bc5b84e75a19a3deb8"
+  },
+  "repository_snapshot_sha256": "1ec7b114ebb7493993bc46f3d4d3995556d7139d661ed03af4d4f4dec461e78d",
+  "candidates": [
+    {
+      "ordinal": 1,
+      "issue_url": "https://github.com/vaipakam/vaipakam/issues/2621",
+      "title": "Reward day close: enforce the day-close safety rules on-chain (clock, route, report shape, expected list)",
+      "issue_updated_at": "2026-10-21T10:58:33Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "ddd611494a10959541573529bf7a8e1e8b73251e",
+      "repository_languages": {
+        "Solidity": 18551080,
+        "TypeScript": 10994017,
+        "JavaScript": 4895460,
+        "Shell": 667703,
+        "CSS": 160806,
+        "Python": 37535,
+        "HTML": 15353
+      },
+      "commercial_classification": "rejected",
+      "commercial_reason": "Reward means protocol interest, not a developer reward offer.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/vaipakam/vaipakam/issues/2621"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/vaipakam/vaipakam/issues/2621"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "No enforceable issue-specific payout mechanism verified; product financial terminology is not a developer payment promise.",
+          "evidence_urls": [
+            "https://github.com/vaipakam/vaipakam/issues/2621"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "No verified LeftSock identity, location/payment eligibility or accepted assignment; no account registration or terms accepted.",
+          "evidence_urls": [
+            "https://github.com/vaipakam/vaipakam/issues/2621"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://github.com/vaipakam/vaipakam/issues/2621"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "Solidity contract guards across multiple facets; outside Python Profile A.",
+          "evidence_urls": [
+            "https://github.com/vaipakam/vaipakam/issues/2621",
+            "https://github.com/vaipakam/vaipakam/tree/ddd611494a10959541573529bf7a8e1e8b73251e"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/vaipakam/vaipakam/issues/2621"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/vaipakam/vaipakam/issues/2621"
+      ]
+    },
+    {
+      "ordinal": 2,
+      "issue_url": "https://github.com/paraspell/xcm-tools/issues/2155",
+      "title": "[Bug bounty] min-transferable-amount swallows non-AmountTooLowError and dry-runs an undefined tx",
+      "issue_updated_at": "2026-10-21T11:24:14Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "de8d2266ced92c755655e861d17c7dddcc00a25a",
+      "repository_languages": {
+        "TypeScript": 3705909,
+        "CSS": 43188,
+        "JavaScript": 16143,
+        "HTML": 3007
+      },
+      "commercial_classification": "unknown",
+      "commercial_reason": "Maintainer confirms low-severity reward eligibility, but requires reservation and identity; no issue-specific committed funds verified.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/paraspell/xcm-tools/issues/2155"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/paraspell/xcm-tools/issues/2155",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6209869960",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6215572346",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6263414705",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6264236257",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6273247927",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6310845983",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6312294759",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6314704386",
+            "https://paraspell.github.io/docs/contribution-guidelines.html"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "Maintainer confirms low-severity reward eligibility, but requires reservation and identity; no issue-specific committed funds verified. Documented payout claims remain distinct from independently verified funds and LeftSock eligibility.",
+          "evidence_urls": [
+            "https://github.com/paraspell/xcm-tools/issues/2155",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6209869960",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6215572346",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6263414705",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6264236257",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6273247927",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6310845983",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6312294759",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6314704386",
+            "https://paraspell.github.io/docs/contribution-guidelines.html"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "LeftSock's required six-month commit history, on-chain identity judgement and reservation not verified; no exception inferred. Owner action and review required.",
+          "evidence_urls": [
+            "https://github.com/paraspell/xcm-tools/issues/2155",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6209869960",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6215572346",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6263414705",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6264236257",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6273247927",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6310845983",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6312294759",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6314704386",
+            "https://paraspell.github.io/docs/contribution-guidelines.html"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "verified",
+          "reason": "Disclosed AI assistance permitted only with human understanding/review; autonomous submissions without it excluded. Six-month history, identity judgement, signatures, reservation and review-response duties apply.",
+          "evidence_urls": [
+            "https://paraspell.github.io/docs/contribution-guidelines.html"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "TypeScript SDK exception handling, not Python.",
+          "evidence_urls": [
+            "https://github.com/paraspell/xcm-tools/issues/2155",
+            "https://github.com/paraspell/xcm-tools/tree/de8d2266ced92c755655e861d17c7dddcc00a25a"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/paraspell/xcm-tools/issues/2155",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6209869960",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6215572346",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6263414705",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6264236257",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6273247927",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6310845983",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6312294759",
+            "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6314704386",
+            "https://paraspell.github.io/docs/contribution-guidelines.html"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/paraspell/xcm-tools/issues/2155",
+        "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6209869960",
+        "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6215572346",
+        "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6263414705",
+        "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6264236257",
+        "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6273247927",
+        "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6310845983",
+        "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6312294759",
+        "https://github.com/paraspell/xcm-tools/issues/2155#issuecomment-6314704386",
+        "https://paraspell.github.io/docs/contribution-guidelines.html"
+      ]
+    },
+    {
+      "ordinal": 3,
+      "issue_url": "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912",
+      "title": "[Bounty] [Bounty: $105] checkStellarRecipientReady must not report RPC outages as missing",
+      "issue_updated_at": "2026-10-21T11:35:52Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "51f2f6b5e4f466915bd7c5a6bf7ee6c90c79ff9b",
+      "repository_languages": {
+        "Python": 83735,
+        "Shell": 1980,
+        "Batchfile": 1408
+      },
+      "commercial_classification": "unknown",
+      "commercial_reason": "Aggregator advertises $105 and coin redemption; upstream issue #4 returns 404, so availability and sponsor commitment are unknown.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6223608405",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6223899459",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6239449890",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6241587970",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6242196390",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6314555779",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6314929125",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/blob/main/REWARD_POLICY.en.md"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "Aggregator advertises $105 and coin redemption; upstream issue #4 returns 404, so availability and sponsor commitment are unknown. Documented payout claims remain distinct from independently verified funds and LeftSock eligibility.",
+          "evidence_urls": [
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6223608405",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6223899459",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6239449890",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6241587970",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6242196390",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6314555779",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6314929125",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/blob/main/REWARD_POLICY.en.md"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "Aggregator coin/redemption rules do not prove upstream sponsor agreement, withdrawal eligibility or payout reserve. Upstream issue inaccessible (404).",
+          "evidence_urls": [
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6223608405",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6223899459",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6239449890",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6241587970",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6242196390",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6314555779",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6314929125",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/blob/main/REWARD_POLICY.en.md"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/blob/main/REWARD_POLICY.en.md"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "Advertised target is src/chains/stellar.ts; TypeScript, not Python.",
+          "evidence_urls": [
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/tree/51f2f6b5e4f466915bd7c5a6bf7ee6c90c79ff9b"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6223608405",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6223899459",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6239449890",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6241587970",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6242196390",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6314555779",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6314929125",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/blob/main/REWARD_POLICY.en.md"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912",
+        "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6223608405",
+        "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6223899459",
+        "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6239449890",
+        "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6241587970",
+        "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6242196390",
+        "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6314555779",
+        "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912#issuecomment-6314929125",
+        "https://github.com/zhangjiayang6835-cyber/bounty-plaza/blob/main/REWARD_POLICY.en.md"
+      ]
+    },
+    {
+      "ordinal": 4,
+      "issue_url": "https://github.com/taverns-red/toast-stats/issues/2224",
+      "title": "Confirmed-Distinguished override divides distinguishedPercent by activeClubs, not Paid Club Base",
+      "issue_updated_at": "2026-10-21T11:14:59Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "b5793e8fb1c9da4198686bed673a07128fafbcd7",
+      "repository_languages": {
+        "TypeScript": 14349059,
+        "HTML": 3400929,
+        "CSS": 585418,
+        "Shell": 191274,
+        "JavaScript": 145570,
+        "jq": 763
+      },
+      "commercial_classification": "rejected",
+      "commercial_reason": "Paid Club Base is a statistics denominator, not a bounty offer.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/taverns-red/toast-stats/issues/2224"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/taverns-red/toast-stats/issues/2224"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "No enforceable issue-specific payout mechanism verified; product financial terminology is not a developer payment promise.",
+          "evidence_urls": [
+            "https://github.com/taverns-red/toast-stats/issues/2224"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "No verified LeftSock identity, location/payment eligibility or accepted assignment; no account registration or terms accepted.",
+          "evidence_urls": [
+            "https://github.com/taverns-red/toast-stats/issues/2224"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://github.com/taverns-red/toast-stats/issues/2224"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "Repository has no Python files; TypeScript ranking rules also need an external domain decision.",
+          "evidence_urls": [
+            "https://github.com/taverns-red/toast-stats/issues/2224",
+            "https://github.com/taverns-red/toast-stats/tree/b5793e8fb1c9da4198686bed673a07128fafbcd7"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/taverns-red/toast-stats/issues/2224"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/taverns-red/toast-stats/issues/2224"
+      ]
+    },
+    {
+      "ordinal": 5,
+      "issue_url": "https://github.com/kwilson21/tally/issues/738",
+      "title": "Spec \u00a78.9: a paid invoice should look for its charge around its paid date",
+      "issue_updated_at": "2026-10-21T11:16:56Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "a17b1ff5f452721aeaf347d4c571d0c61a690e18",
+      "repository_languages": {
+        "TypeScript": 8470871,
+        "JavaScript": 217919,
+        "CSS": 41940,
+        "Shell": 10025
+      },
+      "commercial_classification": "rejected",
+      "commercial_reason": "Paid refers to an invoice, not payment for fixing the issue.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/kwilson21/tally/issues/738"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/kwilson21/tally/issues/738",
+            "https://github.com/kwilson21/tally/issues/738#issuecomment-6314595730"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "No enforceable issue-specific payout mechanism verified; product financial terminology is not a developer payment promise.",
+          "evidence_urls": [
+            "https://github.com/kwilson21/tally/issues/738",
+            "https://github.com/kwilson21/tally/issues/738#issuecomment-6314595730"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "No verified LeftSock identity, location/payment eligibility or accepted assignment; no account registration or terms accepted.",
+          "evidence_urls": [
+            "https://github.com/kwilson21/tally/issues/738",
+            "https://github.com/kwilson21/tally/issues/738#issuecomment-6314595730"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://github.com/kwilson21/tally/issues/738"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "TypeScript financial matching application; no Python files.",
+          "evidence_urls": [
+            "https://github.com/kwilson21/tally/issues/738",
+            "https://github.com/kwilson21/tally/tree/a17b1ff5f452721aeaf347d4c571d0c61a690e18"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/kwilson21/tally/issues/738",
+            "https://github.com/kwilson21/tally/issues/738#issuecomment-6314595730"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/kwilson21/tally/issues/738",
+        "https://github.com/kwilson21/tally/issues/738#issuecomment-6314595730"
+      ]
+    },
+    {
+      "ordinal": 6,
+      "issue_url": "https://github.com/Naris404/clash_royale_rl_agent/issues/41",
+      "title": "25: Outcome reward with potential shaping",
+      "issue_updated_at": "2026-10-21T11:12:32Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "ea43f4c376e73a6cbd5afd7806b2914f52f73861",
+      "repository_languages": {
+        "Python": 305258,
+        "TypeScript": 73190,
+        "CSS": 16661,
+        "Shell": 11639,
+        "PowerShell": 2962,
+        "Dockerfile": 1224,
+        "HTML": 598
+      },
+      "commercial_classification": "rejected",
+      "commercial_reason": "Reward means reinforcement-learning shaping, not a developer bounty; blocked by issue #36.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/Naris404/clash_royale_rl_agent/issues/41"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/Naris404/clash_royale_rl_agent/issues/41"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "No enforceable issue-specific payout mechanism verified; product financial terminology is not a developer payment promise.",
+          "evidence_urls": [
+            "https://github.com/Naris404/clash_royale_rl_agent/issues/41"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "No verified LeftSock identity, location/payment eligibility or accepted assignment; no account registration or terms accepted.",
+          "evidence_urls": [
+            "https://github.com/Naris404/clash_royale_rl_agent/issues/41"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://github.com/Naris404/clash_royale_rl_agent/issues/41"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "Python feature redesign spanning configurable outcomes and shaping; no reproduced single-function defect.",
+          "evidence_urls": [
+            "https://github.com/Naris404/clash_royale_rl_agent/issues/41",
+            "https://github.com/Naris404/clash_royale_rl_agent/tree/ea43f4c376e73a6cbd5afd7806b2914f52f73861"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Static pyproject review finds unpinned-range NumPy, Gymnasium, PyTorch, stable-baselines3 and pytest dependencies. No audited/pinned offline dependency closure or admitted test image. Nothing installed or executed.",
+          "evidence_urls": [
+            "https://github.com/Naris404/clash_royale_rl_agent/issues/41"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/Naris404/clash_royale_rl_agent/issues/41"
+      ]
+    },
+    {
+      "ordinal": 7,
+      "issue_url": "https://github.com/auscaster/frantic-board/issues/541",
+      "title": "Frantic bounty #143: Write and validate your own MAP description with the mailschema package",
+      "issue_updated_at": "2026-10-21T12:13:10Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "613a72868a0ab069a219d03b4bcff9b098485856",
+      "repository_languages": {
+        "Shell": 12679,
+        "JavaScript": 2949
+      },
+      "commercial_classification": "rejected",
+      "commercial_reason": "Mirrored posting says all 40 slots filled; no available claim verified. Funding receipt endpoint is inaccessible.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/auscaster/frantic-board/issues/541"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/auscaster/frantic-board/issues/541",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315196157",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315196378",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315199189",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315203491",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315207228",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315397316",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315397606",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315401822",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315402052",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315406661",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315605716",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315615770",
+            "https://github.com/auscaster/frantic-board/blob/main/CONTRIBUTING.md",
+            "https://gofrantic.com/wtf",
+            "https://gofrantic.com/charter"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "Mirrored posting says all 40 slots filled; no available claim verified. Funding receipt endpoint is inaccessible. Documented payout claims remain distinct from independently verified funds and LeftSock eligibility.",
+          "evidence_urls": [
+            "https://github.com/auscaster/frantic-board/issues/541",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315196157",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315196378",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315199189",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315203491",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315207228",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315397316",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315397606",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315401822",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315402052",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315406661",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315605716",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315615770",
+            "https://github.com/auscaster/frantic-board/blob/main/CONTRIBUTING.md",
+            "https://gofrantic.com/wtf",
+            "https://gofrantic.com/charter"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "rejected",
+          "reason": "Mirrored posting says all 40 slots filled; no available claim verified. Funding receipt endpoint is inaccessible.",
+          "evidence_urls": [
+            "https://github.com/auscaster/frantic-board/issues/541",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315196157",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315196378",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315199189",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315203491",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315207228",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315397316",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315397606",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315401822",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315402052",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315406661",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315605716",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315615770",
+            "https://github.com/auscaster/frantic-board/blob/main/CONTRIBUTING.md",
+            "https://gofrantic.com/wtf",
+            "https://gofrantic.com/charter"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "verified",
+          "reason": "Official contribution page and venue explicitly invite agent participation. This does not authorize account onboarding, external email, claims or terms for this owner.",
+          "evidence_urls": [
+            "https://github.com/auscaster/frantic-board/blob/main/CONTRIBUTING.md",
+            "https://gofrantic.com/wtf",
+            "https://gofrantic.com/charter"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "Write a MAP description using an external package, not a Python defect repair.",
+          "evidence_urls": [
+            "https://github.com/auscaster/frantic-board/issues/541",
+            "https://github.com/auscaster/frantic-board/tree/613a72868a0ab069a219d03b4bcff9b098485856"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/auscaster/frantic-board/issues/541",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315196157",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315196378",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315199189",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315203491",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315207228",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315397316",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315397606",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315401822",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315402052",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315406661",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315605716",
+            "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315615770",
+            "https://github.com/auscaster/frantic-board/blob/main/CONTRIBUTING.md",
+            "https://gofrantic.com/wtf",
+            "https://gofrantic.com/charter"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/auscaster/frantic-board/issues/541",
+        "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315196157",
+        "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315196378",
+        "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315199189",
+        "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315203491",
+        "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315207228",
+        "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315397316",
+        "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315397606",
+        "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315401822",
+        "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315402052",
+        "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315406661",
+        "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315605716",
+        "https://github.com/auscaster/frantic-board/issues/541#issuecomment-6315615770",
+        "https://github.com/auscaster/frantic-board/blob/main/CONTRIBUTING.md",
+        "https://gofrantic.com/wtf",
+        "https://gofrantic.com/charter"
+      ]
+    },
+    {
+      "ordinal": 8,
+      "issue_url": "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133",
+      "title": "rewarded offerwall ad-visibility diagnosis",
+      "issue_updated_at": "2026-10-21T10:41:22Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "a88ca3f182dabbc881b538e762f2e5dfacb4f727",
+      "repository_languages": {
+        "TypeScript": 378106814,
+        "JavaScript": 43979926,
+        "Shell": 823157,
+        "HTML": 276586,
+        "CSS": 275903,
+        "Python": 82021,
+        "Typst": 5087,
+        "Dockerfile": 1665,
+        "Nix": 413
+      },
+      "commercial_classification": "rejected",
+      "commercial_reason": "Rewarded means advertising product behavior, not a developer bounty.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6038267983",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6108685507",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6125395658",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6146230007",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6166492093",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6189882875",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6232472779",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6286389372",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6288931359",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6313974055",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6313982588"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "No enforceable issue-specific payout mechanism verified; product financial terminology is not a developer payment promise.",
+          "evidence_urls": [
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6038267983",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6108685507",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6125395658",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6146230007",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6166492093",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6189882875",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6232472779",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6286389372",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6288931359",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6313974055",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6313982588"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "No verified LeftSock identity, location/payment eligibility or accepted assignment; no account registration or terms accepted.",
+          "evidence_urls": [
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6038267983",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6108685507",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6125395658",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6146230007",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6166492093",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6189882875",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6232472779",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6286389372",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6288931359",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6313974055",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6313982588"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "TypeScript telemetry diagnosis requires production GA4 evidence and possible UI changes.",
+          "evidence_urls": [
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/tree/a88ca3f182dabbc881b538e762f2e5dfacb4f727"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6038267983",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6108685507",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6125395658",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6146230007",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6166492093",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6189882875",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6232472779",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6286389372",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6288931359",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6313974055",
+            "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6313982588"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133",
+        "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6038267983",
+        "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6108685507",
+        "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6125395658",
+        "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6146230007",
+        "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6166492093",
+        "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6189882875",
+        "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6232472779",
+        "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6286389372",
+        "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6288931359",
+        "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6313974055",
+        "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133#issuecomment-6313982588"
+      ]
+    },
+    {
+      "ordinal": 9,
+      "issue_url": "https://github.com/bodanator/Lockdown-Browser-Reversal/issues/1",
+      "title": "Can you help me abbput this my email:[public email redacted] (paid ,no free)",
+      "issue_updated_at": "2026-10-21T11:23:56Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "dcc3277b1df804407281c1dd2c54c0aebbe32296",
+      "repository_languages": {
+        "C++": 47834
+      },
+      "commercial_classification": "rejected",
+      "commercial_reason": "Sparse paid-help solicitation with no terms, funded amount, acceptance criteria or safe reproducible defect.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/bodanator/Lockdown-Browser-Reversal/issues/1"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/bodanator/Lockdown-Browser-Reversal/issues/1"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "No enforceable issue-specific payout mechanism verified; product financial terminology is not a developer payment promise.",
+          "evidence_urls": [
+            "https://github.com/bodanator/Lockdown-Browser-Reversal/issues/1"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "No verified LeftSock identity, location/payment eligibility or accepted assignment; no account registration or terms accepted.",
+          "evidence_urls": [
+            "https://github.com/bodanator/Lockdown-Browser-Reversal/issues/1"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://github.com/bodanator/Lockdown-Browser-Reversal/issues/1"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "C++ browser-reversal repository; no Python files or approved source scope.",
+          "evidence_urls": [
+            "https://github.com/bodanator/Lockdown-Browser-Reversal/issues/1",
+            "https://github.com/bodanator/Lockdown-Browser-Reversal/tree/dcc3277b1df804407281c1dd2c54c0aebbe32296"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/bodanator/Lockdown-Browser-Reversal/issues/1"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/bodanator/Lockdown-Browser-Reversal/issues/1"
+      ]
+    },
+    {
+      "ordinal": 10,
+      "issue_url": "https://github.com/RinoPaw/Genshin-Reverse/issues/31",
+      "title": "[RE] Authenticate original 7.1 chest identity and reward source chain",
+      "issue_updated_at": "2026-10-21T10:53:18Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "94fbe26469912b0ffd155c4de61abbee8cf5477e",
+      "repository_languages": {
+        "Python": 1783448,
+        "JavaScript": 5620,
+        "PowerShell": 3926,
+        "Shell": 3801
+      },
+      "commercial_classification": "rejected",
+      "commercial_reason": "Reward refers to game content research, not a developer bounty.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6312144607",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313246137",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313266202",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313327284",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313385030",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313797762",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313897224",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313931887",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313938828",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6314017003",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6314112685",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6314185800"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "No enforceable issue-specific payout mechanism verified; product financial terminology is not a developer payment promise.",
+          "evidence_urls": [
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6312144607",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313246137",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313266202",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313327284",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313385030",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313797762",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313897224",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313931887",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313938828",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6314017003",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6314112685",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6314185800"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "No verified LeftSock identity, location/payment eligibility or accepted assignment; no account registration or terms accepted.",
+          "evidence_urls": [
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6312144607",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313246137",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313266202",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313327284",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313385030",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313797762",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313897224",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313931887",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313938828",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6314017003",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6314112685",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6314185800"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "Sample-bound proprietary-executable research, not a unique reproducible Python repair.",
+          "evidence_urls": [
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31",
+            "https://github.com/RinoPaw/Genshin-Reverse/tree/94fbe26469912b0ffd155c4de61abbee8cf5477e"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Toolkit declares no runtime dependencies, but this task requires exact proprietary game-sample provenance; no sample acquired or executed. Unique repair/test acceptance scope unverified.",
+          "evidence_urls": [
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6312144607",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313246137",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313266202",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313327284",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313385030",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313797762",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313897224",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313931887",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313938828",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6314017003",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6314112685",
+            "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6314185800"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/RinoPaw/Genshin-Reverse/issues/31",
+        "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6312144607",
+        "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313246137",
+        "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313266202",
+        "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313327284",
+        "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313385030",
+        "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313797762",
+        "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313897224",
+        "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313931887",
+        "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6313938828",
+        "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6314017003",
+        "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6314112685",
+        "https://github.com/RinoPaw/Genshin-Reverse/issues/31#issuecomment-6314185800"
+      ]
+    },
+    {
+      "ordinal": 11,
+      "issue_url": "https://github.com/globe-and-citizen/cnc-portal/issues/2952",
+      "title": "feat: \u2728 value Safe swaps at what was actually paid",
+      "issue_updated_at": "2026-10-21T11:02:04Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "5e2aab22296536df188b062331b06dc89f4a9a62",
+      "repository_languages": {
+        "TypeScript": 7087920,
+        "Vue": 1599181,
+        "Solidity": 293375,
+        "JavaScript": 277665,
+        "HTML": 175905,
+        "Bru": 56159,
+        "Shell": 13302,
+        "PLpgSQL": 5932,
+        "CSS": 4286,
+        "Dockerfile": 2689,
+        "Batchfile": 629
+      },
+      "commercial_classification": "rejected",
+      "commercial_reason": "Paid means swap consideration in accounting, not developer compensation.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/globe-and-citizen/cnc-portal/issues/2952"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/globe-and-citizen/cnc-portal/issues/2952"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "No enforceable issue-specific payout mechanism verified; product financial terminology is not a developer payment promise.",
+          "evidence_urls": [
+            "https://github.com/globe-and-citizen/cnc-portal/issues/2952"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "No verified LeftSock identity, location/payment eligibility or accepted assignment; no account registration or terms accepted.",
+          "evidence_urls": [
+            "https://github.com/globe-and-citizen/cnc-portal/issues/2952"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://github.com/globe-and-citizen/cnc-portal/issues/2952"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "TypeScript/Vue accounting read model with several consumers and no Python files.",
+          "evidence_urls": [
+            "https://github.com/globe-and-citizen/cnc-portal/issues/2952",
+            "https://github.com/globe-and-citizen/cnc-portal/tree/5e2aab22296536df188b062331b06dc89f4a9a62"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/globe-and-citizen/cnc-portal/issues/2952"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/globe-and-citizen/cnc-portal/issues/2952"
+      ]
+    },
+    {
+      "ordinal": 12,
+      "issue_url": "https://github.com/ahaqqu/KajianQ/issues/167",
+      "title": "P2: Reviewer pre-gate \u2014 decision-model citation screen before the paid LLM reviewer (ADR-0042 adoption)",
+      "issue_updated_at": "2026-10-21T11:06:20Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "0c5f2743b58bdfa3c32b3d7f902b1488da7bd35f",
+      "repository_languages": {
+        "TypeScript": 2647912,
+        "JavaScript": 949566,
+        "Shell": 88344,
+        "PLpgSQL": 25154,
+        "Gherkin": 16885,
+        "CSS": 4326,
+        "Python": 3133,
+        "Nix": 654,
+        "HTML": 447
+      },
+      "commercial_classification": "rejected",
+      "commercial_reason": "Paid refers to a vendor LLM reviewer, not developer compensation.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/ahaqqu/KajianQ/issues/167"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/ahaqqu/KajianQ/issues/167",
+            "https://github.com/ahaqqu/KajianQ/issues/167#issuecomment-5737463837",
+            "https://github.com/ahaqqu/KajianQ/issues/167#issuecomment-5849940677"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "No enforceable issue-specific payout mechanism verified; product financial terminology is not a developer payment promise.",
+          "evidence_urls": [
+            "https://github.com/ahaqqu/KajianQ/issues/167",
+            "https://github.com/ahaqqu/KajianQ/issues/167#issuecomment-5737463837",
+            "https://github.com/ahaqqu/KajianQ/issues/167#issuecomment-5849940677"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "No verified LeftSock identity, location/payment eligibility or accepted assignment; no account registration or terms accepted.",
+          "evidence_urls": [
+            "https://github.com/ahaqqu/KajianQ/issues/167",
+            "https://github.com/ahaqqu/KajianQ/issues/167#issuecomment-5737463837",
+            "https://github.com/ahaqqu/KajianQ/issues/167#issuecomment-5849940677"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://github.com/ahaqqu/KajianQ/issues/167"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "TypeScript pipeline feature using external model vendors; outside offline Python-only scope.",
+          "evidence_urls": [
+            "https://github.com/ahaqqu/KajianQ/issues/167",
+            "https://github.com/ahaqqu/KajianQ/tree/0c5f2743b58bdfa3c32b3d7f902b1488da7bd35f"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/ahaqqu/KajianQ/issues/167",
+            "https://github.com/ahaqqu/KajianQ/issues/167#issuecomment-5737463837",
+            "https://github.com/ahaqqu/KajianQ/issues/167#issuecomment-5849940677"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/ahaqqu/KajianQ/issues/167",
+        "https://github.com/ahaqqu/KajianQ/issues/167#issuecomment-5737463837",
+        "https://github.com/ahaqqu/KajianQ/issues/167#issuecomment-5849940677"
+      ]
+    },
+    {
+      "ordinal": 13,
+      "issue_url": "https://github.com/SoroWill/sorowill-contracts/issues/662",
+      "title": "Keeper bounty calculation doesn't validate bounty recipient address is still valid at distribution time",
+      "issue_updated_at": "2026-10-21T11:35:22Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "9e4914fe3fe13a5217f72d36e68e4bc1ead3b2a2",
+      "repository_languages": {
+        "Rust": 1346457,
+        "Shell": 14251,
+        "Just": 1253
+      },
+      "commercial_classification": "unknown",
+      "commercial_reason": "Stellar Wave applications exist; contributor policy requires maintainer assignment. No LeftSock assignment or issue-specific reward funds verified.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/SoroWill/sorowill-contracts/issues/662"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/SoroWill/sorowill-contracts/issues/662",
+            "https://github.com/SoroWill/sorowill-contracts/issues/662#issuecomment-6314737887",
+            "https://github.com/SoroWill/sorowill-contracts/issues/662#issuecomment-6314920621",
+            "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+            "https://www.drips.network/wave"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "Stellar Wave applications exist; contributor policy requires maintainer assignment. No LeftSock assignment or issue-specific reward funds verified. Documented payout claims remain distinct from independently verified funds and LeftSock eligibility.",
+          "evidence_urls": [
+            "https://github.com/SoroWill/sorowill-contracts/issues/662",
+            "https://github.com/SoroWill/sorowill-contracts/issues/662#issuecomment-6314737887",
+            "https://github.com/SoroWill/sorowill-contracts/issues/662#issuecomment-6314920621",
+            "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+            "https://www.drips.network/wave"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "Wave requires KYC before applying and maintainer assignment before work; neither verified for LeftSock. Points are a variable share of a pool, not a guaranteed dollar bounty.",
+          "evidence_urls": [
+            "https://github.com/SoroWill/sorowill-contracts/issues/662",
+            "https://github.com/SoroWill/sorowill-contracts/issues/662#issuecomment-6314737887",
+            "https://github.com/SoroWill/sorowill-contracts/issues/662#issuecomment-6314920621",
+            "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+            "https://www.drips.network/wave"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+            "https://www.drips.network/wave"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "Rust Soroban contract recipient validation; no Python files.",
+          "evidence_urls": [
+            "https://github.com/SoroWill/sorowill-contracts/issues/662",
+            "https://github.com/SoroWill/sorowill-contracts/tree/9e4914fe3fe13a5217f72d36e68e4bc1ead3b2a2"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/SoroWill/sorowill-contracts/issues/662",
+            "https://github.com/SoroWill/sorowill-contracts/issues/662#issuecomment-6314737887",
+            "https://github.com/SoroWill/sorowill-contracts/issues/662#issuecomment-6314920621",
+            "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+            "https://www.drips.network/wave"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/SoroWill/sorowill-contracts/issues/662",
+        "https://github.com/SoroWill/sorowill-contracts/issues/662#issuecomment-6314737887",
+        "https://github.com/SoroWill/sorowill-contracts/issues/662#issuecomment-6314920621",
+        "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+        "https://www.drips.network/wave"
+      ]
+    },
+    {
+      "ordinal": 14,
+      "issue_url": "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915",
+      "title": "[Bounty] [Bounty: $105] Preserve burnTxHash when Stellar confirmation polling hits transi",
+      "issue_updated_at": "2026-10-21T11:24:18Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "51f2f6b5e4f466915bd7c5a6bf7ee6c90c79ff9b",
+      "repository_languages": {
+        "Python": 83735,
+        "Shell": 1980,
+        "Batchfile": 1408
+      },
+      "commercial_classification": "unknown",
+      "commercial_reason": "Aggregator advertises $105; upstream issue #1 returns 404. Coin policy is a claim, not independent sponsor or cash-reserve verification.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6203110643",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6203117534",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6203121472",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6203122120",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6204756684",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6231895088",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6234183018",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6242197050",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6244552345",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6314558409",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6314724980",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/blob/main/REWARD_POLICY.en.md"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "Aggregator advertises $105; upstream issue #1 returns 404. Coin policy is a claim, not independent sponsor or cash-reserve verification. Documented payout claims remain distinct from independently verified funds and LeftSock eligibility.",
+          "evidence_urls": [
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6203110643",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6203117534",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6203121472",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6203122120",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6204756684",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6231895088",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6234183018",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6242197050",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6244552345",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6314558409",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6314724980",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/blob/main/REWARD_POLICY.en.md"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "Aggregator coin/redemption rules do not prove upstream sponsor agreement, withdrawal eligibility or payout reserve. Upstream issue inaccessible (404).",
+          "evidence_urls": [
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6203110643",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6203117534",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6203121472",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6203122120",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6204756684",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6231895088",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6234183018",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6242197050",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6244552345",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6314558409",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6314724980",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/blob/main/REWARD_POLICY.en.md"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/blob/main/REWARD_POLICY.en.md"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "Advertised target is Stellar TypeScript polling, not Python.",
+          "evidence_urls": [
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/tree/51f2f6b5e4f466915bd7c5a6bf7ee6c90c79ff9b"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6203110643",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6203117534",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6203121472",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6203122120",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6204756684",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6231895088",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6234183018",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6242197050",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6244552345",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6314558409",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6314724980",
+            "https://github.com/zhangjiayang6835-cyber/bounty-plaza/blob/main/REWARD_POLICY.en.md"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915",
+        "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6203110643",
+        "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6203117534",
+        "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6203121472",
+        "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6203122120",
+        "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6204756684",
+        "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6231895088",
+        "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6234183018",
+        "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6242197050",
+        "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6244552345",
+        "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6314558409",
+        "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915#issuecomment-6314724980",
+        "https://github.com/zhangjiayang6835-cyber/bounty-plaza/blob/main/REWARD_POLICY.en.md"
+      ]
+    },
+    {
+      "ordinal": 15,
+      "issue_url": "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323",
+      "title": "Require reward campaign funds before campaign activation",
+      "issue_updated_at": "2026-10-21T12:11:28Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "4d67f0447020f007e21aa94fa1803404ea3e093a",
+      "repository_languages": {
+        "Rust": 6278090,
+        "TypeScript": 135423,
+        "Python": 130670,
+        "Shell": 77687,
+        "CSS": 6452,
+        "Makefile": 1115,
+        "JavaScript": 141
+      },
+      "commercial_classification": "rejected",
+      "commercial_reason": "Closed and Wave completion credited to another contributor; unavailable as new work.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "rejected",
+          "reason": "GitHub issue state is closed; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323",
+            "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323#issuecomment-6248989584",
+            "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323#issuecomment-6313230943",
+            "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323#issuecomment-6313436477",
+            "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323#issuecomment-6315584713",
+            "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+            "https://www.drips.network/wave"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "Closed and Wave completion credited to another contributor; unavailable as new work. Documented payout claims remain distinct from independently verified funds and LeftSock eligibility.",
+          "evidence_urls": [
+            "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323",
+            "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323#issuecomment-6248989584",
+            "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323#issuecomment-6313230943",
+            "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323#issuecomment-6313436477",
+            "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323#issuecomment-6315584713",
+            "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+            "https://www.drips.network/wave"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "rejected",
+          "reason": "Closed and Wave completion credited to another contributor; unavailable as new work.",
+          "evidence_urls": [
+            "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323",
+            "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323#issuecomment-6248989584",
+            "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323#issuecomment-6313230943",
+            "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323#issuecomment-6313436477",
+            "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323#issuecomment-6315584713",
+            "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+            "https://www.drips.network/wave"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+            "https://www.drips.network/wave"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "Rust contract funding handshake, outside Python scope.",
+          "evidence_urls": [
+            "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323",
+            "https://github.com/AgesEmpire/StellarSwipe-Contract/tree/4d67f0447020f007e21aa94fa1803404ea3e093a"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323",
+            "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323#issuecomment-6248989584",
+            "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323#issuecomment-6313230943",
+            "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323#issuecomment-6313436477",
+            "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323#issuecomment-6315584713",
+            "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+            "https://www.drips.network/wave"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323",
+        "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323#issuecomment-6248989584",
+        "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323#issuecomment-6313230943",
+        "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323#issuecomment-6313436477",
+        "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323#issuecomment-6315584713",
+        "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+        "https://www.drips.network/wave"
+      ]
+    },
+    {
+      "ordinal": 16,
+      "issue_url": "https://github.com/Refract-Protocol/refract-contracts/issues/313",
+      "title": "Implement Sponsor Escrow Top-Up and Low-Balance Auto-Refill for Bounty Programs",
+      "issue_updated_at": "2026-10-21T11:51:06Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "b49a8a609f89fe17cb00c585bf85826a28ed39df",
+      "repository_languages": {
+        "Rust": 411660,
+        "Python": 46818
+      },
+      "commercial_classification": "rejected",
+      "commercial_reason": "Wave bot records another contributor's accepted application and October 22 due date; unavailable to LeftSock without reassignment.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/Refract-Protocol/refract-contracts/issues/313"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/Refract-Protocol/refract-contracts/issues/313",
+            "https://github.com/Refract-Protocol/refract-contracts/issues/313#issuecomment-6237863946",
+            "https://github.com/Refract-Protocol/refract-contracts/issues/313#issuecomment-6313888209",
+            "https://github.com/Refract-Protocol/refract-contracts/issues/313#issuecomment-6314803979",
+            "https://github.com/Refract-Protocol/refract-contracts/issues/313#issuecomment-6315206038",
+            "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+            "https://www.drips.network/wave"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "Wave bot records another contributor's accepted application and October 22 due date; unavailable to LeftSock without reassignment. Documented payout claims remain distinct from independently verified funds and LeftSock eligibility.",
+          "evidence_urls": [
+            "https://github.com/Refract-Protocol/refract-contracts/issues/313",
+            "https://github.com/Refract-Protocol/refract-contracts/issues/313#issuecomment-6237863946",
+            "https://github.com/Refract-Protocol/refract-contracts/issues/313#issuecomment-6313888209",
+            "https://github.com/Refract-Protocol/refract-contracts/issues/313#issuecomment-6314803979",
+            "https://github.com/Refract-Protocol/refract-contracts/issues/313#issuecomment-6315206038",
+            "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+            "https://www.drips.network/wave"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "rejected",
+          "reason": "Wave bot records another contributor's accepted application and October 22 due date; unavailable to LeftSock without reassignment.",
+          "evidence_urls": [
+            "https://github.com/Refract-Protocol/refract-contracts/issues/313",
+            "https://github.com/Refract-Protocol/refract-contracts/issues/313#issuecomment-6237863946",
+            "https://github.com/Refract-Protocol/refract-contracts/issues/313#issuecomment-6313888209",
+            "https://github.com/Refract-Protocol/refract-contracts/issues/313#issuecomment-6314803979",
+            "https://github.com/Refract-Protocol/refract-contracts/issues/313#issuecomment-6315206038",
+            "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+            "https://www.drips.network/wave"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+            "https://www.drips.network/wave"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "Rust escrow lifecycle feature with multiple entry points and treasury interaction.",
+          "evidence_urls": [
+            "https://github.com/Refract-Protocol/refract-contracts/issues/313",
+            "https://github.com/Refract-Protocol/refract-contracts/tree/b49a8a609f89fe17cb00c585bf85826a28ed39df"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/Refract-Protocol/refract-contracts/issues/313",
+            "https://github.com/Refract-Protocol/refract-contracts/issues/313#issuecomment-6237863946",
+            "https://github.com/Refract-Protocol/refract-contracts/issues/313#issuecomment-6313888209",
+            "https://github.com/Refract-Protocol/refract-contracts/issues/313#issuecomment-6314803979",
+            "https://github.com/Refract-Protocol/refract-contracts/issues/313#issuecomment-6315206038",
+            "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+            "https://www.drips.network/wave"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/Refract-Protocol/refract-contracts/issues/313",
+        "https://github.com/Refract-Protocol/refract-contracts/issues/313#issuecomment-6237863946",
+        "https://github.com/Refract-Protocol/refract-contracts/issues/313#issuecomment-6313888209",
+        "https://github.com/Refract-Protocol/refract-contracts/issues/313#issuecomment-6314803979",
+        "https://github.com/Refract-Protocol/refract-contracts/issues/313#issuecomment-6315206038",
+        "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+        "https://www.drips.network/wave"
+      ]
+    },
+    {
+      "ordinal": 17,
+      "issue_url": "https://github.com/CypherNaught-0x/nodecraft/issues/631",
+      "title": "Providers: a definitive refusal of a paid submit shouldn't count as possibly billed",
+      "issue_updated_at": "2026-10-21T11:26:13Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "20d57adfee528997fa29ae18dd00dbbb01108876",
+      "repository_languages": {
+        "Rust": 10584287,
+        "Shell": 92331,
+        "JavaScript": 24987,
+        "PowerShell": 16518,
+        "WGSL": 12996,
+        "HTML": 1374
+      },
+      "commercial_classification": "rejected",
+      "commercial_reason": "Paid means provider requests billed to the application, not a developer reward.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/CypherNaught-0x/nodecraft/issues/631"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/CypherNaught-0x/nodecraft/issues/631"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "No enforceable issue-specific payout mechanism verified; product financial terminology is not a developer payment promise.",
+          "evidence_urls": [
+            "https://github.com/CypherNaught-0x/nodecraft/issues/631"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "No verified LeftSock identity, location/payment eligibility or accepted assignment; no account registration or terms accepted.",
+          "evidence_urls": [
+            "https://github.com/CypherNaught-0x/nodecraft/issues/631"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://github.com/CypherNaught-0x/nodecraft/issues/631"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "Rust delivery/provider contracts; no Python files.",
+          "evidence_urls": [
+            "https://github.com/CypherNaught-0x/nodecraft/issues/631",
+            "https://github.com/CypherNaught-0x/nodecraft/tree/20d57adfee528997fa29ae18dd00dbbb01108876"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/CypherNaught-0x/nodecraft/issues/631"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/CypherNaught-0x/nodecraft/issues/631"
+      ]
+    },
+    {
+      "ordinal": 18,
+      "issue_url": "https://github.com/paraspell/xcm-tools/issues/2153",
+      "title": "[Bug bounty] Acala exchange: destination fee buffer applied to the whole output instead of only the fee (amountOut inflated ~10%)",
+      "issue_updated_at": "2026-10-21T11:28:08Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "de8d2266ced92c755655e861d17c7dddcc00a25a",
+      "repository_languages": {
+        "TypeScript": 3705909,
+        "CSS": 43188,
+        "JavaScript": 16143,
+        "HTML": 3007
+      },
+      "commercial_classification": "unknown",
+      "commercial_reason": "Maintainer confirms low-severity reward eligibility but insists on on-chain identity; no LeftSock reservation or independent funds verified.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/paraspell/xcm-tools/issues/2153"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/paraspell/xcm-tools/issues/2153",
+            "https://github.com/paraspell/xcm-tools/issues/2153#issuecomment-6195897878",
+            "https://github.com/paraspell/xcm-tools/issues/2153#issuecomment-6273251588",
+            "https://github.com/paraspell/xcm-tools/issues/2153#issuecomment-6275392749",
+            "https://paraspell.github.io/docs/contribution-guidelines.html"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "Maintainer confirms low-severity reward eligibility but insists on on-chain identity; no LeftSock reservation or independent funds verified. Documented payout claims remain distinct from independently verified funds and LeftSock eligibility.",
+          "evidence_urls": [
+            "https://github.com/paraspell/xcm-tools/issues/2153",
+            "https://github.com/paraspell/xcm-tools/issues/2153#issuecomment-6195897878",
+            "https://github.com/paraspell/xcm-tools/issues/2153#issuecomment-6273251588",
+            "https://github.com/paraspell/xcm-tools/issues/2153#issuecomment-6275392749",
+            "https://paraspell.github.io/docs/contribution-guidelines.html"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "LeftSock's required six-month commit history, on-chain identity judgement and reservation not verified; no exception inferred. Owner action and review required.",
+          "evidence_urls": [
+            "https://github.com/paraspell/xcm-tools/issues/2153",
+            "https://github.com/paraspell/xcm-tools/issues/2153#issuecomment-6195897878",
+            "https://github.com/paraspell/xcm-tools/issues/2153#issuecomment-6273251588",
+            "https://github.com/paraspell/xcm-tools/issues/2153#issuecomment-6275392749",
+            "https://paraspell.github.io/docs/contribution-guidelines.html"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "verified",
+          "reason": "Disclosed AI assistance permitted only with human understanding/review; autonomous submissions without it excluded. Six-month history, identity judgement, signatures, reservation and review-response duties apply.",
+          "evidence_urls": [
+            "https://paraspell.github.io/docs/contribution-guidelines.html"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "TypeScript Acala swap arithmetic, not Python.",
+          "evidence_urls": [
+            "https://github.com/paraspell/xcm-tools/issues/2153",
+            "https://github.com/paraspell/xcm-tools/tree/de8d2266ced92c755655e861d17c7dddcc00a25a"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/paraspell/xcm-tools/issues/2153",
+            "https://github.com/paraspell/xcm-tools/issues/2153#issuecomment-6195897878",
+            "https://github.com/paraspell/xcm-tools/issues/2153#issuecomment-6273251588",
+            "https://github.com/paraspell/xcm-tools/issues/2153#issuecomment-6275392749",
+            "https://paraspell.github.io/docs/contribution-guidelines.html"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/paraspell/xcm-tools/issues/2153",
+        "https://github.com/paraspell/xcm-tools/issues/2153#issuecomment-6195897878",
+        "https://github.com/paraspell/xcm-tools/issues/2153#issuecomment-6273251588",
+        "https://github.com/paraspell/xcm-tools/issues/2153#issuecomment-6275392749",
+        "https://paraspell.github.io/docs/contribution-guidelines.html"
+      ]
+    },
+    {
+      "ordinal": 19,
+      "issue_url": "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1",
+      "title": "[BOUNTY $50] SKILL: Generate a structured CHANGELOG from git history",
+      "issue_updated_at": "2026-10-21T11:27:08Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "1aeae2adc82d33f971fd7731644348dcdd24b5a6",
+      "repository_languages": {},
+      "commercial_classification": "unknown",
+      "commercial_reason": "Issue and README advertise $50 automatic-on-merge; current Opire site describes arranged payment after approval. No issue funding confirmation or payout record verified.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6262536000",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6265766051",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6265829083",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6268723091",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6278899745",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6293176488",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6305196732",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6305863671",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6306027040",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6306041451",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6313473613",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6314774330",
+            "https://opire.dev/home",
+            "https://app.opire.dev/home",
+            "https://docs.opire.dev/faq"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "Issue and README advertise $50 automatic-on-merge; current Opire site describes arranged payment after approval. No issue funding confirmation or payout record verified. Documented payout claims remain distinct from independently verified funds and LeftSock eligibility.",
+          "evidence_urls": [
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6262536000",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6265766051",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6265829083",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6268723091",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6278899745",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6293176488",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6305196732",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6305863671",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6306027040",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6306041451",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6313473613",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6314774330",
+            "https://opire.dev/home",
+            "https://app.opire.dev/home",
+            "https://docs.opire.dev/faq"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "No issue-specific Opire fund record or authenticated payout/eligibility evidence; latest comments request funding and AI-policy clarification without a verified maintainer answer.",
+          "evidence_urls": [
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6262536000",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6265766051",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6265829083",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6268723091",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6278899745",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6293176488",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6305196732",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6305863671",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6306027040",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6306041451",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6313473613",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6314774330",
+            "https://opire.dev/home",
+            "https://app.opire.dev/home",
+            "https://docs.opire.dev/faq"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://opire.dev/home",
+            "https://app.opire.dev/home",
+            "https://docs.opire.dev/faq"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "Creation of a new changelog skill/script, not repair of an existing uniquely scoped Python function; repository contains no Python code.",
+          "evidence_urls": [
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/tree/1aeae2adc82d33f971fd7731644348dcdd24b5a6"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Repository tree contains README and license, no source/test harness for a baseline defect. A new Git-reading utility can be Python, but arbitrary git/subprocess use is outside current patch capabilities and sandbox admission. No execution.",
+          "evidence_urls": [
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6262536000",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6265766051",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6265829083",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6268723091",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6278899745",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6293176488",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6305196732",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6305863671",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6306027040",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6306041451",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6313473613",
+            "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6314774330",
+            "https://opire.dev/home",
+            "https://app.opire.dev/home",
+            "https://docs.opire.dev/faq"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1",
+        "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6262536000",
+        "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6265766051",
+        "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6265829083",
+        "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6268723091",
+        "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6278899745",
+        "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6293176488",
+        "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6305196732",
+        "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6305863671",
+        "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6306027040",
+        "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6306041451",
+        "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6313473613",
+        "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1#issuecomment-6314774330",
+        "https://opire.dev/home",
+        "https://app.opire.dev/home",
+        "https://docs.opire.dev/faq"
+      ]
+    },
+    {
+      "ordinal": 20,
+      "issue_url": "https://github.com/DLC-link/decentralization-manager/issues/563",
+      "title": "Attach AmuletRules and the open round when executing a paid credential accept",
+      "issue_updated_at": "2026-10-21T11:30:49Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "79085a4466ecbc1076e6d8b746ca7d90b426741f",
+      "repository_languages": {
+        "Rust": 4981391,
+        "TypeScript": 1170502,
+        "Shell": 77088,
+        "Dockerfile": 5757,
+        "Just": 1942,
+        "CSS": 1704,
+        "HTML": 1220,
+        "JavaScript": 616
+      },
+      "commercial_classification": "rejected",
+      "commercial_reason": "Paid means a network credential, not developer compensation.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/DLC-link/decentralization-manager/issues/563"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/DLC-link/decentralization-manager/issues/563"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "No enforceable issue-specific payout mechanism verified; product financial terminology is not a developer payment promise.",
+          "evidence_urls": [
+            "https://github.com/DLC-link/decentralization-manager/issues/563"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "No verified LeftSock identity, location/payment eligibility or accepted assignment; no account registration or terms accepted.",
+          "evidence_urls": [
+            "https://github.com/DLC-link/decentralization-manager/issues/563"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://github.com/DLC-link/decentralization-manager/issues/563"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "Rust backend plus TypeScript UI disclosed-contract integration; no Python files.",
+          "evidence_urls": [
+            "https://github.com/DLC-link/decentralization-manager/issues/563",
+            "https://github.com/DLC-link/decentralization-manager/tree/79085a4466ecbc1076e6d8b746ca7d90b426741f"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/DLC-link/decentralization-manager/issues/563"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/DLC-link/decentralization-manager/issues/563"
+      ]
+    },
+    {
+      "ordinal": 21,
+      "issue_url": "https://github.com/Drago-Labs/golden-raccoon/issues/368",
+      "title": "Security: Summarize published bug bounty and vulnerability disclosure programs",
+      "issue_updated_at": "2026-10-21T11:32:08Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "9fd06dfa2cf32a0a2f5f4f4d2b3fbac8970be23f",
+      "repository_languages": {
+        "TypeScript": 5937005,
+        "Rust": 152118,
+        "JavaScript": 140358,
+        "PLpgSQL": 64179,
+        "Solidity": 41420,
+        "CSS": 12203,
+        "Shell": 10883,
+        "Python": 10676
+      },
+      "commercial_classification": "unknown",
+      "commercial_reason": "Stellar Wave applications and assignment prerequisite exist, but no LeftSock assignment, fixed payout or independently verified issue funding.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/Drago-Labs/golden-raccoon/issues/368"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/Drago-Labs/golden-raccoon/issues/368",
+            "https://github.com/Drago-Labs/golden-raccoon/issues/368#issuecomment-6254189181",
+            "https://github.com/Drago-Labs/golden-raccoon/issues/368#issuecomment-6266706615",
+            "https://github.com/Drago-Labs/golden-raccoon/issues/368#issuecomment-6266796702",
+            "https://github.com/Drago-Labs/golden-raccoon/issues/368#issuecomment-6314864966",
+            "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+            "https://www.drips.network/wave"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "Stellar Wave applications and assignment prerequisite exist, but no LeftSock assignment, fixed payout or independently verified issue funding. Documented payout claims remain distinct from independently verified funds and LeftSock eligibility.",
+          "evidence_urls": [
+            "https://github.com/Drago-Labs/golden-raccoon/issues/368",
+            "https://github.com/Drago-Labs/golden-raccoon/issues/368#issuecomment-6254189181",
+            "https://github.com/Drago-Labs/golden-raccoon/issues/368#issuecomment-6266706615",
+            "https://github.com/Drago-Labs/golden-raccoon/issues/368#issuecomment-6266796702",
+            "https://github.com/Drago-Labs/golden-raccoon/issues/368#issuecomment-6314864966",
+            "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+            "https://www.drips.network/wave"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "Wave requires KYC before applying and maintainer assignment before work; neither verified for LeftSock. Points are a variable share of a pool, not a guaranteed dollar bounty.",
+          "evidence_urls": [
+            "https://github.com/Drago-Labs/golden-raccoon/issues/368",
+            "https://github.com/Drago-Labs/golden-raccoon/issues/368#issuecomment-6254189181",
+            "https://github.com/Drago-Labs/golden-raccoon/issues/368#issuecomment-6266706615",
+            "https://github.com/Drago-Labs/golden-raccoon/issues/368#issuecomment-6266796702",
+            "https://github.com/Drago-Labs/golden-raccoon/issues/368#issuecomment-6314864966",
+            "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+            "https://www.drips.network/wave"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+            "https://www.drips.network/wave"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "New TypeScript/Next.js multi-module discovery, parsing and UI feature; not Python repair.",
+          "evidence_urls": [
+            "https://github.com/Drago-Labs/golden-raccoon/issues/368",
+            "https://github.com/Drago-Labs/golden-raccoon/tree/9fd06dfa2cf32a0a2f5f4f4d2b3fbac8970be23f"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/Drago-Labs/golden-raccoon/issues/368",
+            "https://github.com/Drago-Labs/golden-raccoon/issues/368#issuecomment-6254189181",
+            "https://github.com/Drago-Labs/golden-raccoon/issues/368#issuecomment-6266706615",
+            "https://github.com/Drago-Labs/golden-raccoon/issues/368#issuecomment-6266796702",
+            "https://github.com/Drago-Labs/golden-raccoon/issues/368#issuecomment-6314864966",
+            "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+            "https://www.drips.network/wave"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/Drago-Labs/golden-raccoon/issues/368",
+        "https://github.com/Drago-Labs/golden-raccoon/issues/368#issuecomment-6254189181",
+        "https://github.com/Drago-Labs/golden-raccoon/issues/368#issuecomment-6266706615",
+        "https://github.com/Drago-Labs/golden-raccoon/issues/368#issuecomment-6266796702",
+        "https://github.com/Drago-Labs/golden-raccoon/issues/368#issuecomment-6314864966",
+        "https://docs.drips.network/wave/contributors/solving-issues-and-earning-rewards/",
+        "https://www.drips.network/wave"
+      ]
+    },
+    {
+      "ordinal": 22,
+      "issue_url": "https://github.com/auscaster/frantic-board/issues/540",
+      "title": "Frantic bounty #141: Let your agent onboard itself through the Nitrosend MCP server and send one email",
+      "issue_updated_at": "2026-10-21T12:11:44Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "613a72868a0ab069a219d03b4bcff9b098485856",
+      "repository_languages": {
+        "Shell": 12679,
+        "JavaScript": 2949
+      },
+      "commercial_classification": "unknown",
+      "commercial_reason": "Mirrored $1 agent onboarding posting claims slots and funding; primary bounty/receipt pages inaccessible; identity eligibility unknown.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/auscaster/frantic-board/issues/540"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/auscaster/frantic-board/issues/540",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6310826139",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6311658245",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6312171921",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6312654810",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6313941176",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6314274361",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6314950972",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315060373",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315166631",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315258685",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315524773",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315589721",
+            "https://github.com/auscaster/frantic-board/blob/main/CONTRIBUTING.md",
+            "https://gofrantic.com/wtf",
+            "https://gofrantic.com/charter"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "Mirrored $1 agent onboarding posting claims slots and funding; primary bounty/receipt pages inaccessible; identity eligibility unknown. Documented payout claims remain distinct from independently verified funds and LeftSock eligibility.",
+          "evidence_urls": [
+            "https://github.com/auscaster/frantic-board/issues/540",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6310826139",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6311658245",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6312171921",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6312654810",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6313941176",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6314274361",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6314950972",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315060373",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315166631",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315258685",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315524773",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315589721",
+            "https://github.com/auscaster/frantic-board/blob/main/CONTRIBUTING.md",
+            "https://gofrantic.com/wtf",
+            "https://gofrantic.com/charter"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "Venue requires verified identity for paid tasks; LeftSock registration, current paid-access status and accepted terms not verified. No account created.",
+          "evidence_urls": [
+            "https://github.com/auscaster/frantic-board/issues/540",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6310826139",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6311658245",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6312171921",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6312654810",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6313941176",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6314274361",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6314950972",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315060373",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315166631",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315258685",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315524773",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315589721",
+            "https://github.com/auscaster/frantic-board/blob/main/CONTRIBUTING.md",
+            "https://gofrantic.com/wtf",
+            "https://gofrantic.com/charter"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "verified",
+          "reason": "Official contribution page and venue explicitly invite agent participation. This does not authorize account onboarding, external email, claims or terms for this owner.",
+          "evidence_urls": [
+            "https://github.com/auscaster/frantic-board/blob/main/CONTRIBUTING.md",
+            "https://gofrantic.com/wtf",
+            "https://gofrantic.com/charter"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "Account onboarding and sending email through an external MCP server are not Python defect repair.",
+          "evidence_urls": [
+            "https://github.com/auscaster/frantic-board/issues/540",
+            "https://github.com/auscaster/frantic-board/tree/613a72868a0ab069a219d03b4bcff9b098485856"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/auscaster/frantic-board/issues/540",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6310826139",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6311658245",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6312171921",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6312654810",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6313941176",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6314274361",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6314950972",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315060373",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315166631",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315258685",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315524773",
+            "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315589721",
+            "https://github.com/auscaster/frantic-board/blob/main/CONTRIBUTING.md",
+            "https://gofrantic.com/wtf",
+            "https://gofrantic.com/charter"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/auscaster/frantic-board/issues/540",
+        "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6310826139",
+        "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6311658245",
+        "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6312171921",
+        "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6312654810",
+        "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6313941176",
+        "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6314274361",
+        "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6314950972",
+        "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315060373",
+        "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315166631",
+        "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315258685",
+        "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315524773",
+        "https://github.com/auscaster/frantic-board/issues/540#issuecomment-6315589721",
+        "https://github.com/auscaster/frantic-board/blob/main/CONTRIBUTING.md",
+        "https://gofrantic.com/wtf",
+        "https://gofrantic.com/charter"
+      ]
+    },
+    {
+      "ordinal": 23,
+      "issue_url": "https://github.com/markabramov1993/arbitr/issues/8",
+      "title": "[RADAR] High-value blockchain bounty discovery",
+      "issue_updated_at": "2026-10-21T11:40:00Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "86f7ec765a3ef6763b047a1c38029d153a52f332",
+      "repository_languages": {
+        "Python": 76414,
+        "Rust": 7203,
+        "HTML": 5071,
+        "TypeScript": 2085
+      },
+      "commercial_classification": "rejected",
+      "commercial_reason": "Radar aggregates nominal amounts and discovery links; this is not a sponsor's scoped payable task.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/markabramov1993/arbitr/issues/8"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/markabramov1993/arbitr/issues/8",
+            "https://github.com/markabramov1993/arbitr/issues/8#issuecomment-5692413022"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "No enforceable issue-specific payout mechanism verified; product financial terminology is not a developer payment promise.",
+          "evidence_urls": [
+            "https://github.com/markabramov1993/arbitr/issues/8",
+            "https://github.com/markabramov1993/arbitr/issues/8#issuecomment-5692413022"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "No verified LeftSock identity, location/payment eligibility or accepted assignment; no account registration or terms accepted.",
+          "evidence_urls": [
+            "https://github.com/markabramov1993/arbitr/issues/8",
+            "https://github.com/markabramov1993/arbitr/issues/8#issuecomment-5692413022"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://github.com/markabramov1993/arbitr/issues/8"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "An opportunity-discovery report, not a reproduced source defect.",
+          "evidence_urls": [
+            "https://github.com/markabramov1993/arbitr/issues/8",
+            "https://github.com/markabramov1993/arbitr/tree/86f7ec765a3ef6763b047a1c38029d153a52f332"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/markabramov1993/arbitr/issues/8",
+            "https://github.com/markabramov1993/arbitr/issues/8#issuecomment-5692413022"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/markabramov1993/arbitr/issues/8",
+        "https://github.com/markabramov1993/arbitr/issues/8#issuecomment-5692413022"
+      ]
+    },
+    {
+      "ordinal": 24,
+      "issue_url": "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/12",
+      "title": "P02-S01 \u2014 A mentor can publish availability and receive a paid question",
+      "issue_updated_at": "2026-10-21T11:40:48Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "4f667b58898955d13b74641e5e0666423e6698c6",
+      "repository_languages": {
+        "TypeScript": 279375,
+        "HTML": 42705,
+        "CSS": 37051,
+        "Shell": 16053,
+        "JavaScript": 2546
+      },
+      "commercial_classification": "rejected",
+      "commercial_reason": "Closed and explicitly superseded pilot backlog; paid refers to product questions, not developer compensation.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "rejected",
+          "reason": "GitHub issue state is closed; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/12"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/12",
+            "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/12#issuecomment-6315019339"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "No enforceable issue-specific payout mechanism verified; product financial terminology is not a developer payment promise.",
+          "evidence_urls": [
+            "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/12",
+            "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/12#issuecomment-6315019339"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "rejected",
+          "reason": "Closed and explicitly superseded pilot backlog; paid refers to product questions, not developer compensation.",
+          "evidence_urls": [
+            "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/12",
+            "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/12#issuecomment-6315019339"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/12"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "Superseded TypeScript product feature; no Python files.",
+          "evidence_urls": [
+            "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/12",
+            "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/tree/4f667b58898955d13b74641e5e0666423e6698c6"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/12",
+            "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/12#issuecomment-6315019339"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/12",
+        "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/12#issuecomment-6315019339"
+      ]
+    },
+    {
+      "ordinal": 25,
+      "issue_url": "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/49",
+      "title": "E03-S06 \u2014 DevMentor keeps 20% of a paid session and the mentor's share is paid out through Stripe Connect",
+      "issue_updated_at": "2026-10-21T11:40:03Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "4f667b58898955d13b74641e5e0666423e6698c6",
+      "repository_languages": {
+        "TypeScript": 279375,
+        "HTML": 42705,
+        "CSS": 37051,
+        "Shell": 16053,
+        "JavaScript": 2546
+      },
+      "commercial_classification": "rejected",
+      "commercial_reason": "Paid means mentor-session payouts, not developer compensation.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/49"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/49"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "No enforceable issue-specific payout mechanism verified; product financial terminology is not a developer payment promise.",
+          "evidence_urls": [
+            "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/49"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "No verified LeftSock identity, location/payment eligibility or accepted assignment; no account registration or terms accepted.",
+          "evidence_urls": [
+            "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/49"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/49"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "TypeScript Stripe Connect feature, multiple entities and financial integration; no Python files.",
+          "evidence_urls": [
+            "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/49",
+            "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/tree/4f667b58898955d13b74641e5e0666423e6698c6"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/49"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/49"
+      ]
+    },
+    {
+      "ordinal": 26,
+      "issue_url": "https://github.com/paraloom-labs/paraloom-core/issues/1166",
+      "title": "[BOUNTY] High: Cross-cluster (mainnet-beta vs devnet) ShieldedNote storage collision & dropPhantomNotes note destruction, stranded gas SOL on token-to-token reshield swaps, and unverified inner CPI frame eventPayloads (paraloom-wallet)",
+      "issue_updated_at": "2026-10-21T11:47:24Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "9e8c8e6d403a4793b841ac1c569eefd11d60c9ad",
+      "repository_languages": {
+        "Rust": 2410901,
+        "Shell": 22360,
+        "Dockerfile": 2222
+      },
+      "commercial_classification": "unknown",
+      "commercial_reason": "Existing multi-vulnerability report with companion fix PR; bounty policy rewards first valid findings, not an independently guaranteed second repair award.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/paraloom-labs/paraloom-core/issues/1166"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/paraloom-labs/paraloom-core/issues/1166",
+            "https://github.com/paraloom-labs/paraloom-core/blob/main/docs/bug-bounty.md"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "Existing multi-vulnerability report with companion fix PR; bounty policy rewards first valid findings, not an independently guaranteed second repair award. Documented payout claims remain distinct from independently verified funds and LeftSock eligibility.",
+          "evidence_urls": [
+            "https://github.com/paraloom-labs/paraloom-core/issues/1166",
+            "https://github.com/paraloom-labs/paraloom-core/blob/main/docs/bug-bounty.md"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "Finite $3,000 pool and first-valid-unique-finding rules; these findings already publicly reported. LeftSock has no verified eligible original report or separate paid-fix agreement.",
+          "evidence_urls": [
+            "https://github.com/paraloom-labs/paraloom-core/issues/1166",
+            "https://github.com/paraloom-labs/paraloom-core/blob/main/docs/bug-bounty.md"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://github.com/paraloom-labs/paraloom-core/blob/main/docs/bug-bounty.md"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "Target is TypeScript wallet across note storage, swaps and event parsing; not Python.",
+          "evidence_urls": [
+            "https://github.com/paraloom-labs/paraloom-core/issues/1166",
+            "https://github.com/paraloom-labs/paraloom-core/tree/9e8c8e6d403a4793b841ac1c569eefd11d60c9ad"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/paraloom-labs/paraloom-core/issues/1166",
+            "https://github.com/paraloom-labs/paraloom-core/blob/main/docs/bug-bounty.md"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/paraloom-labs/paraloom-core/issues/1166",
+        "https://github.com/paraloom-labs/paraloom-core/blob/main/docs/bug-bounty.md"
+      ]
+    },
+    {
+      "ordinal": 27,
+      "issue_url": "https://github.com/auscaster/frantic-board/issues/538",
+      "title": "Frantic bounty #139: Send your first email with the Nitrosend CLI and report how it went",
+      "issue_updated_at": "2026-10-21T12:13:07Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "613a72868a0ab069a219d03b4bcff9b098485856",
+      "repository_languages": {
+        "Shell": 12679,
+        "JavaScript": 2949
+      },
+      "commercial_classification": "unknown",
+      "commercial_reason": "Mirrored $1 email task claims available slots and funding; primary bounty and receipt pages inaccessible, so funds and account eligibility unverified.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/auscaster/frantic-board/issues/538"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/auscaster/frantic-board/issues/538",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313653142",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313715983",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313760412",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313839615",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313839877",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313842780",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313876862",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313932497",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6314391037",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6315084288",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6315103277",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6315614966",
+            "https://github.com/auscaster/frantic-board/blob/main/CONTRIBUTING.md",
+            "https://gofrantic.com/wtf",
+            "https://gofrantic.com/charter"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "Mirrored $1 email task claims available slots and funding; primary bounty and receipt pages inaccessible, so funds and account eligibility unverified. Documented payout claims remain distinct from independently verified funds and LeftSock eligibility.",
+          "evidence_urls": [
+            "https://github.com/auscaster/frantic-board/issues/538",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313653142",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313715983",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313760412",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313839615",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313839877",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313842780",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313876862",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313932497",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6314391037",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6315084288",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6315103277",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6315614966",
+            "https://github.com/auscaster/frantic-board/blob/main/CONTRIBUTING.md",
+            "https://gofrantic.com/wtf",
+            "https://gofrantic.com/charter"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "Venue requires verified identity for paid tasks; LeftSock registration, current paid-access status and accepted terms not verified. No account created.",
+          "evidence_urls": [
+            "https://github.com/auscaster/frantic-board/issues/538",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313653142",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313715983",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313760412",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313839615",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313839877",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313842780",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313876862",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313932497",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6314391037",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6315084288",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6315103277",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6315614966",
+            "https://github.com/auscaster/frantic-board/blob/main/CONTRIBUTING.md",
+            "https://gofrantic.com/wtf",
+            "https://gofrantic.com/charter"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "verified",
+          "reason": "Official contribution page and venue explicitly invite agent participation. This does not authorize account onboarding, external email, claims or terms for this owner.",
+          "evidence_urls": [
+            "https://github.com/auscaster/frantic-board/blob/main/CONTRIBUTING.md",
+            "https://gofrantic.com/wtf",
+            "https://gofrantic.com/charter"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "External CLI onboarding and sending email, not a Python defect repair.",
+          "evidence_urls": [
+            "https://github.com/auscaster/frantic-board/issues/538",
+            "https://github.com/auscaster/frantic-board/tree/613a72868a0ab069a219d03b4bcff9b098485856"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/auscaster/frantic-board/issues/538",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313653142",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313715983",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313760412",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313839615",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313839877",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313842780",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313876862",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313932497",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6314391037",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6315084288",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6315103277",
+            "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6315614966",
+            "https://github.com/auscaster/frantic-board/blob/main/CONTRIBUTING.md",
+            "https://gofrantic.com/wtf",
+            "https://gofrantic.com/charter"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/auscaster/frantic-board/issues/538",
+        "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313653142",
+        "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313715983",
+        "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313760412",
+        "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313839615",
+        "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313839877",
+        "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313842780",
+        "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313876862",
+        "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6313932497",
+        "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6314391037",
+        "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6315084288",
+        "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6315103277",
+        "https://github.com/auscaster/frantic-board/issues/538#issuecomment-6315614966",
+        "https://github.com/auscaster/frantic-board/blob/main/CONTRIBUTING.md",
+        "https://gofrantic.com/wtf",
+        "https://gofrantic.com/charter"
+      ]
+    },
+    {
+      "ordinal": 28,
+      "issue_url": "https://github.com/louisianahelpr/louisianahelpr/issues/3497",
+      "title": "When a Helpr agrees to give back part of a job's price, should the poster get back exactly that amount, or the same share of everything they paid (the price plus any rush fee and tax), less the card processing fee?",
+      "issue_updated_at": "2026-10-21T11:41:37Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "1c49ea7ca18404bb232c46d5d14f57613a16c1b1",
+      "repository_languages": {
+        "TypeScript": 37209385,
+        "PLpgSQL": 10729922,
+        "JavaScript": 8585775,
+        "CSS": 246708,
+        "Shell": 136621,
+        "HTML": 103109,
+        "Ruby": 51572,
+        "Swift": 26588
+      },
+      "commercial_classification": "rejected",
+      "commercial_reason": "Owner-needed business-rule choice; job price refers to the product's users, not developer compensation.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/louisianahelpr/louisianahelpr/issues/3497"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/louisianahelpr/louisianahelpr/issues/3497"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "No enforceable issue-specific payout mechanism verified; product financial terminology is not a developer payment promise.",
+          "evidence_urls": [
+            "https://github.com/louisianahelpr/louisianahelpr/issues/3497"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "No verified LeftSock identity, location/payment eligibility or accepted assignment; no account registration or terms accepted.",
+          "evidence_urls": [
+            "https://github.com/louisianahelpr/louisianahelpr/issues/3497"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://github.com/louisianahelpr/louisianahelpr/issues/3497"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "Requires owner policy choice, not a deterministic Python bug; TypeScript repository.",
+          "evidence_urls": [
+            "https://github.com/louisianahelpr/louisianahelpr/issues/3497",
+            "https://github.com/louisianahelpr/louisianahelpr/tree/1c49ea7ca18404bb232c46d5d14f57613a16c1b1"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/louisianahelpr/louisianahelpr/issues/3497"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/louisianahelpr/louisianahelpr/issues/3497"
+      ]
+    },
+    {
+      "ordinal": 29,
+      "issue_url": "https://github.com/paraloom-labs/paraloom-core/issues/1160",
+      "title": "[BOUNTY] Medium: CommitmentGenerator scheme mismatch (Poseidon vs Pedersen), proof_codec trailing-byte/endianness bugs, transaction validation gaps, and Coordinator HA failover task stranding",
+      "issue_updated_at": "2026-10-21T11:48:54Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "9e8c8e6d403a4793b841ac1c569eefd11d60c9ad",
+      "repository_languages": {
+        "Rust": 2410901,
+        "Shell": 22360,
+        "Dockerfile": 2222
+      },
+      "commercial_classification": "unknown",
+      "commercial_reason": "Reporter asserts up to $150 USDC under a finite first-report bounty pool; several competing fixes already posted. Remaining funds, triage and any fix reward unknown.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/paraloom-labs/paraloom-core/issues/1160"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/paraloom-labs/paraloom-core/issues/1160",
+            "https://github.com/paraloom-labs/paraloom-core/issues/1160#issuecomment-6310810471",
+            "https://github.com/paraloom-labs/paraloom-core/issues/1160#issuecomment-6311072060",
+            "https://github.com/paraloom-labs/paraloom-core/issues/1160#issuecomment-6311464987",
+            "https://github.com/paraloom-labs/paraloom-core/issues/1160#issuecomment-6315165644",
+            "https://github.com/paraloom-labs/paraloom-core/blob/main/docs/bug-bounty.md"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "Reporter asserts up to $150 USDC under a finite first-report bounty pool; several competing fixes already posted. Remaining funds, triage and any fix reward unknown. Documented payout claims remain distinct from independently verified funds and LeftSock eligibility.",
+          "evidence_urls": [
+            "https://github.com/paraloom-labs/paraloom-core/issues/1160",
+            "https://github.com/paraloom-labs/paraloom-core/issues/1160#issuecomment-6310810471",
+            "https://github.com/paraloom-labs/paraloom-core/issues/1160#issuecomment-6311072060",
+            "https://github.com/paraloom-labs/paraloom-core/issues/1160#issuecomment-6311464987",
+            "https://github.com/paraloom-labs/paraloom-core/issues/1160#issuecomment-6315165644",
+            "https://github.com/paraloom-labs/paraloom-core/blob/main/docs/bug-bounty.md"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "Finite $3,000 pool and first-valid-unique-finding rules; these findings already publicly reported. LeftSock has no verified eligible original report or separate paid-fix agreement.",
+          "evidence_urls": [
+            "https://github.com/paraloom-labs/paraloom-core/issues/1160",
+            "https://github.com/paraloom-labs/paraloom-core/issues/1160#issuecomment-6310810471",
+            "https://github.com/paraloom-labs/paraloom-core/issues/1160#issuecomment-6311072060",
+            "https://github.com/paraloom-labs/paraloom-core/issues/1160#issuecomment-6311464987",
+            "https://github.com/paraloom-labs/paraloom-core/issues/1160#issuecomment-6315165644",
+            "https://github.com/paraloom-labs/paraloom-core/blob/main/docs/bug-bounty.md"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://github.com/paraloom-labs/paraloom-core/blob/main/docs/bug-bounty.md"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "Four Rust privacy/coordinator modules; not a single Python function; some compute paths excluded by bounty policy.",
+          "evidence_urls": [
+            "https://github.com/paraloom-labs/paraloom-core/issues/1160",
+            "https://github.com/paraloom-labs/paraloom-core/tree/9e8c8e6d403a4793b841ac1c569eefd11d60c9ad"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/paraloom-labs/paraloom-core/issues/1160",
+            "https://github.com/paraloom-labs/paraloom-core/issues/1160#issuecomment-6310810471",
+            "https://github.com/paraloom-labs/paraloom-core/issues/1160#issuecomment-6311072060",
+            "https://github.com/paraloom-labs/paraloom-core/issues/1160#issuecomment-6311464987",
+            "https://github.com/paraloom-labs/paraloom-core/issues/1160#issuecomment-6315165644",
+            "https://github.com/paraloom-labs/paraloom-core/blob/main/docs/bug-bounty.md"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/paraloom-labs/paraloom-core/issues/1160",
+        "https://github.com/paraloom-labs/paraloom-core/issues/1160#issuecomment-6310810471",
+        "https://github.com/paraloom-labs/paraloom-core/issues/1160#issuecomment-6311072060",
+        "https://github.com/paraloom-labs/paraloom-core/issues/1160#issuecomment-6311464987",
+        "https://github.com/paraloom-labs/paraloom-core/issues/1160#issuecomment-6315165644",
+        "https://github.com/paraloom-labs/paraloom-core/blob/main/docs/bug-bounty.md"
+      ]
+    },
+    {
+      "ordinal": 30,
+      "issue_url": "https://github.com/Marko026/luxwebstore/issues/25",
+      "title": "A paid Checkout becomes an Order with a confirmation page",
+      "issue_updated_at": "2026-10-21T11:46:50Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "bc949ba7d7aec981d0132c9a398f8a57fb144554",
+      "repository_languages": {
+        "TypeScript": 182561,
+        "CSS": 8367,
+        "JavaScript": 2763
+      },
+      "commercial_classification": "rejected",
+      "commercial_reason": "Paid means a customer's Checkout, not developer compensation.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/Marko026/luxwebstore/issues/25"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/Marko026/luxwebstore/issues/25"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "No enforceable issue-specific payout mechanism verified; product financial terminology is not a developer payment promise.",
+          "evidence_urls": [
+            "https://github.com/Marko026/luxwebstore/issues/25"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "No verified LeftSock identity, location/payment eligibility or accepted assignment; no account registration or terms accepted.",
+          "evidence_urls": [
+            "https://github.com/Marko026/luxwebstore/issues/25"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://github.com/Marko026/luxwebstore/issues/25"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "TypeScript/Stripe/Postgres order feature with webhook and UI; no Python files.",
+          "evidence_urls": [
+            "https://github.com/Marko026/luxwebstore/issues/25",
+            "https://github.com/Marko026/luxwebstore/tree/bc949ba7d7aec981d0132c9a398f8a57fb144554"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/Marko026/luxwebstore/issues/25"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/Marko026/luxwebstore/issues/25"
+      ]
+    },
+    {
+      "ordinal": 31,
+      "issue_url": "https://github.com/airdropia/earn-ops/issues/3",
+      "title": "bounty digest 2026-10-21",
+      "issue_updated_at": "2026-10-21T11:47:31Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "5b5bf615070e59197c5ca50f068009677aa3602b",
+      "repository_languages": {
+        "JavaScript": 51920,
+        "Shell": 1749
+      },
+      "commercial_classification": "rejected",
+      "commercial_reason": "Automated digest explicitly reports paymentMode=disabled and committed=0 for every pool; no independently payable task here.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/airdropia/earn-ops/issues/3"
+          ]
+        },
+        "funding": {
+          "status": "rejected",
+          "reason": "Digest explicitly says payments disabled and committed=0; nominal caps are not funding.",
+          "evidence_urls": [
+            "https://github.com/airdropia/earn-ops/issues/3"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "No enforceable issue-specific payout mechanism verified; product financial terminology is not a developer payment promise.",
+          "evidence_urls": [
+            "https://github.com/airdropia/earn-ops/issues/3"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "No verified LeftSock identity, location/payment eligibility or accepted assignment; no account registration or terms accepted.",
+          "evidence_urls": [
+            "https://github.com/airdropia/earn-ops/issues/3"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://github.com/airdropia/earn-ops/issues/3"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "Digest of other projects, not an approved source defect.",
+          "evidence_urls": [
+            "https://github.com/airdropia/earn-ops/issues/3",
+            "https://github.com/airdropia/earn-ops/tree/5b5bf615070e59197c5ca50f068009677aa3602b"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/airdropia/earn-ops/issues/3"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/airdropia/earn-ops/issues/3"
+      ]
+    },
+    {
+      "ordinal": 32,
+      "issue_url": "https://github.com/paraspell/xcm-tools/issues/2174",
+      "title": "[Bug bounty] Hydration calculateFee passes raw units as a decimal string, so the fee is estimated on an oversized trade",
+      "issue_updated_at": "2026-10-21T11:57:37Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "de8d2266ced92c755655e861d17c7dddcc00a25a",
+      "repository_languages": {
+        "TypeScript": 3705909,
+        "CSS": 43188,
+        "JavaScript": 16143,
+        "HTML": 3007
+      },
+      "commercial_classification": "unknown",
+      "commercial_reason": "Maintainer says reporting reward paid to the original reporter and links an extrinsic; reporter asks to reserve the fix. Not revenue for LeftSock; fix availability and funds unknown.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/paraspell/xcm-tools/issues/2174"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/paraspell/xcm-tools/issues/2174",
+            "https://github.com/paraspell/xcm-tools/issues/2174#issuecomment-6315190013",
+            "https://github.com/paraspell/xcm-tools/issues/2174#issuecomment-6315324948",
+            "https://paraspell.github.io/docs/contribution-guidelines.html"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "Maintainer says reporting reward paid to the original reporter and links an extrinsic; reporter asks to reserve the fix. Not revenue for LeftSock; fix availability and funds unknown. Documented payout claims remain distinct from independently verified funds and LeftSock eligibility.",
+          "evidence_urls": [
+            "https://github.com/paraspell/xcm-tools/issues/2174",
+            "https://github.com/paraspell/xcm-tools/issues/2174#issuecomment-6315190013",
+            "https://github.com/paraspell/xcm-tools/issues/2174#issuecomment-6315324948",
+            "https://paraspell.github.io/docs/contribution-guidelines.html"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "LeftSock's required six-month commit history, on-chain identity judgement and reservation not verified; no exception inferred. Owner action and review required.",
+          "evidence_urls": [
+            "https://github.com/paraspell/xcm-tools/issues/2174",
+            "https://github.com/paraspell/xcm-tools/issues/2174#issuecomment-6315190013",
+            "https://github.com/paraspell/xcm-tools/issues/2174#issuecomment-6315324948",
+            "https://paraspell.github.io/docs/contribution-guidelines.html"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "verified",
+          "reason": "Disclosed AI assistance permitted only with human understanding/review; autonomous submissions without it excluded. Six-month history, identity judgement, signatures, reservation and review-response duties apply.",
+          "evidence_urls": [
+            "https://paraspell.github.io/docs/contribution-guidelines.html"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "TypeScript Hydration fee estimation; not Python.",
+          "evidence_urls": [
+            "https://github.com/paraspell/xcm-tools/issues/2174",
+            "https://github.com/paraspell/xcm-tools/tree/de8d2266ced92c755655e861d17c7dddcc00a25a"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/paraspell/xcm-tools/issues/2174",
+            "https://github.com/paraspell/xcm-tools/issues/2174#issuecomment-6315190013",
+            "https://github.com/paraspell/xcm-tools/issues/2174#issuecomment-6315324948",
+            "https://paraspell.github.io/docs/contribution-guidelines.html"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/paraspell/xcm-tools/issues/2174",
+        "https://github.com/paraspell/xcm-tools/issues/2174#issuecomment-6315190013",
+        "https://github.com/paraspell/xcm-tools/issues/2174#issuecomment-6315324948",
+        "https://paraspell.github.io/docs/contribution-guidelines.html"
+      ]
+    },
+    {
+      "ordinal": 33,
+      "issue_url": "https://github.com/cashubtc/cdk/issues/2325",
+      "title": "bug(cdk-mint-rpc): force-paid mint quote RPC can over credit quotes",
+      "issue_updated_at": "2026-10-21T11:50:59Z",
+      "observed_at": "2026-10-21T12:16:29.230Z",
+      "repository_tree_sha": "9ab4ad64a8031dd49d03b947d62a73e526f333d4",
+      "repository_languages": {
+        "Rust": 9615288,
+        "Shell": 99951,
+        "Nix": 70804,
+        "Just": 42562,
+        "Python": 41201,
+        "Dart": 9436,
+        "Swift": 4868,
+        "Kotlin": 4736,
+        "Go": 4393,
+        "CSS": 1980,
+        "Dockerfile": 1750,
+        "PLpgSQL": 257
+      },
+      "commercial_classification": "rejected",
+      "commercial_reason": "Force-paid describes mint-quote accounting, not a developer bounty offer.",
+      "qualification_classification": "rejected",
+      "execution_authorized": false,
+      "commercial_review_ready": false,
+      "owner_review_candidate": false,
+      "dimensions": {
+        "issue_open": {
+          "status": "verified",
+          "reason": "GitHub issue state is open; open state alone does not imply available work.",
+          "evidence_urls": [
+            "https://github.com/cashubtc/cdk/issues/2325"
+          ]
+        },
+        "funding": {
+          "status": "unknown",
+          "reason": "No independently verified remaining escrow or binding, issue-specific commitment to pay LeftSock. Advertised amounts and other contributors' payments do not establish this.",
+          "evidence_urls": [
+            "https://github.com/cashubtc/cdk/issues/2325",
+            "https://github.com/cashubtc/cdk/issues/2325#issuecomment-6038041341"
+          ]
+        },
+        "payout_mechanism_legitimate": {
+          "status": "unknown",
+          "reason": "No enforceable issue-specific payout mechanism verified; product financial terminology is not a developer payment promise.",
+          "evidence_urls": [
+            "https://github.com/cashubtc/cdk/issues/2325",
+            "https://github.com/cashubtc/cdk/issues/2325#issuecomment-6038041341"
+          ]
+        },
+        "leftsock_eligibility": {
+          "status": "unknown",
+          "reason": "No verified LeftSock identity, location/payment eligibility or accepted assignment; no account registration or terms accepted.",
+          "evidence_urls": [
+            "https://github.com/cashubtc/cdk/issues/2325",
+            "https://github.com/cashubtc/cdk/issues/2325#issuecomment-6038041341"
+          ]
+        },
+        "ai_contributions_permitted": {
+          "status": "unknown",
+          "reason": "No explicit contribution policy granting AI-generated submissions verified. Generated-by notices, third-party submissions and ready-for-agent labels are not blanket authorization.",
+          "evidence_urls": [
+            "https://github.com/cashubtc/cdk/issues/2325"
+          ]
+        },
+        "python_safe_profile": {
+          "status": "rejected",
+          "reason": "Rust mint RPC accounting; outside Python safe profile.",
+          "evidence_urls": [
+            "https://github.com/cashubtc/cdk/issues/2325",
+            "https://github.com/cashubtc/cdk/tree/9ab4ad64a8031dd49d03b947d62a73e526f333d4"
+          ]
+        },
+        "safe_test_dependency_reproduction": {
+          "status": "unknown",
+          "reason": "Execution not admitted: target does not satisfy current Python repair profile. No upstream install, package script, test or source execution performed. Reproducibility is unverified.",
+          "evidence_urls": [
+            "https://github.com/cashubtc/cdk/issues/2325",
+            "https://github.com/cashubtc/cdk/issues/2325#issuecomment-6038041341"
+          ]
+        }
+      },
+      "evidence_urls": [
+        "https://github.com/cashubtc/cdk/issues/2325",
+        "https://github.com/cashubtc/cdk/issues/2325#issuecomment-6038041341"
+      ]
+    }
+  ]
+}

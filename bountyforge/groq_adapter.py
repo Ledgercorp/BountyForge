@@ -102,6 +102,7 @@ class HostedGroqModel:
         }).encode('utf-8')
         req = urllib.request.Request(URL, data=payload, method='POST', headers={
             'Content-Type': 'application/json',
+            'User-Agent': 'BountyForge-Owned-Canary/1',
             'Authorization': 'Bearer ' + self._key,
         })
         try:

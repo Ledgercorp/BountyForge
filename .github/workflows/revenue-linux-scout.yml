@@ -11,6 +11,8 @@ on:
       - 'tests/test_revenue_scout.py'
       - 'bountyforge/groq_adapter.py'
       - 'tests/test_groq_adapter.py'
+      - 'bountyforge/stripe_order_gate.py'
+      - 'tests/test_stripe_order_gate.py'
   pull_request:
     branches: [engineering/bounded-autonomy-20261020]
     paths:
@@ -19,6 +21,8 @@ on:
       - 'tests/test_revenue_scout.py'
       - 'bountyforge/groq_adapter.py'
       - 'tests/test_groq_adapter.py'
+      - 'bountyforge/stripe_order_gate.py'
+      - 'tests/test_stripe_order_gate.py'
   workflow_dispatch:
     inputs:
       scan_mode:
@@ -54,6 +58,7 @@ jobs:
         run: |
           python -m unittest discover -s tests -p test_revenue_scout.py -v
           python -m unittest discover -s tests -p test_groq_adapter.py -v
+          python -m unittest discover -s tests -p test_stripe_order_gate.py -v
       - name: Perform only read-only prospect research
         env:
           GITHUB_TOKEN: ${{ github.token }}

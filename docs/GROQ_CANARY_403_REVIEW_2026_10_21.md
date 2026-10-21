@@ -82,3 +82,46 @@ Zero customer source, outside code execution, commercial contracts, payments,
 third-party claims, external submissions or production deployments.
 Main, draft PR #1, dashboard v11 and the synthetic ledger were not changed.
 The canary's failure was correctly fail-closed and its evidence retained.
+
+
+## Owner enabled model; controlled permission recheck (2026-10-21)
+
+The owner explicitly reported allowing GPT-OSS 120B in the Groq Console
+after the two previous 403 denials. The permission scope, selected project and
+whether settings were saved cannot be independently inspected.
+
+A **single** bounded, owner-authorized owned-fixture recheck ran as
+[GitHub Actions #39647384543](https://github.com/Ledgercorp/BountyForge/actions/runs/39647384543),
+head \`064dc5a53953739c661922e7b2c26a9971948dde\`.
+
+- Offline checks passed, protected Free Plan attestation accepted and
+  immutable Docker admission passed before exposing the secret to the model
+  process.
+- The first Groq \`openai/gpt-oss-120b\` Chat Completions request again received
+  **HTTP 403 Forbidden**. The adapter failed closed; one request was attempted,
+  zero useful model outputs, zero verified fixes, no replayed test success,
+  and the remaining three tasks were blocked, not failures.
+- No secret, raw provider response, customer data or paid usage was disclosed.
+  The evidence includes a safe numeric status but **not** Groq's granular
+  model-permission error code. Exact cause therefore remains unverified.
+- Artifact \`12367797054\`, ZIP SHA-256
+  \`b9ba04b1ae9936292d07226ba3d2fa0a8e2e7e9754bcd872bd9e973af1828ad0\`.
+- The one-time feature-branch trigger was removed immediately afterward in
+  commit \`6a9ffe44cb0b0d680ffd6c726e6203e5d18aa22a\`. Original
+  manual-only owned-fixture canary and all unrelated branches remain unchanged.
+  Do not silently keep retrying a forbidden request.
+
+**Required owner-side check:** In Groq Console, confirm the correct
+organization, project and API-key project selector. Under
+\`Settings → Organization → Limits\` and
+\`Settings → Projects → Limits\`, ensure
+\`openai/gpt-oss-120b\` is allowed under both policies, and click Save.
+Organization permissions override project settings. Existing keys inherit
+permission changes without needing to be recreated per
+https://console.groq.com/docs/model-permissions; keys are project-specific
+per https://console.groq.com/docs/projects.
+
+Before another inference request, an optional **read-only metadata** endpoint
+check using the same key could be considered, but it does not by itself
+establish unrestricted inference access. Do not infer billing or model access
+from an uncredentialed public catalog.

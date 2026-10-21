@@ -1,0 +1,87 @@
+name: BountyForge owned Qwen diagnosis protocol study
+
+# One-shot evidence only. No recurring schedule and no commercial code.
+on:
+  push:
+    branches: [engineering/revenue-linux-scout-20261021]
+    paths:
+      - '.github/workflows/owned-qwen-v6-study.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bountyforge-owned-qwen-protocol-study
+  cancel-in-progress: false
+
+jobs:
+  compare-owned-fixtures:
+    if: ${{ github.repository == 'Ledgercorp/BountyForge' && github.event_name == 'push' && github.ref == 'refs/heads/engineering/revenue-linux-scout-20261021' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      BOUNTYFORGE_PORT: '18080'
+      BOUNTYFORGE_SUBMIT_ENABLED: '0'
+      BOUNTYFORGE_CURATED_DOCKER: '1'
+    steps:
+      - name: Checkout source without storing write credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Set up Python 3.11
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Validate immutable owned task harness
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s benchmarks/phase4 -v
+          mkdir -p evidence-run
+          docker pull --platform linux/amd64 python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590
+      - name: Restore existing public Qwen cache only
+        uses: actions/cache/restore@5a3ec84eff668545956fd18022155c47e93e2684
+        with:
+          path: ~/.cache/bountyforge/models
+          key: bountyforge-public-qwen25-coder-1p5b-cc324af0-v1
+      - name: Fetch and verify unchanged public CPU model and pinned runtime
+        run: |
+          set -euo pipefail
+          bash scripts/bootstrap_actions_inference.sh --verify-only
+      - name: Launch loopback CPU inference with no external keys
+        run: |
+          set -euo pipefail
+          nohup bash scripts/bootstrap_actions_inference.sh --serve > "$RUNNER_TEMP/owned-qwen.log" 2>&1 </dev/null &
+          ready=0
+          for i in $(seq 1 70); do
+            if curl -fsS http://127.0.0.1:18080/health | grep -q '"status":"ok"'; then ready=1; break; fi
+            sleep 2
+          done
+          [[ "$ready" == 1 ]] || { echo 'Pinned local CPU model unavailable'; exit 2; }
+      - name: Compare frozen structural v5 and v6 independently
+        run: |
+          set -euo pipefail
+          python -m benchmarks.phase5.development_runner --suite structural --protocol ast_contract_v5 --output evidence-run/owned-structural-v5.json
+          python -m benchmarks.phase5.development_runner --suite structural --protocol ast_contract_v6 --output evidence-run/owned-structural-v6.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for version, maximum in [('v5', 8), ('v6', 16)]:
+              r=json.loads(Path(f'evidence-run/owned-structural-{version}.json').read_text())
+              assert r['suite']=='structural'
+              assert r['commercial_bounty'] is False and r['historical_evaluation'] is False
+              assert r['paid_inference'] is False and r['external_submission'] is False
+              assert not r.get('blocked')
+              assert len(r['tasks'])==4
+              assert r['model_calls']<=maximum
+              print(f"{version}: {r['passed']}/{r['attempted']} owned structural repairs, {r['model_calls']} calls")
+          PY
+      - name: Retain compact offline-owned-only evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bountyforge-owned-qwen-study-${{ github.run_id }}
+          path: |
+            evidence-run/owned-structural-v5.json
+            evidence-run/owned-structural-v6.json
+          if-no-files-found: ignore
+          retention-days: 1

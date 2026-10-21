@@ -67,7 +67,17 @@ def summarize_canary(result: dict) -> dict:
     """Return bounded metadata, excluding raw model, code, issue text, or test logs."""
     if not isinstance(result, dict):
         raise ValueError('Invalid controlled canary result')
-    passed = result.get('status') == 'review_ready'
+    # Never replace contradictory worker facts with reassuring constant values.
+    # A malformed, externally submitted, or non-synthetic record is inadmissible.
+    if (result.get('controlled_synthetic_fixture') is not True
+            or result.get('code_executed_in_trusted_fixture_only') is not True
+            or result.get('submitted') is not False
+            or result.get('verified_payout') is not False
+            or result.get('paid_model_calls') != 0):
+        raise ValueError('Unverified synthetic-only provenance or external activity')
+    if result.get('status') not in {'review_ready', 'failed'}:
+        raise ValueError('Unexpected worker terminal status')
+    passed = result['status'] == 'review_ready'
     attempts = result.get('attempts', [])
     if not isinstance(attempts, list) or len(attempts) > 2:
         raise ValueError('Unbounded repair attempts')
@@ -82,9 +92,10 @@ def summarize_canary(result: dict) -> dict:
             return None
         return {k: value.get(k) for k in ('passed', 'exit_code', 'timeout', 'seconds')}
     calls = result.get('model_calls', 0)
-    if type(calls) is not int or not 0 <= calls <= 2:
+    if type(calls) is not int or not 0 <= calls <= 2 or calls != len(attempts):
         raise ValueError('Unbounded model calls')
-    if passed and (not isinstance(result.get('baseline'), dict)
+    if passed and (not re.fullmatch(r'[0-9a-f]{64}', str(result.get('source_sha256') or ''))
+                   or not isinstance(result.get('baseline'), dict)
                    or result['baseline'].get('passed') is not False
                    or not any(a.get('status') == 'passed'
                               and isinstance(a.get('test'), dict)

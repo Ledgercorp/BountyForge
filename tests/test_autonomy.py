@@ -48,6 +48,8 @@ class AutonomyTests(unittest.TestCase):
 
     def test_synthetic_canary_strips_logs_and_diff(self):
         canary = summarize_canary({'status': 'review_ready', 'source_sha256': 'a'*64,
+            'controlled_synthetic_fixture': True, 'code_executed_in_trusted_fixture_only': True,
+            'submitted': False, 'verified_payout': False, 'paid_model_calls': 0,
             'model_calls': 1, 'baseline': {'passed': False, 'output': 'SECRET'},
             'attempts': [{'number': 1, 'status': 'passed',
                           'diff': 'PRIVATE CODE', 'test': {'passed': True, 'output': 'SECRET'}}],
@@ -57,6 +59,30 @@ class AutonomyTests(unittest.TestCase):
         self.assertNotIn('PRIVATE CODE', json.dumps(canary))
         self.assertEqual(verify_envelope(self.record(canary=canary))['canary']['status'],
                          'synthetic_review_ready')
+
+    def test_worker_provenance_required(self):
+        valid = {'status': 'failed', 'controlled_synthetic_fixture': True,
+                 'code_executed_in_trusted_fixture_only': True,
+                 'submitted': False, 'verified_payout': False,
+                 'paid_model_calls': 0, 'model_calls': 0, 'attempts': []}
+        self.assertEqual(summarize_canary(valid)['status'], 'synthetic_failed')
+        for name, value in (('submitted', True), ('verified_payout', True),
+                            ('controlled_synthetic_fixture', False),
+                            ('code_executed_in_trusted_fixture_only', False),
+                            ('paid_model_calls', 1)):
+            forged = dict(valid, **{name: value})
+            with self.subTest(name=name), self.assertRaises(ValueError):
+                summarize_canary(forged)
+        with self.assertRaises(ValueError):
+            summarize_canary({'status': 'failed', 'attempts': []})
+
+    def test_forged_inference_count_rejected(self):
+        valid = {'status': 'failed', 'controlled_synthetic_fixture': True,
+                 'code_executed_in_trusted_fixture_only': True,
+                 'submitted': False, 'verified_payout': False,
+                 'paid_model_calls': 0, 'model_calls': 0, 'attempts': []}
+        with self.assertRaises(ValueError):
+            summarize_canary(dict(valid, model_calls=2))
 
     def test_refuses_bad_source(self):
         with self.assertRaises(ValueError):

@@ -18,6 +18,11 @@ SEARCH_QUERIES = (
 )
 SEARCH_LIMIT = 20
 PROSPECT_LIMIT = 12
+MAX_REPO_LOOKUPS = 20
+MAX_ADVERTISED_REWARD_USD = 100_000
+BLOCKED_MIRROR_REPOS = frozenset({'zhangjiayang6835-cyber/bounty-plaza'})
+MIRROR_METADATA = re.compile(
+    r'\b(aggregat(?:or|ion|ed)|mirror(?:s|ed)?|scrap(?:er|ed|ing)|bounty directory|bounty index)\b|聚合', re.I)
 MAX_RESPONSE_BYTES = 256_000
 ISSUE = re.compile(r'https://github\.com/([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)/issues/([1-9][0-9]*)\Z')
 DOLLAR = re.compile(r'\$\s*([1-9]\d{0,2}(?:,\d{3})+|[1-9]\d{0,5})(?:\.(\d{1,2}))?\s*([kK])?\b')
@@ -77,10 +82,15 @@ def _reward_amount(text: str) -> int | None:
     for match in DOLLAR.finditer(text[:7500]):
         surrounding = text[max(0, match.start() - 120):match.end() + 120]
         if REWARD.search(surrounding):
-            whole = int(match.group(1).replace(',', ''))
+            digits = match.group(1).replace(',', '')
+            if len(digits) > 6:
+                return -1  # Implausible spam; avoid unbounded integer conversion.
+            whole = int(digits)
             decimal = int((match.group(2) or '').ljust(2, '0'))
-            amounts.append((whole * 100 + decimal)
-                           * (1000 if match.group(3) else 1) // 100)
+            amount = (whole * 100 + decimal) * (1000 if match.group(3) else 1) // 100
+            if amount > MAX_ADVERTISED_REWARD_USD:
+                return -1
+            amounts.append(amount)
     return max(amounts) if amounts else None
 
 def _parse_issue(item: dict, now: datetime) -> dict | None:
@@ -95,6 +105,8 @@ def _parse_issue(item: dict, now: datetime) -> dict | None:
     labels = [x.get('name', '') for x in raw_labels[:30]
               if isinstance(x, dict) and isinstance(x.get('name'), str)] if isinstance(raw_labels, list) else []
     amount = _reward_amount(title + '\n' + body[:7500])
+    if amount == -1:
+        return None
     named = any('bounty' in x.lower() or 'reward' in x.lower() for x in labels)
     if amount is None and not named and not REWARD.search(title):
         return None
@@ -139,14 +151,29 @@ def run(client: GitHubReadOnly, *, now: datetime | None = None) -> dict:
                 found[candidate['issue_url'].lower()] = candidate
     ordered = sorted(found.values(), key=lambda c: (-c['rank_for_research'], c['issue_url']))
     prospects = []
-    cached_languages: dict[str, str] = {}
-    for candidate in ordered[:PROSPECT_LIMIT]:
+    cached_sources: dict[str, bool] = {}
+    repo_lookups = 0
+    mirror_rejections = 0
+    for candidate in ordered:
+        if len(prospects) >= PROSPECT_LIMIT:
+            break
         repo = candidate['repository']
-        if repo not in cached_languages:
+        if repo.lower() in BLOCKED_MIRROR_REPOS:
+            mirror_rejections += 1
+            continue
+        if repo not in cached_sources:
+            if repo_lookups >= MAX_REPO_LOOKUPS:
+                break
             metadata = client.get('/repos/' + repo)
+            repo_lookups += 1
             language = metadata.get('language')
-            cached_languages[repo] = language if isinstance(language, str) else ''
-        if cached_languages[repo].lower() != 'python':
+            description = metadata.get('description')
+            source_text = repo + ' ' + (description if isinstance(description, str) else '')
+            cached_sources[repo] = (isinstance(language, str)
+                                    and language.lower() == 'python'
+                                    and not MIRROR_METADATA.search(source_text))
+        if not cached_sources[repo]:
+            mirror_rejections += 1
             continue
         prospects.append(candidate)
     return {
@@ -154,6 +181,8 @@ def run(client: GitHubReadOnly, *, now: datetime | None = None) -> dict:
         'generated_at': now.astimezone(timezone.utc).isoformat(),
         'source': 'GitHub public issue metadata', 'source_queries': list(SEARCH_QUERIES),
         'prospects': prospects, 'prospect_count': len(prospects),
+        'excluded_mirror_or_non_python_count': mirror_rejections,
+        'metadata_lookup_count': repo_lookups,
         'commercial_review_ready': 0, 'jobs_executed': 0,
         'model_calls': 0, 'paid_inference': False, 'external_submissions': 0,
         'funds_verified_usd': 0, 'revenue_received_usd': 0,

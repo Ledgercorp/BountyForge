@@ -26,8 +26,6 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     env:
-      BOUNTYFORGE_MODEL_DIR: ${{ runner.temp }}/bountyforge/models
-      BOUNTYFORGE_RUNTIME_DIR: ${{ runner.temp }}/bountyforge/runtime
       BOUNTYFORGE_SUBMIT_ENABLED: '0'
     steps:
       - name: Checkout trusted BountyForge source without persistent token
@@ -46,7 +44,7 @@ jobs:
       - name: Restore public checksum-pinned Qwen cache
         uses: actions/cache@v4
         with:
-          path: ${{ runner.temp }}/bountyforge/models
+          path: ~/.cache/bountyforge/models
           key: bountyforge-public-qwen25-coder-1p5b-cc324af0-v1
       - name: Download and verify public CPU assets
         run: |

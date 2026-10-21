@@ -20,7 +20,7 @@ SEARCH_LIMIT = 20
 PROSPECT_LIMIT = 12
 MAX_RESPONSE_BYTES = 256_000
 ISSUE = re.compile(r'https://github\.com/([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)/issues/([1-9][0-9]*)\Z')
-DOLLAR = re.compile(r'\$\s*([1-9][0-9]{0,5})(?:\.00)?\b')
+DOLLAR = re.compile(r'\$\s*([1-9]\d{0,2}(?:,\d{3})+|[1-9]\d{0,5})(?:\.(\d{1,2}))?\s*([kK])?\b')
 REWARD = re.compile(r'\b(bounty|reward|paid issue|compensation|payment for fix)\b', re.I)
 CONTROL = re.compile(r'[\x00-\x1f\x7f]')
 
@@ -77,7 +77,10 @@ def _reward_amount(text: str) -> int | None:
     for match in DOLLAR.finditer(text[:7500]):
         surrounding = text[max(0, match.start() - 120):match.end() + 120]
         if REWARD.search(surrounding):
-            amounts.append(int(match.group(1)))
+            whole = int(match.group(1).replace(',', ''))
+            decimal = int((match.group(2) or '').ljust(2, '0'))
+            amounts.append((whole * 100 + decimal)
+                           * (1000 if match.group(3) else 1) // 100)
     return max(amounts) if amounts else None
 
 def _parse_issue(item: dict, now: datetime) -> dict | None:

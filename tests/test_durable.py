@@ -27,6 +27,13 @@ class DurableTests(unittest.TestCase):
         second=DurableLedger(self.store)
         second.enqueue_synthetic(REV,'2026-10-22')
         self.assertIsNone(second.claim())
+    def test_explicit_recovery_probe_lease_is_bounded(self):
+        import time
+        self.ledger.enqueue_synthetic(REV,'2026-10-21')
+        self.ledger.claim(lease_seconds=10)
+        remaining=self.store.state['jobs'][0]['lease_until']-time.time()
+        self.assertGreater(remaining,8);self.assertLessEqual(remaining,10)
+        with self.assertRaises(ValueError):self.ledger.claim(lease_seconds=1000)
     def test_interrupted_job_recovers_and_old_completion_is_rejected(self):
         self.ledger.enqueue_synthetic(REV,'2026-10-21');first=self.ledger.claim()
         state,version=self.store.read();state['jobs'][0]['lease_until']=0;self.store.write(state,version)

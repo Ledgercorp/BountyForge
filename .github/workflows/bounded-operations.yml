@@ -4,6 +4,11 @@ name: BountyForge bounded operational acceptance
 # the owner-reviewed workflow on the default branch; cron alone proves nothing.
 on:
   workflow_dispatch:
+    inputs:
+      recovery_probe:
+        description: Controlled interruption after a durable 10-second claim; no model call
+        type: boolean
+        default: false
   push:
     branches: [engineering/bounded-autonomy-20261020]
     paths: ['.github/workflows/bounded-operations.yml']
@@ -71,12 +76,26 @@ jobs:
         id: claim
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: python -m scripts.coordinate prepare --revision "$GITHUB_SHA" --discovery evidence-run/discovery.json --claim claim.json
+          RECOVERY_PROBE: ${{ inputs.recovery_probe && 'true' || 'false' }}
+        run: |
+          set -euo pipefail
+          if [[ "$RECOVERY_PROBE" == true ]]; then
+            python -m scripts.coordinate prepare --revision "$GITHUB_SHA" --discovery evidence-run/discovery.json --claim claim.json --lease-seconds 10 --probe-stale-write
+          else
+            python -m scripts.coordinate prepare --revision "$GITHUB_SHA" --discovery evidence-run/discovery.json --claim claim.json
+          fi
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: bounded-claim
-          path: claim.json
+          path: |
+            claim.json
+            recovery-probe.json
           retention-days: 1
+      - name: Deliberately interrupt the controlled recovery probe before inference
+        if: ${{ inputs.recovery_probe && steps.claim.outputs.has_claim == 'true' }}
+        run: |
+          echo '::notice::Expected fault injection: persisted claim remains for lease-expiration recovery; model calls 0'
+          exit 75
   repair:
     needs: coordinate
     if: needs.coordinate.outputs.has_claim == 'true'

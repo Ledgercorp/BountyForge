@@ -159,8 +159,8 @@ class DurableLedger:
         job_id=hashlib.sha256(encoded(payload)).hexdigest()
         return self._transaction(lambda queue,state: queue.enqueue(job_id,payload))
 
-    def claim(self):
-        return self._transaction(lambda queue,state: queue.claim(lease_seconds=900))
+    def claim(self, *, lease_seconds=900):
+        return self._transaction(lambda queue,state: queue.claim(lease_seconds=lease_seconds))
 
     def finish_failed(self, claim, reason):
         if not isinstance(reason,str) or not re.fullmatch('[a-z_]{1,60}',reason): raise ValueError('Invalid failure code')

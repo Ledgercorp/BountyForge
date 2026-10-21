@@ -6,7 +6,7 @@ import os
 from datetime import datetime,timezone
 from pathlib import Path
 from bountyforge.autonomy import verify_envelope
-from bountyforge.durable import DurableLedger, GitHubStore
+from bountyforge.durable import DurableLedger, GitHubStore, Conflict
 
 
 def read_json(path, limit=65536):
@@ -23,17 +23,33 @@ def main(argv=None):
     p.add_argument('--discovery')
     p.add_argument('--claim',required=True)
     p.add_argument('--evidence')
+    p.add_argument('--lease-seconds',type=int,default=900)
+    p.add_argument('--probe-stale-write',action='store_true')
     args=p.parse_args(argv)
-    ledger=DurableLedger(GitHubStore())
+    store=GitHubStore()
+    ledger=DurableLedger(store)
     if args.action=='prepare':
         report=verify_envelope(read_json(args.discovery))
         if report['bountyforge_revision']!=args.revision: raise ValueError('Discovery revision mismatch')
         ledger.discover([x['issue_url'] for x in report['candidates']])
         ledger.enqueue_synthetic(args.revision,datetime.now(timezone.utc).date().isoformat())
-        claim=ledger.claim()
+        claim=ledger.claim(lease_seconds=args.lease_seconds)
         if claim and claim['input']['revision']!=args.revision:
             ledger.finish_failed(claim,'stale_source_revision')
-            claim=ledger.claim()
+            claim=ledger.claim(lease_seconds=args.lease_seconds)
+        if args.probe_stale_write:
+            state,_=store.read()
+            try:
+                store.write(state,'0'*40)
+            except Conflict:
+                print('Live GitHub stale state write rejected by conditional SHA')
+                with Path('recovery-probe.json').open('x') as f:
+                    json.dump({'kind':'live_control_plane_recovery_probe','revision':args.revision,
+                               'phase':'before_expected_interruption','stale_write_rejected':True,
+                               'model_calls':0,'lease_seconds':args.lease_seconds,
+                               'external_submissions':0},f)
+            else:
+                raise RuntimeError('GitHub CAS restriction failed')
         path=Path(args.claim)
         with path.open('x') as f: json.dump(claim,f)
         if os.environ.get('GITHUB_OUTPUT'):

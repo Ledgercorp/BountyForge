@@ -1,5 +1,6 @@
 name: BountyForge historical curated benchmark
 
+# Second experiment: 240-token model output budget after observed 115-token truncations.
 # One explicit internal trial of the original 5 curated Boltons excerpts.
 # No automatic schedule, no arbitrary downloaded repositories, no submissions.
 on:

@@ -11,6 +11,7 @@ class _NoRedirect(urllib.request.HTTPRedirectHandler):
 ROOT=Path(__file__).resolve().parent
 MANIFEST=json.loads((ROOT/'tasks/manifest.json').read_text())
 SCHEMA={'type':'object','properties':{'edits':{'type':'array','minItems':1,'maxItems':3,'items':{'type':'object','properties':{'path':{'type':'string'},'old':{'type':'string'},'new':{'type':'string'}},'required':['path','old','new'],'additionalProperties':False}}},'required':['edits'],'additionalProperties':False}
+MAX_COMPLETION_TOKENS=240
 SYSTEM=('Repair one Python bug. Output JSON only: {"edits":[{"path":"file.py","old":"exact original snippet","new":"replacement"}]}. Use the exact file path. Only 1-3 short edits; no Markdown.')
 
 def limits():
@@ -52,12 +53,12 @@ def focus(task_id, source):
 
 def propose(issue, source, filename, feedback):
   prompt=json.dumps({'file':filename,'symptom':issue['description'][:280], 'source_excerpt':focus(issue['id'],source)[:1150],'last_failure':feedback[:120]},ensure_ascii=False)
-  data=json.dumps({'model':'local','messages':[{'role':'system','content':SYSTEM+' Exact path: '+filename},{'role':'user','content':prompt}], 'max_tokens':115,'temperature':0,'stream':False,'response_format':{'type':'json_schema','json_schema':{'name':'minimal_edit','strict':True,'schema':SCHEMA}}}).encode()
+  data=json.dumps({'model':'local','messages':[{'role':'system','content':SYSTEM+' Exact path: '+filename},{'role':'user','content':prompt}], 'max_tokens':MAX_COMPLETION_TOKENS,'temperature':0,'stream':False,'response_format':{'type':'json_schema','json_schema':{'name':'minimal_edit','strict':True,'schema':SCHEMA}}}).encode()
   req=urllib.request.Request('http://127.0.0.1:18080/v1/chat/completions',data=data,headers={'Content-Type':'application/json'},method='POST')
   opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),_NoRedirect())
   start=time.monotonic()
   with opener.open(req,timeout=65) as rsp: info=json.loads(rsp.read())
-  return info['choices'][0]['message']['content'],info.get('usage',{}),round(time.monotonic()-start,2)
+  return info['choices'][0]['message']['content'],info.get('usage',{}),round(time.monotonic()-start,2),info['choices'][0].get('finish_reason')
 
 def stage(source, raw,filename):
   if len(raw.encode())>12000:raise ValueError('response_over_limit')
@@ -78,7 +79,7 @@ def stage(source, raw,filename):
 
 def run():
   report={'benchmark':'boltons_26.1.0_curated_excerpts','run_type':'real_qwen_cpu','historical_source_tag':'26.1.0',
-     'verification_scope':'excerpt_only_no_full_upstream_suite','isolation':'network_PID_user_mount_namespaces_rlimits; host FS NOT chroot isolated; only vetted extracts',
+     'experiment':'bounded_completion_tokens_240_v2','max_completion_tokens':MAX_COMPLETION_TOKENS,'verification_scope':'excerpt_only_no_full_upstream_suite','isolation':'network_PID_user_mount_namespaces_rlimits; host FS NOT chroot isolated; only vetted extracts',
      'external_submission':False,'paid_inference':False,'tasks':[]}
   for task in MANIFEST['tasks']:
     start=time.monotonic()
@@ -97,8 +98,8 @@ def run():
           work=wd/f'attempt{i}';shutil.copytree(base,work)
           one={'number':i,'status':'failed'};item['model_calls']+=1
           try:
-            raw,usage,seconds=propose(task,original,task['file'],previous)
-            one.update({'generation_seconds':seconds,'tokens':usage})
+            raw,usage,seconds,finish=propose(task,original,task['file'],previous)
+            one.update({'generation_seconds':seconds,'tokens':usage,'finish_reason':finish})
             edited,diff=stage(original,raw,task['file'])
             (work/task['file']).write_text(edited)
             check=tests(work);one['test']=check

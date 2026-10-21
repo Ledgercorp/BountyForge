@@ -103,6 +103,11 @@ the owner approves public service terms.
 6. When admitted, enable a monitored worker with quota and stop conditions.
    No secret, payment, card, PII or business correspondence passes to models.
 
-Current status: **30/30 new-work hosted Linux tests passed** (13 discovery,
+Initial payment-gate milestone: **30/30 new-work hosted Linux tests passed** (13 discovery,
 8 hosted inference mocks, 9 payment-evidence mocks), but zero commercial
 sales, zero verified bounties and no production activation.
+
+For current integration fixes, private review-store tests and deployment blockers,
+see [revenue review](REVENUE_REVIEW_2026_10_21.md) and
+[private store contract](PRIVATE_PAID_REVIEW_STORE.md). The store is review-only,
+separate from the synthetic ledger, and rejects state inside this source checkout.

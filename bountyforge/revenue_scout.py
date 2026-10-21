@@ -25,7 +25,13 @@ MIRROR_METADATA = re.compile(
     r'\b(aggregat(?:or|ion|ed)|mirror(?:s|ed)?|scrap(?:er|ed|ing)|bounty directory|bounty index)\b|聚合', re.I)
 MAX_RESPONSE_BYTES = 256_000
 ISSUE = re.compile(r'https://github\.com/([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)/issues/([1-9][0-9]*)\Z')
-DOLLAR = re.compile(r'\$\s*([1-9]\d{0,2}(?:,\d{3})+|[1-9]\d{0,5})(?:\.(\d{1,2}))?\s*([kK])?\b')
+DOLLAR = re.compile(r'\$\s*([1-9]\d{0,2}(?:,\d{3})+|[1-9]\d{0,5})(?:\.(\d{1,2}))?\s*([kK])?\b(?![\d,]|\.\d)')
+# A dollar sign alone is the existing USD advertisement convention. Explicit
+# other-dollar currencies must never be relabeled USD or silently converted.
+NON_USD_PREFIX = re.compile(
+    r'\b(?:CAD|AUD|NZD|HKD|SGD|TWD|MXN|ARS|CLP|COP|BRL|CA|AU|NZ|HK|SG|NT|C|A|S|R)\s*\Z', re.I)
+NON_USD_SUFFIX = re.compile(
+    r'\s*(?:CAD|AUD|NZD|HKD|SGD|TWD|MXN|ARS|CLP|COP|BRL)\b', re.I)
 REWARD = re.compile(r'\b(bounty|reward|paid issue|compensation|payment for fix)\b', re.I)
 CONTROL = re.compile(r'[\x00-\x1f\x7f]')
 
@@ -80,6 +86,9 @@ def _reward_amount(text: str) -> int | None:
     """Untrusted advertised amount, never verified escrow or expected revenue."""
     amounts = []
     for match in DOLLAR.finditer(text[:7500]):
+        if (NON_USD_PREFIX.search(text[:match.start()])
+                or NON_USD_SUFFIX.match(text[match.end():])):
+            continue
         surrounding = text[max(0, match.start() - 120):match.end() + 120]
         if REWARD.search(surrounding):
             digits = match.group(1).replace(',', '')
@@ -143,6 +152,8 @@ def run(client: GitHubReadOnly, *, now: datetime | None = None) -> dict:
         response = client.get('/search/issues', {'q': query, 'per_page': SEARCH_LIMIT, 'page': 1})
         if not isinstance(response.get('items'), list):
             raise ScoutError('Search response missing issues')
+        if response.get('incomplete_results') is not False:
+            raise ScoutError('Search observation incomplete or completeness unavailable')
         for issue in response['items'][:SEARCH_LIMIT]:
             if not isinstance(issue, dict):
                 continue
@@ -154,7 +165,9 @@ def run(client: GitHubReadOnly, *, now: datetime | None = None) -> dict:
     cached_sources: dict[str, bool] = {}
     repo_lookups = 0
     mirror_rejections = 0
-    for candidate in ordered:
+    metadata_budget_exhausted = False
+    unexamined_candidate_count = 0
+    for index, candidate in enumerate(ordered):
         if len(prospects) >= PROSPECT_LIMIT:
             break
         repo = candidate['repository']
@@ -163,6 +176,8 @@ def run(client: GitHubReadOnly, *, now: datetime | None = None) -> dict:
             continue
         if repo not in cached_sources:
             if repo_lookups >= MAX_REPO_LOOKUPS:
+                metadata_budget_exhausted = True
+                unexamined_candidate_count = len(ordered) - index
                 break
             metadata = client.get('/repos/' + repo)
             repo_lookups += 1
@@ -183,6 +198,10 @@ def run(client: GitHubReadOnly, *, now: datetime | None = None) -> dict:
         'prospects': prospects, 'prospect_count': len(prospects),
         'excluded_mirror_or_non_python_count': mirror_rejections,
         'metadata_lookup_count': repo_lookups,
+        'observation_status': ('incomplete_metadata_budget' if metadata_budget_exhausted
+                               else 'bounded_sample_complete'),
+        'metadata_budget_exhausted': metadata_budget_exhausted,
+        'unexamined_candidate_count': unexamined_candidate_count,
         'commercial_review_ready': 0, 'jobs_executed': 0,
         'model_calls': 0, 'paid_inference': False, 'external_submissions': 0,
         'funds_verified_usd': 0, 'revenue_received_usd': 0,
@@ -196,6 +215,10 @@ def summary(report: dict) -> str:
     lines = ['## BountyForge revenue scouting', '',
              '**Research leads: %s. Verified payable opportunities: 0.**' % report['prospect_count'],
              '', 'All amounts are unverified issue advertisements, not expected earnings.', '']
+    if report.get('metadata_budget_exhausted'):
+        lines.extend(['**Incomplete observation: metadata lookup budget exhausted; '
+                      '%s unexamined candidates.**' % report['unexamined_candidate_count'],
+                      'The observed lead count does not establish that no opportunities exist.', ''])
     for candidate in report['prospects']:
         label = ('$' + str(candidate['advertised_reward_usd'])
                  if candidate['advertised_reward_usd'] is not None else 'no confirmed amount')

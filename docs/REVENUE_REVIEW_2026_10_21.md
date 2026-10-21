@@ -54,3 +54,48 @@ customer communication, contract or financial action. Purchases and paid API
 usage $0; confirmed revenue remains $0. Existing dashboard and synthetic ledger
 are untouched. Real Groq comparison and private customer execution remain blocked
 on their separate account/security authorizations.
+
+## Consolidation and remaining technical gates
+
+`8892f75` contains the payment/CAS fixes. `9e46c80` introduces a private-volume
+SQLite review-store adapter with actual concurrency and crash-recovery tests.
+Independent review then added continuous permission checks, cleanup-error safety
+and rejection of databases inside the source checkout. No private production
+volume is connected; temporary test files do not establish durable deployment.
+See [private store contract](PRIVATE_PAID_REVIEW_STORE.md).
+
+The scout now distinguishes incomplete observations from completed bounded zero
+samples. Its schedule was removed, and push/PR regression uses offline data;
+manual read-only research remains available. Existing live zero-credible-lead
+findings are preserved; no new live scan was required by this review.
+
+All model workflows share the existing single-worker concurrency group. The Groq
+key is supplied only to the model step after independent Docker preflight.
+The canary uses the unchanged structural v5 fixtures by default, at most eight
+requests, one per minute, and an explicit opt-in 1,024-token total reasoning cap.
+The patch interface remains at 150 tokens, the final response at 3,000 bytes,
+and source/syntax/capability validators remain mandatory. The default adapter
+retains its prior total allowance. Low reasoning effort avoids an undocumented
+medium default; returned reasoning is not retained. Provider failure disables
+the instance; credential echoes are rejected and metadata is cleared before
+failed requests. This is staged configuration, not a real-model measurement.
+
+The canary gate independently checks complete task/call/token/source provenance
+and rejects unavailable/blocked execution. A further step without the key
+reconstructs successful responses, checks their exact diffs, proves fresh Docker
+admission and reruns owned tests with zero inference. Its positive unit fixture
+uses a neutral comment with mocked Docker and is **not** a model repair success.
+
+The [provider review](FREE_MODEL_ADMISSION_REVIEW_2026_10_21.md) checks current
+official Groq, Gemini and OpenRouter policies without inference. No account was
+admitted and no model-quality ranking is established. Groq is the next prepared
+comparison because its adapter exists; it is not a proven best-performing free
+model. Public free-tier advertising does not attest the owner's account.
+
+Two secret/variable metadata requests returned HTTP 403. No permission was
+bypassed, key read, plan attestation set or live canary dispatched. The next
+account action requires secure owner verification of current Free Plan, quota,
+provider terms and the scoped credential. The private paid path separately needs
+an approved durable volume, narrow source/test contract, private execution
+admission, proven coding results and owner-approved offer/delivery terms. Payment
+alone never grants code execution, publication, customer contact or delivery.

@@ -35,6 +35,14 @@ class PaidStoreTests(unittest.TestCase):
         with self.assertRaises(ReviewLedgerRejected):self.store.write(state,'1')
         self.assertEqual(self.store.read(),(state,'2'))
 
+    def test_private_payment_state_cannot_be_created_inside_source_checkout(self):
+        from bountyforge import paid_review_store
+        root=Path(paid_review_store.__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory(dir=root,prefix='.unit-private-reject-') as directory:
+            candidate=Path(directory)/'paid.sqlite3'
+            with self.assertRaises(ReviewLedgerRejected):SQLitePaidReviewStore(candidate)
+            self.assertFalse(candidate.exists())
+
     def test_two_coordinators_cannot_record_same_payment_twice(self):
         barrier=threading.Barrier(2)
         class ConcurrentStore(SQLitePaidReviewStore):

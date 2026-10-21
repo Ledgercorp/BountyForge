@@ -1,5 +1,11 @@
 # BountyForge revenue/Linus worker takeover, 2026-10-21 UTC
 
+Latest integration status: [independent revenue review](REVENUE_REVIEW_2026_10_21.md)
+supersedes implementation-status statements below. Read-only Stripe proof and a
+private-volume review-store adapter now exist; neither is a live public intake
+or deployed fulfillment service. No payment, customer or revenue is verified.
+Repeated Qwen studies and automatic live prospect scans remain disabled.
+
 > Engineering evidence, not a statement of earned revenue or financial readiness.
 
 ## Primary goal and constraints

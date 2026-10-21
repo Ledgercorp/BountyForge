@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: bountyforge-owned-qwen-protocol-study
+  group: bountyforge-repair-worker
   cancel-in-progress: false
 
 jobs:
@@ -70,6 +70,8 @@ jobs:
               assert r['paid_inference'] is False and r['external_submission'] is False
               assert not r.get('blocked')
               assert len(r['tasks'])==4
+              assert r['attempted']==4
+              assert all(t['baseline_reproduced'] is True and t['status']!='blocked' for t in r['tasks'])
               assert r['model_calls']<=maximum
               print(f"{version}: {r['passed']}/{r['attempted']} owned structural repairs, {r['model_calls']} calls")
           PY

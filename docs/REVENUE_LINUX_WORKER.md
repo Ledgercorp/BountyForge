@@ -28,8 +28,12 @@ and paid counts stay zero until future independently verified stages.
 * Artifacts: sanitized JSON research leads, retained for two days.
 * Failure policy: if Github search fails, fail closed instead of reporting
   that no opportunities exist.
-* GitHub workflow schedule: a once-daily UTC proposal. GitHub only activates
-  it from the default branch; it is NOT active in this feature branch.
+* No workflow schedule. Push/PR checks use offline fixtures; live research
+  requires an explicit manual selection. No repeated searches were needed by
+  the integration review.
+* Incomplete Search responses fail closed. Metadata-budget exhaustion reports
+  an incomplete observation and the number of unexamined candidates, distinct
+  from a completed bounded sample with zero prospects.
 * Standard GitHub-hosted Linux runners are listed as free for public repos.
   Account billing settings and storage invoices have not been independently
   audited. No spending is authorized.

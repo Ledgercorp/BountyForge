@@ -1,32 +1,24 @@
 name: BountyForge revenue scout on standard Linux
 
-# Research only. Cron activates only if later merged to the default branch.
+# Research only. No recurring schedule. Live research requires manual dispatch.
 # No model calls, paid services, external claims, source execution or submissions.
 on:
   push:
     branches: [engineering/revenue-linux-scout-20261021]
     paths:
       - '.github/workflows/revenue-linux-scout.yml'
-      - 'bountyforge/revenue_scout.py'
-      - 'tests/test_revenue_scout.py'
-      - 'bountyforge/groq_adapter.py'
-      - 'tests/test_groq_adapter.py'
-      - 'bountyforge/stripe_order_gate.py'
-      - 'tests/test_stripe_order_gate.py'
-      - 'bountyforge/paid_review_ledger.py'
-      - 'tests/test_paid_review_ledger.py'
+      - 'bountyforge/**'
+      - 'tests/**'
+      - 'scripts/**'
+      - 'benchmarks/**'
   pull_request:
     branches: [engineering/bounded-autonomy-20261020]
     paths:
       - '.github/workflows/revenue-linux-scout.yml'
-      - 'bountyforge/revenue_scout.py'
-      - 'tests/test_revenue_scout.py'
-      - 'bountyforge/groq_adapter.py'
-      - 'tests/test_groq_adapter.py'
-      - 'bountyforge/stripe_order_gate.py'
-      - 'tests/test_stripe_order_gate.py'
-      - 'bountyforge/paid_review_ledger.py'
-      - 'tests/test_paid_review_ledger.py'
+      - 'bountyforge/**'
+      - 'tests/**'
+      - 'scripts/**'
+      - 'benchmarks/**'
   workflow_dispatch:
     inputs:
       scan_mode:
@@ -34,8 +26,6 @@ on:
         type: choice
         options: [offline, live]
         default: offline
-  schedule:
-    - cron: '17 12 * * *'
 
 permissions:
   contents: read
@@ -63,7 +53,7 @@ jobs:
       - name: Perform only read-only prospect research
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          SCAN_MODE: ${{ github.event_name == 'pull_request' && 'live' || github.event_name == 'push' && 'live' || github.event_name == 'schedule' && 'live' || inputs.scan_mode }}
+          SCAN_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.scan_mode || 'offline' }}
           BOUNTYFORGE_SUBMIT_ENABLED: '0'
         run: |
           set -euo pipefail

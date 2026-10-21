@@ -1,11 +1,15 @@
 """Offline contract and negative tests for the read-only prospect worker."""
+import io
 import json
 import tempfile
 import unittest
 from datetime import datetime, timezone
 from pathlib import Path
-from unittest.mock import patch
-from bountyforge.revenue_scout import GitHubReadOnly, ScoutError, _parse_issue, run, summary, main
+from unittest.mock import Mock, patch
+from bountyforge.revenue_scout import (
+    GitHubReadOnly, ScoutError, MAX_RESPONSE_BYTES, MAX_REPO_LOOKUPS,
+    _NoRedirect, _parse_issue, run, summary, main,
+)
 
 NOW = datetime(2026, 10, 21, tzinfo=timezone.utc)
 
@@ -21,7 +25,8 @@ class FakeGitHub:
     def get(self, path, params=None):
         self.calls.append((path, params))
         if path == '/search/issues':
-            return {'items': list(self.items)}
+            return {'items': list(self.items), 'incomplete_results': False,
+                    'total_count': len(self.items)}
         if path.startswith('/repos/'):
             return {'language': self.language}
         raise AssertionError('Invalid URL')
@@ -140,6 +145,76 @@ class ScoutTests(unittest.TestCase):
                 return {'message': 'rate limit exceeded'}
         with self.assertRaises(ScoutError):
             run(Broken(), now=NOW)
+
+    def test_incomplete_or_unattested_search_is_not_a_successful_zero(self):
+        for completeness in (True, None, 'false'):
+            class Incomplete:
+                def get(self, path, params=None):
+                    response = {'items': [], 'total_count': 100}
+                    if completeness is not None:
+                        response['incomplete_results'] = completeness
+                    return response
+            with self.subTest(completeness=completeness), self.assertRaises(ScoutError):
+                run(Incomplete(), now=NOW)
+
+    def test_metadata_budget_exhaustion_is_visible_without_more_requests(self):
+        class Limited(FakeGitHub):
+            def get(self, path, params=None):
+                if path == '/search/issues':
+                    self.calls.append((path, params))
+                    rows = ([issue(i, repository=f'aaaa/r{i}')
+                             for i in range(1, MAX_REPO_LOOKUPS + 1)]
+                            if 'label:' in params['q'] else
+                            [issue(999, repository='zzzz/source')])
+                    return {'items': rows, 'incomplete_results': False,
+                            'total_count': len(rows)}
+                self.calls.append((path, params))
+                return {'language': 'Python' if path == '/repos/zzzz/source' else 'TypeScript'}
+        client = Limited([])
+        report = run(client, now=NOW)
+        self.assertEqual(report['prospect_count'], 0)
+        self.assertEqual(report['observation_status'], 'incomplete_metadata_budget')
+        self.assertTrue(report['metadata_budget_exhausted'])
+        self.assertEqual(report['unexamined_candidate_count'], 1)
+        self.assertEqual(sum(p.startswith('/repos/') for p, _ in client.calls), MAX_REPO_LOOKUPS)
+        self.assertIn('Incomplete observation', summary(report))
+        self.assertIn('1 unexamined', summary(report))
+        self.assertEqual(report['commercial_review_ready'], 0)
+
+    def test_complete_empty_sample_is_distinct_from_budget_exhaustion(self):
+        report = run(FakeGitHub([]), now=NOW)
+        self.assertEqual(report['observation_status'], 'bounded_sample_complete')
+        self.assertFalse(report['metadata_budget_exhausted'])
+        self.assertEqual(report['unexamined_candidate_count'], 0)
+        self.assertNotIn('Incomplete observation', summary(report))
+
+    def test_malformed_money_and_explicit_non_usd_are_not_usd_advertisements(self):
+        for amount in ('$1,200,50', '$1.234', 'CA$200', 'CAD $200', '$200 AUD', 'HK$200'):
+            with self.subTest(amount=amount):
+                self.assertIsNone(_parse_issue(issue(title='Bounty ' + amount, body=''), NOW))
+        for amount in ('$200', 'US$200', 'USD $200', '$200 USD', '$200.'):
+            with self.subTest(amount=amount):
+                self.assertEqual(_parse_issue(issue(title='Bounty ' + amount, body=''), NOW)['advertised_reward_usd'], 200)
+
+    def test_reader_disables_environment_proxies_and_installs_redirect_denial(self):
+        with patch('bountyforge.revenue_scout.urllib.request.build_opener') as build:
+            GitHubReadOnly('test-only-token')
+        handlers = build.call_args.args
+        self.assertEqual(handlers[0].proxies, {})
+        self.assertIsInstance(handlers[1], _NoRedirect)
+        with self.assertRaises(ScoutError):
+            handlers[1].redirect_request(None, None, 302, 'redirect', {}, 'https://evil.invalid')
+
+    def test_reader_caps_response_before_json_parsing(self):
+        response = io.BytesIO(b' ' * (MAX_RESPONSE_BYTES + 1))
+        client = GitHubReadOnly()
+        client.opener = Mock()
+        client.opener.open.return_value = response
+        with self.assertRaisesRegex(ScoutError, 'bounded size'):
+            client.get('/search/issues')
+        request = client.opener.open.call_args.args[0]
+        self.assertEqual(request.get_method(), 'GET')
+        self.assertEqual(request.full_url, 'https://api.github.com/search/issues')
 
     def test_offline_mode_makes_no_network_call(self):
         with tempfile.TemporaryDirectory() as d:

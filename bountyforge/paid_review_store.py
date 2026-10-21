@@ -22,6 +22,8 @@ class SQLitePaidReviewStore:
         self.path = Path(path)
         if not self.path.is_absolute():
             raise ReviewLedgerRejected('Private store requires an absolute configured path')
+        if self.path.resolve().is_relative_to(Path(__file__).resolve().parents[1]):
+            raise ReviewLedgerRejected('Private payment state must remain outside the source checkout')
         try:
             parent = self.path.parent.lstat()
             if (not stat.S_ISDIR(parent.st_mode) or parent.st_uid != os.getuid()

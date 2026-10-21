@@ -12,6 +12,7 @@ by that coordinator, unlinked and not a symlink. Every connection rechecks those
 conditions. SQLite uses full synchronization; `BEGIN IMMEDIATE` atomically checks
 the expected revision and replaces the single bounded state row. Stale writes
 fail rather than retrying blindly. Corruption does not become an empty ledger.
+Payment state inside the source checkout is rejected before creating a database.
 
 Tests use temporary cloud files and synthetic payment evidence. Actual tests cover
 reopening the store, simultaneous coordinators for one payment, stale CAS,

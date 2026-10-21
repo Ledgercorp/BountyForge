@@ -16,12 +16,18 @@ on:
         required: true
         type: boolean
         default: false
+      suite:
+        description: 'Frozen owned development suite (never customer or external source)'
+        required: true
+        type: choice
+        options: [structural, original]
+        default: structural
 
 permissions:
   contents: read
 
 concurrency:
-  group: bountyforge-hosted-owned-canary
+  group: bountyforge-repair-worker
   cancel-in-progress: false
 
 jobs:
@@ -37,7 +43,11 @@ jobs:
         with:
           python-version: '3.11'
       - name: Mocked hosted transport checks (no external model calls)
-        run: python -m unittest discover -s tests -p test_groq_adapter.py -v
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_groq_adapter.py' -v
+          python -m unittest discover -s tests -p 'test_owned_canary*.py' -v
+          python -m unittest discover -s tests -p 'test_phase5_development.py' -v
 
   explicitly-approved-owned-model:
     needs: safe-offline-check
@@ -45,8 +55,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
-      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
       BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED: ${{ vars.BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED }}
+      BOUNTYFORGE_OWNED_SUITE: ${{ inputs.suite || 'structural' }}
       BOUNTYFORGE_SUBMIT_ENABLED: '0'
       BOUNTYFORGE_CURATED_DOCKER: '1'
     steps:
@@ -60,33 +70,62 @@ jobs:
         run: |
           set -euo pipefail
           [[ "$BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED" == '1' ]] || exit 2
-          [[ -n "$GROQ_API_KEY" ]] || exit 2
       - name: Pull immutable isolated Python runtime
         run: docker pull --platform linux/amd64 python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590
-      - name: Bounded owned-fixture Python repair evaluation
+      - name: Prove Docker admission before exposing the inference credential
         run: |
           set -euo pipefail
           mkdir -p hosted-evidence
           python - <<'PY'
-          import json
+          import json, shutil, tempfile
           from pathlib import Path
-          from bountyforge.groq_adapter import HostedGroqModel
-          from benchmarks.phase5.development_runner import run
-          result = run(model=HostedGroqModel(),
-                       protocol='ast_contract_v5', suite='original',
-                       output=Path('hosted-evidence/groq-owned-v5.json'))
-          print('Owned-fixture results:', result.get('passed'), 'of', result.get('attempted'),
-                'model calls:', result.get('model_calls'))
-          assert result.get('model_calls', 0) <= 8
-          assert result.get('commercial_bounty') is False
-          assert result.get('external_submission') is False
-          assert result.get('paid_inference') is False
-          assert not result.get('blocked')
+          from bountyforge.curated_docker import MARKER, verify_runtime_boundary
+          with tempfile.TemporaryDirectory(prefix='bf-hosted-owned-probe-') as directory:
+              root = Path(directory) / 'baseline'
+              shutil.copytree('benchmarks/phase4/tasks/459', root)
+              (root / MARKER).write_text('459')
+              proof = verify_runtime_boundary(root)
+          Path('hosted-evidence/sandbox-preflight.json').write_text(json.dumps(proof, indent=2) + '\n')
           PY
+      - name: Bounded owned-fixture Python repair evaluation
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          set -euo pipefail
+          [[ -n "$GROQ_API_KEY" ]] || exit 2
+          mkdir -p hosted-evidence
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from bountyforge.groq_adapter import HostedGroqModel, MODEL_ID
+          from benchmarks.phase5.development_runner import run
+          from scripts.validate_owned_canary import validate_owned_canary
+          # Separate total reasoning allowance from the unchanged line-patch limit.
+          model = HostedGroqModel(total_generation_tokens=1024, minimum_interval_seconds=60)
+          output = Path('hosted-evidence/groq-owned-v5.json')
+          suite = os.environ['BOUNTYFORGE_OWNED_SUITE']
+          result = run(model=model, protocol='ast_contract_v5', suite=suite, output=output)
+          result['inference_backend'] = {'provider': 'groq', 'model': MODEL_ID,
+                                         'transport_calls': model.calls,
+                                         'total_generation_tokens_per_call': 1024,
+                                         'minimum_interval_seconds': 60}
+          output.write_text(json.dumps(result, indent=2, ensure_ascii=True) + '\n')
+          validated = validate_owned_canary(result, suite=suite, expected_revision=os.environ['GITHUB_SHA'])
+          print('Completed owned experiment:', json.dumps(validated, sort_keys=True))
+          PY
+      - name: Independently replay reported successes without provider credentials
+        run: |
+          set -euo pipefail
+          python -m scripts.replay_owned_canary hosted-evidence/groq-owned-v5.json \
+            --suite "$BOUNTYFORGE_OWNED_SUITE" --revision "$GITHUB_SHA" \
+            --output hosted-evidence/groq-owned-replay.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
           name: bountyforge-owned-groq-${{ github.run_id }}
-          path: hosted-evidence/groq-owned-v5.json
+          path: |
+            hosted-evidence/groq-owned-v5.json
+            hosted-evidence/sandbox-preflight.json
+            hosted-evidence/groq-owned-replay.json
           if-no-files-found: ignore
           retention-days: 2

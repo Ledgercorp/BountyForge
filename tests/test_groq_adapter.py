@@ -117,6 +117,57 @@ class HostedGroqTests(unittest.TestCase):
                 with self.assertRaisesRegex(RuntimeError, 'unavailable'):
                     model.complete_line('sys', '{"editable_lines":[1]}')
 
+    def test_invalid_request_clears_previous_metadata(self):
+        with patch.dict(os.environ, {'GROQ_API_KEY':'secure-key','BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED':'1'},clear=True):
+            model=HostedGroqModel();model.last_call={'completion_tokens':12}
+            with self.assertRaises(ValueError):model.complete_line('system','{}')
+            self.assertIsNone(model.last_call)
+
+    def test_key_cannot_be_accidentally_included_in_model_context(self):
+        with patch.dict(os.environ, {'GROQ_API_KEY':'secret-fixture-key','BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED':'1'},clear=True):
+            model=HostedGroqModel()
+            with patch('urllib.request.build_opener') as build:
+                with self.assertRaises(ValueError):model.complete_line('secret-fixture-key','{"editable_lines":[1]}')
+                build.assert_not_called()
+
+    def test_provider_failure_disables_instance_without_second_request(self):
+        with patch.dict(os.environ, {'GROQ_API_KEY':'secure-key','BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED':'1'},clear=True):
+            model=HostedGroqModel()
+            with patch('urllib.request.build_opener') as build:
+                build.return_value.open.side_effect=TimeoutError()
+                for _ in range(2):
+                    with self.assertRaises(RuntimeError):model.complete_line('sys','{"editable_lines":[1]}')
+                self.assertEqual(build.return_value.open.call_count,1)
+
+    def test_opt_in_reasoning_budget_is_separate_from_patch_interface(self):
+        with patch.dict(os.environ, {'GROQ_API_KEY':'secure-key','BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED':'1'},clear=True):
+            model=HostedGroqModel(total_generation_tokens=1024,minimum_interval_seconds=60)
+            response={'model':'openai/gpt-oss-120b','choices':[{'message':{'content':'{"changes":[{"line":1,"new":"return 1"}]}'},'finish_reason':'stop'}],
+                      'usage':{'prompt_tokens':30,'completion_tokens':720,'completion_tokens_details':{'reasoning_tokens':700}}}
+            with patch('urllib.request.build_opener') as build,patch('bountyforge.groq_adapter.time.monotonic',side_effect=[10,20,70]),patch('bountyforge.groq_adapter.time.sleep') as sleep:
+                for _ in range(2):
+                    build.return_value.open.return_value=Response(json.dumps(response).encode())
+                    model.complete_line('sys','{"editable_lines":[1]}',max_tokens=150)
+                payload=json.loads(build.return_value.open.call_args.args[0].data)
+            sleep.assert_called_once_with(50)
+            self.assertEqual(payload['max_completion_tokens'],1024)
+            self.assertEqual(payload['reasoning_effort'],'low');self.assertFalse(payload['include_reasoning'])
+            self.assertEqual(model.last_call['requested_max_completion_tokens'],1024)
+            self.assertEqual(model.last_call['reasoning_tokens'],700)
+    def test_unreviewed_resource_budgets_rejected(self):
+        with patch.dict(os.environ, {'GROQ_API_KEY':'secure-key','BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED':'1'},clear=True):
+            for config in ({'total_generation_tokens':1025},{'total_generation_tokens':True}, {'minimum_interval_seconds':61}):
+                with self.assertRaises(ValueError):HostedGroqModel(**config)
+
+    def test_success_shaped_credential_echo_is_never_returned_or_recorded(self):
+        with patch.dict(os.environ, {'GROQ_API_KEY':'secret-fixture-key','BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED':'1'},clear=True):
+            model=HostedGroqModel()
+            response={'choices':[{'message':{'content':'{"changes":[{"line":1,"new":"secret-fixture-key"}]}'},'finish_reason':'stop'}]}
+            with patch('urllib.request.build_opener') as build:
+                build.return_value.open.return_value=Response(json.dumps(response).encode())
+                with self.assertRaises(RuntimeError) as caught:model.complete_line('sys','{"editable_lines":[1]}')
+            self.assertNotIn('secret-fixture-key',str(caught.exception));self.assertIsNone(model.last_call)
+
 
 if __name__ == '__main__':
     unittest.main()

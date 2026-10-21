@@ -8,7 +8,7 @@ It remains separate from the public synthetic ledger and existing repair queue.
 The caller must supply an explicit absolute path on an **approved private,
 persistent volume**, owned by the trusted coordinator. Parent permissions must
 be `0700` or stricter; the regular database file must be private (`0600`), owned
-by that coordinator, unlinked and not a symlink. Every connection rechecks those
+by that coordinator, have exactly one filesystem link and not be a symlink. Every connection rechecks those
 conditions. SQLite uses full synchronization; `BEGIN IMMEDIATE` atomically checks
 the expected revision and replaces the single bounded state row. Stale writes
 fail rather than retrying blindly. Corruption does not become an empty ledger.

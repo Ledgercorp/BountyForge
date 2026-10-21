@@ -19,6 +19,76 @@ MARKER = '.bountyforge-curated-boltons'
 APPROVED_IDS = frozenset({'454', '459', '460', '475', '524'})
 MAX_FILES, MAX_BYTES, LOG_BYTES = 15, 400_000, 6000
 
+# Fixed, owned admission probes. Neither target source nor model text can select
+# these commands. All pressure stays inside the same existing Docker budgets.
+PID_PRESSURE = r"""import json, pathlib, threading
+cgroup = pathlib.Path('/sys/fs/cgroup')
+assert (cgroup/'pids.max').read_text().strip()=='64'
+def events():
+    return dict(line.split() for line in (cgroup/'pids.events').read_text().splitlines())
+before = int(events()['max'])
+stop = threading.Event()
+threads = []
+denied = False
+try:
+    # Sleeping threads consume PID slots without a fork bomb or busy loop.
+    for _ in range(80):
+        thread = threading.Thread(target=stop.wait, args=(5,))
+        try:
+            thread.start()
+        except RuntimeError:
+            denied = True
+            break
+        threads.append(thread)
+    current = int((cgroup/'pids.current').read_text())
+    increment = int(events()['max']) - before
+    assert denied and increment > 0, 'PID exhaustion was not denied by cgroup'
+    assert 1 <= current <= 64 and len(threads) < 80, 'PID bound exceeded'
+finally:
+    stop.set()
+    for thread in threads:
+        thread.join(timeout=1)
+assert not any(thread.is_alive() for thread in threads), 'probe thread leaked'
+print(json.dumps({'pid_pressure_enforced': True, 'pid_current_at_denial': current,
+                  'pid_denial_events': increment, 'probe_threads': len(threads)}))
+"""
+
+CPU_PRESSURE = r"""import json, os, pathlib, time
+cgroup = pathlib.Path('/sys/fs/cgroup')
+quota, period = map(int, (cgroup/'cpu.max').read_text().split())
+assert quota == period, 'CPU quota changed'
+def stats():
+    return dict((key,int(value)) for key,value in
+                (line.split() for line in (cgroup/'cpu.stat').read_text().splitlines()))
+before = stats()
+start = time.monotonic()
+deadline = start + 3
+children = []
+try:
+    # Three finite CPU loops contend for the unchanged one-CPU quota.
+    for _ in range(3):
+        pid = os.fork()
+        if pid == 0:
+            while time.monotonic() < deadline:
+                pass
+            os._exit(0)
+        children.append(pid)
+finally:
+    for pid in children:
+        _, status = os.waitpid(pid, 0)
+        assert os.waitstatus_to_exitcode(status)==0, 'CPU child failed'
+elapsed = time.monotonic() - start
+after = stats()
+used = (after['usage_usec']-before['usage_usec'])/1_000_000
+throttled = after['nr_throttled']-before['nr_throttled']
+assert throttled > 0, 'CPU quota did not throttle competing work'
+# The tolerance covers period-boundary credit and measurement overhead, not
+# another CPU. A busy shared host may reduce usage; it cannot increase quota.
+assert used <= elapsed*1.15 + 0.2, 'CPU usage exceeded one-CPU bound'
+print(json.dumps({'cpu_pressure_enforced': True, 'cpu_pressure_wall_seconds': round(elapsed,3),
+                  'cpu_pressure_used_seconds': round(used,3), 'cpu_throttled_periods': throttled}))
+"""
+
 class CuratedSandboxUnavailable(RuntimeError):
     pass
 
@@ -221,6 +291,18 @@ print('BOUNTYFORGE_CURATED_BOUNDARY_OK')
     output = _execute(root, ['python','-I','-c','print("x"*20000)'], 10)
     if output['error'] != 'output_budget':
         raise CuratedSandboxUnavailable('Output budget restriction failed')
+    pressure = {}
+    for label, command in (('pid', PID_PRESSURE), ('cpu', CPU_PRESSURE)):
+        result = _execute(root, ['python','-I','-c',command], 10)
+        if not result['passed']:
+            raise CuratedSandboxUnavailable(label.upper()+' pressure restriction failed: '+result['output'][-400:])
+        try:
+            observed = json.loads(result['output'])
+            if observed.get(label+'_pressure_enforced') is not True:
+                raise ValueError('missing pressure proof')
+        except (ValueError, TypeError, AttributeError) as exc:
+            raise CuratedSandboxUnavailable(label.upper()+' pressure evidence missing') from exc
+        pressure.update(observed)
     return {'network_denied':True, 'loopback_inference_unreachable':True,
             'source_writes_denied':True,'root_writes_denied':True,'secrets_absent':True,
             'uid_unprivileged':True,'capabilities_empty':True,'no_new_privileges':True,
@@ -228,7 +310,7 @@ print('BOUNTYFORGE_CURATED_BOUNDARY_OK')
             'cpu_quota_verified':True,'pid_limit_verified':True,'tmpfs_bounded_noexec':True,
             'wall_clock_enforced':True,'cleanup_verified':True,'output_bounded':True,
             'docker_socket_absent':True,'image_digest':IMAGE.split('@')[1],
-            'untrusted_execution_certified':False}
+            'untrusted_execution_certified':False, **pressure}
 
 
 def verify_synthetic(root: Path) -> Path:

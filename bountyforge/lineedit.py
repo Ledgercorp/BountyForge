@@ -12,6 +12,7 @@ import hashlib
 import json
 from pathlib import Path
 from bountyforge.drafts import DraftRejected, _verify_existing, safe_path
+from bountyforge.repair_context import physical_lines
 
 LINE_SCHEMA = {
     "type": "object",
@@ -51,7 +52,7 @@ SYSTEM = (
 def _approved_lines(source: str, permitted: list[int]) -> set[int]:
     if not isinstance(permitted, list) or not 1 <= len(permitted) <= 30:
         raise DraftRejected("One to thirty trusted editable line numbers required")
-    lines = source.splitlines(keepends=True)
+    lines = physical_lines(source, keepends=True)
     values = set()
     for i in permitted:
         if isinstance(i, bool) or not isinstance(i, int) or i < 1 or i > len(lines) or i in values:
@@ -106,7 +107,7 @@ def stage_lines(raw: str, workspace: Path, approved_path: str,
     changes = obj["changes"]
     if not isinstance(changes, list) or not 1 <= len(changes) <= 3:
         raise DraftRejected("Invalid line-change count")
-    lines = original.splitlines(keepends=True)
+    lines = physical_lines(original, keepends=True)
     seen = set()
     for change in changes:
         if not isinstance(change, dict) or set(change) != {"line", "new"}:
@@ -171,7 +172,7 @@ def stage_lines(raw: str, workspace: Path, approved_path: str,
     if before != after:
         raise DraftRejected("Line edit changed function or class declarations")
     diff = "".join(difflib.unified_diff(
-        original.splitlines(keepends=True), revised.splitlines(keepends=True),
+        physical_lines(original, keepends=True), physical_lines(revised, keepends=True),
         fromfile="a/" + path, tofile="b/" + path,
     ))
     if not diff:
@@ -193,7 +194,15 @@ def propose_lines(issue: dict, workspace: Path, approved_path: str,
     path = safe_path(approved_path)
     original = _verify_existing(Path(workspace), path)
     approved = _approved_lines(original, editable_lines)
-    original_lines = original.splitlines()
+    digest = hashlib.sha256(original.encode('utf-8')).hexdigest()
+    if issue.get('repair_protocol') == 'ast_contract_v5':
+        from bountyforge.repair_context import build_prompt
+        system, prompt = build_prompt(original, path, approved, issue)
+        response = model.complete_line(system, prompt, max_tokens=150)
+        result = stage_lines(response, workspace, path, editable_lines, digest)
+        return {**result, 'source_issue': str(issue.get('url', ''))[:300],
+                'model': 'local-only', 'review_required': True}
+    original_lines = physical_lines(original)
     showing = set()
     for i in approved:
         for j in range(max(1, i - 2), min(len(original_lines), i + 2) + 1):

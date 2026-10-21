@@ -90,6 +90,7 @@ class LocalModel:
         """Strict line-change JSON, local numerical loopback only, no remote fallback."""
         from bountyforge.lineedit import LINE_SCHEMA
         import copy
+        self.last_call = None
         if (not isinstance(system, str) or not isinstance(user, str)
                 or len(user.encode("utf-8")) > 3600 or not 1 <= max_tokens <= 150):
             raise ValueError("Invalid line-change request or generation budget")

@@ -71,5 +71,37 @@ class CuratedDockerTests(unittest.TestCase):
             with self.assertRaises(CuratedSandboxUnavailable):
                 _cleanup('bf-curated-test',{})
 
+    def pressure_results(self, pid=None, cpu=None):
+        return [
+            {'passed':True,'output':'BOUNTYFORGE_CURATED_BOUNDARY_OK'},
+            {'timeout':True}, {'returncode':137}, {'error':'output_budget'},
+            pid or {'passed':True,'output':'{"pid_pressure_enforced":true,"pid_denial_events":1}'},
+            cpu or {'passed':True,'output':'{"cpu_pressure_enforced":true,"cpu_throttled_periods":10}'},
+        ]
+
+    def test_failed_pid_pressure_blocks_admission(self):
+        results=self.pressure_results(pid={'passed':False,'output':'PID exhaustion was not denied'})
+        with patch('bountyforge.curated_docker.shutil.which',return_value='/usr/bin/docker'), \
+                patch('bountyforge.curated_docker._execute',side_effect=results):
+            with self.assertRaisesRegex(CuratedSandboxUnavailable,'PID pressure restriction failed'):
+                verify_runtime_boundary(self.root)
+
+    def test_successful_process_without_pressure_proof_blocks_admission(self):
+        results=self.pressure_results(cpu={'passed':True,'output':'{}'})
+        with patch('bountyforge.curated_docker.shutil.which',return_value='/usr/bin/docker'), \
+                patch('bountyforge.curated_docker._execute',side_effect=results):
+            with self.assertRaisesRegex(CuratedSandboxUnavailable,'CPU pressure evidence missing'):
+                verify_runtime_boundary(self.root)
+
+    def test_pressure_measurements_are_preserved(self):
+        with patch('bountyforge.curated_docker.shutil.which',return_value='/usr/bin/docker'), \
+                patch('bountyforge.curated_docker._execute',side_effect=self.pressure_results()):
+            proof=verify_runtime_boundary(self.root)
+        self.assertTrue(proof['pid_pressure_enforced'])
+        self.assertTrue(proof['cpu_pressure_enforced'])
+        self.assertEqual(proof['pid_denial_events'],1)
+        self.assertEqual(proof['cpu_throttled_periods'],10)
+        self.assertFalse(proof['untrusted_execution_certified'])
+
 if __name__=='__main__':
     unittest.main()

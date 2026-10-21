@@ -8,6 +8,7 @@ import copy
 import json
 import os
 import urllib.request
+import urllib.error
 import time
 
 URL = 'https://api.groq.com/openai/v1/chat/completions'
@@ -134,6 +135,14 @@ class HostedGroqModel:
                               'provider_model_reported':result.get('model'),
                               'provider': 'groq', 'model': MODEL_ID}
             return answer.strip()
+        except urllib.error.HTTPError as exc:
+            self._disabled=True
+            # Only expose the numeric HTTP status. Never echo provider response
+            # bodies, URL headers, prompts, model outputs or credentials.
+            status = exc.code if type(exc.code) is int and 100 <= exc.code <= 599 else 0
+            raise RuntimeError(
+                f'Hosted inference unavailable or rejected (http_{status}); no retry or fallback'
+            ) from None
         except Exception:
             self._disabled=True
             # Never echo HTTP errors, request bodies, prompts or API credentials.

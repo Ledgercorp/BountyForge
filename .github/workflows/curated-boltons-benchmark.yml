@@ -27,11 +27,11 @@ jobs:
       BOUNTYFORGE_CURATED_DOCKER: '1'
     steps:
       - name: Checkout trusted benchmark without reusable credentials
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: false
       - name: Set up Python 3.11
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.11'
       - name: Validate historical harness
@@ -58,7 +58,7 @@ jobs:
           print('Container smoke proof:',result)
           PY
       - name: Restore public Qwen model cache
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
         with:
           path: ~/.cache/bountyforge/models
           key: bountyforge-public-qwen25-coder-1p5b-cc324af0-v1
@@ -92,7 +92,7 @@ jobs:
           PY
       - name: Upload only bounded benchmark evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: bountyforge-curated-benchmark-${{ github.run_id }}
           path: |

@@ -133,6 +133,35 @@ def stage_lines(raw: str, workspace: Path, approved_path: str,
         original_tree = ast.parse(original, filename=path)
     except SyntaxError as exc:
         raise DraftRejected("Proposed Python source does not parse") from exc
+    # Syntax and location alone cannot admit a new execution capability. This
+    # narrow profile may correct numeric/text expressions, but must not add
+    # imports, dynamic lookup, file/process APIs or fresh callable objects.
+    from collections import Counter
+    before_nodes=list(ast.walk(original_tree))
+    after_nodes=list(ast.walk(revised_tree))
+    for kind in (ast.Import, ast.ImportFrom, ast.Lambda, ast.Global, ast.Nonlocal):
+        before_count=Counter(ast.dump(n,include_attributes=False) for n in before_nodes if isinstance(n,kind))
+        after_count=Counter(ast.dump(n,include_attributes=False) for n in after_nodes if isinstance(n,kind))
+        if after_count-before_count:
+            raise DraftRejected('New execution capability outside bounded profile')
+    safe_builtins={'abs','float','int','len','list','tuple','dict','set','sorted',
+                   'reversed','range','enumerate','zip','round','max','min','sum',
+                   'str','bool','isinstance','all','any'}
+    existing_calls={n.func.id for n in before_nodes if isinstance(n,ast.Call) and isinstance(n.func,ast.Name)}
+    existing_attributes={n.attr for n in before_nodes if isinstance(n,ast.Attribute)}
+    forbidden={'__import__','eval','exec','compile','open','globals','locals','vars',
+               'getattr','setattr','delattr','input','breakpoint','help'}
+    for node in after_nodes:
+        if isinstance(node,ast.Name) and (node.id in forbidden or node.id.startswith('__')):
+            raise DraftRejected('Dynamic or filesystem capability prohibited')
+        if isinstance(node,ast.Attribute) and (node.attr.startswith('__') or node.attr not in existing_attributes):
+            raise DraftRejected('New attribute capability outside approved source')
+        if isinstance(node,ast.Call):
+            if isinstance(node.func,ast.Name):
+                if node.func.id not in safe_builtins|existing_calls:
+                    raise DraftRejected('New callable outside approved source')
+            elif not isinstance(node.func,ast.Attribute):
+                raise DraftRejected('Dynamic call target prohibited')
     # Reject syntactically valid edits that insert misplaced definitions.
     declarations = (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
     before = [(type(n).__name__, n.name) for n in ast.walk(original_tree)

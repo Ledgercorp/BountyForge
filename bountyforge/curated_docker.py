@@ -96,10 +96,13 @@ def _cleanup(name: str, env: dict) -> None:
         deadline = time.monotonic() + 3
         while True:
             absent = subprocess.run(['docker','inspect',name],env=env,
-                                    stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,
-                                    timeout=5,check=False)
-            if absent.returncode == 1:
+                                    stdout=subprocess.DEVNULL,stderr=subprocess.PIPE,
+                                    timeout=5,check=False,text=True)
+            if absent.returncode == 1 and ('No such object: '+name in absent.stderr
+                                           or 'No such container: '+name in absent.stderr):
                 break
+            if absent.returncode != 0:
+                raise CuratedSandboxUnavailable('Docker could not establish container absence')
             if time.monotonic() >= deadline:
                 raise CuratedSandboxUnavailable('Container cleanup could not be verified')
             time.sleep(0.05)

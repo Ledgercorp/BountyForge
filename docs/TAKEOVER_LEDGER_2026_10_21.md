@@ -111,3 +111,67 @@ Next measured experiment changes only generic prompting: concise instructions,
 explicit target symbol and a JSON schema enumerating caller-approved line
 numbers. The existing staging validator is unchanged. Qwen and runtime stay
 pinned. Same original five cases, at most twelve calls; results pending execution.
+
+## Repeated hosted operation and final historical experiment
+
+Commit `4eff34d8e09be4687fac4322d294f8128e575dd0`:
+[second complete cycle 39592153607](https://github.com/Ledgercorp/BountyForge/actions/runs/39592153607)
+passed all four jobs with real local Qwen and durable evidence.
+[duplicate cycle 39592910695](https://github.com/Ledgercorp/BountyForge/actions/runs/39592910695)
+passed discovery and coordination, correctly skipping repair and publication;
+no duplicate inference. The remote ledger was independently read: two completed
+synthetic jobs at exact source revisions, 21 unverified discoveries, no real
+commercial review-ready result.
+
+[Historical run 39592095298](https://github.com/Ledgercorp/BountyForge/actions/runs/39592095298)
+measured **0/5, 12 calls, 5/5 reproduced baselines, zero blocked cases**. Model
+responses ended normally; the concise symbol/line-enum experiment did not solve
+the defects. Persisted its complete bounded receipt in
+`evidence/hosted-boltons-2026-10-21.json` so results outlive artifact expiry.
+The two new historical experiments together used 24 actual model calls. Earlier
+115/240-token historical trials remain separate. No manual solution counted.
+
+## Security and owner dashboard follow-up
+
+Six new payload subtests reproduced that syntax-valid edits could add process,
+file, dynamic execution or object-introspection capabilities. The line validator
+now blocks these capabilities, preserving all declaration checks. A separate
+negative test reproduced treating Docker daemon failure as successful cleanup;
+cleanup now requires an explicit container-not-found response.
+
+Real local HTTP tests verify connection refusal, bounded timeout and redirect
+rejection. A first test run hit TCP TIME_WAIT (`Address already in use`), causing
+one error in 178 cases and 15/16 scenario acceptance; the fixture now uses socket
+reuse, and subsequent full runs passed. No hidden failure was relabeled success.
+Independent publication now binds the fixture fingerprint, patch fingerprint,
+exact revision, execution timestamp and active lease; a forged-source test
+first reproduced the missing check. SHA digests detect changed content; trusted
+same-repository workflow provenance supplies authority, not the digest alone.
+
+Final local worktree verification before this follow-up commit: **179 unittest
+cases, 7 skipped (172 executed passes)**; **6/6 historical harness tests**;
+**4/4 Node dashboard projection tests**; **16/16 failure scenarios**. Actual
+loopback timeout/refusal and separate injected worker retry faults are labeled.
+Live Docker controls passed again after cleanup hardening.
+
+The existing BountyForge Hatchable project alone was inspected. Personal/private
+visibility remains; daily read-only discovery cron is active with two successful
+recorded fires and zero recorded errors. No repair schedule is active. Its old
+operator status incorrectly said hosted work was absent. Prepared an admin-only,
+read-only GitHub-ledger adapter and a status panel, tested via authenticated
+platform execution: admin 200, public 401, ordinary member 403; deployment dry
+run has no errors/warnings. No new keys, paid services or write tokens on the
+site. Private dashboard source was not copied into the public repository; only
+newly authored adapter, projection and panel files are tracked. Deployment
+version/result is recorded after execution.
+
+Read-only sampling of primary discovery records found false positives:
+Naris404/clash_royale_rl_agent #41 describes RL reward shaping, not monetary
+payment; kwilson21/tally #738 describes paid-invoice matching, not an offered
+bounty. Both remain unverified/non-executable. This is not an exhaustive market
+audit and establishes no payable opportunity.
+
+Readiness: DRY_RUN_READY for bounded owned-fixture cycles; NOT_READY for real
+paid bounty repairs. Main unchanged; draft PR preserved. No recurring Actions
+repair schedule, automatic upstream steps, new spending commitments, paid model
+APIs, confirmed bounty revenue, Mac access or external submissions.

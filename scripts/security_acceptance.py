@@ -16,8 +16,8 @@ from pathlib import Path
 SCENARIOS = (
  ('successful_synthetic_repair','tests.test_auto_scope.AutoScopeTests.test_end_to_end_controlled_auto_repair','scripted_model'),
  ('incorrect_model_output','tests.test_worker.WorkerTests.test_bad_patch_cannot_pass','scripted_model'),
- ('model_timeout','tests.test_operational_controls.OperationalControls.test_model_timeout_stops_after_one_request','injected_timeout'),
- ('model_server_unavailable','tests.test_worker.WorkerTests.test_model_unavailable','injected_unavailability'),
+ ('model_timeout','tests.test_model_transport.ModelTransportTests.test_real_model_transport_timeout_fails_closed','real_loopback_http_timeout'),
+ ('model_server_unavailable','tests.test_model_transport.ModelTransportTests.test_real_unavailable_endpoint_fails_closed','real_loopback_connection_refused'),
  ('ambiguous_source_target','tests.test_auto_scope.AutoScopeTests.test_ambiguous_source_fails_closed','owned_fixture'),
  ('invalid_patch','tests.test_lineedit.LineEditTests.test_invalid_python_rejected','validator'),
  ('unapproved_file_modification','tests.test_worker.WorkerTests.test_forged_test_patch_denied','scripted_model'),

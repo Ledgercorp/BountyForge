@@ -46,3 +46,13 @@ class DurableTests(unittest.TestCase):
     def test_unknown_or_oversized_state_fails_closed(self):
         self.store.state={'version':1,'jobs':[{'input_json':'arbitrary'}]}
         with self.assertRaises(ValueError):self.ledger.claim()
+    def test_forged_source_provenance_cannot_publish(self):
+        from bountyforge.autonomy import make_evidence
+        self.ledger.enqueue_synthetic(REV,'2026-10-21');claim=self.ledger.claim()
+        canary={'status':'synthetic_review_ready','synthetic_only':True,'submitted':False,
+                'third_party_code_executed':False,'model_calls':1,'source_sha256':'a'*64,
+                'patch_sha256':'b'*64,'baseline':{'passed':False},
+                'attempts':[{'status':'passed','test':{'passed':True}}]}
+        envelope=make_evidence([],scan_source='fictional_demo',revision=REV,canary=canary)
+        with self.assertRaises(ValueError):
+            self.ledger.finish_evidence(claim,envelope,'https://github.com/Ledgercorp/BountyForge/actions/runs/1')

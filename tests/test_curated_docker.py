@@ -1,5 +1,6 @@
 import tempfile
 import shutil
+import subprocess
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -63,6 +64,12 @@ class CuratedDockerTests(unittest.TestCase):
     def test_unbounded_timeout_denied(self):
         with self.assertRaises(ValueError):
             run_curated(self.root,timeout=200)
+    def test_cleanup_does_not_confuse_daemon_outage_with_absence(self):
+        from bountyforge.curated_docker import _cleanup
+        unavailable=subprocess.CompletedProcess([],1,stdout='',stderr='Cannot connect to the Docker daemon')
+        with patch('bountyforge.curated_docker.subprocess.run',return_value=unavailable):
+            with self.assertRaises(CuratedSandboxUnavailable):
+                _cleanup('bf-curated-test',{})
 
 if __name__=='__main__':
     unittest.main()

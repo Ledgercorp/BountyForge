@@ -12,7 +12,7 @@ import re
 import time
 import urllib.error
 import urllib.request
-from datetime import date
+from datetime import date,datetime
 from pathlib import Path
 from bountyforge.autonomy import _issue_url, verify_envelope
 from bountyforge.model import _NoRedirect
@@ -171,9 +171,19 @@ class DurableLedger:
         if (record['bountyforge_revision']!=claim['input']['revision']
                 or not re.fullmatch(r'https://github.com/Ledgercorp/BountyForge/actions/runs/[1-9][0-9]*',run_url)):
             raise ValueError('Evidence not bound to this revision and execution')
+        from bountyforge.worker import _fixture_hash
+        expected=_fixture_hash(Path(__file__).resolve().parents[1]/'fixtures/controlled/addition')
+        if record['canary'].get('source_sha256')!=expected:
+            raise ValueError('Evidence source fingerprint does not match owned catalog')
+        if record['canary']['status']=='synthetic_review_ready' and not re.fullmatch('[0-9a-f]{64}',str(record['canary'].get('patch_sha256',''))):
+            raise ValueError('Missing patch fingerprint')
+        generated=datetime.fromisoformat(record['generated_at'].replace('Z','+00:00')).timestamp()
         ready=record['canary']['status']=='synthetic_review_ready'
         def finish(queue,state):
             now=time.time()
+            row=queue.conn.execute('SELECT updated FROM jobs WHERE id=?',(claim['id'],)).fetchone()
+            if row is None or generated<row[0]-1 or generated>now+60:
+                raise ValueError('Evidence not generated during the active execution')
             result={'status':'synthetic_review_ready' if ready else 'failed',
                     'evidence_sha256':envelope['record_sha256'],'run_url':run_url,
                     'commercial_review_ready':False,'external_submission':False}

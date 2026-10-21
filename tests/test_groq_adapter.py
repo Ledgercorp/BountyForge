@@ -4,6 +4,7 @@ import json
 import os
 import unittest
 from unittest.mock import patch
+from urllib.error import HTTPError
 from bountyforge.groq_adapter import HostedGroqModel
 
 
@@ -167,6 +168,25 @@ class HostedGroqTests(unittest.TestCase):
                 build.return_value.open.return_value=Response(json.dumps(response).encode())
                 with self.assertRaises(RuntimeError) as caught:model.complete_line('sys','{"editable_lines":[1]}')
             self.assertNotIn('secret-fixture-key',str(caught.exception));self.assertIsNone(model.last_call)
+
+
+    def test_provider_http_failures_report_status_only_no_response_or_key(self):
+        with patch.dict(os.environ, {'GROQ_API_KEY': 'secret-fixture-key',
+                                     'BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED': '1'}, clear=True):
+            for status in (400, 401, 403, 429, 500):
+                with self.subTest(status=status):
+                    model = HostedGroqModel()
+                    fake = HTTPError('https://api.groq.com/openai/v1/chat/completions',
+                                     status, 'secret-fixture-key', {},
+                                     io.BytesIO(b'{"error":{"message":"secret-fixture-key"}}'))
+                    with patch('urllib.request.build_opener') as build:
+                        build.return_value.open.side_effect = fake
+                        with self.assertRaisesRegex(RuntimeError, 'http_' + str(status)) as ctx:
+                            model.complete_line('system', '{"editable_lines":[1]}')
+                        self.assertNotIn('secret-fixture-key', str(ctx.exception))
+                        self.assertEqual(build.return_value.open.call_count, 1)
+                        self.assertEqual(model.calls, 1)
+                        self.assertIsNone(model.last_call)
 
 
 if __name__ == '__main__':

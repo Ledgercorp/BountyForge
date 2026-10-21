@@ -111,6 +111,17 @@ class ScoutTests(unittest.TestCase):
         self.assertEqual(report['prospects'][0]['issue_url'],
                          'https://github.com/zzzzzz/original/issues/101')
 
+    def test_no_advertised_money_is_not_a_revenue_prospect(self):
+        educational = issue(404, repository='lessons/learning',
+                            title='[Bounty] Answer three linked questions',
+                            body='Earn a lesson badge for explaining this example')
+        frames = issue(405, repository='data/annotation',
+                       title='Bounty: label 250 frames from scratch',
+                       body='No cash amount is advertised')
+        report = run(FakeGitHub([educational, frames]), now=NOW)
+        self.assertEqual(report['prospect_count'], 0)
+        self.assertEqual(report['funds_verified_usd'], 0)
+
     def test_weak_dollar_language_not_paid_bounty(self):
         row = issue(title='User pays $200 for subscription', body='A paid pricing fix')
         row['labels'] = []

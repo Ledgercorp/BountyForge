@@ -189,5 +189,46 @@ class HostedGroqTests(unittest.TestCase):
                         self.assertIsNone(model.last_call)
 
 
+    def test_groq_documented_permission_codes_only_are_revealed(self):
+        with patch.dict(os.environ, {'GROQ_API_KEY': 'secret-fixture-key',
+                                     'BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED': '1'}, clear=True):
+            scenarios = [
+                ('model_permission_blocked_org', 'model_permission_blocked_org'),
+                ('model_permission_blocked_project', 'model_permission_blocked_project'),
+                ('secret-fixture-key', 'unclassified'),
+                ('<script>attack</script>', 'unclassified'),
+            ]
+            for actual, expected in scenarios:
+                with self.subTest(actual=actual):
+                    model = HostedGroqModel()
+                    content = json.dumps({'error': {'code': actual,
+                                                      'message': 'secret-fixture-key injected'}}).encode()
+                    error = HTTPError('https://api.groq.com/openai/v1/chat/completions',
+                                      403, 'private error secret-fixture-key', {},
+                                      io.BytesIO(content))
+                    with patch('urllib.request.build_opener') as opener:
+                        opener.return_value.open.side_effect = error
+                        with self.assertRaisesRegex(RuntimeError, 'provider_code_' + expected) as caught:
+                            model.complete_line('sys', '{"editable_lines":[1]}')
+                        self.assertEqual(opener.return_value.open.call_count, 1)
+                        self.assertNotIn('secret-fixture-key', str(caught.exception))
+                        self.assertNotIn('attack', str(caught.exception))
+                        self.assertIsNone(model.last_call)
+
+    def test_provider_permission_diagnostic_rejects_oversized_or_malformed_json(self):
+        with patch.dict(os.environ, {'GROQ_API_KEY': 'secret-fixture-key',
+                                     'BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED': '1'}, clear=True):
+            for content in (b'not json', b'{"error":{"code":33}}',
+                            b'{"error":{"code":"model_permission_blocked_org"}}' + b' '*5000):
+                with self.subTest(length=len(content)):
+                    model = HostedGroqModel()
+                    error = HTTPError('https://api.groq.com/openai/v1/chat/completions',
+                                      403, 'private', {}, io.BytesIO(content))
+                    with patch('urllib.request.build_opener') as opener:
+                        opener.return_value.open.side_effect = error
+                        with self.assertRaisesRegex(RuntimeError, 'provider_code_unclassified'):
+                            model.complete_line('sys', '{"editable_lines":[1]}')
+
+
 if __name__ == '__main__':
     unittest.main()

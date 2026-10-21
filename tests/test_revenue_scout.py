@@ -73,6 +73,44 @@ class ScoutTests(unittest.TestCase):
         self.assertEqual(by_url['https://github.com/good/example/issues/12'], 1500)
         self.assertEqual(report['funds_verified_usd'], 0)
 
+    def test_known_unfunded_aggregator_and_absurd_amounts_are_excluded(self):
+        candidates = [
+            issue(100, repository='zhangjiayang6835-cyber/bounty-plaza',
+                  title='Bounty $400 aggregator mirror'),
+            issue(101, repository='good/example',
+                  title='Bounty $999,999,999,999,999,999 spam'),
+            issue(102, repository='good/example',
+                  title='Bounty $225 for Python regression'),
+        ]
+        report = run(FakeGitHub(candidates), now=NOW)
+        self.assertEqual([x['issue_url'] for x in report['prospects']],
+                         ['https://github.com/good/example/issues/102'])
+        self.assertEqual(report['funds_verified_usd'], 0)
+
+    def test_unknown_aggregators_declared_in_repo_metadata_are_excluded(self):
+        class Metadata(FakeGitHub):
+            def get(self, path, params=None):
+                if path == '/repos/working/mirror':
+                    self.calls.append((path, params))
+                    return {'language':'Python',
+                            'description':'Bounty aggregator collecting third-party GitHub issues'}
+                return super().get(path, params)
+        report = run(Metadata([
+            issue(111, repository='working/mirror', title='Bounty $400'),
+            issue(112, repository='good/example', title='Bounty $125')
+        ]), now=NOW)
+        self.assertEqual(report['prospect_count'], 1)
+        self.assertIn('/good/example/', report['prospects'][0]['issue_url'])
+
+    def test_filters_12_high_scoring_mirrors_before_the_primary_source(self):
+        mirrors = [issue(i, repository='zhangjiayang6835-cyber/bounty-plaza',
+                         title='Bounty $400 mirrored issue') for i in range(1, 13)]
+        original = issue(101, repository='zzzzzz/original', title='Bounty $125 Python fix')
+        report = run(FakeGitHub(mirrors + [original]), now=NOW)
+        self.assertEqual(report['prospect_count'], 1)
+        self.assertEqual(report['prospects'][0]['issue_url'],
+                         'https://github.com/zzzzzz/original/issues/101')
+
     def test_weak_dollar_language_not_paid_bounty(self):
         row = issue(title='User pays $200 for subscription', body='A paid pricing fix')
         row['labels'] = []

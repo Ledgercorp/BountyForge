@@ -1,0 +1,100 @@
+name: BountyForge historical curated benchmark
+
+# One explicit internal trial of the original 5 curated Boltons excerpts.
+# No automatic schedule, no arbitrary downloaded repositories, no submissions.
+on:
+  push:
+    branches: [engineering/bounded-autonomy-20261020]
+    paths: ['.github/workflows/curated-boltons-benchmark.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bountyforge-curated-history
+  cancel-in-progress: false
+
+jobs:
+  historical-benchmark:
+    if: ${{ github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[curated-benchmark]') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      BOUNTYFORGE_SUBMIT_ENABLED: '0'
+      BOUNTYFORGE_PORT: '18080'
+    steps:
+      - name: Checkout trusted benchmark without reusable credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate historical harness
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s benchmarks/phase4 -v
+      - name: Require Linux namespace containment before executing excerpts
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, pathlib, subprocess
+          path=pathlib.Path('evidence/curated_sandbox_preflight.json')
+          cmd=['unshare','-Urnmpf','--kill-child','/usr/bin/true']
+          try:
+              r=subprocess.run(cmd, timeout=8, capture_output=True, text=True)
+              ok=r.returncode == 0
+              result={'namespace_available':ok,'exit_code':r.returncode,
+                      'stderr_excerpt':r.stderr[:300],
+                      'third_party_code_executed':False,'untrusted_execution_certified':False}
+          except (OSError,subprocess.TimeoutExpired) as exc:
+              ok=False
+              result={'namespace_available':False,'error_type':type(exc).__name__,
+                      'third_party_code_executed':False,'untrusted_execution_certified':False}
+          path.write_text(json.dumps(result,indent=2)+'\n')
+          print('Historical benchmark namespace admission:',result)
+          if not ok: raise SystemExit('Namespace preflight unavailable; historical code not executed')
+          PY
+      - name: Restore public Qwen model cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/bountyforge/models
+          key: bountyforge-public-qwen25-coder-1p5b-cc324af0-v1
+      - name: Verify pinned model and runtime
+        run: |
+          set -euo pipefail
+          bash scripts/bootstrap_actions_inference.sh --verify-only
+      - name: Launch 18080 loopback inference
+        run: |
+          set -euo pipefail
+          nohup bash scripts/bootstrap_actions_inference.sh --serve > "$RUNNER_TEMP/llama-benchmark.log" 2>&1 </dev/null &
+          ready=0
+          for i in $(seq 1 70); do
+            if curl -fsS http://127.0.0.1:18080/health | grep -q '"status":"ok"'; then ready=1; break; fi
+            sleep 2
+          done
+          [[ "$ready" == 1 ]] || { echo 'Pinned local model did not start'; exit 2; }
+      - name: Reproduce five historical curated benchmark tasks
+        run: |
+          set -euo pipefail
+          python benchmarks/phase4/benchmark_runner.py
+          python - <<'PY'
+          import json
+          r=json.load(open('evidence/phase4_results.json'))
+          assert len(r['tasks'])==5
+          assert not r.get('external_submission',False)
+          assert r.get('paid_inference') is False
+          print('Measured historical model repairs:',r['passed'],'/',r['attempted'])
+          PY
+      - name: Upload only bounded benchmark evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bountyforge-curated-benchmark-${{ github.run_id }}
+          path: |
+            evidence/curated_sandbox_preflight.json
+            evidence/phase4_results.json
+          if-no-files-found: warn
+          retention-days: 2

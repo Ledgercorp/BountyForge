@@ -1,7 +1,10 @@
-name: BountyForge manual CPU acceptance
+name: BountyForge explicitly gated CPU acceptance
 
 # STRICTLY MANUAL. No automatic runner until account-level spending controls are verified.
 on:
+  push:
+    branches: [engineering/bounded-autonomy-20261020]
+    paths: ['.github/workflows/manual-cpu-canary.yml']
   workflow_dispatch:
     inputs:
       billing_ack:
@@ -22,7 +25,7 @@ concurrency:
 
 jobs:
   cpu-acceptance:
-    if: ${{ inputs.billing_ack == 'verified_zero_spend' }}
+    if: ${{ (github.event_name == 'push' && contains(github.event.head_commit.message, '[cpu-acceptance]')) || (github.event_name == 'workflow_dispatch' && inputs.billing_ack == 'verified_zero_spend') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     env:

@@ -75,11 +75,15 @@ jobs:
             --local-port 8080 --output evidence-run/cycle.json
           python -m scripts.validate_evidence evidence-run/cycle.json
           python -c 'import json; d=json.load(open("evidence-run/cycle.json")); assert d["record"]["canary"]["status"] == "synthetic_review_ready", "Qwen did not produce a verified synthetic repair"'
+      - name: Verify three owned synthetic Qwen repairs
+        run: |
+          set -euo pipefail
+          python -m scripts.synthetic_cpu_benchmark --local-port 8080 --output evidence-run/synthetic.json
       - name: Upload sanitized acceptance evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: bountyforge-cpu-acceptance-${{ github.run_id }}
-          path: evidence-run/cycle.json
+          path: evidence-run/
           if-no-files-found: ignore
           retention-days: 2

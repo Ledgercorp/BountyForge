@@ -158,7 +158,7 @@ def validate_evidence(document: dict) -> None:
         raise ValueError('Invalid evidence version or source')
     if not isinstance(document['candidates'], list) or len(document['candidates']) > MAX_CANDIDATES:
         raise ValueError('Invalid candidate count')
-    if document['scan_count'] != len(document['candidates'])
+    if document['scan_count'] != len(document['candidates']):
         raise ValueError('Candidate count mismatch')
     for c in document['candidates']:
         if (not isinstance(c, dict) or set(c) != {'issue_id', 'issue_url', 'verification',

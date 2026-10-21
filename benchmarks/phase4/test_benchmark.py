@@ -27,4 +27,15 @@ class BenchmarkTests(unittest.TestCase):
    result=runner.tests(Path('/does-not-exist'))
   self.assertEqual(result.get('error'),'sandbox_not_admitted')
   self.assertFalse(result['passed'])
+ def test_blocked_cycle_records_no_model_attempts(self):
+  class NeverModel:
+   def complete_line(self,*args,**kwargs):raise AssertionError('Inference must not be reached')
+  with tempfile.TemporaryDirectory() as d,patch.dict('os.environ',{'BOUNTYFORGE_CURATED_DOCKER':'0'}):
+   out=Path(d)/'fresh.json'
+   result=runner.run(model=NeverModel(),output=out)
+   self.assertEqual(result['attempted'],0)
+   self.assertEqual(result['model_calls'],0)
+   self.assertEqual(result['blocked'],5)
+   self.assertNotEqual(result['run_type'],'real_qwen_cpu')
+   self.assertEqual(json.loads(out.read_text())['blocked'],5)
 if __name__=='__main__': unittest.main()

@@ -1,0 +1,69 @@
+{
+  "record": {
+    "bountyforge_revision": "89f5e8738e68265b1c08d3fcda6279226509ba81",
+    "canary": {
+      "attempts": [
+        {
+          "number": 1,
+          "status": "passed",
+          "test": {
+            "exit_code": 0,
+            "passed": true,
+            "seconds": 0.332,
+            "timeout": false
+          }
+        }
+      ],
+      "baseline": {
+        "exit_code": 1,
+        "passed": false,
+        "seconds": 0.331,
+        "timeout": false
+      },
+      "error": null,
+      "inferred_editable_lines": [
+        2
+      ],
+      "model_calls": 1,
+      "patch_sha256": "f6fa183eca3782e59a24d2579566eabf28104dd174fb0206f34068ac3586545d",
+      "source_sha256": "84364cab00781816e244225a22bd168667553521dc139f7b8fe8bb2b45fd02d5",
+      "status": "synthetic_review_ready",
+      "submitted": false,
+      "synthetic_only": true,
+      "third_party_code_executed": false
+    },
+    "candidates": [
+      {
+        "blocker": "Funding, participation terms and executable isolation not independently verified",
+        "funding_verified": false,
+        "issue_id": "06825080fca68c0a7accbe7c03ad77688f8b0a59730d0792b1b9e50563be5eb2",
+        "issue_url": "https://github.com/example-org/fictitious-tools/issues/101",
+        "qualified_for_external_execution": false,
+        "repair_attempted": false,
+        "verification": "unverified_candidate"
+      },
+      {
+        "blocker": "Funding, participation terms and executable isolation not independently verified",
+        "funding_verified": false,
+        "issue_id": "af4c0f8b57e35fd57b1e9345216a11c57e1f80059910d44a015074b96f665cec",
+        "issue_url": "https://github.com/example-org/fictitious-tools/issues/102",
+        "qualified_for_external_execution": false,
+        "repair_attempted": false,
+        "verification": "unverified_candidate"
+      }
+    ],
+    "commercially_qualified": 0,
+    "execution_scope": "repository_owned_synthetic_fixture_only",
+    "external_submissions": 0,
+    "generated_at": "2026-10-21T11:52:13.872976+00:00",
+    "model_sha256_expected": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+    "paid_inference": false,
+    "real_repairs_attempted": 0,
+    "real_review_ready": 0,
+    "revenue_usd_confirmed": 0,
+    "scan_count": 2,
+    "scan_source": "fictional_demo",
+    "schema_version": 1
+  },
+  "record_sha256": "7e014b9673334901bed3fb5c7e393f427502e827291fe582b82d2cf914420d6e"
+}

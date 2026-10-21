@@ -265,3 +265,33 @@ inspect current AppArmor/user-namespace sysctls, process capabilities and seccom
 It does not modify policy or retry the rejected unshare mechanism. A current
 snapshot cannot prove the exact historical kernel/LSM audit rule from the original
 run; that attribution remains explicitly limited to the observed UID-map EPERM.
+
+## Completed recovery and final reporting safeguards
+
+Recovery 39595024636 passed all four jobs at the exact interrupted source
+`89f5e8738e68265b1c08d3fcda6279226509ba81`. The authoritative ledger confirms
+claim attempts 2, `synthetic_review_ready`, evidence digest
+`7e014b9673334901bed3fb5c7e393f427502e827291fe582b82d2cf914420d6e`, no active
+lease and no commercial approval. Four complete cycles and 33 unverified
+opportunities are captured in `evidence/hosted-durability-2026-10-21.json`.
+Recovered envelope and 16/16 scenario receipts were independently read and saved.
+
+Regression 39595287888 passed against source `dc3b6f329ee003c3b0fe95265bdda4ca95b56a74`
+(PR test-merge SHA `daffadd176699792c6ed8169918b7692c68368d2`). Current namespace
+policy snapshot shows AppArmor restriction enabled, userns clone enabled, max
+58121 namespaces, no effective capabilities, host seccomp 0 and AppArmor among
+active LSMs. Different runner image from the original failure; no historical
+audit-rule attribution or policy bypass is claimed.
+
+A final reporting audit found that the historical workflow's always-upload paths
+could include an old tracked score if admission failed. Artifacts now come only
+from a fresh run directory. Calls are counted at actual client invocation, and
+blocked cycles explicitly say `no_inference`. A new harness test first reproduced
+the incorrect inference label, then verified 5 blocked cases, 0 calls and 0
+attempted repairs. This adds no new Qwen score. Final local regression: 180 cases,
+7 skips (173 executed passes), 7/7 harness tests and 4/4 dashboard tests.
+
+`docs/FINAL_ACCEPTANCE_2026_10_21.md` consolidates exact commits, executed runs,
+files/components changed, deployed v11, inactive repair scheduling, spending,
+external actions, skipped checks and remaining blockers. No external submissions
+or received revenue. PR #1 remains draft; main and repository visibility unchanged.

@@ -1,0 +1,46 @@
+{
+  "kind": "verified_internal_durability_snapshot",
+  "observed_at": "2026-10-21T11:57:51.724868+00:00",
+  "source_branch": "state/bountyforge-ledger-v1",
+  "source_commit": "2ada53070466e1c583e678229ff49f6c3b864c65",
+  "source_blob_sha": "803ba112e7d3568180e1e2038763eba8f528ad13",
+  "unverified_discoveries": 33,
+  "cycles": [
+    {
+      "source_revision": "28ec65d017d3e755a86652e1d8d6fcd92e08ea9c",
+      "fixture": "addition",
+      "claim_attempts": 1,
+      "status": "synthetic_review_ready",
+      "evidence_sha256": "704dc72b85ca34a0e1cc80237476adfb5ad33cdc9daaf02f260870ac38c7405b",
+      "run_url": "https://github.com/Ledgercorp/BountyForge/actions/runs/39591802636"
+    },
+    {
+      "source_revision": "4eff34d8e09be4687fac4322d294f8128e575dd0",
+      "fixture": "addition",
+      "claim_attempts": 1,
+      "status": "synthetic_review_ready",
+      "evidence_sha256": "c272ee8711058b0b429efa90d7c5662c16e66859f30ca95b87e60bb3396c13ee",
+      "run_url": "https://github.com/Ledgercorp/BountyForge/actions/runs/39592153607"
+    },
+    {
+      "source_revision": "e3161fff96a8cb45af45c73e7f7e0c191893a8e1",
+      "fixture": "addition",
+      "claim_attempts": 1,
+      "status": "synthetic_review_ready",
+      "evidence_sha256": "1ecf613f596faac526cbe94efc4c9fa553c1d8021f043f8fe712d278a4af0855",
+      "run_url": "https://github.com/Ledgercorp/BountyForge/actions/runs/39593624581"
+    },
+    {
+      "source_revision": "89f5e8738e68265b1c08d3fcda6279226509ba81",
+      "fixture": "addition",
+      "claim_attempts": 2,
+      "status": "synthetic_review_ready",
+      "evidence_sha256": "7e014b9673334901bed3fb5c7e393f427502e827291fe582b82d2cf914420d6e",
+      "run_url": "https://github.com/Ledgercorp/BountyForge/actions/runs/39595024636"
+    }
+  ],
+  "real_review_ready": 0,
+  "external_submissions": 0,
+  "revenue_usd_confirmed": 0,
+  "recurring_repair_schedule_active": false
+}

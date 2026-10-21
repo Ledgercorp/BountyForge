@@ -1,0 +1,184 @@
+{
+  "schema": 1,
+  "date": "2026-10-21",
+  "branch": "engineering/revenue-linux-scout-20261021",
+  "recovered_revision": "92ced9c51d5b302a42614d0938d7ee43b7a47cf8",
+  "verified_source_revision": "d8ebf0915d27af22dbd21ca1f201b240cacba9ff",
+  "milestones": [
+    {
+      "commit": "6bb68792fd8f1ec463755751533d39c37d9281c1",
+      "subject": "Preserve verified Groq baseline and add opt-in constraint-aware repair context",
+      "files_changed": [
+        "benchmarks/phase5/development_runner.py",
+        "bountyforge/lineedit.py",
+        "bountyforge/repair_context.py",
+        "docs/GROQ_REPAIR_ITERATION_2026_10_21.md",
+        "evidence/revenue/groq-owned-baseline/failure-audit.json",
+        "evidence/revenue/groq-owned-baseline/groq-owned-replay.json",
+        "evidence/revenue/groq-owned-baseline/groq-owned-v5.json",
+        "evidence/revenue/groq-owned-baseline/sandbox-preflight.json",
+        "tests/test_iterative_context.py"
+      ]
+    },
+    {
+      "commit": "c2d8f24d2a3e1e5871ac5b654e4ce8db90978d71",
+      "subject": "Freeze bounded GPT-OSS historical evaluation with credential-free independent replay",
+      "files_changed": [
+        ".github/workflows/curated-boltons-benchmark.yml",
+        "benchmarks/phase4/benchmark_runner.py",
+        "docs/GROQ_REPAIR_ITERATION_2026_10_21.md",
+        "evidence/revenue/historical-v7-freeze.json",
+        "scripts/verify_phase5_repairs.py",
+        "tests/test_hosted_historical.py",
+        "tests/test_phase5_evidence.py"
+      ]
+    },
+    {
+      "commit": "7acfe00c84c9e5e0bc5d104327f3142332652ad8",
+      "subject": "Integrate private payment review command without source intake or fulfillment dispatch",
+      "files_changed": [
+        "bountyforge/paid_intake.py",
+        "docs/GROQ_REPAIR_ITERATION_2026_10_21.md",
+        "docs/PAID_ORDER_INTAKE.md",
+        "docs/PRIVATE_PAID_REVIEW_COMMAND.md",
+        "tests/test_paid_intake.py"
+      ]
+    },
+    {
+      "commit": "802f1ddd7aeece527eac053f30aa93991d06abe9",
+      "subject": "Prove private payment review fails closed on durable write rejection",
+      "files_changed": [
+        "docs/GROQ_REPAIR_ITERATION_2026_10_21.md",
+        "docs/PRIVATE_PAID_REVIEW_COMMAND.md",
+        "tests/test_paid_intake.py"
+      ]
+    },
+    {
+      "commit": "d8ebf0915d27af22dbd21ca1f201b240cacba9ff",
+      "subject": "Archive verified 1-of-5 historical Groq result and correct partial-scope retry provenance",
+      "files_changed": [
+        "benchmarks/phase4/benchmark_runner.py",
+        "bountyforge/lineedit.py",
+        "bountyforge/repair_context.py",
+        "docs/GROQ_REPAIR_ITERATION_2026_10_21.md",
+        "evidence/revenue/groq-historical-v7/curated_sandbox_preflight.json",
+        "evidence/revenue/groq-historical-v7/failure-audit.json",
+        "evidence/revenue/groq-historical-v7/phase4_results.json",
+        "evidence/revenue/groq-historical-v7/phase5_independent_replay.json",
+        "tests/test_iterative_retry.py"
+      ]
+    }
+  ],
+  "readiness": {
+    "internal": "DRY_RUN_READY",
+    "commercial": "NOT_READY"
+  },
+  "regression": {
+    "hosted_run_id": 39682486049,
+    "revision": "d8ebf0915d27af22dbd21ca1f201b240cacba9ff",
+    "total": 321,
+    "passed": 314,
+    "skipped": 7,
+    "failed": 0,
+    "skipped_security_checks": "Existing namespace/rootfs tests; no claim of execution",
+    "historical_harness_local_passed": 10,
+    "dashboard_local_passed": 4,
+    "workflow_yaml_and_shell_parsed": true,
+    "actionlint_executed": false
+  },
+  "historical_experiment": {
+    "run_id": 39680884997,
+    "revision": "c2d8f24d2a3e1e5871ac5b654e4ce8db90978d71",
+    "passed": 1,
+    "attempted": 5,
+    "blocked": 0,
+    "model_calls": 8,
+    "verified_success_ids": [
+      "460"
+    ],
+    "prompt_tokens": 8627,
+    "completion_tokens": 3284,
+    "reasoning_tokens_within_completion": 2681,
+    "total_tokens": 11911,
+    "adapter_wall_seconds_including_pacing": 419.444,
+    "pure_inference_seconds": null,
+    "independent_replay_inference_calls": 0,
+    "full_upstream_suites": 0,
+    "new_secret_holdout": false,
+    "fixture_or_acceptance_changes": false,
+    "post_evaluation_correction_live_measured": false
+  },
+  "owned_baseline": {
+    "run_id": 39677572877,
+    "qwen_v5": {
+      "passed": 0,
+      "total": 4,
+      "calls": 8
+    },
+    "qwen_v6": {
+      "passed": 0,
+      "total": 4,
+      "calls": 16
+    },
+    "groq_v5": {
+      "passed": 2,
+      "total": 4,
+      "calls": 6
+    },
+    "new_owned_live_run_performed": false
+  },
+  "private_review_integration": {
+    "offline_tests_passed": 7,
+    "live_provider_requests": 0,
+    "deployed": false,
+    "persistent_volume_approved_or_configured": false,
+    "customer_source_accepted": false,
+    "worker_dispatch_implemented": false
+  },
+  "continuity": {
+    "main_sha": "22250921eb50b7a72e0f474b0f3ff329f81b55a8",
+    "base_engineering_sha": "e242e611983fee17f1709a465d23353677f7f634",
+    "pr1_draft": true,
+    "pr2_draft": true,
+    "dashboard_version": 11,
+    "synthetic_ledger_blob": "803ba112e7d3568180e1e2038763eba8f528ad13",
+    "synthetic_completed_jobs": 4,
+    "unverified_discoveries": 33,
+    "active_claims": 0,
+    "changes_deployed": false,
+    "recurring_repair_enabled": false,
+    "read_only_dashboard_discovery_preserved": true,
+    "commercial_candidates_verified": 0
+  },
+  "infrastructure": [
+    "existing cloud Linux workspace",
+    "standard public GitHub-hosted ubuntu-24.04",
+    "unchanged digest-pinned Docker Python runtime",
+    "existing Groq account, owner-attested Free Plan, fixed openai/gpt-oss-120b"
+  ],
+  "financial": {
+    "additional_purchases_usd": 0,
+    "paid_services_enabled": false,
+    "provider_billing_independently_verified": false,
+    "confirmed_revenue_usd": 0
+  },
+  "external_actions": {
+    "feature_branch_pushes": true,
+    "draft_pr2_update": true,
+    "authorized_public_excerpt_model_requests": 8,
+    "upstream_submissions": 0,
+    "customer_communications": 0,
+    "bounty_claims": 0,
+    "sales_or_payment_writes": 0
+  },
+  "remaining_blockers": [
+    "Fixed historical score 1/5; post-evaluation fix has no new live score",
+    "Multiline statement edits and output-shape compliance remain weak",
+    "No full upstream regression; broader independent quality evidence absent",
+    "Private customer-code execution and dependencies unadmitted",
+    "No approved persistent private review deployment or customer scope/model-sharing consent",
+    "No approved public offer/terms/order/delivery",
+    "Free Plan billing entitlement not independently verified",
+    "Seven namespace/rootfs security checks remain skipped"
+  ]
+}

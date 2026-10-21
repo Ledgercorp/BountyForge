@@ -181,3 +181,45 @@ still unexecuted. Current Docker admission applies to owned/curated excerpts;
 arbitrary customer code remains prohibited. No private production volume,
 customer source, real order, sales deployment, repair schedule, external
 submission or financial commitment. Confirmed received revenue remains **$0**.
+
+## Exact implementation and acceptance commits
+
+- `6bb68792fd8f1ec463755751533d39c37d9281c1`: recovered canonical owned Groq
+  evidence, seven neutral context tests, opt-in constraint-aware context.
+- `c2d8f24d2a3e1e5871ac5b654e4ce8db90978d71`: frozen manual historical backend,
+  eight-call allocation, independent accounting/source-binding replay. Hosted
+  [39680802505](https://github.com/Ledgercorp/BountyForge/actions/runs/39680802505):
+  313 total, 306 passed, seven skipped. The 1/5 experiment evaluated this SHA.
+- `7acfe00c84c9e5e0bc5d104327f3142332652ad8`: private review integration;
+  hosted 319 total, 312 passed, seven skipped.
+- `802f1ddd7aeece527eac053f30aa93991d06abe9`: durable-write negative coverage;
+  hosted [39681677853](https://github.com/Ledgercorp/BountyForge/actions/runs/39681677853):
+  320 total, 313 passed, seven skipped.
+- `d8ebf0915d27af22dbd21ca1f201b240cacba9ff`: archived historical result and
+  post-measurement partial-scope retry correction. Hosted
+  [39682486049](https://github.com/Ledgercorp/BountyForge/actions/runs/39682486049):
+  **321 total, 314 passed, seven skipped, zero failures**. Ten harness and four
+  dashboard tests also passed locally. No new live inference after the freeze.
+
+Exact per-commit changed files, infrastructure, evidence links, deployment,
+security skips, purchases, external actions and unresolved gates are recorded
+in `evidence/revenue/repair-iteration-acceptance.json`. The reporting commit
+adds only documentation/evidence. All frozen hashes were checked again against
+the immutable evaluated c2d8f24 tree, not the later corrected working tree.
+
+Main is still `22250921eb50b7a72e0f474b0f3ff329f81b55a8`; base engineering
+is `e242e611983fee17f1709a465d23353677f7f634`. Both original historical commits
+are ancestors. Existing local unmerged work remains in stash
+`ebe0dc229ac79ae87c73f432f00d2b8a02c79682`; no blanket application or discard.
+Dashboard remains v11, synthetic ledger blob remains
+`803ba112e7d3568180e1e2038763eba8f528ad13`: 33 unverified discoveries, four
+synthetic terminal jobs, no active repair claim. Both PRs stay draft.
+
+No model credential was retrieved, recreated or exposed. The only new hosted
+inference was the explicitly bounded eight-call public-excerpt experiment.
+No paid service or server was enabled and no purchase was made; actual provider
+charges remain unverified. No Stripe call, customer/source intake, outside
+submission, bounty claim, public offer, recurring repair, production merge or
+deployment occurred. No real opportunity became review-ready. Continue with
+separate quality evaluation and an explicitly admitted private execution/data
+plane before any customer fulfillment; payment alone authorizes no execution.

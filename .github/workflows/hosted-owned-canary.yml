@@ -1,0 +1,92 @@
+name: BountyForge hosted owned-fixture canary
+
+# No schedule, no production activation, no outside source execution or payouts.
+# The live model path requires an explicit manual dispatch and owner attestation.
+on:
+  push:
+    branches: [engineering/revenue-linux-scout-20261021]
+    paths:
+      - '.github/workflows/hosted-owned-canary.yml'
+      - 'bountyforge/groq_adapter.py'
+      - 'tests/test_groq_adapter.py'
+  workflow_dispatch:
+    inputs:
+      run_live:
+        description: 'Send approved owned fixture source to Groq Free Plan (no paid account)'
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bountyforge-hosted-owned-canary
+  cancel-in-progress: false
+
+jobs:
+  safe-offline-check:
+    if: ${{ github.repository == 'Ledgercorp/BountyForge' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Mocked hosted transport checks (no external model calls)
+        run: python -m unittest discover -s tests -p test_groq_adapter.py -v
+
+  explicitly-approved-owned-model:
+    needs: safe-offline-check
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_live == true && github.repository == 'Ledgercorp/BountyForge' && github.ref == 'refs/heads/engineering/revenue-linux-scout-20261021' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED: ${{ vars.BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED }}
+      BOUNTYFORGE_SUBMIT_ENABLED: '0'
+      BOUNTYFORGE_CURATED_DOCKER: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Fail closed unless the current account Free Plan is attested
+        run: |
+          set -euo pipefail
+          [[ "$BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED" == '1' ]] || exit 2
+          [[ -n "$GROQ_API_KEY" ]] || exit 2
+      - name: Pull immutable isolated Python runtime
+        run: docker pull --platform linux/amd64 python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590
+      - name: Bounded owned-fixture Python repair evaluation
+        run: |
+          set -euo pipefail
+          mkdir -p hosted-evidence
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from bountyforge.groq_adapter import HostedGroqModel
+          from benchmarks.phase5.development_runner import run
+          result = run(model=HostedGroqModel(),
+                       protocol='ast_contract_v5', suite='original',
+                       output=Path('hosted-evidence/groq-owned-v5.json'))
+          print('Owned-fixture results:', result.get('passed'), 'of', result.get('attempted'),
+                'model calls:', result.get('model_calls'))
+          assert result.get('model_calls', 0) <= 8
+          assert result.get('commercial_bounty') is False
+          assert result.get('external_submission') is False
+          assert result.get('paid_inference') is False
+          assert not result.get('blocked')
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: bountyforge-owned-groq-${{ github.run_id }}
+          path: hosted-evidence/groq-owned-v5.json
+          if-no-files-found: ignore
+          retention-days: 2

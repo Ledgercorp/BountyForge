@@ -125,3 +125,49 @@ Before another inference request, an optional **read-only metadata** endpoint
 check using the same key could be considered, but it does not by itself
 establish unrestricted inference access. Do not infer billing or model access
 from an uncredentialed public catalog.
+
+## Default Project key confirmed; allowlisted 403 diagnostic
+
+The owner supplied a Groq Console screenshot showing **Personal / Default
+Project → API Keys** with a key listed as `Groq_api_key`. No key value was
+exposed, so the screenshot cannot prove GitHub's stored secret contains the
+same credential. Earlier screen recording showed GPT-OSS 120B allowed in the
+organization and Default Project UI.
+
+A fail-closed change to `bountyforge/groq_adapter.py` reads at most 4097
+bytes from a 403 body and emits only one of Groq's documented permission codes
+(`model_permission_blocked_org` or `model_permission_blocked_project`),
+or the literal `unclassified`. It discards error messages, unexpected code
+strings, headers and raw response bytes. Hostile and oversize-body negative
+tests were added and passed in
+[hosted CI 39676218226](https://github.com/Ledgercorp/BountyForge/actions/runs/39676218226):
+**297 cases, 290 passed, seven existing namespace-rootfs skips**.
+The tests first intentionally failed in the red
+[39676145646](https://github.com/Ledgercorp/BountyForge/actions/runs/39676145646).
+
+One bounded feature-branch canary was then run after the owner showed the key's
+project:
+[39676356891](https://github.com/Ledgercorp/BountyForge/actions/runs/39676356891)
+(head `6b1a6e16f31a15bc34a3616552f520a487f55b0c`).
+The Free Plan variable, offline tests, Docker container preflight and secret
+presence checks succeeded. The first Groq inference request returned
+**`http_403, provider_code_unclassified`**. One call, zero usable model
+outputs, zero verified repairs; the remaining three owned tasks were blocked.
+No customer source, spending, submissions or other provider requests occurred.
+Artifact `12382880247`, zip SHA-256
+`d0555f03dbf836e156e969a1ab9e47953ec915846c09b3f743a5c1bbd9f05250`.
+
+This result does **not** prove org/project permissions are valid or invalid.
+The response did not yield either documented allowlisted model-block code;
+it may represent a different restriction, a differently shaped provider
+response or a provider/edge rejection. Do not claim model-quality results.
+
+The one-time trigger was removed in commit
+`f8899f0fb4e6d3c853a5a5263c4f58f29188c178`; workflow is manual-only.
+
+Next low-risk investigation: owner tests `openai/gpt-oss-120b` once in
+Groq's **Default Project Playground**. If that works, focus on the stored
+GitHub key identity and associated API access; if it fails, consult Groq
+support with the time, model, project name and sanitized `403` error code.
+Do not share API key values or raw provider response bodies in support
+artifacts.

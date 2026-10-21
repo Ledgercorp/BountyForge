@@ -195,11 +195,32 @@ def propose_lines(issue: dict, workspace: Path, approved_path: str,
     original = _verify_existing(Path(workspace), path)
     approved = _approved_lines(original, editable_lines)
     digest = hashlib.sha256(original.encode('utf-8')).hexdigest()
-    if issue.get('repair_protocol') == 'ast_contract_v5':
-        from bountyforge.repair_context import build_prompt
-        system, prompt = build_prompt(original, path, approved, issue)
+    if issue.get('repair_protocol') in {'ast_contract_v5', 'ast_contract_v6'}:
+        from bountyforge.repair_context import build_prompt, DIAGNOSIS_SYSTEM
+        diagnose = issue.get('repair_protocol') == 'ast_contract_v6'
+        system, prompt = build_prompt(original, path, approved, issue, budget=3000 if diagnose else 3600)
+        narrowed = editable_lines
+        if diagnose:
+            raw = model.complete_diagnosis(DIAGNOSIS_SYSTEM, prompt, max_tokens=125)
+            try:
+                diagnosis = json.loads(raw)
+            except (ValueError, TypeError) as exc:
+                raise DraftRejected('Invalid diagnosis JSON') from exc
+            if (not isinstance(diagnosis, dict) or set(diagnosis) != {'lines', 'reason'}
+                    or not isinstance(diagnosis['lines'], list) or not 1 <= len(diagnosis['lines']) <= 3
+                    or any(type(i) is not int or i not in approved for i in diagnosis['lines'])
+                    or len(set(diagnosis['lines'])) != len(diagnosis['lines'])
+                    or not isinstance(diagnosis['reason'], str) or not 1 <= len(diagnosis['reason']) <= 400):
+                raise DraftRejected('Diagnosis exceeds trusted scope or schema')
+            narrowed = sorted(diagnosis['lines'])
+            data = json.loads(prompt)
+            data['editable_lines'] = narrowed
+            data['diagnosis_untrusted'] = diagnosis['reason']
+            prompt = json.dumps(data, ensure_ascii=True)
+            if len(prompt.encode()) > 3600:
+                raise DraftRejected('Diagnosis context exceeds inference budget')
         response = model.complete_line(system, prompt, max_tokens=150)
-        result = stage_lines(response, workspace, path, editable_lines, digest)
+        result = stage_lines(response, workspace, path, narrowed, digest)
         return {**result, 'source_issue': str(issue.get('url', ''))[:300],
                 'model': 'local-only', 'review_required': True}
     original_lines = physical_lines(original)

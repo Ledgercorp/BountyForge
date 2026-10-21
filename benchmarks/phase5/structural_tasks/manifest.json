@@ -1,0 +1,46 @@
+{
+  "kind": "owned_structural_development_only",
+  "schema": 1,
+  "tasks": [
+    {
+      "id": "optional_banner",
+      "file": "subject.py",
+      "symbol": "decorate_label",
+      "description": "Format a trimmed label with an optional prefix; omitting the prefix must be valid.",
+      "sha256": {
+        "subject.py": "41471697d28f6da283ac5a57e76c44e3aa372f9856c95075ab158e7a61c54dd0",
+        "tests/test_regression.py": "40ca7a1d601092fbcae3bdee341dec20ca2ab321c440c15bca7752adf42d26f8"
+      }
+    },
+    {
+      "id": "reference_code",
+      "file": "subject.py",
+      "symbol": "valid_reference",
+      "description": "Validate two ASCII letters, a dash, and three ASCII digits, case-insensitively, after trimming surrounding whitespace.",
+      "sha256": {
+        "subject.py": "320678c86f6d5c3534d2fd6e901618807e36bb99a53a0ea4c36d33e491ca06bc",
+        "tests/test_regression.py": "23c25f6a523319bd2aeabab306122d6bdec0b7e61e871b1eca8c68459e878bba"
+      }
+    },
+    {
+      "id": "setting_precedence",
+      "file": "subject.py",
+      "symbol": "merge_settings",
+      "description": "Merge default settings and explicit overrides into a new dictionary, with overrides winning and both inputs preserved.",
+      "sha256": {
+        "subject.py": "86cf3c794cd578cdd021d9aa198e160117940a9b7576a127a6b391df988570eb",
+        "tests/test_regression.py": "df23764edec1853114cf4c972f521a076f5dfc8fb5f7105a4ae78fc6add20e0a"
+      }
+    },
+    {
+      "id": "empty_summary",
+      "file": "subject.py",
+      "symbol": "summarize_numbers",
+      "description": "Return a count and arithmetic total for every list, including empty lists.",
+      "sha256": {
+        "subject.py": "a8ff267c5adee0e545210f286f45794d277662d5d343c21d002cbbb05ae6d296",
+        "tests/test_regression.py": "5778facb13cd0c1983e680d81ebed8b4904990bc4043b7f766c1ff444a1dc215"
+      }
+    }
+  ]
+}

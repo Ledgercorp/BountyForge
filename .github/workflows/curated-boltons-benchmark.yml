@@ -14,6 +14,16 @@ on:
         type: choice
         options: [development, historical]
         default: development
+      repair_protocol:
+        description: 'Frozen repair protocol to evaluate'
+        type: choice
+        options: [ast_contract_v5, ast_contract_v6]
+        default: ast_contract_v6
+      development_suite:
+        description: 'Owned development set (historical selection ignores this)'
+        type: choice
+        options: [original, structural]
+        default: structural
 
 permissions:
   contents: read
@@ -32,6 +42,8 @@ jobs:
       BOUNTYFORGE_PORT: '18080'
       BOUNTYFORGE_CURATED_DOCKER: '1'
       BOUNTYFORGE_EVALUATION: ${{ inputs.evaluation || 'development' }}
+      BOUNTYFORGE_PROTOCOL: ${{ inputs.repair_protocol || 'ast_contract_v6' }}
+      BOUNTYFORGE_DEV_SUITE: ${{ inputs.development_suite || 'structural' }}
     steps:
       - name: Checkout trusted benchmark without reusable credentials
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -89,18 +101,20 @@ jobs:
         run: |
           set -euo pipefail
           if [[ "$BOUNTYFORGE_EVALUATION" == development ]]; then
-            python -m benchmarks.phase5.development_runner --protocol legacy --output evidence-run/phase5_development_legacy.json
-            python -m benchmarks.phase5.development_runner --output evidence-run/phase5_development.json
+            [[ "$BOUNTYFORGE_DEV_SUITE" == original || "$BOUNTYFORGE_DEV_SUITE" == structural ]] || exit 2
+            python -m benchmarks.phase5.development_runner --suite "$BOUNTYFORGE_DEV_SUITE" --protocol ast_contract_v5 --output evidence-run/phase5_development_v5.json
+            python -m benchmarks.phase5.development_runner --suite "$BOUNTYFORGE_DEV_SUITE" --protocol ast_contract_v6 --output evidence-run/phase5_development_v6.json
             exit 0
           fi
           [[ "$BOUNTYFORGE_EVALUATION" == historical ]] || exit 2
-          python -m benchmarks.phase4.benchmark_runner --output evidence-run/phase4_results.json
+          [[ "$BOUNTYFORGE_PROTOCOL" == ast_contract_v5 || "$BOUNTYFORGE_PROTOCOL" == ast_contract_v6 ]] || exit 2
+          python -m benchmarks.phase4.benchmark_runner --protocol "$BOUNTYFORGE_PROTOCOL" --output evidence-run/phase4_results.json
           python - <<'PY'
           import json
           r=json.load(open('evidence-run/phase4_results.json'))
           assert len(r['tasks'])==5 and r['blocked']==0
           assert all(t['baseline_reproduced'] for t in r['tasks'])
-          assert r['model_calls'] <= 12
+          assert r['model_calls'] <= r['max_total_model_calls'] <= 24
           assert not r.get('external_submission',False)
           assert r.get('paid_inference') is False
           print('Measured historical model repairs:',r['passed'],'/',r['attempted'])
@@ -117,5 +131,7 @@ jobs:
             evidence-run/phase5_development.json
             evidence-run/phase5_development_legacy.json
             evidence-run/phase5_independent_replay.json
+            evidence-run/phase5_development_v5.json
+            evidence-run/phase5_development_v6.json
           if-no-files-found: warn
           retention-days: 2

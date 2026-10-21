@@ -16,7 +16,7 @@ from bountyforge.repair_context import physical_lines
 def verify(report):
     expected = {t['id']: t for t in MANIFEST['tasks']}
     if (report.get('benchmark') != 'boltons_26.1.0_curated_excerpts'
-            or report.get('experiment') != 'ast_contract_v5'
+            or report.get('experiment') not in {'ast_contract_v5','ast_contract_v6'}
             or report.get('blocked') != 0 or report.get('completed') != 5
             or report.get('paid_inference') is not False
             or report.get('external_submission') is not False):
@@ -25,7 +25,8 @@ def verify(report):
     if len(tasks) != 5 or {t['id'] for t in tasks} != set(expected):
         raise ValueError('Unexpected historical case set')
     calls = [c for t in tasks for a in t['attempts'] for c in a['calls']]
-    if len(calls) != report['model_calls'] or not 1 <= len(calls) <= 12:
+    limit=24 if report['experiment']=='ast_contract_v6' else 12
+    if len(calls) != report['model_calls'] or not 1 <= len(calls) <= limit:
         raise ValueError('Call accounting mismatch')
     for call in calls:
         if (not isinstance(call['response'], str) or len(call['response'].encode()) > 3000
@@ -50,7 +51,7 @@ def verify(report):
             continue
         if len(successful) != 1 or not successful[0]['test']['passed']:
             raise ValueError('Invalid successful attempt')
-        generated = successful[0]['calls']
+        generated = [c for c in successful[0]['calls'] if c.get('kind','patch')=='patch']
         if ([c['symbol'] for c in generated] != task['symbols']
                 or any(c['stage'] != 'source_validated' for c in generated)):
             raise ValueError('Incomplete successful symbol repair')

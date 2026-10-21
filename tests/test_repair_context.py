@@ -54,3 +54,32 @@ class RepairContextTests(unittest.TestCase):
                                'repair_protocol': 'ast_contract_v5', 'target_symbol': 'f'},
                               root, 'a.py', [2], model)
             self.assertEqual(model.data['editable_lines'], [2])
+
+    def test_diagnosis_cannot_expand_scope_or_choose_paths(self):
+        for diagnosis in ({'lines':[1],'reason':'wrong declaration'},
+                          {'lines':[2],'reason':'x','path':'/tmp/unsafe'},
+                          {'lines':[True],'reason':'x'}):
+            class Model:
+                def complete_diagnosis(self,*a,**kw):return json.dumps(diagnosis)
+                def complete_line(self,*a,**kw):raise AssertionError('No patch permitted')
+            with tempfile.TemporaryDirectory() as d:
+                root=Path(d);(root/'a.py').write_text('def f():\n    return 1\n')
+                with self.assertRaises(DraftRejected):
+                    propose_lines({'verification':'unverified_candidate','repair_protocol':'ast_contract_v6',
+                                   'target_symbol':'f'}, root,'a.py',[2],Model())
+
+    def test_diagnosis_narrows_patch_and_preserves_causal_context(self):
+        class Model:
+            def complete_diagnosis(self,system,prompt,max_tokens):
+                return '{"lines":[3],"reason":"return expression conflicts with contract"}'
+            def complete_line(self,system,prompt,max_tokens):
+                self.data=json.loads(prompt)
+                return '{"changes":[{"line":2,"new":"x=2"}]}'
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);(root/'a.py').write_text('def f():\n    x=1\n    return x\n')
+            model=Model()
+            with self.assertRaises(DraftRejected):
+                propose_lines({'verification':'unverified_candidate','repair_protocol':'ast_contract_v6',
+                               'target_symbol':'f'},root,'a.py',[2,3],model)
+            self.assertEqual(model.data['editable_lines'],[3])
+            self.assertIn('conflicts',model.data['diagnosis_untrusted'])

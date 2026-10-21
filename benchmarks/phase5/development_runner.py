@@ -25,16 +25,25 @@ from bountyforge.model import LocalModel
 ROOT = Path(__file__).resolve().parent
 TASKS = ROOT / 'tasks'
 MANIFEST = json.loads((TASKS / 'manifest.json').read_text())
+STRUCTURAL_TASKS = ROOT / 'structural_tasks'
+STRUCTURAL_MANIFEST = json.loads((STRUCTURAL_TASKS / 'manifest.json').read_text())
+SUITES = {'original': (TASKS, MANIFEST), 'structural': (STRUCTURAL_TASKS, STRUCTURAL_MANIFEST)}
 MARKER = '.bountyforge-owned-development'
 RECEIPT = '.bountyforge-development-proposal.json'
-PROTOCOLS = ('legacy', 'ast_contract_v5')
+PROTOCOLS = ('legacy', 'ast_contract_v5', 'ast_contract_v6')
 
 
 def task_spec(task_id):
-    found = [task for task in MANIFEST['tasks'] if task['id'] == task_id]
+    found = [task for _, manifest in SUITES.values() for task in manifest['tasks'] if task['id'] == task_id]
     if len(found) != 1:
         raise CuratedSandboxUnavailable('Unknown owned development task')
     return found[0]
+
+
+def trusted_task_directory(task_id):
+    task_spec(task_id)  # Fail closed on unknown or multiply defined IDs.
+    return next(directory / task_id for directory, manifest in SUITES.values()
+                if any(task['id'] == task_id for task in manifest['tasks']))
 
 
 def verify_development(root):
@@ -53,7 +62,7 @@ def verify_development(root):
             actual.add(path.relative_to(root).as_posix())
     try:
         task = task_spec((root / MARKER).read_text())
-        trusted = TASKS / task['id']
+        trusted = trusted_task_directory(task['id'])
         expected = set(task['sha256']) | {MARKER}
         if actual not in (expected, expected | {RECEIPT}):
             raise CuratedSandboxUnavailable('Unexpected development file')
@@ -93,9 +102,12 @@ def run_development_tests(root, timeout=12):
     return result
 
 
-def run(*, model=None, output=None, protocol='ast_contract_v5'):
+def run(*, model=None, output=None, protocol='ast_contract_v5', suite='original'):
     if protocol not in PROTOCOLS:
         raise ValueError('Unknown development protocol')
+    if suite not in SUITES:
+        raise ValueError('Unknown owned development suite')
+    task_directory, manifest = SUITES[suite]
     model = model or LocalModel('http://127.0.0.1:18080/v1/chat/completions')
     output = Path(output or ROOT.parents[1] / 'evidence-run/phase5-development.json')
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -103,8 +115,9 @@ def run(*, model=None, output=None, protocol='ast_contract_v5'):
         ['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
     report = {'schema': 1, 'benchmark': 'owned_phase5_development',
               'commercial_bounty': False, 'historical_evaluation': False,
-              'revision': revision, 'protocol': protocol, 'image': IMAGE,
-              'model_calls': 0, 'max_model_calls': 8, 'max_attempts_per_task': 2,
+              'revision': revision, 'protocol': protocol, 'suite': suite, 'image': IMAGE,
+              'model_calls': 0, 'max_model_calls': 16 if protocol == 'ast_contract_v6' else 8,
+              'max_attempts_per_task': 2,
               'paid_inference': False, 'external_submission': False, 'tasks': []}
 
     def save():
@@ -129,7 +142,7 @@ def run(*, model=None, output=None, protocol='ast_contract_v5'):
         return report
 
     inference_available = True
-    for task in MANIFEST['tasks']:
+    for task in manifest['tasks']:
         started = time.monotonic()
         item = {'id': task['id'], 'symbol': task['symbol'], 'calls': [], 'attempts': [],
                 'status': 'blocked', 'model_generated_success': False,
@@ -138,13 +151,13 @@ def run(*, model=None, output=None, protocol='ast_contract_v5'):
         report['tasks'].append(item)
         with tempfile.TemporaryDirectory(prefix='bf-development-') as directory:
             base = Path(directory) / 'baseline'
-            shutil.copytree(TASKS / task['id'], base)
+            shutil.copytree(task_directory / task['id'], base)
             (base / MARKER).write_text(task['id'])
             baseline = run_development_tests(base)
             item['baseline'] = baseline
             item['baseline_reproduced'] = (baseline.get('returncode') == 1
                                            and not baseline['passed']
-                                           and 'FAILED (failures=' in baseline['output'])
+                                           and re.search(r'FAILED \((?:failures|errors)=[1-9]', baseline['output']) is not None)
             if not item['baseline_reproduced']:
                 item['failure_reason'] = 'baseline_not_reproduced'
             elif not inference_available:
@@ -162,10 +175,10 @@ def run(*, model=None, output=None, protocol='ast_contract_v5'):
                     class RecordingModel:
                         response = ''
 
-                        def complete_line(self, system, prompt, max_tokens):
+                        def _complete(self, kind, system, prompt, max_tokens):
                             if report['model_calls'] >= report['max_model_calls']:
                                 raise RuntimeError('Development model budget exhausted')
-                            call = {'number': report['model_calls'] + 1,
+                            call = {'number': report['model_calls'] + 1, 'kind': kind,
                                     'round': number, 'system': system, 'prompt': prompt,
                                     'max_tokens': max_tokens, 'response': None}
                             report['model_calls'] += 1
@@ -173,10 +186,13 @@ def run(*, model=None, output=None, protocol='ast_contract_v5'):
                             generated = time.monotonic()
                             try:
                                 model.last_call = None
-                                self.response = model.complete_line(system, prompt, max_tokens)
-                                call['response'] = self.response
-                                call['response_sha256'] = hashlib.sha256(self.response.encode()).hexdigest()
-                                return self.response
+                                complete = model.complete_diagnosis if kind == 'diagnosis' else model.complete_line
+                                response = complete(system, prompt, max_tokens)
+                                if kind == 'patch':
+                                    self.response = response
+                                call['response'] = response
+                                call['response_sha256'] = hashlib.sha256(response.encode()).hexdigest()
+                                return response
                             except Exception as exc:
                                 call['error'] = type(exc).__name__
                                 raise
@@ -184,6 +200,12 @@ def run(*, model=None, output=None, protocol='ast_contract_v5'):
                                 call['seconds'] = round(time.monotonic() - generated, 3)
                                 call['metadata'] = getattr(model, 'last_call', None)
                                 save()
+
+                        def complete_line(self, system, prompt, max_tokens):
+                            return self._complete('patch', system, prompt, max_tokens)
+
+                        def complete_diagnosis(self, system, prompt, max_tokens=125):
+                            return self._complete('diagnosis', system, prompt, max_tokens)
 
                     recorder = RecordingModel()
                     source = (work / task['file']).read_text()
@@ -239,8 +261,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', type=Path)
     parser.add_argument('--protocol', choices=PROTOCOLS, default='ast_contract_v5')
+    parser.add_argument('--suite', choices=tuple(SUITES), default='original')
     arguments = parser.parse_args()
-    result = run(output=arguments.output, protocol=arguments.protocol)
+    result = run(output=arguments.output, protocol=arguments.protocol, suite=arguments.suite)
     print('DEVELOPMENT', result['passed'], '/', result['attempted'], 'calls', result['model_calls'])
     if result.get('blocked') or any(task['status'] == 'blocked' for task in result['tasks']):
         raise SystemExit(2)

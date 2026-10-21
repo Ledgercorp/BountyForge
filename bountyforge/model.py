@@ -104,13 +104,46 @@ class LocalModel:
                     or any(type(i) is not int or i<1 for i in lines) or len(set(lines))!=len(lines)):
                 raise ValueError('Invalid trusted generation scope')
             schema['properties']['changes']['items']['properties']['line']['enum']=sorted(lines)
+        return self._complete_bounded_schema(system, user, max_tokens, schema, 'bounded_line_patch')
+
+    def complete_diagnosis(self, system: str, user: str, max_tokens: int = 125) -> str:
+        """Return a bounded line diagnosis; the caller must independently validate it.
+
+        This shares the line proposal's loopback-only transport and grants no
+        patch, command, path or execution authority. A trusted line enum is
+        mandatory; a missing scope cannot become unconstrained generation.
+        """
+        self.last_call = None
+        if (not isinstance(system, str) or not isinstance(user, str)
+                or len(system.encode('utf-8')) > 3600 or len(user.encode('utf-8')) > 3600
+                or type(max_tokens) is not int or not 1 <= max_tokens <= 150):
+            raise ValueError('Invalid diagnosis request or generation budget')
+        try:
+            lines = json.loads(user).get('editable_lines')
+        except (ValueError, AttributeError) as exc:
+            raise ValueError('Invalid trusted diagnosis scope') from exc
+        if (not isinstance(lines, list) or not 1 <= len(lines) <= 30
+                or any(type(line) is not int or line < 1 for line in lines)
+                or len(set(lines)) != len(lines)):
+            raise ValueError('Invalid trusted diagnosis scope')
+        schema = {'type': 'object', 'properties': {
+            'lines': {'type': 'array', 'minItems': 1, 'maxItems': 3,
+                      'uniqueItems': True,
+                      'items': {'type': 'integer', 'enum': sorted(lines)}},
+            'reason': {'type': 'string', 'maxLength': 400},
+        }, 'required': ['lines', 'reason'], 'additionalProperties': False}
+        return self._complete_bounded_schema(system, user, max_tokens, schema, 'bounded_line_diagnosis')
+
+    def _complete_bounded_schema(self, system: str, user: str, max_tokens: int,
+                                 schema: dict, name: str) -> str:
+        """Transport shared only by the bounded line and diagnosis callers."""
         body = json.dumps({
             "model": "local",
             "messages": [{"role": "system", "content": system},
                          {"role": "user", "content": user}],
             "max_tokens": max_tokens, "temperature": 0, "stream": False,
             "response_format": {"type": "json_schema", "json_schema": {
-                "name": "bounded_line_patch", "strict": True, "schema": schema,
+                "name": name, "strict": True, "schema": schema,
             }},
         }).encode("utf-8")
         request = urllib.request.Request(

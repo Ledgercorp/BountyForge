@@ -77,3 +77,30 @@ historical verifier reconstructs only recorded validated model proposals, matche
 their exact patches and reruns successful cases in freshly admitted Docker, with
 zero new inference. Protocol assets are frozen in `evidence/phase5/protocol-freeze.json`
 before independent historical evaluation. No historical result has yet changed.
+
+## Independent v5 historical evaluation
+
+Frozen commit `921bc2fd490ec5517625589074498ee2d88cb3b4` passed
+[historical run 39599906768](https://github.com/Ledgercorp/BountyForge/actions/runs/39599906768):
+all five baselines reproduced, no admission blocks, **0/5 repairs**, twelve calls,
+76.790 s inference and 88.980 s summed case wall time. The independent replay
+found zero successful repairs to rerun; it truthfully records an empty case list
+and zero extra inference. Artifact digest
+`bbe5fec61096912b108082a8c64d4b7d6e55e3947bb9e47f80126dc8fea368c1`;
+unmodified reports are under `evidence/phase5/historical-v5-*`.
+
+The new raw transcripts establish why v5 failed: 454 inserted an assignment in
+the wrong context and changed a quoting condition; 459 changed formatting without
+reaching the missing unit; 460 retained the incorrect optional-argument branch,
+then read ret before assignment; 475 replaced a conditional header with a yield
+and failed syntax; 524 inserted an empty conditional body and failed syntax.
+Several retries repeated the same proposal. All failures remain recorded and
+none is counted as infrastructure admission failure or a commercial result.
+
+The complete context intervention alone did not improve the historical score.
+A new opt-in v6 development experiment separates causal diagnosis from patch
+generation and constrains the latter to a validated subset of existing scope.
+It uses the same model, source validator, Docker boundary and 150-token ceiling.
+It doubles the bounded call budget (diagnosis plus patch), not concurrent streams.
+Further development uses separate structural fixtures; another fixed evaluation
+will occur only after development measurements and a new protocol freeze.

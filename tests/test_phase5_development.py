@@ -66,6 +66,26 @@ class DevelopmentAdmissionTests(unittest.TestCase):
             with self.assertRaises(CuratedSandboxUnavailable):
                 dev.run_development_tests(self.root)
 
+    def test_structural_catalog_is_independent_and_pinned(self):
+        structural_ids = set()
+        for task in dev.STRUCTURAL_MANIFEST['tasks']:
+            structural_ids.add(task['id'])
+            trusted = dev.trusted_task_directory(task['id'])
+            self.assertEqual(trusted.parent, dev.STRUCTURAL_TASKS)
+            for filename, digest in task['sha256'].items():
+                self.assertEqual(hashlib.sha256((trusted / filename).read_bytes()).hexdigest(), digest)
+            work = Path(self.temporary.name) / task['id']
+            shutil.copytree(trusted, work)
+            (work / dev.MARKER).write_text(task['id'])
+            self.assertEqual(dev.verify_development(work), work.resolve())
+        self.assertEqual(len(structural_ids), 4)
+        self.assertFalse(structural_ids & {task['id'] for task in dev.MANIFEST['tasks']})
+
+    def test_structural_marker_cannot_admit_original_source(self):
+        (self.root / dev.MARKER).write_text('optional_banner')
+        with self.assertRaises(CuratedSandboxUnavailable):
+            dev.verify_development(self.root)
+
 
 class DevelopmentRunnerTests(unittest.TestCase):
     def setUp(self):
@@ -113,6 +133,46 @@ class DevelopmentRunnerTests(unittest.TestCase):
         self.assertIsNone(call['response'])
         self.assertGreaterEqual(call['seconds'], 0)
         self.assertTrue(all(task['status'] == 'blocked' for task in result['tasks'][1:]))
+
+    def test_diagnosis_and_patch_calls_are_separate_with_sixteen_call_bound(self):
+        class DiagnosingModel:
+            def complete_diagnosis(self, system, prompt, max_tokens=125):
+                data = json.loads(prompt)
+                return json.dumps({'lines': data['editable_lines'][:1], 'reason': 'Unit test diagnosis only.'})
+            def complete_line(self, system, prompt, max_tokens):
+                return 'not json'
+        baseline = {'passed': False, 'returncode': 1, 'output': 'FAILED (errors=1)'}
+        with patch.object(dev, 'verify_runtime_boundary', return_value={'admitted': True}), \
+                patch.object(dev, 'run_development_tests', return_value=baseline):
+            result = dev.run(model=DiagnosingModel(), output=self.output,
+                             protocol='ast_contract_v6', suite='structural')
+        self.assertEqual(result['model_calls'], 16)
+        self.assertEqual(result['max_model_calls'], 16)
+        self.assertEqual(result['suite'], 'structural')
+        self.assertEqual(result['passed'], 0)
+        for item in result['tasks']:
+            self.assertTrue(item['baseline_reproduced'])
+            self.assertEqual([call['kind'] for call in item['calls']],
+                             ['diagnosis', 'patch', 'diagnosis', 'patch'])
+            self.assertTrue(all(call['seconds'] >= 0 for call in item['calls']))
+            self.assertTrue(all(attempt['failure_reason'] == 'proposal_rejected' for attempt in item['attempts']))
+
+    def test_diagnosis_timeout_has_no_patch_or_later_calls(self):
+        class UnavailableDiagnosis:
+            def complete_diagnosis(self, system, prompt, max_tokens=125):
+                raise RuntimeError('diagnosis endpoint unavailable')
+            def complete_line(self, system, prompt, max_tokens):
+                raise AssertionError('Patch inference must not be reached')
+        baseline = {'passed': False, 'returncode': 1, 'output': 'FAILED (failures=1)'}
+        with patch.object(dev, 'verify_runtime_boundary', return_value={'admitted': True}), \
+                patch.object(dev, 'run_development_tests', return_value=baseline):
+            result = dev.run(model=UnavailableDiagnosis(), output=self.output,
+                             protocol='ast_contract_v6', suite='structural')
+        self.assertEqual(result['model_calls'], 1)
+        call = result['tasks'][0]['calls'][0]
+        self.assertEqual((call['kind'], call['error']), ('diagnosis', 'RuntimeError'))
+        self.assertIsNone(call['response'])
+        self.assertTrue(all(not task['calls'] for task in result['tasks'][1:]))
 
 
 if __name__ == '__main__':

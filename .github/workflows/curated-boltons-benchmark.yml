@@ -1,6 +1,6 @@
 name: BountyForge historical curated benchmark
 
-# Second experiment: 240-token model output budget after observed 115-token truncations.
+# Shared line validator experiment; original historical inputs and tests unchanged.
 # One explicit internal trial of the original 5 curated Boltons excerpts.
 # No automatic schedule, no arbitrary downloaded repositories, no submissions.
 on:
@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: bountyforge-curated-history
+  group: bountyforge-repair-worker
   cancel-in-progress: false
 
 jobs:
@@ -46,14 +46,13 @@ jobs:
         run: |
           set -euo pipefail
           python - <<'PY'
-          import json, tempfile
+          import json, tempfile, shutil
           from pathlib import Path
           from bountyforge.curated_docker import MARKER, verify_runtime_boundary
           with tempfile.TemporaryDirectory(prefix='bf-curated-probe-') as d:
               root=Path(d)
-              (root/MARKER).write_text('454')
-              (root/'tests').mkdir()
-              (root/'tests'/'test_smoke.py').write_text('import unittest\nclass T(unittest.TestCase):\n def test_smoke(self): self.assertTrue(True)\n')
+              shutil.copytree('benchmarks/phase4/tasks/459',root,dirs_exist_ok=True)
+              (root/MARKER).write_text('459')
               result=verify_runtime_boundary(root)
           Path('evidence/curated_sandbox_preflight.json').write_text(json.dumps(result,indent=2)+'\n')
           print('Container smoke proof:',result)
@@ -84,7 +83,9 @@ jobs:
           python - <<'PY'
           import json
           r=json.load(open('evidence/phase4_results.json'))
-          assert len(r['tasks'])==5
+          assert len(r['tasks'])==5 and r['blocked']==0
+          assert all(t['baseline_reproduced'] for t in r['tasks'])
+          assert r['model_calls'] <= 12
           assert not r.get('external_submission',False)
           assert r.get('paid_inference') is False
           print('Measured historical model repairs:',r['passed'],'/',r['attempted'])

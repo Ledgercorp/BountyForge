@@ -4,6 +4,7 @@ This is not certification for executing arbitrary untrusted third-party reposito
 """
 from __future__ import annotations
 import os
+import json
 import re
 import shutil
 import signal
@@ -48,6 +49,26 @@ def verify_curated(root: Path) -> Path:
                 raise CuratedSandboxUnavailable('Source budget exceeded')
         elif not path.is_dir():
             raise CuratedSandboxUnavailable('Special filesystem object rejected')
+    # A marker alone is forgeable. Admit exact trusted tests and source only;
+    # changed source must replay through the shared scope/syntax validator.
+    from bountyforge.curated_tasks import TASKS, RECEIPT, task_spec, replay
+    from bountyforge.drafts import DraftRejected
+    try:
+        task_id = marker.read_text()
+        task = task_spec(task_id)
+        trusted = TASKS / task_id
+        permitted = {task['file'], 'tests/test_regression.py', MARKER, RECEIPT}
+        actual = {p.relative_to(root).as_posix() for p in root.rglob('*') if p.is_file()}
+        if actual - permitted:
+            raise CuratedSandboxUnavailable('Unexpected curated file')
+        if (root/'tests/test_regression.py').read_bytes() != (trusted/'tests/test_regression.py').read_bytes():
+            raise CuratedSandboxUnavailable('Historical acceptance tests changed')
+        receipt = root / RECEIPT
+        expected = replay(task_id, json.loads(receipt.read_text())) if receipt.exists() else (trusted/task['file']).read_text()
+        if (root/task['file']).read_text() != expected:
+            raise CuratedSandboxUnavailable('Source does not match validated curated proposal')
+    except (OSError, ValueError, SyntaxError, TypeError, KeyError, DraftRejected) as exc:
+        raise CuratedSandboxUnavailable('Curated provenance validation failed') from exc
     return root
 
 def _args(root: Path, name: str) -> list[str]:
@@ -55,8 +76,10 @@ def _args(root: Path, name: str) -> list[str]:
         'docker','run','--rm','--name',name,'--pull','never',
         '--network','none','--read-only','--cap-drop','ALL',
         '--security-opt','no-new-privileges','--pids-limit','64',
-        '--memory','256m','--cpus','1','--user','65534:65534',
+        '--memory','256m','--memory-swap','256m','--cpus','1','--user','65534:65534',
         '--tmpfs','/tmp:rw,nosuid,nodev,noexec,size=64m',
+        '--ulimit','fsize=1048576:1048576','--ulimit','nofile=64:64',
+        '--ulimit','core=0:0','--log-driver','none',
         '--mount',f'type=bind,src={root},dst=/workspace,readonly',
         '--workdir','/workspace','--env','HOME=/tmp',
         '--env','PYTHONPATH=/workspace','--env','PYTHONDONTWRITEBYTECODE=1',
@@ -65,10 +88,64 @@ def _args(root: Path, name: str) -> list[str]:
 
 def _cleanup(name: str, env: dict) -> None:
     try:
-        subprocess.run(['docker','rm','-f',name],env=env,stdout=subprocess.DEVNULL,
-                       stderr=subprocess.DEVNULL,timeout=5,check=False)
-    except (OSError, subprocess.TimeoutExpired):
-        pass
+        subprocess.run(['docker','rm','-f',name],env=env,
+                                 stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,
+                                 timeout=5,check=False)
+        # --rm can race an explicit removal after killing the CLI. Confirm
+        # absence after the daemon finishes its bounded removal operation.
+        deadline = time.monotonic() + 3
+        while True:
+            absent = subprocess.run(['docker','inspect',name],env=env,
+                                    stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,
+                                    timeout=5,check=False)
+            if absent.returncode == 1:
+                break
+            if time.monotonic() >= deadline:
+                raise CuratedSandboxUnavailable('Container cleanup could not be verified')
+            time.sleep(0.05)
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        raise CuratedSandboxUnavailable('Container cleanup unavailable') from exc
+
+
+def _execute(root: Path, command: list[str] | None, timeout: int) -> dict:
+    name = 'bf-curated-' + uuid.uuid4().hex[:16]
+    env = {'PATH':'/usr/local/bin:/usr/bin:/bin', 'HOME':'/nonexistent'}
+    args = _args(root, name)
+    if command is not None:
+        args = args[:args.index(IMAGE)+1] + command
+    started = time.monotonic()
+    with tempfile.TemporaryFile() as stream:
+        try:
+            child = subprocess.Popen(args, stdin=subprocess.DEVNULL, stdout=stream,
+                                     stderr=subprocess.STDOUT, env=env, start_new_session=True)
+            reason = None
+            while child.poll() is None:
+                if time.monotonic() - started >= timeout:
+                    reason = 'wall_clock_timeout'
+                if os.fstat(stream.fileno()).st_size > LOG_BYTES:
+                    reason = 'output_budget'
+                if reason:
+                    try:
+                        os.killpg(child.pid, signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+                    break
+                time.sleep(0.03)
+            child.wait(timeout=3)
+            if os.fstat(stream.fileno()).st_size > LOG_BYTES:
+                reason = 'output_budget'
+            stream.seek(0)
+            output = stream.read(LOG_BYTES).decode('utf-8','replace')
+            return {'passed': child.returncode == 0 and reason is None,
+                    'returncode': child.returncode, 'timeout': reason == 'wall_clock_timeout',
+                    'error': reason, 'elapsed_seconds': round(time.monotonic()-started,3),
+                    'output': output, 'untrusted_execution_certified': False,
+                    'sandbox': 'digest_pinned_docker_no_network_read_only_no_privileges'}
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            raise CuratedSandboxUnavailable('Docker execution unavailable: '+type(exc).__name__) from exc
+        finally:
+            _cleanup(name, env)
+
 
 def run_curated(root: Path, timeout: int = 12) -> dict:
     if not 2 <= timeout <= 20:
@@ -76,53 +153,42 @@ def run_curated(root: Path, timeout: int = 12) -> dict:
     root = verify_curated(root)
     if shutil.which('docker') is None:
         raise CuratedSandboxUnavailable('Docker unavailable; refuse execution')
-    name = 'bf-curated-' + uuid.uuid4().hex[:16]
-    env = {'PATH':'/usr/local/bin:/usr/bin:/bin', 'HOME':'/nonexistent'}
-    started = time.monotonic()
-    with tempfile.TemporaryFile() as stream:
-        try:
-            child = subprocess.Popen(_args(root,name),stdin=subprocess.DEVNULL,
-                                     stdout=stream,stderr=subprocess.STDOUT,
-                                     env=env,start_new_session=True)
-            try:
-                child.wait(timeout=timeout)
-                timed_out = False
-            except subprocess.TimeoutExpired:
-                timed_out = True
-                os.killpg(child.pid,signal.SIGKILL)
-                child.wait()
-            stream.seek(0)
-            output = stream.read(LOG_BYTES).decode('utf-8','replace')
-            passed = (child.returncode == 0 and not timed_out
-                      and re.search(r'Ran [1-9][0-9]* tests?',output) is not None
-                      and output.rstrip().endswith('OK'))
-            return {'passed':passed,'returncode':child.returncode,
-                    'timeout':timed_out,'elapsed_seconds':round(time.monotonic()-started,3),
-                    'output':output,
-                    'sandbox':'digest_pinned_docker_no_network_read_only_no_privileges',
-                    'untrusted_execution_certified':False}
-        except OSError as exc:
-            raise CuratedSandboxUnavailable('Docker launch unavailable: '+type(exc).__name__) from exc
-        finally:
-            _cleanup(name,env)
+    result = _execute(root, None, timeout)
+    result['passed'] = (result['passed']
+                        and re.search(r'Ran [1-9][0-9]* tests?', result['output']) is not None
+                        and result['output'].rstrip().endswith('OK'))
+    return result
+
 
 def verify_runtime_boundary(root: Path) -> dict:
-    """Run trusted inline negative tests before admitting curated excerpts."""
+    """Trusted negative controls. Never execute task source during admission."""
     root = verify_curated(root)
     if shutil.which('docker') is None:
         raise CuratedSandboxUnavailable('Docker unavailable for boundary probe')
-    name = 'bf-curated-probe-' + uuid.uuid4().hex[:12]
-    smoke = """import os, pathlib, socket
+    smoke = r"""import errno, os, pathlib, socket, stat
 assert os.geteuid()==65534, 'wrong UID'
-for key in ('GITHUB_TOKEN','GH_TOKEN','OPENAI_API_KEY','ANTHROPIC_API_KEY'):
+for key in ('GITHUB_TOKEN','GH_TOKEN','OPENAI_API_KEY','ANTHROPIC_API_KEY','AWS_ACCESS_KEY_ID','AWS_SECRET_ACCESS_KEY'):
     assert key not in os.environ, 'credential inherited'
 assert not pathlib.Path('/home/runner').exists(), 'host home mounted'
-try:
-    socket.create_connection(('1.1.1.1',443),timeout=1)
-except OSError:
-    pass
-else:
-    raise AssertionError('network available')
+assert not pathlib.Path('/var/run/docker.sock').exists(), 'Docker socket present'
+status = pathlib.Path('/proc/self/status').read_text()
+fields = dict(line.split(':',1) for line in status.splitlines() if ':' in line)
+assert int(fields['CapEff'].strip(),16)==0, 'capabilities present'
+assert fields['NoNewPrivs'].strip()=='1', 'privilege escalation permitted'
+assert fields['Seccomp'].strip()=='2', 'seccomp missing'
+cgroup = pathlib.Path('/sys/fs/cgroup')
+assert int((cgroup/'memory.max').read_text())==268435456, 'memory limit absent'
+assert (cgroup/'memory.swap.max').read_text().strip()=='0', 'swap enabled'
+assert (cgroup/'pids.max').read_text().strip()=='64', 'PID limit absent'
+quota, period = (cgroup/'cpu.max').read_text().split()
+assert int(quota)==int(period), 'CPU quota absent'
+for address in (('1.1.1.1',443), ('127.0.0.1',18080)):
+    try:
+        socket.create_connection(address,timeout=1)
+    except OSError:
+        pass
+    else:
+        raise AssertionError('network available')
 for name in ('/workspace/bf-write-probe','/bf-root-write-probe'):
     try:
         pathlib.Path(name).write_text('unsafe')
@@ -130,21 +196,33 @@ for name in ('/workspace/bf-write-probe','/bf-root-write-probe'):
         pass
     else:
         raise AssertionError('writable sandbox: '+name)
+assert os.statvfs('/tmp').f_blocks*os.statvfs('/tmp').f_frsize <= 64*1024*1024, 'tmpfs unbounded'
+path = pathlib.Path('/tmp/bf-noexec')
+path.write_text('#!/bin/sh\nexit 0\n')
+path.chmod(0o755)
+try:
+    os.execv(str(path),[str(path)])
+except OSError as exc:
+    assert exc.errno==errno.EACCES, 'tmpfs execution not denied'
 print('BOUNTYFORGE_CURATED_BOUNDARY_OK')
 """
-    command = _args(root,name)
-    command = command[:command.index(IMAGE)+1] + ['python','-c',smoke]
-    env = {'PATH':'/usr/local/bin:/usr/bin:/bin', 'HOME':'/nonexistent'}
-    try:
-        result = subprocess.run(command,stdin=subprocess.DEVNULL,
-                                capture_output=True,text=True,timeout=20,env=env)
-        if result.returncode != 0 or 'BOUNTYFORGE_CURATED_BOUNDARY_OK' not in result.stdout:
-            raise CuratedSandboxUnavailable('Container boundary probe failed: '+result.stderr[-240:])
-        return {'network_denied':True,'source_writes_denied':True,
-                'root_writes_denied':True,'secrets_absent':True,
-                'uid_unprivileged':True,'image_digest':IMAGE.split('@')[1],
-                'untrusted_execution_certified':False}
-    except (OSError,subprocess.TimeoutExpired) as exc:
-        raise CuratedSandboxUnavailable('Container probe unavailable: '+type(exc).__name__) from exc
-    finally:
-        _cleanup(name,env)
+    result = _execute(root, ['python','-I','-c',smoke], 20)
+    if not result['passed'] or 'BOUNTYFORGE_CURATED_BOUNDARY_OK' not in result['output']:
+        raise CuratedSandboxUnavailable('Boundary controls failed: '+result['output'][-400:])
+    timeout = _execute(root, ['python','-I','-c','import time; time.sleep(30)'], 2)
+    if not timeout['timeout']:
+        raise CuratedSandboxUnavailable('Wall clock restriction failed')
+    memory = _execute(root, ['python','-I','-c','x=bytearray(384*1024*1024)'], 10)
+    if memory['returncode'] != 137:
+        raise CuratedSandboxUnavailable('Memory exhaustion restriction failed')
+    output = _execute(root, ['python','-I','-c','print("x"*20000)'], 10)
+    if output['error'] != 'output_budget':
+        raise CuratedSandboxUnavailable('Output budget restriction failed')
+    return {'network_denied':True, 'loopback_inference_unreachable':True,
+            'source_writes_denied':True,'root_writes_denied':True,'secrets_absent':True,
+            'uid_unprivileged':True,'capabilities_empty':True,'no_new_privileges':True,
+            'seccomp_active':True,'memory_limit_enforced':True,'swap_disabled':True,
+            'cpu_quota_verified':True,'pid_limit_verified':True,'tmpfs_bounded_noexec':True,
+            'wall_clock_enforced':True,'cleanup_verified':True,'output_bounded':True,
+            'docker_socket_absent':True,'image_digest':IMAGE.split('@')[1],
+            'untrusted_execution_certified':False}

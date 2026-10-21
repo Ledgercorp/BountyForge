@@ -1,4 +1,5 @@
 import importlib.util,json,tempfile,unittest
+from unittest.mock import patch
 from pathlib import Path
 HERE=Path(__file__).parent
 spec=importlib.util.spec_from_file_location('runner',HERE/'benchmark_runner.py')
@@ -21,4 +22,9 @@ class BenchmarkTests(unittest.TestCase):
   with self.assertRaises(SyntaxError):runner.stage('def f():\n    return 1\n','{"edits":[{"path":"target.py","old":"return 1","new":"return ("}]}','target.py')
  def test_duplicate_old_rejected(self):
   with self.assertRaises(ValueError):runner.stage('a=1\na=1\n','{"edits":[{"path":"target.py","old":"a=1","new":"a=2"}]}','target.py')
+ def test_no_namespace_or_host_execution_fallback(self):
+  with patch.dict('os.environ',{},clear=True):
+   result=runner.tests(Path('/does-not-exist'))
+  self.assertEqual(result.get('error'),'sandbox_not_admitted')
+  self.assertFalse(result['passed'])
 if __name__=='__main__': unittest.main()

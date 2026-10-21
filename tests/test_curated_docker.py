@@ -1,4 +1,5 @@
 import tempfile
+import shutil
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -12,11 +13,23 @@ class CuratedDockerTests(unittest.TestCase):
         self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup)
         self.root=Path(self.tmp.name)
         (self.root/MARKER).write_text('459')
-        (self.root/'strutils.py').write_text('def f():\n    return 1\n')
-        (self.root/'tests').mkdir()
-        (self.root/'tests'/'test_regression.py').write_text(
-            'import unittest\nclass T(unittest.TestCase):\n'
-            ' def test_f(self): self.assertTrue(True)\n')
+        original=Path(__file__).resolve().parents[1]/'benchmarks/phase4/tasks/459'
+        shutil.copytree(original,self.root,dirs_exist_ok=True)
+
+    def test_forged_marker_does_not_admit_arbitrary_code(self):
+        (self.root/'strutils.py').write_text('raise RuntimeError("outside curated source")\n')
+        with self.assertRaises(CuratedSandboxUnavailable):
+            verify_curated(self.root)
+
+    def test_tests_cannot_be_replaced(self):
+        (self.root/'tests/test_regression.py').write_text('print("OK")\n')
+        with self.assertRaises(CuratedSandboxUnavailable):
+            verify_curated(self.root)
+
+    def test_unexpected_file_cannot_execute_at_python_startup(self):
+        (self.root/'sitecustomize.py').write_text('pass\n')
+        with self.assertRaises(CuratedSandboxUnavailable):
+            verify_curated(self.root)
 
     def test_curated_marker(self):
         self.assertEqual(verify_curated(self.root),self.root.resolve())

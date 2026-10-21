@@ -38,11 +38,6 @@ jobs:
           python -m unittest discover -s benchmarks/phase4 -v
           mkdir -p evidence-run
           docker pull --platform linux/amd64 python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590
-      - name: Restore existing public Qwen cache only
-        uses: actions/cache/restore@5a3ec84eff668545956fd18022155c47e93e2684
-        with:
-          path: ~/.cache/bountyforge/models
-          key: bountyforge-public-qwen25-coder-1p5b-cc324af0-v1
       - name: Fetch and verify unchanged public CPU model and pinned runtime
         run: |
           set -euo pipefail

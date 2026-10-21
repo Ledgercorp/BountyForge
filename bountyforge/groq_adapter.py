@@ -137,11 +137,25 @@ class HostedGroqModel:
             return answer.strip()
         except urllib.error.HTTPError as exc:
             self._disabled=True
-            # Only expose the numeric HTTP status. Never echo provider response
-            # bodies, URL headers, prompts, model outputs or credentials.
+            # Only disclose exact, documented permission codes. Never include
+            # untrusted status text, message, body, headers, prompt, or key.
             status = exc.code if type(exc.code) is int and 100 <= exc.code <= 599 else 0
+            reason = 'unclassified'
+            if status == 403:
+                try:
+                    raw_error = exc.read(4097)
+                    if len(raw_error) <= 4096:
+                        provider_error = json.loads(raw_error)
+                        if isinstance(provider_error, dict):
+                            record = provider_error.get('error')
+                            code = record.get('code') if isinstance(record, dict) else None
+                            if code in ('model_permission_blocked_org',
+                                        'model_permission_blocked_project'):
+                                reason = code
+                except (ValueError, TypeError, OSError):
+                    pass
             raise RuntimeError(
-                f'Hosted inference unavailable or rejected (http_{status}); no retry or fallback'
+                f'Hosted inference unavailable or rejected (http_{status}, provider_code_{reason}); no retry or fallback'
             ) from None
         except Exception:
             self._disabled=True

@@ -84,7 +84,7 @@ jobs:
       - name: Accept only proven canary and three-case results
         run: |
           set -euo pipefail
-          python -c 'import json; a=json.load(open("evidence-run/cycle.json")); b=json.load(open("evidence-run/synthetic.json")); assert a["record"]["canary"]["status"] == "synthetic_review_ready"; assert b["record"]["record"]["all_cases_passed"] is True'
+          python -c 'import json; a=json.load(open("evidence-run/cycle.json")); b=json.load(open("evidence-run/synthetic.json")); assert a["record"]["canary"]["status"] == "synthetic_review_ready"; assert b["record"]["all_cases_passed"] is True'
       - name: Upload sanitized acceptance evidence
         if: always()
         uses: actions/upload-artifact@v4

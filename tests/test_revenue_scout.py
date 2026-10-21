@@ -61,6 +61,18 @@ class ScoutTests(unittest.TestCase):
         pull['pull_request'] = {'url':'https://github.com/x'}
         self.assertEqual(run(FakeGitHub([closed, stale, pull]), now=NOW)['prospect_count'], 0)
 
+    def test_thousands_and_compact_k_rewards_are_not_misranked(self):
+        examples = [
+            issue(11, title='Bounty $1,200 for an isolated Python fix'),
+            issue(12, title='Reward $1.5k for an isolated Python fix'),
+        ]
+        report = run(FakeGitHub(examples), now=NOW)
+        by_url = {item['issue_url']: item['advertised_reward_usd']
+                  for item in report['prospects']}
+        self.assertEqual(by_url['https://github.com/good/example/issues/11'], 1200)
+        self.assertEqual(by_url['https://github.com/good/example/issues/12'], 1500)
+        self.assertEqual(report['funds_verified_usd'], 0)
+
     def test_weak_dollar_language_not_paid_bounty(self):
         row = issue(title='User pays $200 for subscription', body='A paid pricing fix')
         row['labels'] = []

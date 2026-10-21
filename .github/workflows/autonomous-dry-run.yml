@@ -1,7 +1,15 @@
-name: BountyForge bounded autonomous dry run
+name: BountyForge read-only regression and discovery
 
 # No cron until a financial hard-stop and the full runner safety envelope are verified.
 on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'bountyforge/**'
+      - 'tests/**'
+      - 'benchmarks/**'
+      - 'scripts/**'
+      - '.github/workflows/autonomous-dry-run.yml'
   workflow_dispatch:
     inputs:
       discovery:
@@ -42,7 +50,7 @@ jobs:
         env:
           BOUNTYFORGE_SUBMIT_ENABLED: '0'
           GITHUB_TOKEN: ${{ github.token }}
-          MODE: ${{ inputs.discovery }}
+          MODE: ${{ github.event_name == 'pull_request' && 'offline' || inputs.discovery }}
         run: |
           set -euo pipefail
           mkdir -p evidence-run

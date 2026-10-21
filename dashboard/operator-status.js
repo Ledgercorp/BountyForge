@@ -12,7 +12,7 @@ export default async function(req,res) {
     const report=typeof raw==='string'?JSON.parse(raw):(raw||{});
     let operations=null;
     try {
-      const response=await fetch('https://raw.githubusercontent.com/Ledgercorp/BountyForge/state/bountyforge-ledger-v1/state/ledger.json',
+      const response=await fetch('https://raw.githubusercontent.com/Ledgercorp/BountyForge/state/bountyforge-ledger-v1/state/ledger.json?observed='+Math.floor(Date.now()/30000),
                                  {signal:AbortSignal.timeout(5000),headers:{'Accept':'application/json'}});
       if(!response.ok)throw Error('Ledger unavailable');
       const text=await response.text();
@@ -21,7 +21,7 @@ export default async function(req,res) {
     } catch(e) { /* Keep unknown status unknown; never infer model health. */ }
     return res.json({
       state:'ok',data_source:'Private discovery history and public GitHub durable coordination ledger',
-      hosted_worker:operations?'github_actions_internal_cycles_verified':'status_unavailable',
+      hosted_worker:operations?.synthetic_cycles_completed>0?'github_actions_internal_cycles_verified':'status_unavailable',
       cpu_model_on_hatchable:'not_running_here',operations,
       saved_discovery_scans:Number(saved.rows?.[0]?.scans_saved||0),
       last_scan_at:saved.rows?.[0]?.last_scan_at||null,

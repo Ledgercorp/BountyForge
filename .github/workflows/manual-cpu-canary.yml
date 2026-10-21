@@ -1,6 +1,7 @@
 name: BountyForge explicitly gated CPU acceptance
 
 # Public standard-runner CPU acceptance: one explicitly tagged owned-branch push or manual dispatch.
+# Post-hardening compatibility check of the original three owned fixtures.
 # No cron. No third-party fixture execution. No secrets.
 on:
   push:

@@ -175,3 +175,25 @@ Readiness: DRY_RUN_READY for bounded owned-fixture cycles; NOT_READY for real
 paid bounty repairs. Main unchanged; draft PR preserved. No recurring Actions
 repair schedule, automatic upstream steps, new spending commitments, paid model
 APIs, confirmed bounty revenue, Mac access or external submissions.
+
+## Latest security acceptance and deployed owner status
+
+Implementation commit `e3161fff96a8cb45af45c73e7f7e0c191893a8e1` passed
+[full operational run 39593624581](https://github.com/Ledgercorp/BountyForge/actions/runs/39593624581):
+179 unittest cases (7 skips, 172 executed passes), 6 harness tests, 4 dashboard
+projection tests, 16 operational scenarios, pinned-model verification, isolated
+real-Qwen synthetic repair, independent publication and durable completion.
+This is the third successful complete internal hosted cycle. Regression run
+39593631825 also succeeded. A simultaneously triggered CPU acceptance workflow
+was cancelled without inference, and the unrequested historical workflow skipped;
+these are not failed model attempts.
+
+Dashboard v9 deployed successfully to the existing **personal/private** project;
+admin status execution returns 200 and its projection reads the durable ledger.
+The public/member restrictions remain 401/403. Its fixed raw-GitHub URL was then
+observed returning an earlier cached state after completed publication. Follow-up
+adds a 30-second cache-busting key and retains the explicit distinction between
+coordination leases and model health. Status with no completed cycles no longer
+labels a worker as verified. Final deployment and original three-case compatibility
+run are recorded after execution. No paid services, external submissions or
+repair cron were enabled.

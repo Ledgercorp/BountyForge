@@ -1,6 +1,7 @@
 name: BountyForge explicitly gated CPU acceptance
 
-# STRICTLY MANUAL. No automatic runner until account-level spending controls are verified.
+# Public standard-runner CPU acceptance: one explicitly tagged owned-branch push or manual dispatch.
+# No cron. No third-party fixture execution. No secrets.
 on:
   push:
     branches: [engineering/bounded-autonomy-20261020]

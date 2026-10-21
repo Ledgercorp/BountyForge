@@ -1,0 +1,57 @@
+name: BountyForge bounded autonomous dry run
+
+# No cron until a financial hard-stop and the full runner safety envelope are verified.
+on:
+  workflow_dispatch:
+    inputs:
+      discovery:
+        description: Offline demo or read-only live GitHub discovery
+        required: true
+        type: choice
+        default: offline
+        options:
+          - offline
+          - live
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bountyforge-bounded-dry-run
+  cancel-in-progress: false
+
+jobs:
+  safe-scan:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Checkout without reusable credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Full standard-library regression
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -v
+          python -m unittest discover -s benchmarks/phase4 -v
+      - name: Bounded discovery and machine-readable evidence
+        env:
+          BOUNTYFORGE_SUBMIT_ENABLED: '0'
+          GITHUB_TOKEN: ${{ github.token }}
+          MODE: ${{ inputs.discovery }}
+        run: |
+          set -euo pipefail
+          mkdir -p evidence-run
+          python scripts/autonomous_cycle.py --scan "$MODE" --output evidence-run/cycle.json
+          python scripts/validate_evidence.py evidence-run/cycle.json
+      - name: Upload sanitized evidence only
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bountyforge-dry-run-${{ github.run_id }}
+          path: evidence-run/cycle.json
+          retention-days: 2

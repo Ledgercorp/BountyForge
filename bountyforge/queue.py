@@ -3,12 +3,13 @@ from __future__ import annotations
 import json
 import sqlite3
 import time
+import uuid
 from pathlib import Path
 
 SCHEMA = '''CREATE TABLE IF NOT EXISTS jobs (
  id TEXT PRIMARY KEY, state TEXT NOT NULL CHECK(state IN ('queued','running','review_ready','failed')),
  created REAL NOT NULL, updated REAL NOT NULL, lease_until REAL, attempts INTEGER NOT NULL DEFAULT 0,
- input_json TEXT NOT NULL, result_json TEXT
+ input_json TEXT NOT NULL, result_json TEXT, lease_token TEXT
 )'''
 
 class Queue:
@@ -17,6 +18,8 @@ class Queue:
         self.conn.execute('PRAGMA journal_mode=WAL')
         self.conn.execute('PRAGMA busy_timeout=5000')
         self.conn.execute(SCHEMA)
+        if 'lease_token' not in {r[1] for r in self.conn.execute('PRAGMA table_info(jobs)')}:
+            self.conn.execute('ALTER TABLE jobs ADD COLUMN lease_token TEXT')
 
     def enqueue(self, job_id: str, data: dict) -> bool:
         if not job_id or len(job_id) > 120 or not job_id.replace('-', '').replace('_','').isalnum():
@@ -35,21 +38,28 @@ class Queue:
             # Exhausted interrupted jobs must become terminal failures.
             self.conn.execute("UPDATE jobs SET state='failed',result_json=?,lease_until=NULL,updated=? WHERE state='running' AND lease_until<? AND attempts>=2",
                               (json.dumps({'status':'failed','error':'lease_exhausted'}),now,now))
+            if self.conn.execute("SELECT 1 FROM jobs WHERE state='running' AND lease_until>=?",(now,)).fetchone():
+                self.conn.execute('COMMIT'); return None
             row = self.conn.execute("SELECT id,input_json,attempts FROM jobs WHERE state='queued' OR (state='running' AND lease_until<? AND attempts<2) ORDER BY created LIMIT 1",(now,)).fetchone()
             if row is None:
                 self.conn.execute('COMMIT'); return None
-            self.conn.execute("UPDATE jobs SET state='running',attempts=attempts+1,lease_until=?,updated=? WHERE id=?",(now+lease_seconds,now,row[0]))
+            token=uuid.uuid4().hex
+            self.conn.execute("UPDATE jobs SET state='running',attempts=attempts+1,lease_until=?,lease_token=?,updated=? WHERE id=?",(now+lease_seconds,token,now,row[0]))
             self.conn.execute('COMMIT')
-            return {'id':row[0], 'input':json.loads(row[1]), 'attempts':row[2]+1}
+            return {'id':row[0], 'input':json.loads(row[1]), 'attempts':row[2]+1, 'lease_token':token}
         except BaseException:
             self.conn.execute('ROLLBACK'); raise
 
-    def finish(self, job_id: str, result: dict) -> bool:
+    def finish(self, job_id: str, result: dict, *, lease_token: str) -> bool:
         status = result.get('status')
         if status not in ('failed','review_ready'):
             raise ValueError('Only verified terminal statuses are permitted')
-        response = self.conn.execute('UPDATE jobs SET state=?,result_json=?,lease_until=NULL,updated=? WHERE id=? AND state=\'running\'',
-                                     (status,json.dumps(result),time.time(),job_id))
+        if status == 'review_ready':
+            from bountyforge.autonomy import summarize_canary
+            summarize_canary(result)
+        now=time.time()
+        response = self.conn.execute('UPDATE jobs SET state=?,result_json=?,lease_until=NULL,lease_token=NULL,updated=? WHERE id=? AND state=\'running\' AND lease_token=? AND lease_until>=?',
+                                     (status,json.dumps(result),now,job_id,lease_token,now))
         return response.rowcount == 1
 
     def get(self, job_id: str) -> dict | None:

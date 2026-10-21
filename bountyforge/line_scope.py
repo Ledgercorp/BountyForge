@@ -30,6 +30,10 @@ def infer_editable_lines(root: Path, source_path: str, test_output: str) -> list
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
         and node.end_lineno is not None
     }
+    declared = [node.name for node in tree.body
+                if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))]
+    if len(declared) != len(set(declared)):
+        raise DraftRejected("Multiply defined source function")
     found: dict[str, list[str]] = {name: [] for name in failing}
     for test_file in sorted(tests_dir.glob("test_*.py")):
         if test_file.is_symlink() or test_file.stat().st_size > 100000:

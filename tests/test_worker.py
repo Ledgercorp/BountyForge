@@ -38,6 +38,16 @@ class WorkerTests(unittest.TestCase):
         result=self.run_worker([self.wrong,self.wrong]); self.assertEqual(result['status'],'failed')
     def test_model_unavailable(self):
         result=self.run_worker([RuntimeError('offline'),RuntimeError('offline')]); self.assertEqual(result['status'],'failed')
+        self.assertEqual(result['model_calls'],1)
+    def test_empty_test_suite_does_not_pass(self):
+        from bountyforge.worker import _run_tests
+        (self.root/'tests'/'test_calc.py').unlink()
+        self.assertFalse(_run_tests(self.root)['passed'])
+    def test_baseline_import_error_does_not_trigger_inference(self):
+        (self.root/'calc.py').write_text('raise ImportError("broken dependency")\n')
+        model=ScriptedModel([self.fixed])
+        result=repair_fixture(self.issue,self.root,['calc.py'],model)
+        self.assertEqual(model.calls,0)
     def test_baseline_must_fail(self):
         (self.root/'calc.py').write_text('def add(a,b):\n    return a+b\n')
         model=ScriptedModel([self.fixed]); result=repair_fixture(self.issue,self.root,['calc.py'],model)

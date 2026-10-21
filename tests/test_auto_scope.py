@@ -55,6 +55,10 @@ class AutoScopeTests(unittest.TestCase):
     def test_no_failure_rejected(self):
         with self.assertRaises(DraftRejected):
             infer_editable_lines(self.root,'calc.py','ERROR: import failed')
+    def test_duplicate_source_function_rejected(self):
+        (self.root/'calc.py').write_text('def add(a,b):\n    return a-b\ndef add(a,b):\n    return a-b\n')
+        with self.assertRaises(DraftRejected):
+            infer_editable_lines(self.root,'calc.py','FAIL: test_add (test_calc.T)')
     def test_end_to_end_controlled_auto_repair(self):
         r=repair_fixture(self.issue,self.root,['calc.py'],Model(),strategy='auto_line')
         self.assertEqual(r['status'],'review_ready')

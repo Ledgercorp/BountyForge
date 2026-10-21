@@ -22,6 +22,10 @@ def qualify(candidate:dict, benchmark:dict|None=None) -> Qualification:
     if not isinstance(candidate,dict):
         return Qualification('rejected',('Malformed candidate',),0,'C')
     reasons=[]
+    # No current source adapter independently attests escrow or binding funding.
+    # Candidate-controlled booleans, reward amounts and tiers cannot supply that
+    # missing evidence. Keep the offer available for research, never execution.
+    reasons.append('Funding has no independently verified escrow or binding commitment')
     tier=candidate.get('tier','C')
     if tier not in {'A','B'}:
         reasons.append('No independently supported current monetary offer')

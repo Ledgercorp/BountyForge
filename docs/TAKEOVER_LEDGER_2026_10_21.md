@@ -56,3 +56,43 @@ Additional resources purchased $0; paid model APIs 0; confirmed revenue $0.
 External submissions/claims/messages 0. No larger runners or new cloud services.
 Remaining: hosted new benchmark, durable state, operational negative scenarios,
 commercial verification and safe scheduling gates.
+
+## Hosted shared-line measurement
+
+Implementation commit: `026e85d766ac9b9e732ae9c1b739e4bd1effbe0e`.
+[Historical run 39590337663](https://github.com/Ledgercorp/BountyForge/actions/runs/39590337663)
+passed all live admission controls and reproduced 5/5 baselines. **0/5 repairs,
+12 actual Qwen calls, zero blocked cases**. Four calls were for the two-symbol
+454 case; other cases used two. Its artifact was downloaded and inspected.
+[Regression 39590343470](https://github.com/Ledgercorp/BountyForge/actions/runs/39590343470)
+succeeded. No claim of full upstream regression or commercial readiness.
+Local Docker baseline checks initially encountered unreadable task directories
+from the cloud checkout's restrictive umask; public fixture read permissions were
+normalized locally, then all five baseline assertion failures reproduced.
+
+## Durable operational acceptance implementation
+
+Files added: `bountyforge/durable.py`, `scripts/coordinate.py`,
+`scripts/security_acceptance.py`, operational workflow, durable/control tests,
+and `docs/BOUNDED_OPERATIONS.md`. Existing Queue, operator, worker, scope gate,
+qualification, opportunities and synthetic CLI were extended, not replaced.
+All model workflows share one repair concurrency group. Manual discovery removes
+checkout credentials. No active cron was added.
+
+New negative tests first reproduced concurrent SQLite claims, duplicate source
+functions, unnecessary inference retry and inference on a baseline import error.
+Fixes: one active claim, fenced completion, declaration ambiguity rejection,
+assertion-only baseline, stop on endpoint timeout, offline Docker for the new
+internal operational worker. Commercial grading no longer makes an unfunded
+advertisement actionable. No current adapter independently establishes funding.
+
+Executed locally: **170 unittest cases, 7 skips (163 executed passes)**;
+**6/6 benchmark harness tests**; **16/16 scripted operational scenarios**.
+Scripted/injected tests are labeled and do not claim real-Qwen failure injection.
+The synthetic Docker boundary also passed live controls and reproduced addition.
+GitHub reports one 1,091,948,032-byte cache and 26,103 bytes in 17 artifacts before
+this operational experiment. No paid resources or APIs were created. Billing
+invoices are not available here; no new chargeable service was requested.
+
+Deployment: feature branch only. Scheduling inactive. External submissions 0;
+confirmed revenue $0. Hosted durable-cycle evidence is pending the tagged run.

@@ -160,9 +160,9 @@ def run_curated(root: Path, timeout: int = 12) -> dict:
     return result
 
 
-def verify_runtime_boundary(root: Path) -> dict:
+def verify_runtime_boundary(root: Path, *, synthetic: bool = False) -> dict:
     """Trusted negative controls. Never execute task source during admission."""
-    root = verify_curated(root)
+    root = verify_synthetic(root) if synthetic else verify_curated(root)
     if shutil.which('docker') is None:
         raise CuratedSandboxUnavailable('Docker unavailable for boundary probe')
     smoke = r"""import errno, os, pathlib, socket, stat
@@ -226,3 +226,53 @@ print('BOUNTYFORGE_CURATED_BOUNDARY_OK')
             'wall_clock_enforced':True,'cleanup_verified':True,'output_bounded':True,
             'docker_socket_absent':True,'image_digest':IMAGE.split('@')[1],
             'untrusted_execution_certified':False}
+
+
+def verify_synthetic(root: Path) -> Path:
+    """Admit only the fixed owned two-line fixture catalog and validated edits."""
+    from bountyforge.worker import FIXTURE_MARKER
+    from bountyforge.lineedit import stage_lines
+    from bountyforge.drafts import DraftRejected
+    import hashlib
+    if Path(root).is_symlink(): raise CuratedSandboxUnavailable('Symlinked synthetic root')
+    root=Path(root).resolve(strict=True)
+    actual=set()
+    for path in root.rglob('*'):
+        if path.is_symlink() or (not path.is_dir() and not path.is_file()):
+            raise CuratedSandboxUnavailable('Unsafe synthetic object')
+        if path.is_file():
+            if path.stat().st_nlink!=1 or path.stat().st_size>12000:
+                raise CuratedSandboxUnavailable('Unsafe synthetic source')
+            actual.add(path.relative_to(root).as_posix())
+    catalog=Path(__file__).resolve().parents[1]/'fixtures/controlled'
+    for name in ('addition','multiply','increment'):
+        trusted=catalog/name
+        expected_files={p.relative_to(trusted).as_posix() for p in trusted.rglob('*') if p.is_file()}
+        if actual!=expected_files:
+            continue
+        if any((root/name).read_bytes()!=(trusted/name).read_bytes() for name in expected_files-{'calc.py'}):
+            continue
+        if ((root/FIXTURE_MARKER).read_bytes()!=(trusted/FIXTURE_MARKER).read_bytes()
+                or (root/'tests/test_calc.py').read_bytes()!=(trusted/'tests/test_calc.py').read_bytes()):
+            continue
+        original=(trusted/'calc.py').read_text();candidate=(root/'calc.py').read_text()
+        if candidate==original: return root
+        rows=candidate.splitlines(True);old=original.splitlines(True)
+        if not rows or rows[0]!=old[0] or len(old)!=2: continue
+        raw=json.dumps({'changes':[{'line':2,'new':''.join(rows[1:]).rstrip('\n')}]})
+        try:
+            staged=stage_lines(raw,trusted,'calc.py',[2],hashlib.sha256(original.encode()).hexdigest())
+        except DraftRejected:
+            continue
+        if staged['files'][0]['content']==candidate: return root
+    raise CuratedSandboxUnavailable('Not an admitted owned fixture or scoped candidate')
+
+
+def run_synthetic(root: Path, timeout: int = 12) -> dict:
+    if not 2<=timeout<=20: raise ValueError('Synthetic timeout must be bounded')
+    root=verify_synthetic(root)
+    if shutil.which('docker') is None: raise CuratedSandboxUnavailable('Docker unavailable')
+    result=_execute(root,None,timeout)
+    result['passed']=(result['passed'] and re.search(r'Ran [1-9][0-9]* tests?',result['output']) is not None
+                      and result['output'].rstrip().endswith('OK'))
+    return {**result,'exit_code':result['returncode'],'seconds':result['elapsed_seconds']}

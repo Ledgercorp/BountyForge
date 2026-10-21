@@ -11,7 +11,7 @@ class QualificationTests(unittest.TestCase):
      'ai_allowed':True,'us_eligible':True,'payment_conditions_known':True,'upfront_payment_required':False,
      'language':'python','narrow_tests':True,'third_party_code_sandbox_certified':True}
   b={'complete':True,'attempted':5,'passed':4,'full_upstream_suites':1}
-  x=qualify(c,b);self.assertEqual(x.status,'candidate_for_manual_review');self.assertFalse(x.can_submit)
+  x=qualify(c,b);self.assertEqual(x.status,'blocked');self.assertFalse(x.can_submit)
  def test_skipped_full_suite_blocks(self):
   c={'tier':'B','github_state':'open','platform_availability':'current','award_already_paid':False,
      'ai_allowed':True,'us_eligible':True,'payment_conditions_known':True,'upfront_payment_required':False,

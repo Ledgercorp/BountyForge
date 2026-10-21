@@ -21,7 +21,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: bountyforge-manual-cpu
+  group: bountyforge-repair-worker
   cancel-in-progress: false
 
 jobs:

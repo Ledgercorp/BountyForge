@@ -23,6 +23,6 @@ def process_one(queue: Queue, fixture_catalog: dict[str, dict], model) -> dict:
             result = repair_fixture(known['issue'], Path(known['root']), known['approved_paths'], model)
         except Exception as exc:
             result = {'status':'failed','error':type(exc).__name__, 'submitted':False}
-    recorded=queue.finish(claim['id'],result)
+    recorded=queue.finish(claim['id'],result,lease_token=claim['lease_token'])
     return {'state':result['status'], 'job_id':claim['id'], 'processed':1,
             'saved':recorded, 'result':result}

@@ -1,0 +1,156 @@
+name: BountyForge bounded operational acceptance
+
+# Feature-branch acceptance only. Recurring activation needs verified gates and
+# the owner-reviewed workflow on the default branch; cron alone proves nothing.
+on:
+  workflow_dispatch:
+  push:
+    branches: [engineering/bounded-autonomy-20261020]
+    paths: ['.github/workflows/bounded-operations.yml']
+
+permissions: {}
+concurrency:
+  group: bountyforge-repair-worker
+  cancel-in-progress: false
+
+jobs:
+  discovery:
+    if: ${{ github.repository == 'Ledgercorp/BountyForge' && github.ref == 'refs/heads/engineering/bounded-autonomy-20261020' && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[operations-acceptance]')) }}
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Repository regression and failure scenarios
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -v
+          python -m unittest discover -s benchmarks/phase4 -v
+          mkdir -p evidence-run
+          python -m scripts.security_acceptance --output evidence-run/security-acceptance.json
+      - name: Read-only discovery
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          BOUNTYFORGE_SUBMIT_ENABLED: '0'
+        run: |
+          mkdir -p evidence-run
+          python -m scripts.autonomous_cycle --scan live --output evidence-run/discovery.json
+          python -m scripts.validate_evidence evidence-run/discovery.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bounded-discovery
+          path: |
+            evidence-run/discovery.json
+            evidence-run/security-acceptance.json
+          retention-days: 2
+  coordinate:
+    needs: discovery
+    permissions:
+      contents: write
+      actions: read
+    runs-on: ubuntu-24.04
+    timeout-minutes: 4
+    outputs:
+      has_claim: ${{ steps.claim.outputs.has_claim }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bounded-discovery
+          path: evidence-run
+      - name: Persist discoveries and acquire a fenced synthetic lease
+        id: claim
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -m scripts.coordinate prepare --revision "$GITHUB_SHA" --discovery evidence-run/discovery.json --claim claim.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bounded-claim
+          path: claim.json
+          retention-days: 1
+  repair:
+    needs: coordinate
+    if: needs.coordinate.outputs.has_claim == 'true'
+    permissions:
+      contents: read
+      actions: read
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      BOUNTYFORGE_SUBMIT_ENABLED: '0'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Pull digest-pinned offline Python runtime
+        run: docker pull --platform linux/amd64 python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590
+      - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: ~/.cache/bountyforge/models
+          key: bountyforge-public-qwen25-coder-1p5b-cc324af0-v1
+      - name: Verify and start the pinned local model
+        run: |
+          set -euo pipefail
+          bash scripts/bootstrap_actions_inference.sh --verify-only
+          nohup bash scripts/bootstrap_actions_inference.sh --serve > "$RUNNER_TEMP/model.log" 2>&1 </dev/null &
+          echo "$!" > "$RUNNER_TEMP/model.pid"
+          ready=0
+          for i in $(seq 1 70); do
+            if curl -fsS http://127.0.0.1:8080/health | grep -q '"status":"ok"'; then ready=1; break; fi
+            sleep 2
+          done
+          [[ "$ready" == 1 ]]
+      - name: Complete the isolated owned synthetic cycle
+        run: |
+          set -euo pipefail
+          mkdir -p evidence-run
+          python -m scripts.autonomous_cycle --scan offline --canary --isolated --output evidence-run/cycle.json
+          python -m scripts.validate_evidence evidence-run/cycle.json
+          python -c 'import json; r=json.load(open("evidence-run/cycle.json"))["record"]; assert r["canary"]["status"]=="synthetic_review_ready"'
+      - name: Stop this model process
+        if: always()
+        run: |
+          if [[ -f "$RUNNER_TEMP/model.pid" ]]; then kill "$(cat "$RUNNER_TEMP/model.pid")" 2>/dev/null || true; fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: bounded-cycle
+          path: evidence-run/cycle.json
+          if-no-files-found: ignore
+          retention-days: 2
+  record:
+    needs: [coordinate, repair]
+    if: ${{ always() && needs.coordinate.result == 'success' && needs.coordinate.outputs.has_claim == 'true' }}
+    permissions:
+      contents: write
+      actions: read
+    runs-on: ubuntu-24.04
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bounded-claim
+          path: coordination
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        continue-on-error: true
+        with:
+          name: bounded-cycle
+          path: evidence-run
+      - name: Independently validate evidence and publish fixed-path state only
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -m scripts.coordinate finish --revision "$GITHUB_SHA" --claim coordination/claim.json --evidence evidence-run/cycle.json

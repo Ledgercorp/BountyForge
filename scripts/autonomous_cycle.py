@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def main(argv=None):
     p = argparse.ArgumentParser(description='BountyForge bounded internal dry-run cycle')
     p.add_argument('--scan', choices=('offline', 'live'), default='offline')
+    p.add_argument('--isolated', action='store_true', help='Require admitted Docker fixture execution')
     p.add_argument('--canary', action='store_true', help='Repair repository-owned synthetic fixture only')
     p.add_argument('--local-port', choices=(8080, 18080), default=8080, type=int)
     p.add_argument('--output', required=True)
@@ -37,8 +38,13 @@ def main(argv=None):
         issue = {'verification': 'unverified_candidate', 'title': 'Controlled addition test',
                  'description_excerpt': 'add(a, b) must return a+b'}
         model = LocalModel(endpoint=f'http://127.0.0.1:{args.local_port}/v1/chat/completions')
+        runner = None
+        if args.isolated:
+            from bountyforge.curated_docker import run_synthetic, verify_runtime_boundary
+            verify_runtime_boundary(fixture, synthetic=True)
+            runner = run_synthetic
         canary = summarize_canary(repair_fixture(issue, fixture, ['calc.py'], model,
-                                                 max_attempts=2, strategy='auto_line'))
+                                                 max_attempts=2, strategy='auto_line', test_runner=runner))
     envelope = make_evidence(candidates, scan_source='fictional_demo' if args.scan == 'offline'
                              else 'github_public_read_only', canary=canary,
                              revision=os.getenv('GITHUB_SHA'))

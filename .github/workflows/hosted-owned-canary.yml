@@ -52,7 +52,7 @@ jobs:
 
   explicitly-approved-owned-model:
     needs: safe-offline-check
-    if: ${{ github.repository == 'Ledgercorp/BountyForge' && github.ref == 'refs/heads/engineering/revenue-linux-scout-20261021' && ((github.event_name == 'workflow_dispatch' && inputs.run_live == true) || (github.event_name == 'push' && github.event.head_commit.message == '[bf-groq-ua-owned-canary-one-shot]')) }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_live == true && github.repository == 'Ledgercorp/BountyForge' && github.ref == 'refs/heads/engineering/revenue-linux-scout-20261021' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:

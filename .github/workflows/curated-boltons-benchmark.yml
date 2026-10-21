@@ -23,6 +23,7 @@ jobs:
     env:
       BOUNTYFORGE_SUBMIT_ENABLED: '0'
       BOUNTYFORGE_PORT: '18080'
+      BOUNTYFORGE_CURATED_DOCKER: '1'
     steps:
       - name: Checkout trusted benchmark without reusable credentials
         uses: actions/checkout@v4
@@ -36,26 +37,25 @@ jobs:
         run: |
           set -euo pipefail
           python -m unittest discover -s benchmarks/phase4 -v
-      - name: Require Linux namespace containment before executing excerpts
+      - name: Pull exact official Python image by immutable amd64 digest
+        run: |
+          set -euo pipefail
+          docker pull --platform linux/amd64 python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590
+      - name: Prove no network, no secrets and read-only container behavior
         run: |
           set -euo pipefail
           python - <<'PY'
-          import json, pathlib, subprocess
-          path=pathlib.Path('evidence/curated_sandbox_preflight.json')
-          cmd=['unshare','-Urnmpf','--kill-child','/usr/bin/true']
-          try:
-              r=subprocess.run(cmd, timeout=8, capture_output=True, text=True)
-              ok=r.returncode == 0
-              result={'namespace_available':ok,'exit_code':r.returncode,
-                      'stderr_excerpt':r.stderr[:300],
-                      'third_party_code_executed':False,'untrusted_execution_certified':False}
-          except (OSError,subprocess.TimeoutExpired) as exc:
-              ok=False
-              result={'namespace_available':False,'error_type':type(exc).__name__,
-                      'third_party_code_executed':False,'untrusted_execution_certified':False}
-          path.write_text(json.dumps(result,indent=2)+'\n')
-          print('Historical benchmark namespace admission:',result)
-          if not ok: raise SystemExit('Namespace preflight unavailable; historical code not executed')
+          import json, tempfile
+          from pathlib import Path
+          from bountyforge.curated_docker import MARKER, verify_runtime_boundary
+          with tempfile.TemporaryDirectory(prefix='bf-curated-probe-') as d:
+              root=Path(d)
+              (root/MARKER).write_text('454')
+              (root/'tests').mkdir()
+              (root/'tests'/'test_smoke.py').write_text('import unittest\nclass T(unittest.TestCase):\n def test_smoke(self): self.assertTrue(True)\n')
+              result=verify_runtime_boundary(root)
+          Path('evidence/curated_sandbox_preflight.json').write_text(json.dumps(result,indent=2)+'\n')
+          print('Container smoke proof:',result)
           PY
       - name: Restore public Qwen model cache
         uses: actions/cache@v4
@@ -79,7 +79,7 @@ jobs:
       - name: Reproduce five historical curated benchmark tasks
         run: |
           set -euo pipefail
-          python benchmarks/phase4/benchmark_runner.py
+          python -m benchmarks.phase4.benchmark_runner
           python - <<'PY'
           import json
           r=json.load(open('evidence/phase4_results.json'))

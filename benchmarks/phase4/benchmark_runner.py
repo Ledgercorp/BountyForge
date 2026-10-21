@@ -17,6 +17,11 @@ def limits():
   resource.setrlimit(resource.RLIMIT_CPU,(8,8));resource.setrlimit(resource.RLIMIT_FSIZE,(1048576,1048576));resource.setrlimit(resource.RLIMIT_CORE,(0,0));resource.setrlimit(resource.RLIMIT_AS,(512*1024*1024,512*1024*1024));resource.setrlimit(resource.RLIMIT_NOFILE,(64,64))
 
 def tests(root, timeout=12):
+  if os.environ.get('BOUNTYFORGE_CURATED_DOCKER') == '1':
+    from bountyforge.curated_docker import CuratedSandboxUnavailable, run_curated
+    try: return run_curated(root, timeout)
+    except CuratedSandboxUnavailable as exc:
+      return {'passed':False,'error':type(exc).__name__}
   # Vetted excerpt only, Linux unprivileged network+PID namespace; host VFS is NOT chroot-isolated here.
   cmd=['unshare','-Urnmpf','--kill-child',sys.executable,'-B','-m','unittest','discover','-s','tests','-q']
   env={'PATH':'/usr/bin:/bin','HOME':str(root),'PYTHONPATH':str(root),'PYTHONDONTWRITEBYTECODE':'1','LC_ALL':'C.UTF-8'}
@@ -81,6 +86,8 @@ def run():
     source_dir=ROOT/'tasks'/task['id']; original=(source_dir/task['file']).read_text()
     with tempfile.TemporaryDirectory(prefix='bf-historical-') as wd:
       wd=Path(wd); shutil.copytree(source_dir,wd/'base');base=wd/'base'
+      if os.environ.get('BOUNTYFORGE_CURATED_DOCKER') == '1':
+        (base/'.bountyforge-curated-boltons').write_text(task['id'])
       baseline=tests(base);item['baseline']=baseline
       if baseline['passed'] or baseline.get('timeout') or baseline.get('returncode') != 1 or 'FAILED (failures=' not in baseline.get('output',''):
         item['failure_reason']='baseline_not_reproduced_or_runner_unavailable'

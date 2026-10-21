@@ -195,7 +195,7 @@ def propose_lines(issue: dict, workspace: Path, approved_path: str,
     original = _verify_existing(Path(workspace), path)
     approved = _approved_lines(original, editable_lines)
     digest = hashlib.sha256(original.encode('utf-8')).hexdigest()
-    if issue.get('repair_protocol') in {'ast_contract_v5', 'ast_contract_v6'}:
+    if issue.get('repair_protocol') in {'ast_contract_v5', 'ast_contract_v6', 'ast_contract_v7'}:
         from bountyforge.repair_context import build_prompt, DIAGNOSIS_SYSTEM
         diagnose = issue.get('repair_protocol') == 'ast_contract_v6'
         system, prompt = build_prompt(original, path, approved, issue, budget=3000 if diagnose else 3600)
@@ -220,6 +220,13 @@ def propose_lines(issue: dict, workspace: Path, approved_path: str,
             if len(prompt.encode()) > 3600:
                 raise DraftRejected('Diagnosis context exceeds inference budget')
         response = model.complete_line(system, prompt, max_tokens=150)
+        if issue.get('repair_protocol') == 'ast_contract_v7' and issue.get('previous_proposal'):
+            try:
+                repeated = json.loads(response) == json.loads(issue['previous_proposal'])
+            except (ValueError, TypeError):
+                repeated = response == issue['previous_proposal']
+            if repeated:
+                raise DraftRejected('Repeated rejected proposal; no candidate execution')
         result = stage_lines(response, workspace, path, narrowed, digest)
         return {**result, 'source_issue': str(issue.get('url', ''))[:300],
                 'model': 'local-only', 'review_required': True}

@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "run_id": 39677572877,
+  "artifact_id": 12382877414,
+  "artifact_sha256": "82ce41a04bb7ddeecccc69caf7075c0c8b7d3c08eab7af859a8d3dfac0956dca",
+  "source_revision": "2d7d389f86d52e75554466be1df020b567eddb6c",
+  "benchmark": "owned_structural_development",
+  "baseline": {
+    "passed": 2,
+    "total": 4,
+    "calls": 6,
+    "prompt_tokens": 3565,
+    "completion_tokens": 798,
+    "reasoning_tokens": 461,
+    "adapter_wall_seconds_including_pacing": 298.36,
+    "provider_inference_seconds": null
+  },
+  "cases": [
+    {
+      "id": "optional_banner",
+      "passed": true,
+      "calls": 1,
+      "response_sha256": [
+        "4458fc2afd4335fbc25331a28660105d98626ba7cfe9a7262f61f643e67231e9"
+      ],
+      "failure_reasons": [
+        null
+      ],
+      "independent_replay_passed": true
+    },
+    {
+      "id": "reference_code",
+      "passed": false,
+      "calls": 2,
+      "response_sha256": [
+        "94147f04d3cf6ea4b54fb1b036affc0b9978f1442aaff3ef7ac6bffa104a242e",
+        "94147f04d3cf6ea4b54fb1b036affc0b9978f1442aaff3ef7ac6bffa104a242e"
+      ],
+      "failure_reasons": [
+        "proposal_rejected",
+        "proposal_rejected"
+      ],
+      "primary_cause": "New attribute rejected by unchanged AST capability validator",
+      "retry_cause": "Identical rejected proposal repeated despite validator feedback",
+      "context_limitation": "Extracted assertion references value but omits loop inputs",
+      "localization": "Correct approved source and global dependency line; not a localization failure",
+      "tests_executed_for_candidates": 0
+    },
+    {
+      "id": "setting_precedence",
+      "passed": true,
+      "calls": 1,
+      "response_sha256": [
+        "6a1d8bb80f136b53a3be3acb0467d89ace5ca01426431fb78aa99a250c89da5d"
+      ],
+      "failure_reasons": [
+        null
+      ],
+      "independent_replay_passed": true
+    },
+    {
+      "id": "empty_summary",
+      "passed": false,
+      "calls": 2,
+      "response_sha256": [
+        "73c78ed8bae84390c90e86028eba22c2550a469ff98a4222618f9f70235daa67",
+        "73c78ed8bae84390c90e86028eba22c2550a469ff98a4222618f9f70235daa67"
+      ],
+      "failure_reasons": [
+        "targeted_tests_failed",
+        "targeted_tests_failed"
+      ],
+      "primary_cause": "Replacement deletes an existing binding and introduces an unbound local on the empty branch",
+      "retry_cause": "Identical proposal despite UnboundLocalError naming the newly missing binding",
+      "context_limitation": "Prior error prefix truncated to unittest header; current exception was still present separately",
+      "localization": "Correct approved function and branch line; not a localization failure",
+      "tests_executed_for_candidates": 2
+    }
+  ],
+  "new_inference_calls": 0,
+  "commercial_success": false,
+  "billing_independently_verified": false
+}

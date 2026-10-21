@@ -30,7 +30,7 @@ STRUCTURAL_MANIFEST = json.loads((STRUCTURAL_TASKS / 'manifest.json').read_text(
 SUITES = {'original': (TASKS, MANIFEST), 'structural': (STRUCTURAL_TASKS, STRUCTURAL_MANIFEST)}
 MARKER = '.bountyforge-owned-development'
 RECEIPT = '.bountyforge-development-proposal.json'
-PROTOCOLS = ('legacy', 'ast_contract_v5', 'ast_contract_v6')
+PROTOCOLS = ('legacy', 'ast_contract_v5', 'ast_contract_v6', 'ast_contract_v7')
 
 
 def task_spec(task_id):
@@ -213,6 +213,7 @@ def run(*, model=None, output=None, protocol='ast_contract_v5', suite='original'
                              'url': 'owned-development:' + task['id'],
                              'description_excerpt': task['description'],
                              'test_failure_excerpt': previous_failure,
+                             'baseline_failure': baseline['output'],
                              'prior_error': previous_failure if number > 1 else '',
                              'target_symbol': task['symbol'],
                              'test_contract_untrusted': (base / 'tests/test_regression.py').read_text(),

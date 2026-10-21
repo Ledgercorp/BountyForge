@@ -70,3 +70,28 @@ then at most one bounded hosted historical experiment under the existing Free
 Plan authorization. Historical tasks remain unchanged; they are a previously
 exposed fixed evaluation set, not newly secret holdouts. Never tune on its
 results and relabel a rerun as independent.
+
+## Frozen historical experiment preparation
+
+The existing historical workflow now has an explicit `groq` choice for v7
+only, manual dispatch on this feature branch only. Existing Qwen acceptance
+and its default backend are preserved. At most eight transport calls, 1,024
+total generation tokens per call, 60-second spacing, no retry/fallback after
+provider failure, and the unchanged 150-token patch interface/3,000-byte
+answer limit. Retry allocation reserves first-attempt coverage for remaining
+historical symbols. This differs from the old Qwen protocol/budget, so any
+comparison is a system comparison, not an isolated model-size experiment.
+
+The separate replay step has no Groq key. It checks exact revision, model ID,
+provider usage, transcript SHA, Docker admission, baseline failures and call
+counts before accepting a completed hosted experiment. Successful patches must
+also replay the exact sequential symbol scope and source hashes independently.
+Previously stashed diagnosis-order/source-binding verifier improvements were
+recovered selectively; the remaining stash was preserved.
+
+Local freeze checks: **313 tests, 306 passed, seven skipped**; ten historical
+harness tests passed. Five hosted-budget/accounting methods plus one transcript
+scope test, and three recovered diagnosis-verifier tests cover negative states.
+Workflow YAML and every shell block parsed; actionlint was unavailable. No live
+inference during development. `historical-v7-freeze.json` pins the implementation
+and original fixture hashes before observing any new historical model output.

@@ -41,23 +41,28 @@ def stage(source, raw,filename):
   if not diff:raise ValueError('no_effect')
   return updated,diff
 
-def run(model=None, output=None, protocol='ast_contract_v5'):
+def run(model=None, output=None, protocol='ast_contract_v5', *, backend='local_qwen'):
   from bountyforge.curated_docker import IMAGE, MARKER, verify_runtime_boundary
   from bountyforge.curated_tasks import TASKS, RECEIPT, editable_scope
   from bountyforge.lineedit import propose_lines
   from bountyforge.model import LocalModel
   from bountyforge.repair_context import physical_lines
   import hashlib
+  if protocol not in {'ast_contract_v5','ast_contract_v6','ast_contract_v7','symbol_context_and_line_enum_v4'}:
+    raise ValueError('Unknown repair protocol')
+  if backend not in {'local_qwen','groq'} or (backend=='groq' and (protocol!='ast_contract_v7' or model is None)):
+    raise ValueError('Hosted historical evaluation requires explicit v7 model')
   model = model or LocalModel('http://127.0.0.1:18080/v1/chat/completions')
   output = Path(output or ROOT.parents[1]/'evidence-run/phase4_results.json')
   output.parent.mkdir(parents=True, exist_ok=True)
   revision = os.environ.get('GITHUB_SHA') or subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
   report={'benchmark':'boltons_26.1.0_curated_excerpts','run_type':'no_inference',
     'revision':revision, 'historical_source_tag':'26.1.0', 'experiment':protocol,
-    'model_sha256':'cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046',
-    'runtime_sha256':'152e33221c9c9d37816a8ee9943f8d87339199197c80cb692559c9756b2027d8',
+    'model_sha256':'cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046' if backend=='local_qwen' else None,
+    'runtime_sha256':'152e33221c9c9d37816a8ee9943f8d87339199197c80cb692559c9756b2027d8' if backend=='local_qwen' else None,
+    'inference_provider':backend, 'billing_independently_verified':False,
     'image':IMAGE, 'max_completion_tokens':125 if protocol=='symbol_context_and_line_enum_v4' else 150,'max_attempts_per_task':2,
-    'max_total_model_calls':24 if protocol=='ast_contract_v6' else 12, 'verification_scope':'excerpt_only_no_full_upstream_suite',
+    'max_total_model_calls':8 if backend=='groq' else 24 if protocol=='ast_contract_v6' else 12, 'verification_scope':'excerpt_only_no_full_upstream_suite',
     'isolation':'digest_pinned_docker_no_network_read_only_no_privileges',
     'external_submission':False,'paid_inference':False,'tasks':[]}
   inference_available = True
@@ -68,7 +73,8 @@ def run(model=None, output=None, protocol='ast_contract_v5'):
     report['passed']=sum(t['model_generated_success'] for t in report['tasks'])
     report['blocked']=sum(t['status']=='blocked' for t in report['tasks'])
     report['model_calls']=sum(t['model_calls'] for t in report['tasks'])
-    report['run_type']='real_qwen_cpu' if report['model_calls'] else 'no_inference'
+    report['adapter_wall_seconds_including_pacing']=round(sum(c.get('seconds',0) for t in report['tasks'] for a in t['attempts'] for c in a['calls']),3)
+    report['run_type']=('real_groq_hosted' if backend=='groq' else 'real_qwen_cpu') if report['model_calls'] else 'no_inference'
     if report['model_calls']>report['max_total_model_calls']:
       raise RuntimeError('Model budget exceeded')
     temporary=output.with_suffix('.tmp')
@@ -93,18 +99,21 @@ def run(model=None, output=None, protocol='ast_contract_v5'):
                'Prefer a minimal correction to existing expressions, conditions or constants.')
       used_system = concise if protocol=='symbol_context_and_line_enum_v4' else system
       used_prompt = json.dumps(data,ensure_ascii=True) if protocol=='symbol_context_and_line_enum_v4' else prompt
-      call={'kind':kind,'symbol':self.symbol,'source_sha256':hashlib.sha256(source.encode()).hexdigest(),
+      call={'number':sum(t['model_calls'] for t in report['tasks'])+1,
+            'kind':kind,'symbol':self.symbol,'source_sha256':hashlib.sha256(source.encode()).hexdigest(),
             'system':used_system,'prompt':used_prompt,'max_tokens':max_tokens,
             'response':None,'stage':'inference_started'}
-      one['calls'].append(call)
       if sum(t['model_calls'] for t in report['tasks'])>=report['max_total_model_calls']:
         raise RuntimeError('Model budget exceeded before inference')
+      one['calls'].append(call)
       item['model_calls']+=1
       started=time.monotonic()
       try:
+        model.last_call=None
         method=model.complete_diagnosis if kind=='diagnosis' else model.complete_line
         self.response = method(used_system,used_prompt,max_tokens)
         call['response']=self.response
+        call['response_sha256']=hashlib.sha256(self.response.encode()).hexdigest()
         call['stage']='response_received'
         return self.response
       except Exception as exc:
@@ -115,7 +124,7 @@ def run(model=None, output=None, protocol='ast_contract_v5'):
         call['model_metadata']=getattr(model,'last_call',None)
         save()
 
-  for task in MANIFEST['tasks']:
+  for task_index, task in enumerate(MANIFEST['tasks']):
     start=time.monotonic()
     original=(TASKS/task['id']/task['file']).read_text()
     item={k:task[k] for k in ['id','issue','blob']}
@@ -146,6 +155,14 @@ def run(model=None, output=None, protocol='ast_contract_v5'):
         item['status']='failed'
         previous=baseline['output']; previous_proposals={}
         for number in range(1,3):
+          # The hosted hard cap remains eight. Reserve first-attempt coverage
+          # for later cases rather than spending all calls on early retries.
+          if backend=='groq' and number>1:
+            reserved=sum(len(t['symbols']) for t in MANIFEST['tasks'][task_index+1:])
+            remaining=report['max_total_model_calls']-sum(t['model_calls'] for t in report['tasks'])
+            if remaining < len(task['symbols'])+reserved:
+              item['retry_omitted']='call_budget_reserved_for_remaining_cases'
+              break
           work=wd/f'attempt{number}';shutil.copytree(base,work)
           one={'number':number,'status':'failed','generations':[],'calls':[]};receipts=[]
           item['attempts'].append(one)
@@ -154,6 +171,7 @@ def run(model=None, output=None, protocol='ast_contract_v5'):
               path=work/task['file'];source=path.read_text()
               issue={'verification':'unverified_candidate','url':task['issue'],
                      'description_excerpt':task['description'],'test_failure_excerpt':previous,
+                     'baseline_failure':baseline['output'],
                      'prior_error':previous if number>1 else '',
                      'target_symbol':symbol,'repair_protocol':protocol,
                      'test_contract_untrusted':(base/'tests/test_regression.py').read_text(),
@@ -192,6 +210,7 @@ def run(model=None, output=None, protocol='ast_contract_v5'):
               previous_proposals[symbol]=one['calls'][-1]['response']
           except (RuntimeError,TimeoutError,urllib.error.URLError) as exc:
             one['failure_reason']='inference_unavailable_or_timeout';one['message']=type(exc).__name__
+            item['status']='blocked';item['failure_reason']=one['failure_reason']
             inference_available=False
             save();break
           save()

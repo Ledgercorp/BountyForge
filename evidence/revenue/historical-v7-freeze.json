@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "protocol": "ast_contract_v7",
+  "inference_provider": "groq",
+  "model": "openai/gpt-oss-120b",
+  "experiment_scope": "unchanged_historical_curated_excerpts_previously_exposed_fixed_evaluation",
+  "max_transport_calls": 8,
+  "max_completion_tokens_per_call": 1024,
+  "minimum_interval_seconds": 60,
+  "max_attempts_per_task": 2,
+  "retry_policy": "reserve_first_attempt_symbol_coverage_for_remaining_cases",
+  "known_solutions_in_prompts": false,
+  "commercial_bounty": false,
+  "billing_independently_verified": false,
+  "source_sha256": {
+    "bountyforge/repair_context.py": "2aac962ee711d3b4abd41d7bb12e6f3df52392af20c2ef874af25387ab5cdc81",
+    "bountyforge/lineedit.py": "a135eebddaffd92a02f0c0671943e29a163934adf6aff6563ec006fd3bf0f2b1",
+    "benchmarks/phase4/benchmark_runner.py": "dfd9ea7a14c6103b674d37a48b594c369e9f85ea07d78e9a56168e98b4cc9836",
+    "scripts/verify_phase5_repairs.py": "104e1adc76fc8a2b72078f92733a4ffc4dae867885d4e783387977d06dbce965",
+    ".github/workflows/curated-boltons-benchmark.yml": "0c59459d9d9ffa42335229205a915a045e4ec3fe167b36f111336c4e7e222bbf",
+    "benchmarks/phase4/tasks/manifest.json": "360281e496249be2dc635779933aa41184484ef3dd29da61f128f25a0029f563"
+  },
+  "fixture_sha256": {
+    "benchmarks/phase4/tasks/524/strutils.py": "cf2633cbf116ed218c093b7624a874388dba8910bf5b1ee40190cd8189f6232a",
+    "benchmarks/phase4/tasks/454/strutils.py": "daf1295c7bed0821bb6277a0ebc4e8fef3e08fd3ad7750d2bc05f4726bfc1781",
+    "benchmarks/phase4/tasks/460/cacheutils.py": "0e3fbe7ce32ccdd91c0815b9f933a83823de2204493f65367a40f1a3aa946272",
+    "benchmarks/phase4/tasks/475/strutils.py": "eb9327815ff4192571270170ec04e4b18b790ece85ed26f493b6ca9ed0d8e7af",
+    "benchmarks/phase4/tasks/459/strutils.py": "cf2633cbf116ed218c093b7624a874388dba8910bf5b1ee40190cd8189f6232a",
+    "benchmarks/phase4/tasks/524/tests/test_regression.py": "2f49d8d0862492878469344576880118be2f2674bd90250e7ae156b92b0c0330",
+    "benchmarks/phase4/tasks/454/tests/test_regression.py": "b07a08a09288de0b19b6e840917355d8e141757edc516be6c502154d65e7d696",
+    "benchmarks/phase4/tasks/460/tests/test_regression.py": "59af64ed3da2a1cdb1969d3a78ae2ef5e10183e571c5fe4c18ecfa7c30646ee1",
+    "benchmarks/phase4/tasks/475/tests/test_regression.py": "27779d4c48e8703251bf4acc8a0c3ceba326546a763d6f8dee71461b337d3ff1",
+    "benchmarks/phase4/tasks/459/tests/test_regression.py": "5b23946e97ac055fbd9a99aee9bdd6f3c0602855b5494bd4cad31bab2458bbf6"
+  }
+}

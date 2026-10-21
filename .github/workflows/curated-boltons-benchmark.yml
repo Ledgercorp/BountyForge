@@ -9,6 +9,11 @@ on:
     paths: ['.github/workflows/curated-boltons-benchmark.yml']
   workflow_dispatch:
     inputs:
+      inference_provider:
+        description: 'Explicit backend; Groq permits only frozen historical v7, eight calls'
+        type: choice
+        options: [local_qwen, groq]
+        default: local_qwen
       evaluation:
         description: 'Run owned development fixtures or the fixed independent historical evaluation'
         type: choice
@@ -17,7 +22,7 @@ on:
       repair_protocol:
         description: 'Frozen repair protocol to evaluate'
         type: choice
-        options: [ast_contract_v5, ast_contract_v6]
+        options: [ast_contract_v5, ast_contract_v6, ast_contract_v7]
         default: ast_contract_v6
       development_suite:
         description: 'Owned development set (historical selection ignores this)'
@@ -44,6 +49,8 @@ jobs:
       BOUNTYFORGE_EVALUATION: ${{ inputs.evaluation || 'development' }}
       BOUNTYFORGE_PROTOCOL: ${{ inputs.repair_protocol || 'ast_contract_v6' }}
       BOUNTYFORGE_DEV_SUITE: ${{ inputs.development_suite || 'structural' }}
+      BOUNTYFORGE_PROVIDER: ${{ inputs.inference_provider || 'local_qwen' }}
+      BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED: ${{ vars.BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED }}
     steps:
       - name: Checkout trusted benchmark without reusable credentials
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -55,10 +62,22 @@ jobs:
           python-version: '3.11'
       - name: Fresh evidence directory
         run: mkdir -p evidence-run
+      - name: Validate explicit hosted experiment admission without a credential
+        if: ${{ inputs.inference_provider == 'groq' }}
+        run: |
+          set -euo pipefail
+          [[ "$GITHUB_EVENT_NAME" == workflow_dispatch ]] || exit 2
+          [[ "$GITHUB_REF" == refs/heads/engineering/revenue-linux-scout-20261021 ]] || exit 2
+          [[ "$BOUNTYFORGE_EVALUATION" == historical ]] || exit 2
+          [[ "$BOUNTYFORGE_PROTOCOL" == ast_contract_v7 ]] || exit 2
+          [[ "$BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED" == 1 ]] || exit 2
       - name: Validate historical harness
         run: |
           set -euo pipefail
           python -m unittest discover -s benchmarks/phase4 -v
+          python -m unittest discover -s tests -p 'test_hosted_historical.py' -v
+          python -m unittest discover -s tests -p 'test_phase5_evidence.py' -v
+          python -m unittest discover -s tests -p 'test_iterative_context.py' -v
       - name: Pull exact official Python image by immutable amd64 digest
         run: |
           set -euo pipefail
@@ -79,15 +98,18 @@ jobs:
           print('Container smoke proof:',result)
           PY
       - name: Restore public Qwen model cache
+        if: ${{ inputs.inference_provider != 'groq' }}
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
         with:
           path: ~/.cache/bountyforge/models
           key: bountyforge-public-qwen25-coder-1p5b-cc324af0-v1
       - name: Verify pinned model and runtime
+        if: ${{ inputs.inference_provider != 'groq' }}
         run: |
           set -euo pipefail
           bash scripts/bootstrap_actions_inference.sh --verify-only
       - name: Launch 18080 loopback inference
+        if: ${{ inputs.inference_provider != 'groq' }}
         run: |
           set -euo pipefail
           nohup bash scripts/bootstrap_actions_inference.sh --serve > "$RUNNER_TEMP/llama-benchmark.log" 2>&1 </dev/null &
@@ -98,6 +120,7 @@ jobs:
           done
           [[ "$ready" == 1 ]] || { echo 'Pinned local model did not start'; exit 2; }
       - name: Execute selected bounded evaluation
+        if: ${{ inputs.inference_provider != 'groq' }}
         run: |
           set -euo pipefail
           if [[ "$BOUNTYFORGE_EVALUATION" == development ]]; then
@@ -120,6 +143,32 @@ jobs:
           print('Measured historical model repairs:',r['passed'],'/',r['attempted'])
           PY
           python -m scripts.verify_phase5_repairs evidence-run/phase4_results.json --output evidence-run/phase5_independent_replay.json
+      - name: Frozen public historical excerpt experiment, eight hosted calls maximum
+        if: ${{ inputs.inference_provider == 'groq' }}
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from bountyforge.groq_adapter import HostedGroqModel, MODEL_ID
+          from benchmarks.phase4.benchmark_runner import run
+          model = HostedGroqModel(total_generation_tokens=1024, minimum_interval_seconds=60)
+          output = Path('evidence-run/phase4_results.json')
+          result = run(model=model, output=output, protocol='ast_contract_v7', backend='groq')
+          result['inference_backend'] = {'provider': 'groq', 'model': MODEL_ID,
+                                         'transport_calls': model.calls,
+                                         'total_generation_tokens_per_call': 1024,
+                                         'minimum_interval_seconds': 60}
+          output.write_text(json.dumps(result, indent=2, ensure_ascii=True) + '\n')
+          PY
+      - name: Independently validate and replay historical successes without model credentials
+        if: ${{ inputs.inference_provider == 'groq' }}
+        run: |
+          set -euo pipefail
+          python -m scripts.verify_phase5_repairs evidence-run/phase4_results.json \
+            --revision "$GITHUB_SHA" --output evidence-run/phase5_independent_replay.json
       - name: Upload only bounded benchmark evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

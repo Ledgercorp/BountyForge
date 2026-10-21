@@ -49,3 +49,15 @@ class ModelTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class LineModelTests(unittest.TestCase):
+    def test_generation_schema_only_accepts_trusted_line_numbers(self):
+        fake=FakeResponse(json.dumps({'choices':[{'message':{'content':'{"changes":[]}'},'finish_reason':'stop'}], 'usage':{'completion_tokens':7}}).encode())
+        with patch('urllib.request.build_opener') as build:
+            build.return_value.open.return_value=fake
+            model=LocalModel()
+            model.complete_line('system',json.dumps({'editable_lines':[2,5]}))
+            payload=json.loads(build.return_value.open.call_args.args[0].data)
+        schema=payload['response_format']['json_schema']['schema']
+        self.assertEqual(schema['properties']['changes']['items']['properties']['line']['enum'],[2,5])
+        self.assertEqual(model.last_call['finish_reason'],'stop')

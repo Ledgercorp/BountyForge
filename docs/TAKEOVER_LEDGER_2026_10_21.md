@@ -96,3 +96,18 @@ invoices are not available here; no new chargeable service was requested.
 
 Deployment: feature branch only. Scheduling inactive. External submissions 0;
 confirmed revenue $0. Hosted durable-cycle evidence is pending the tagged run.
+
+## First hosted durable cycle
+
+Implementation commit: `28ec65d017d3e755a86652e1d8d6fcd92e08ea9c`.
+[Operational run 39591802636](https://github.com/Ledgercorp/BountyForge/actions/runs/39591802636)
+completed **discovery, coordinate, repair and record jobs successfully**. This is
+an internal synthetic cycle, not a paid bounty. Its exact ledger/evidence and
+subsequent duplicate/recovery tests are inspected in later entries.
+Hosted regression run 39591809618 also succeeded. No schedule activated, no main
+merge, no upstream submission, no revenue. Same standard public Ubuntu runners.
+
+Next measured experiment changes only generic prompting: concise instructions,
+explicit target symbol and a JSON schema enumerating caller-approved line
+numbers. The existing staging validator is unchanged. Qwen and runtime stay
+pinned. Same original five cases, at most twelve calls; results pending execution.

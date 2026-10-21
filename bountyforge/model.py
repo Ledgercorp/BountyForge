@@ -32,9 +32,13 @@ class _NoRedirect(urllib.request.HTTPRedirectHandler):
 
 
 class LocalModel:
-    def __init__(self, endpoint: str = DEFAULT_ENDPOINT):
+    def __init__(self, endpoint: str = DEFAULT_ENDPOINT, *, timeout_seconds: float = 45):
         ensure_loopback(endpoint)
+        if type(timeout_seconds) not in (int,float) or not 0.01 <= timeout_seconds <= 45:
+            raise ValueError('Line inference timeout must be bounded')
         self.endpoint = endpoint
+        self.timeout_seconds = timeout_seconds
+        self.last_call = None
 
     def complete(self, system: str, user: str, max_tokens: int = 420) -> str:
         if not isinstance(system, str) or not isinstance(user, str):
@@ -85,16 +89,27 @@ class LocalModel:
     def complete_line(self, system: str, user: str, max_tokens: int = 125) -> str:
         """Strict line-change JSON, local numerical loopback only, no remote fallback."""
         from bountyforge.lineedit import LINE_SCHEMA
+        import copy
         if (not isinstance(system, str) or not isinstance(user, str)
                 or len(user.encode("utf-8")) > 3600 or not 1 <= max_tokens <= 150):
             raise ValueError("Invalid line-change request or generation budget")
+        schema=copy.deepcopy(LINE_SCHEMA)
+        try:
+            lines=json.loads(user).get('editable_lines')
+        except (ValueError,AttributeError):
+            lines=None
+        if lines is not None:
+            if (not isinstance(lines,list) or not 1<=len(lines)<=30
+                    or any(type(i) is not int or i<1 for i in lines) or len(set(lines))!=len(lines)):
+                raise ValueError('Invalid trusted generation scope')
+            schema['properties']['changes']['items']['properties']['line']['enum']=sorted(lines)
         body = json.dumps({
             "model": "local",
             "messages": [{"role": "system", "content": system},
                          {"role": "user", "content": user}],
             "max_tokens": max_tokens, "temperature": 0, "stream": False,
             "response_format": {"type": "json_schema", "json_schema": {
-                "name": "bounded_line_patch", "strict": True, "schema": LINE_SCHEMA,
+                "name": "bounded_line_patch", "strict": True, "schema": schema,
             }},
         }).encode("utf-8")
         request = urllib.request.Request(
@@ -103,12 +118,18 @@ class LocalModel:
         try:
             opener = urllib.request.build_opener(
                 urllib.request.ProxyHandler({}), _NoRedirect())
-            with opener.open(request, timeout=45) as response:
-                result = json.load(response)
+            with opener.open(request, timeout=self.timeout_seconds) as response:
+                raw = response.read(65537)
+                if len(raw)>65536:
+                    raise ValueError('Inference response exceeded bound')
+                result = json.loads(raw)
         except Exception as exc:
             raise RuntimeError("Local CPU model unavailable or timed out; no remote fallback") from exc
         try:
             answer = result["choices"][0]["message"]["content"]
+            self.last_call={'finish_reason':result['choices'][0].get('finish_reason'),
+                            'completion_tokens':result.get('usage',{}).get('completion_tokens'),
+                            'prompt_tokens':result.get('usage',{}).get('prompt_tokens')}
         except (KeyError, IndexError, TypeError) as exc:
             raise RuntimeError("Malformed local model response") from exc
         if not isinstance(answer, str) or not answer.strip():

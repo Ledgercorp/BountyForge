@@ -1,6 +1,6 @@
 name: BountyForge historical curated benchmark
 
-# Shared line validator experiment; original historical inputs and tests unchanged.
+# Symbol context and dynamic line-enum experiment; original inputs/tests unchanged.
 # One explicit internal trial of the original 5 curated Boltons excerpts.
 # No automatic schedule, no arbitrary downloaded repositories, no submissions.
 on:

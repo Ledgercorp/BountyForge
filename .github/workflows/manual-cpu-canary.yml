@@ -1,0 +1,85 @@
+name: BountyForge manual CPU acceptance
+
+# STRICTLY MANUAL. No automatic runner until account-level spending controls are verified.
+on:
+  workflow_dispatch:
+    inputs:
+      billing_ack:
+        description: Enter verified_zero_spend only after personally checking hard billing controls
+        required: true
+        default: not_verified
+        type: choice
+        options:
+          - not_verified
+          - verified_zero_spend
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bountyforge-manual-cpu
+  cancel-in-progress: false
+
+jobs:
+  cpu-acceptance:
+    if: ${{ inputs.billing_ack == 'verified_zero_spend' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      BOUNTYFORGE_MODEL_DIR: ${{ runner.temp }}/bountyforge/models
+      BOUNTYFORGE_RUNTIME_DIR: ${{ runner.temp }}/bountyforge/runtime
+      BOUNTYFORGE_SUBMIT_ENABLED: '0'
+    steps:
+      - name: Checkout trusted BountyForge source without persistent token
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Regression gate
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -v
+          python -m unittest discover -s benchmarks/phase4 -v
+      - name: Restore public checksum-pinned Qwen cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/bountyforge/models
+          key: bountyforge-public-qwen25-coder-1p5b-cc324af0-v1
+      - name: Download and verify public CPU assets
+        run: |
+          set -euo pipefail
+          bash scripts/bootstrap_actions_inference.sh --verify-only
+      - name: Launch private loopback inference
+        shell: bash
+        run: |
+          set -euo pipefail
+          nohup bash scripts/bootstrap_actions_inference.sh --serve \
+            > "$RUNNER_TEMP/bountyforge-llama.log" 2>&1 </dev/null &
+          echo "$!" > "$RUNNER_TEMP/bountyforge-llama.pid"
+          ready=0
+          for i in $(seq 1 70); do
+            if curl --fail --silent http://127.0.0.1:8080/health | grep -q '"status":"ok"'; then
+              ready=1; break
+            fi
+            sleep 2
+          done
+          [[ "$ready" == 1 ]] || { echo 'Model did not become healthy'; exit 2; }
+      - name: Execute synthetic-only Qwen canary and verify evidence
+        run: |
+          set -euo pipefail
+          mkdir -p evidence-run
+          python -m scripts.autonomous_cycle --scan offline --canary \
+            --local-port 8080 --output evidence-run/cycle.json
+          python -m scripts.validate_evidence evidence-run/cycle.json
+          python -c 'import json; d=json.load(open("evidence-run/cycle.json")); assert d["record"]["canary"]["status"] == "synthetic_review_ready", "Qwen did not produce a verified synthetic repair"'
+      - name: Upload sanitized acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bountyforge-cpu-acceptance-${{ github.run_id }}
+          path: evidence-run/cycle.json
+          if-no-files-found: ignore
+          retention-days: 2

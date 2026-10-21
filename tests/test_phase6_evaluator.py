@@ -81,6 +81,56 @@ class PairedEvaluatorTests(unittest.TestCase):
                 else: (root/task['file']).write_text('raise RuntimeError("UNIT_ONLY")\n')
                 with self.assertRaises(ValueError): module.admit(root, task, arm='line', response=None)
 
+    def test_caller_authored_task_metadata_is_rejected(self):
+        module = load_module('scripts.phase6_evaluate')
+        task = module.catalog()['tasks'][0]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)/'candidate'; shutil.copytree(module.TASKS/task['id'], root)
+            (root/module.FIXTURE_MARKER).write_text(task['id'])
+            changed = dict(task, description='caller-authored')
+            with self.assertRaises(ValueError): module.admit(root, changed, arm='line', response=None)
+
+    def test_pre_http_value_error_blocks_and_fuses_remaining_inference(self):
+        module = load_module('scripts.phase6_evaluate')
+        class InvalidRequest(InvalidModel):
+            def complete_line(self,*args,**kwargs): raise ValueError('UNIT_ONLY pre-HTTP validation')
+        failed = {'passed': False, 'returncode': 1, 'timeout': False, 'error': None,
+                  'output': 'FAIL: test_contract (Contract.test_contract)\nRan 6 tests\nFAILED (failures=1)', 'elapsed_seconds': .1}
+        with tempfile.TemporaryDirectory() as directory, patch.object(module, '_execute', return_value=failed):
+            report = module.evaluate(model=InvalidRequest(), proof=proof(), output=Path(directory)/'report.json', revision='a'*40)
+        self.assertEqual(report['status'], 'blocked')
+        self.assertFalse(report['score_final'])
+        self.assertEqual(report['model_calls'], 0)
+        self.assertEqual(len(report['calls']), 1)
+
+    def test_pre_inference_scope_rejection_cannot_complete_comparison(self):
+        module = load_module('scripts.phase6_evaluate')
+        from bountyforge.drafts import DraftRejected
+        failed = {'passed': False, 'returncode': 1, 'timeout': False, 'error': None,
+                  'output': 'FAIL: test_contract (Contract.test_contract)\nRan 6 tests\nFAILED (failures=1)', 'elapsed_seconds': .1}
+        with tempfile.TemporaryDirectory() as directory, patch.object(module, '_execute', return_value=failed), \
+                patch('bountyforge.worker.propose_lines', side_effect=DraftRejected('UNIT_ONLY oversized context')):
+            report = module.evaluate(model=InvalidModel(), proof=proof(), output=Path(directory)/'report.json', revision='a'*40)
+        self.assertEqual(report['status'], 'blocked')
+        self.assertFalse(report['score_final'])
+        self.assertEqual(report['model_calls'], 4)
+        self.assertEqual(sum(row.get('failure_reason') == 'scope_or_context_rejected_before_inference' for row in report['arms']), 4)
+
+    def test_missing_or_wrong_provider_metadata_fuses_model_stream(self):
+        module = load_module('scripts.phase6_evaluate')
+        class WrongIdentity(InvalidModel):
+            def complete_line(self,*args,**kwargs):
+                response = super().complete_line(*args,**kwargs)
+                self.last_call['provider_model_reported'] = 'other'
+                return response
+        failed = {'passed': False, 'returncode': 1, 'timeout': False, 'error': None,
+                  'output': 'FAIL: test_contract (Contract.test_contract)\nRan 6 tests\nFAILED (failures=1)', 'elapsed_seconds': .1}
+        with tempfile.TemporaryDirectory() as directory, patch.object(module, '_execute', return_value=failed):
+            report = module.evaluate(model=WrongIdentity(), proof=proof(), output=Path(directory)/'report.json', revision='a'*40)
+        self.assertEqual(report['status'], 'blocked')
+        self.assertFalse(report['score_final'])
+        self.assertEqual(report['model_calls'], 1)
+
     def test_transport_failure_checkpoints_then_stops_without_scoring_remaining_arms(self):
         module = load_module('scripts.phase6_evaluate')
         class Unavailable(InvalidModel):

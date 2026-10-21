@@ -104,7 +104,9 @@ def stage_response(spec, arm, response):
 
 def admit(root, spec, *, arm, response):
     """Nonexecuting exact-tree admission; response never chooses a file or span."""
-    catalog()  # Recheck pins and frozen core on every baseline/candidate request.
+    manifest = catalog()  # Recheck pins/core on every execution/cache request.
+    if spec not in manifest['tasks']:
+        raise EvaluationRejected('Unrecognized or modified catalog task metadata')
     root = Path(root)
     if root.is_symlink() or not root.is_dir():
         raise EvaluationRejected('Invalid owned evaluation root')
@@ -172,13 +174,28 @@ def write_report(path, report):
     temporary.write_bytes(raw); temporary.replace(path)
 
 
+def completed_model_call(call):
+    metadata = call.get('metadata')
+    return (not call.get('error') and isinstance(metadata, dict)
+            and metadata.get('provider') == 'groq' and metadata.get('model') == MODEL_ID
+            and metadata.get('provider_model_reported') == MODEL_ID
+            and metadata.get('finish_reason') == 'stop'
+            and metadata.get('requested_max_completion_tokens') == 1024
+            and type(metadata.get('prompt_tokens')) is int and metadata['prompt_tokens'] > 0
+            and type(metadata.get('completion_tokens')) is int and 1 <= metadata['completion_tokens'] <= 1024
+            and type(metadata.get('total_tokens')) is int
+            and metadata['total_tokens'] == metadata['prompt_tokens']+metadata['completion_tokens']
+            and isinstance(call.get('response'), str) and 0 < len(call['response'].encode()) <= 3000
+            and call.get('response_sha256') == digest(call['response'].encode()))
+
+
 def evaluate(*, model, proof, output, revision):
     validate_proof(proof)
     manifest = catalog()
     if (not isinstance(revision, str) or not re.fullmatch(r'[0-9a-f]{40}', revision)
             or getattr(model, 'total_generation_tokens', None) != 1024
             or getattr(model, 'minimum_interval_seconds', None) != 60
-            or getattr(model, 'calls', None) != 0):
+            or type(getattr(model, 'calls', None)) is not int or model.calls != 0):
         raise EvaluationRejected('Explicit fresh model, fixed budget and revision required')
     planned = order_for(manifest['tasks'])
     report = {'schema': 1, 'kind': 'owned_maintenance_paired_evaluation', 'revision': revision,
@@ -241,6 +258,7 @@ def evaluate(*, model, proof, output, revision):
                         'system': system, 'prompt': prompt, 'max_tokens': max_tokens,
                         'response': None, 'metadata': None}
                 report['calls'].append(call); row['call_numbers'].append(call['number'])
+                save()  # Persist intent before HTTP; interruption leaves an explicitly incomplete record.
                 started = time.monotonic()
                 try:
                     model.last_call = None
@@ -294,13 +312,26 @@ def evaluate(*, model, proof, output, revision):
             row.update(status='candidate_passed', model_generated_success=True)
         else:
             row['status'] = 'failed'
+            if not row['call_numbers']:
+                row['failure_reason'] = 'scope_or_context_rejected_before_inference'
             if recorder.response is not None:
                 try:
                     stage_response(spec, arm, recorder.response)
                 except (DraftRejected, SyntaxError, ValueError, KeyError, TypeError) as exc:
                     row['source_validation_error'] = str(exc)[:450]
+        if not row['call_numbers']:
+            row.update(status='blocked', model_generated_success=False,
+                       failure_reason='scope_or_context_rejected_before_inference')
+        elif (len(row['call_numbers']) != 1 or model.calls != len(report['calls'])
+              or not completed_model_call(report['calls'][row['call_numbers'][0]-1])):
+            row.update(status='blocked', model_generated_success=False,
+                       failure_reason='inference_accounting_unavailable')
+            inference_available = False
         save()
-    report['status'] = 'blocked' if any(row['status'] == 'blocked' for row in report['arms']) else 'completed'
+    complete = (not any(row['status'] == 'blocked' for row in report['arms'])
+                and len(report['calls']) == model.calls == 8
+                and all(completed_model_call(call) for call in report['calls']))
+    report['status'] = 'completed' if complete else 'blocked'
     report['score_final'] = report['status'] == 'completed'
     save()
     return report

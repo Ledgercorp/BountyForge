@@ -94,6 +94,20 @@ class HostedGroqTests(unittest.TestCase):
                 self.assertEqual(payload['response_format']['json_schema']['schema']
                                  ['properties']['lines']['items']['enum'], [1, 2])
 
+    def test_eight_call_ceiling_is_enforced_without_extra_http(self):
+        with patch.dict(os.environ, {'GROQ_API_KEY': 'secure-key',
+                                     'BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED': '1'}, clear=True):
+            model = HostedGroqModel()
+            response = {'choices': [{'message': {'content': '{"changes":[{"line":1,"new":"return 1"}]}'},
+                                     'finish_reason': 'stop'}]}
+            with patch('urllib.request.build_opener') as build:
+                for _ in range(8):
+                    build.return_value.open.return_value = Response(json.dumps(response).encode())
+                    model.complete_line('system', '{"editable_lines":[1]}')
+                with self.assertRaisesRegex(RuntimeError, 'budget exhausted'):
+                    model.complete_line('system', '{"editable_lines":[1]}')
+                self.assertEqual(build.return_value.open.call_count, 8)
+
     def test_oversized_response_rejected_without_dumping_content(self):
         with patch.dict(os.environ, {'GROQ_API_KEY': 'secure-key',
                                      'BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED': '1'}, clear=True):

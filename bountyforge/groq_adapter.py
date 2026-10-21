@@ -11,7 +11,7 @@ import urllib.request
 
 URL = 'https://api.groq.com/openai/v1/chat/completions'
 MODEL_ID = 'openai/gpt-oss-120b'
-MAX_CALLS = 6
+MAX_CALLS = 8
 MAX_RESPONSE_BYTES = 65536
 
 

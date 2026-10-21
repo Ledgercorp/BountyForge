@@ -224,3 +224,28 @@ submission, bounty claim, public offer, recurring repair, production merge or
 deployment occurred. No real opportunity became review-ready. Continue with
 separate quality evaluation and an explicitly admitted private execution/data
 plane before any customer fulfillment; payment alone authorizes no execution.
+
+## Phase 4 continuation: statement architecture (development freeze)
+
+At base `3909c1e`, the opt-in statement editor was developed solely on neutral
+owned examples before unsealing a separately authored evaluation set. Shared
+line syntax/capability checks were factored unchanged and strengthened with
+trusted compile-without-execution to reject context-invalid syntax. Statement
+anchors expand deterministically to complete simple-statement spans or If/While
+condition expressions; model schema/call interface remains `{line,new}`.
+Replacements retain indentation and definite direct assignment bindings, reject
+semantic no-ops, ambiguity and new capabilities. This is a conservative guard,
+not proof of full behavioral equivalence; independent tests remain mandatory.
+
+Independent review found module-level return acceptance and common-base-indent
+fragment parsing defects; neutral regression tests reproduced and fixed them.
+The existing worker now has an explicit statement strategy, complete call
+transcripts, exact rejection/test feedback, semantic duplicate suppression and
+fresh-copy verification before review-ready. Existing line protocols and the
+previous sibling retry correction remain available.
+
+TDD: first seven feature tests failed for absent statement editing. Later
+integration/context tests exposed four failures and an indentation error;
+all fixed. Final core freeze: **333 total tests, 326 passed, seven existing
+rootfs skips**, including 12 new statement/worker tests. No live inference,
+historical rerun, evaluation fixture inspection, spending or deployment yet.

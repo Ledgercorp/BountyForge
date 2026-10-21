@@ -108,8 +108,8 @@ def _parse_issue(item: dict, now: datetime) -> dict | None:
     if amount == -1:
         return None
     named = any('bounty' in x.lower() or 'reward' in x.lower() for x in labels)
-    if amount is None and not named and not REWARD.search(title):
-        return None
+    if amount is None:
+        return None  # An unpriced bounty label is not a monetary lead.
     try:
         checked = datetime.fromisoformat(item['updated_at'].replace('Z', '+00:00'))
         days = max(0, (now - checked).days)

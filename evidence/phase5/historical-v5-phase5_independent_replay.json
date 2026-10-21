@@ -1,0 +1,10 @@
+{
+  "verification": "independent_docker_replay",
+  "inference_calls": 0,
+  "commercial_bounty": false,
+  "full_upstream_suite": false,
+  "revision": "921bc2fd490ec5517625589074498ee2d88cb3b4",
+  "passed": 0,
+  "cases": [],
+  "report_sha256": "d73ea9cce942fb07c6ec56b36f249054e8155b65a9cd9cf953313cbc926910f5"
+}

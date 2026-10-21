@@ -1,0 +1,158 @@
+{
+  "record": {
+    "kind": "scripted_operational_fault_acceptance",
+    "revision": "89f5e8738e68265b1c08d3fcda6279226509ba81",
+    "scenarios": [
+      {
+        "scenario": "successful_synthetic_repair",
+        "test": "tests.test_auto_scope.AutoScopeTests.test_end_to_end_controlled_auto_repair",
+        "mechanism": "scripted_model",
+        "passed": true,
+        "tests_run": 1,
+        "failure_count": 0,
+        "error_count": 0
+      },
+      {
+        "scenario": "incorrect_model_output",
+        "test": "tests.test_worker.WorkerTests.test_bad_patch_cannot_pass",
+        "mechanism": "scripted_model",
+        "passed": true,
+        "tests_run": 1,
+        "failure_count": 0,
+        "error_count": 0
+      },
+      {
+        "scenario": "model_timeout",
+        "test": "tests.test_model_transport.ModelTransportTests.test_real_model_transport_timeout_fails_closed",
+        "mechanism": "real_loopback_http_timeout",
+        "passed": true,
+        "tests_run": 1,
+        "failure_count": 0,
+        "error_count": 0
+      },
+      {
+        "scenario": "model_server_unavailable",
+        "test": "tests.test_model_transport.ModelTransportTests.test_real_unavailable_endpoint_fails_closed",
+        "mechanism": "real_loopback_connection_refused",
+        "passed": true,
+        "tests_run": 1,
+        "failure_count": 0,
+        "error_count": 0
+      },
+      {
+        "scenario": "ambiguous_source_target",
+        "test": "tests.test_auto_scope.AutoScopeTests.test_ambiguous_source_fails_closed",
+        "mechanism": "owned_fixture",
+        "passed": true,
+        "tests_run": 1,
+        "failure_count": 0,
+        "error_count": 0
+      },
+      {
+        "scenario": "invalid_patch",
+        "test": "tests.test_lineedit.LineEditTests.test_invalid_python_rejected",
+        "mechanism": "validator",
+        "passed": true,
+        "tests_run": 1,
+        "failure_count": 0,
+        "error_count": 0
+      },
+      {
+        "scenario": "unapproved_file_modification",
+        "test": "tests.test_worker.WorkerTests.test_forged_test_patch_denied",
+        "mechanism": "scripted_model",
+        "passed": true,
+        "tests_run": 1,
+        "failure_count": 0,
+        "error_count": 0
+      },
+      {
+        "scenario": "regression_failure",
+        "test": "tests.test_operational_controls.OperationalControls.test_partial_repair_fails_related_regression",
+        "mechanism": "owned_fixture",
+        "passed": true,
+        "tests_run": 1,
+        "failure_count": 0,
+        "error_count": 0
+      },
+      {
+        "scenario": "duplicate_opportunity",
+        "test": "tests.test_durable.DurableTests.test_discoveries_deduplicate_without_execution_authority",
+        "mechanism": "independent_state_readers",
+        "passed": true,
+        "tests_run": 1,
+        "failure_count": 0,
+        "error_count": 0
+      },
+      {
+        "scenario": "expired_queue_lease",
+        "test": "tests.test_queue.QueueTests.test_lease_recovery",
+        "mechanism": "expired_timestamp_injection",
+        "passed": true,
+        "tests_run": 1,
+        "failure_count": 0,
+        "error_count": 0
+      },
+      {
+        "scenario": "missing_funding_verification",
+        "test": "tests.test_qualification.QualificationTests.test_good_facts_do_not_authorize_submission",
+        "mechanism": "qualification_gate",
+        "passed": true,
+        "tests_run": 1,
+        "failure_count": 0,
+        "error_count": 0
+      },
+      {
+        "scenario": "missing_ai_authorization",
+        "test": "tests.test_opportunities.OpportunityTests.test_missing_ai_policy_blocks",
+        "mechanism": "qualification_gate",
+        "passed": true,
+        "tests_run": 1,
+        "failure_count": 0,
+        "error_count": 0
+      },
+      {
+        "scenario": "unsafe_test_environment",
+        "test": "tests.test_curated_docker.CuratedDockerTests.test_missing_docker_fails_closed",
+        "mechanism": "missing_runtime_injection",
+        "passed": true,
+        "tests_run": 1,
+        "failure_count": 0,
+        "error_count": 0
+      },
+      {
+        "scenario": "evidence_tampering",
+        "test": "tests.test_autonomy.AutonomyTests.test_digest_rejects_modified_valid_record",
+        "mechanism": "tampered_evidence",
+        "passed": true,
+        "tests_run": 1,
+        "failure_count": 0,
+        "error_count": 0
+      },
+      {
+        "scenario": "resource_budget_exhaustion",
+        "test": "tests.test_operational_controls.OperationalControls.test_model_attempt_budget_exhaustion",
+        "mechanism": "scripted_model",
+        "passed": true,
+        "tests_run": 1,
+        "failure_count": 0,
+        "error_count": 0
+      },
+      {
+        "scenario": "interrupted_workflow_recovery",
+        "test": "tests.test_durable.DurableTests.test_interrupted_job_recovers_and_old_completion_is_rejected",
+        "mechanism": "new_ledger_instance",
+        "passed": true,
+        "tests_run": 1,
+        "failure_count": 0,
+        "error_count": 0
+      }
+    ],
+    "passed": 16,
+    "total": 16,
+    "real_qwen_test": false,
+    "external_submissions": 0,
+    "paid_inference": false
+  },
+  "record_sha256": "70c0275bacb88a09410dc52c16eff877fc27f2d2287242f673b150aa9fc1f718"
+}

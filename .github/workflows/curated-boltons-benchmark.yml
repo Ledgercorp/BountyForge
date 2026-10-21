@@ -1,0 +1,137 @@
+name: BountyForge historical curated benchmark
+
+# Phase5: separate owned development trials before frozen historical evaluation.
+# One explicit internal trial of the original 5 curated Boltons excerpts.
+# No automatic schedule, no arbitrary downloaded repositories, no submissions.
+on:
+  push:
+    branches: [engineering/bounded-autonomy-20261020]
+    paths: ['.github/workflows/curated-boltons-benchmark.yml']
+  workflow_dispatch:
+    inputs:
+      evaluation:
+        description: 'Run owned development fixtures or the fixed independent historical evaluation'
+        type: choice
+        options: [development, historical]
+        default: development
+      repair_protocol:
+        description: 'Frozen repair protocol to evaluate'
+        type: choice
+        options: [ast_contract_v5, ast_contract_v6]
+        default: ast_contract_v6
+      development_suite:
+        description: 'Owned development set (historical selection ignores this)'
+        type: choice
+        options: [original, structural]
+        default: structural
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bountyforge-repair-worker
+  cancel-in-progress: false
+
+jobs:
+  historical-benchmark:
+    if: ${{ github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[curated-benchmark]') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      BOUNTYFORGE_SUBMIT_ENABLED: '0'
+      BOUNTYFORGE_PORT: '18080'
+      BOUNTYFORGE_CURATED_DOCKER: '1'
+      BOUNTYFORGE_EVALUATION: ${{ inputs.evaluation || 'development' }}
+      BOUNTYFORGE_PROTOCOL: ${{ inputs.repair_protocol || 'ast_contract_v6' }}
+      BOUNTYFORGE_DEV_SUITE: ${{ inputs.development_suite || 'structural' }}
+    steps:
+      - name: Checkout trusted benchmark without reusable credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Set up Python 3.11
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Fresh evidence directory
+        run: mkdir -p evidence-run
+      - name: Validate historical harness
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s benchmarks/phase4 -v
+      - name: Pull exact official Python image by immutable amd64 digest
+        run: |
+          set -euo pipefail
+          docker pull --platform linux/amd64 python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590
+      - name: Prove no network, no secrets and read-only container behavior
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, tempfile, shutil
+          from pathlib import Path
+          from bountyforge.curated_docker import MARKER, verify_runtime_boundary
+          with tempfile.TemporaryDirectory(prefix='bf-curated-probe-') as d:
+              root=Path(d)
+              shutil.copytree('benchmarks/phase4/tasks/459',root,dirs_exist_ok=True)
+              (root/MARKER).write_text('459')
+              result=verify_runtime_boundary(root)
+          Path('evidence-run/curated_sandbox_preflight.json').write_text(json.dumps(result,indent=2)+'\n')
+          print('Container smoke proof:',result)
+          PY
+      - name: Restore public Qwen model cache
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: ~/.cache/bountyforge/models
+          key: bountyforge-public-qwen25-coder-1p5b-cc324af0-v1
+      - name: Verify pinned model and runtime
+        run: |
+          set -euo pipefail
+          bash scripts/bootstrap_actions_inference.sh --verify-only
+      - name: Launch 18080 loopback inference
+        run: |
+          set -euo pipefail
+          nohup bash scripts/bootstrap_actions_inference.sh --serve > "$RUNNER_TEMP/llama-benchmark.log" 2>&1 </dev/null &
+          ready=0
+          for i in $(seq 1 70); do
+            if curl -fsS http://127.0.0.1:18080/health | grep -q '"status":"ok"'; then ready=1; break; fi
+            sleep 2
+          done
+          [[ "$ready" == 1 ]] || { echo 'Pinned local model did not start'; exit 2; }
+      - name: Execute selected bounded evaluation
+        run: |
+          set -euo pipefail
+          if [[ "$BOUNTYFORGE_EVALUATION" == development ]]; then
+            [[ "$BOUNTYFORGE_DEV_SUITE" == original || "$BOUNTYFORGE_DEV_SUITE" == structural ]] || exit 2
+            python -m benchmarks.phase5.development_runner --suite "$BOUNTYFORGE_DEV_SUITE" --protocol ast_contract_v5 --output evidence-run/phase5_development_v5.json
+            python -m benchmarks.phase5.development_runner --suite "$BOUNTYFORGE_DEV_SUITE" --protocol ast_contract_v6 --output evidence-run/phase5_development_v6.json
+            exit 0
+          fi
+          [[ "$BOUNTYFORGE_EVALUATION" == historical ]] || exit 2
+          [[ "$BOUNTYFORGE_PROTOCOL" == ast_contract_v5 || "$BOUNTYFORGE_PROTOCOL" == ast_contract_v6 ]] || exit 2
+          python -m benchmarks.phase4.benchmark_runner --protocol "$BOUNTYFORGE_PROTOCOL" --output evidence-run/phase4_results.json
+          python - <<'PY'
+          import json
+          r=json.load(open('evidence-run/phase4_results.json'))
+          assert len(r['tasks'])==5 and r['blocked']==0
+          assert all(t['baseline_reproduced'] for t in r['tasks'])
+          assert r['model_calls'] <= r['max_total_model_calls'] <= 24
+          assert not r.get('external_submission',False)
+          assert r.get('paid_inference') is False
+          print('Measured historical model repairs:',r['passed'],'/',r['attempted'])
+          PY
+          python -m scripts.verify_phase5_repairs evidence-run/phase4_results.json --output evidence-run/phase5_independent_replay.json
+      - name: Upload only bounded benchmark evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bountyforge-curated-benchmark-${{ github.run_id }}
+          path: |
+            evidence-run/curated_sandbox_preflight.json
+            evidence-run/phase4_results.json
+            evidence-run/phase5_development.json
+            evidence-run/phase5_development_legacy.json
+            evidence-run/phase5_independent_replay.json
+            evidence-run/phase5_development_v5.json
+            evidence-run/phase5_development_v6.json
+          if-no-files-found: warn
+          retention-days: 2

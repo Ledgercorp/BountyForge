@@ -1,0 +1,38 @@
+{
+  "kind": "readonly_runner_namespace_policy",
+  "kernel": "7.0.0-1017-azure",
+  "github_runner_image_version": "20261018.339.1",
+  "revision": "daffadd176699792c6ed8169918b7692c68368d2",
+  "observed": {
+    "apparmor_restrict_unprivileged_userns": {
+      "value": "1",
+      "available": true
+    },
+    "unprivileged_userns_clone": {
+      "value": "1",
+      "available": true
+    },
+    "max_user_namespaces": {
+      "value": "58121",
+      "available": true
+    },
+    "process_lsm_profile": {
+      "value": "unconfined",
+      "available": true
+    },
+    "active_lsms": {
+      "value": "lockdown,capability,landlock,yama,apparmor,ima,evm",
+      "available": true
+    },
+    "process_controls": {
+      "CapEff": "0000000000000000",
+      "CapBnd": "000001ffffffffff",
+      "NoNewPrivs": "0",
+      "Seccomp": "0"
+    }
+  },
+  "policy_modified": false,
+  "unshare_retried": false,
+  "target_code_executed": false,
+  "historical_rule_attribution": "original UID-map EPERM is proven; this new snapshot cannot identify a past audit rule"
+}

@@ -128,6 +128,15 @@ class LineEditTests(unittest.TestCase):
     def test_nested_function_in_line_edit_rejected(self):
         with self.assertRaises(DraftRejected):
             self.stage(self.request(new="    def add(a, b):\n        return a + b"))
+    def test_new_process_file_and_dynamic_execution_capabilities_rejected(self):
+        for code in ("return __import__('os').system('id')", "return open('/etc/passwd').read()",
+                     "import subprocess; return subprocess.run(['id'])", "return eval('1+1')",
+                     "return a.__class__.__mro__", "return (lambda: a+b)()"):
+            with self.subTest(code=code), self.assertRaises(DraftRejected):
+                self.stage(self.request(new=code))
+    def test_simple_numeric_builtin_remains_supported(self):
+        result=self.stage(self.request(new='return round(a + b)'))
+        self.assertIn('round(a + b)',result['files'][0]['content'])
 
     def test_wrong_schema_rejected(self):
         with self.assertRaises(DraftRejected):

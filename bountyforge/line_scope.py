@@ -21,23 +21,37 @@ def infer_editable_lines(root: Path, source_path: str, test_output: str) -> list
     if not tests_dir.is_dir() or tests_dir.is_symlink():
         raise DraftRejected("Missing controlled tests")
     failing = set(re.findall(r"FAIL:\s+(test_\w+)\s*\(", test_output))
-    if len(failing) != 1:
-        raise DraftRejected("Failure location ambiguous")
-    test_name = next(iter(failing))
-    names = set()
+    if not 1 <= len(failing) <= 8:
+        raise DraftRejected("Failure count outside bounded scope")
+    # Multiple failures are accepted only if each independently resolves
+    # to exactly the same one top-level source function.
+    direct_functions = {
+        node.name: node for node in tree.body
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+        and node.end_lineno is not None
+    }
+    declared = [node.name for node in tree.body
+                if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))]
+    if len(declared) != len(set(declared)):
+        raise DraftRejected("Multiply defined source function")
+    found: dict[str, list[str]] = {name: [] for name in failing}
     for test_file in sorted(tests_dir.glob("test_*.py")):
         if test_file.is_symlink() or test_file.stat().st_size > 100000:
             raise DraftRejected("Invalid controlled test")
         for node in ast.walk(ast.parse(test_file.read_text(encoding="utf-8"))):
-            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == test_name:
-                for call in ast.walk(node):
-                    if isinstance(call, ast.Call) and isinstance(call.func, ast.Name):
-                        names.add(call.func.id)
-    matches = [n for n in tree.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
-               and n.name in names and n.end_lineno is not None]
-    if len(matches) != 1:
-        raise DraftRejected("No unique tested top-level function")
-    target = matches[0]
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name in failing:
+                called = {call.func.id for call in ast.walk(node)
+                          if isinstance(call, ast.Call) and isinstance(call.func, ast.Name)}
+                candidates = set(direct_functions).intersection(called)
+                if len(candidates) != 1:
+                    raise DraftRejected("Failing test does not identify one unique source function")
+                found[node.name].append(next(iter(candidates)))
+    if any(len(matches) != 1 for matches in found.values()):
+        raise DraftRejected("Failing test missing or multiply defined")
+    implicated = {matches[0] for matches in found.values()}
+    if len(implicated) != 1:
+        raise DraftRejected("Failing tests implicate distinct source functions")
+    target = direct_functions[next(iter(implicated))]
     lines = list(range(target.lineno + 1, target.end_lineno + 1))
     if not 1 <= len(lines) <= 30:
         raise DraftRejected("Function outside bounded editable scope")

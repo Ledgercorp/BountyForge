@@ -72,7 +72,7 @@ def grade(entry: dict, *, now: datetime | None = None) -> Verdict:
         age=(now-parsed).total_seconds()/3600
         if age<0 or age>MAX_AGE_HOURS: reasons.append('Source evidence expired or dated in the future')
     except (TypeError,AttributeError,ValueError): reasons.append('No valid verification timestamp')
-    actionable=bool(tier!='C' and all(x not in reasons for x in (
+    actionable=bool(escrow and tier!='C' and all(x not in reasons for x in (
         'Original issue is closed or unverified','Reward not independently shown available','No supported original platform record')) and
         not any(x in reasons for x in (
             'AI-assisted work not explicitly permitted','United States eligibility not verified',

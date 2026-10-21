@@ -1,0 +1,15 @@
+{
+  "protocol": "ast_contract_v5",
+  "frozen_before_historical_evaluation": true,
+  "development_run": "https://github.com/Ledgercorp/BountyForge/actions/runs/39599142565",
+  "development_revision": "c0af34d51df814c08a89a50515e467eb290e1be0",
+  "max_calls": 12,
+  "max_attempts_per_case": 2,
+  "max_completion_tokens": 150,
+  "sha256": {
+    "bountyforge/repair_context.py": "f2d0b4e602bf82915d2ba5d58a808fc60f819bcfe32ebaddefe0297e92058da9",
+    "bountyforge/lineedit.py": "94bc816e6bf326f29a5ecc3ff351469154e030d7370af3ac6114779e4ea62c1a",
+    "bountyforge/model.py": "b4214261fb30c6a4a6dea60b0f9c2b02ff5593fdf7343781f90278c0c375422e",
+    "benchmarks/phase4/tasks/manifest.json": "360281e496249be2dc635779933aa41184484ef3dd29da61f128f25a0029f563"
+  }
+}

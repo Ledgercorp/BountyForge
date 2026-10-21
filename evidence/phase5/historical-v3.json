@@ -1,0 +1,338 @@
+{
+  "benchmark": "boltons_26.1.0_curated_excerpts",
+  "run_type": "real_qwen_cpu",
+  "revision": "026e85d766ac9b9e732ae9c1b739e4bd1effbe0e",
+  "historical_source_tag": "26.1.0",
+  "experiment": "shared_line_validator_v3",
+  "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+  "runtime_sha256": "152e33221c9c9d37816a8ee9943f8d87339199197c80cb692559c9756b2027d8",
+  "image": "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+  "max_completion_tokens": 125,
+  "max_attempts_per_task": 2,
+  "max_total_model_calls": 12,
+  "verification_scope": "excerpt_only_no_full_upstream_suite",
+  "isolation": "digest_pinned_docker_no_network_read_only_no_privileges",
+  "external_submission": false,
+  "paid_inference": false,
+  "tasks": [
+    {
+      "id": "454",
+      "issue": "https://github.com/mahmoud/boltons/pull/454",
+      "blob": "5df8cf6f2e067ce5a11691304f67faf6c2bac7cb",
+      "status": "failed",
+      "model_calls": 4,
+      "model_generated_success": false,
+      "attempts": [
+        {
+          "number": 1,
+          "status": "failed",
+          "generations": [
+            {
+              "symbol": "args2sh",
+              "seconds": 5.527,
+              "response_sha256": "a7cb1b50dd7a63b111fee5f97da18251fa12fda25166e7fa6dde2f8dcd097905"
+            }
+          ],
+          "failure_reason": "proposal_rejected",
+          "message": "Proposed Python source does not parse"
+        },
+        {
+          "number": 2,
+          "status": "failed",
+          "generations": [
+            {
+              "symbol": "args2sh",
+              "seconds": 1.766,
+              "response_sha256": "91d7e22d1e54f3d7696b35e0420baaf3cb4323cfbb810b785c1a6e8b51799565"
+            }
+          ],
+          "failure_reason": "proposal_rejected",
+          "message": "No-op replacement"
+        }
+      ],
+      "source_sha256": "daf1295c7bed0821bb6277a0ebc4e8fef3e08fd3ad7750d2bc05f4726bfc1781",
+      "tests_sha256": "b07a08a09288de0b19b6e840917355d8e141757edc516be6c502154d65e7d696",
+      "baseline": {
+        "passed": false,
+        "returncode": 1,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 0.241,
+        "output": "======================================================================\nFAIL: test_cmd_separator (test_regression.T.test_cmd_separator)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 5, in test_cmd_separator\n    def test_cmd_separator(self): self.assertEqual(args2cmd(['aa','bb'],sep='|'),'aa|bb')\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'aa bb' != 'aa|bb'\n- aa bb\n?   ^\n+ aa|bb\n?   ^\n\n\n======================================================================\nFAIL: test_sh_separator (test_regression.T.test_sh_separator)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 4, in test_sh_separator\n    def test_sh_separator(self): self.assertEqual(args2sh(['aa','bb'],sep='|'),'aa|bb')\n                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'aa bb' != 'aa|bb'\n- aa bb\n?   ^\n+ aa|bb\n?   ^\n\n\n----------------------------------------------------------------------\nRan 4 tests in 0.001s\n\nFAILED (failures=2)\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "baseline_reproduced": true,
+      "elapsed_seconds": 21.52
+    },
+    {
+      "id": "459",
+      "issue": "https://github.com/mahmoud/boltons/pull/459",
+      "blob": "5df8cf6f2e067ce5a11691304f67faf6c2bac7cb",
+      "status": "failed",
+      "model_calls": 2,
+      "model_generated_success": false,
+      "attempts": [
+        {
+          "number": 1,
+          "status": "failed",
+          "generations": [],
+          "failure_reason": "proposal_rejected",
+          "message": "No-op replacement"
+        },
+        {
+          "number": 2,
+          "status": "failed",
+          "generations": [],
+          "failure_reason": "proposal_rejected",
+          "message": "Unsafe replacement text"
+        }
+      ],
+      "source_sha256": "cf2633cbf116ed218c093b7624a874388dba8910bf5b1ee40190cd8189f6232a",
+      "tests_sha256": "5b23946e97ac055fbd9a99aee9bdd6f3c0602855b5494bd4cad31bab2458bbf6",
+      "baseline": {
+        "passed": false,
+        "returncode": 1,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 0.272,
+        "output": "======================================================================\nFAIL: test_five_yotta (test_regression.T.test_five_yotta)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 5, in test_five_yotta\n    def test_five_yotta(self): self.assertEqual(bytes2human(5*1024**8),'5Y')\n                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '5120Z' != '5Y'\n- 5120Z\n+ 5Y\n\n\n======================================================================\nFAIL: test_yotta (test_regression.T.test_yotta)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 4, in test_yotta\n    def test_yotta(self): self.assertEqual(bytes2human(1024**8),'1Y')\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '1024Z' != '1Y'\n- 1024Z\n+ 1Y\n\n\n----------------------------------------------------------------------\nRan 3 tests in 0.001s\n\nFAILED (failures=2)\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "baseline_reproduced": true,
+      "elapsed_seconds": 7.3
+    },
+    {
+      "id": "460",
+      "issue": "https://github.com/mahmoud/boltons/pull/460",
+      "blob": "856bf195483aafbfcdb8f6f93a168daf0c9b5857",
+      "status": "failed",
+      "model_calls": 2,
+      "model_generated_success": false,
+      "attempts": [
+        {
+          "number": 1,
+          "status": "failed",
+          "generations": [
+            {
+              "symbol": "most_common",
+              "seconds": 3.659,
+              "response_sha256": "0eec5fa46d6415bd4027f02bef828a91540d4cb31d5784f0b5cdbe7602bc36e9"
+            }
+          ],
+          "test": {
+            "passed": false,
+            "returncode": 1,
+            "timeout": false,
+            "error": null,
+            "elapsed_seconds": 0.242,
+            "output": "======================================================================\nFAIL: test_omitted (test_regression.T.test_omitted)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 4, in test_omitted\n    def test_omitted(self): self.assertEqual(ThresholdCounter({'a':2,'b':4}).most_common(),[('b',4),('a',2)])\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Lists differ: [] != [('b', 4), ('a', 2)]\n\nSecond list contains 2 additional elements.\nFirst extra element 0:\n('b', 4)\n\n- []\n+ [('b', 4), ('a', 2)]\n\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nFAILED (failures=1)\n",
+            "untrusted_execution_certified": false,
+            "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+          },
+          "failure_reason": "targeted_tests_failed"
+        },
+        {
+          "number": 2,
+          "status": "failed",
+          "generations": [
+            {
+              "symbol": "most_common",
+              "seconds": 1.48,
+              "response_sha256": "4ceb4b71ea74d5502120099bad8ed6724ec4549f96dbb0a947286e0a84e2f71f"
+            }
+          ],
+          "test": {
+            "passed": false,
+            "returncode": 1,
+            "timeout": false,
+            "error": null,
+            "elapsed_seconds": 0.272,
+            "output": "======================================================================\nERROR: test_omitted (test_regression.T.test_omitted)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 4, in test_omitted\n    def test_omitted(self): self.assertEqual(ThresholdCounter({'a':2,'b':4}).most_common(),[('b',4),('a',2)])\n                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/cacheutils.py\", line 16, in most_common\n    return n <= 0\n           ^^^^^^\nTypeError: '<=' not supported between instances of 'NoneType' and 'int'\n\n======================================================================\nFAIL: test_zero (test_regression.T.test_zero)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 5, in test_zero\n    def test_zero(self): self.assertEqual(ThresholdCounter({'a':2}).most_common(0),[])\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: True != []\n\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nFAILED (failures=1, errors=1)\n",
+            "untrusted_execution_certified": false,
+            "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+          },
+          "failure_reason": "targeted_tests_failed"
+        }
+      ],
+      "source_sha256": "0e3fbe7ce32ccdd91c0815b9f933a83823de2204493f65367a40f1a3aa946272",
+      "tests_sha256": "59af64ed3da2a1cdb1969d3a78ae2ef5e10183e571c5fe4c18ecfa7c30646ee1",
+      "baseline": {
+        "passed": false,
+        "returncode": 1,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 0.272,
+        "output": "======================================================================\nFAIL: test_omitted (test_regression.T.test_omitted)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 4, in test_omitted\n    def test_omitted(self): self.assertEqual(ThresholdCounter({'a':2,'b':4}).most_common(),[('b',4),('a',2)])\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Lists differ: [] != [('b', 4), ('a', 2)]\n\nSecond list contains 2 additional elements.\nFirst extra element 0:\n('b', 4)\n\n- []\n+ [('b', 4), ('a', 2)]\n\n----------------------------------------------------------------------\nRan 3 tests in 0.001s\n\nFAILED (failures=1)\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "baseline_reproduced": true,
+      "elapsed_seconds": 6.04
+    },
+    {
+      "id": "475",
+      "issue": "https://github.com/mahmoud/boltons/pull/475",
+      "blob": "5df8cf6f2e067ce5a11691304f67faf6c2bac7cb",
+      "status": "failed",
+      "model_calls": 2,
+      "model_generated_success": false,
+      "attempts": [
+        {
+          "number": 1,
+          "status": "failed",
+          "generations": [
+            {
+              "symbol": "iter_splitlines",
+              "seconds": 4.852,
+              "response_sha256": "4e3762657aeff0a81ae439bff40e9c754a7dc72ddc58d947199ba6351afe8d1b"
+            }
+          ],
+          "test": {
+            "passed": false,
+            "returncode": 1,
+            "timeout": false,
+            "error": null,
+            "elapsed_seconds": 0.302,
+            "output": "======================================================================\nERROR: test_newline (test_regression.T.test_newline)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 6, in test_newline\n    def test_newline(self): self.assertEqual(list(iter_splitlines('A\\nB')),['A','B'])\n                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/strutils.py\", line 26, in iter_splitlines\n    if end == len_text or end == len_text - 1:\n       ^^^\nUnboundLocalError: cannot access local variable 'end' where it is not associated with a value\n\n======================================================================\nERROR: test_regular_date (test_regression.T.test_regular_date)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 5, in test_regular_date\n    def test_regular_date(self): self.assertEqual(list(iter_splitlines('February 28, 2026')),['February 28, 2026'])\n                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/strutils.py\", line 26, in iter_splitlines\n    if end == len_text or end == len_text - 1:\n       ^^^\nUnboundLocalError: cannot access local variable 'end' where it is not associated with a value\n\n======================================================================\nERROR: test_unicode (test_regression.T.test_unicode)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 4, in test_unicode\n    def test_unicode(self): self.assertEqual(list(iter_splitlines('A\\u2028B\\u2029C')),['A','B','C'])\n                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/strutils.py\", line 26, in iter_splitlines\n    if end == len_text or end == len_text - 1:\n       ^^^\nUnboundLocalError: cannot access local variable 'end' where it is not associated with a value\n\n----------------------------------------------------------------------\nRan 3 tests in 0.001s\n\nFAILED (errors=3)\n",
+            "untrusted_execution_certified": false,
+            "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+          },
+          "failure_reason": "targeted_tests_failed"
+        },
+        {
+          "number": 2,
+          "status": "failed",
+          "generations": [
+            {
+              "symbol": "iter_splitlines",
+              "seconds": 2.256,
+              "response_sha256": "0a9c4943de92fc5710c7fd985c430cdd85cd9ca1cce3f0208c757b31e5da3ba8"
+            }
+          ],
+          "test": {
+            "passed": false,
+            "returncode": 1,
+            "timeout": false,
+            "error": null,
+            "elapsed_seconds": 0.272,
+            "output": "======================================================================\nERROR: test_newline (test_regression.T.test_newline)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 6, in test_newline\n    def test_newline(self): self.assertEqual(list(iter_splitlines('A\\nB')),['A','B'])\n                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/strutils.py\", line 26, in iter_splitlines\n    if end == len_text or end == len_text - 1:\n       ^^^\nUnboundLocalError: cannot access local variable 'end' where it is not associated with a value\n\n======================================================================\nERROR: test_regular_date (test_regression.T.test_regular_date)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 5, in test_regular_date\n    def test_regular_date(self): self.assertEqual(list(iter_splitlines('February 28, 2026')),['February 28, 2026'])\n                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/strutils.py\", line 26, in iter_splitlines\n    if end == len_text or end == len_text - 1:\n       ^^^\nUnboundLocalError: cannot access local variable 'end' where it is not associated with a value\n\n======================================================================\nERROR: test_unicode (test_regression.T.test_unicode)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 4, in test_unicode\n    def test_unicode(self): self.assertEqual(list(iter_splitlines('A\\u2028B\\u2029C')),['A','B','C'])\n                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/strutils.py\", line 26, in iter_splitlines\n    if end == len_text or end == len_text - 1:\n       ^^^\nUnboundLocalError: cannot access local variable 'end' where it is not associated with a value\n\n----------------------------------------------------------------------\nRan 3 tests in 0.001s\n\nFAILED (errors=3)\n",
+            "untrusted_execution_certified": false,
+            "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+          },
+          "failure_reason": "targeted_tests_failed"
+        }
+      ],
+      "source_sha256": "eb9327815ff4192571270170ec04e4b18b790ece85ed26f493b6ca9ed0d8e7af",
+      "tests_sha256": "27779d4c48e8703251bf4acc8a0c3ceba326546a763d6f8dee71461b337d3ff1",
+      "baseline": {
+        "passed": false,
+        "returncode": 1,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 0.303,
+        "output": "======================================================================\nFAIL: test_regular_date (test_regression.T.test_regular_date)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 5, in test_regular_date\n    def test_regular_date(self): self.assertEqual(list(iter_splitlines('February 28, 2026')),['February 28, 2026'])\n                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Lists differ: ['February', ', 2026'] != ['February 28, 2026']\n\nFirst differing element 0:\n'February'\n'February 28, 2026'\n\nFirst list contains 1 additional elements.\nFirst extra element 1:\n', 2026'\n\n- ['February', ', 2026']\n?           ^ ---\n\n+ ['February 28, 2026']\n?           ^^^\n\n\n======================================================================\nFAIL: test_unicode (test_regression.T.test_unicode)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 4, in test_unicode\n    def test_unicode(self): self.assertEqual(list(iter_splitlines('A\\u2028B\\u2029C')),['A','B','C'])\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Lists differ: ['A\\u2028B\\u2029C'] != ['A', 'B', 'C']\n\nFirst differing element 0:\n'A\\u2028B\\u2029C'\n'A'\n\nSecond list contains 2 additional elements.\nFirst extra element 1:\n'B'\n\n- ['A\\u2028B\\u2029C']\n+ ['A', 'B', 'C']\n\n----------------------------------------------------------------------\nRan 3 tests in 0.001s\n\nFAILED (failures=2)\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "baseline_reproduced": true,
+      "elapsed_seconds": 8.1
+    },
+    {
+      "id": "524",
+      "issue": "https://github.com/mahmoud/boltons/issues/524",
+      "blob": "5df8cf6f2e067ce5a11691304f67faf6c2bac7cb",
+      "status": "failed",
+      "model_calls": 2,
+      "model_generated_success": false,
+      "attempts": [
+        {
+          "number": 1,
+          "status": "failed",
+          "generations": [
+            {
+              "symbol": "bytes2human",
+              "seconds": 2.864,
+              "response_sha256": "244e2a094e91f3c140d2309ec1f59c43fba75663517fc27d9827e5392e038239"
+            }
+          ],
+          "test": {
+            "passed": false,
+            "returncode": 1,
+            "timeout": false,
+            "error": null,
+            "elapsed_seconds": 0.302,
+            "output": "======================================================================\nFAIL: test_existing (test_regression.T.test_existing)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 7, in test_existing\n    def test_existing(self): self.assertEqual(bytes2human(1024),'1K')\n                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '0Z' != '1K'\n- 0Z\n+ 1K\n\n\n======================================================================\nFAIL: test_rounded_kib (test_regression.T.test_rounded_kib)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 5, in test_rounded_kib\n    def test_rounded_kib(self): self.assertEqual(bytes2human(1023.5),'1K')\n                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '0Z' != '1K'\n- 0Z\n+ 1K\n\n\n======================================================================\nFAIL: test_rounded_megabyte (test_regression.T.test_rounded_megabyte)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 4, in test_rounded_megabyte\n    def test_rounded_megabyte(self): self.assertEqual(bytes2human(1048575),'1M')\n                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '0Z' != '1M'\n- 0Z\n+ 1M\n\n\n======================================================================\nFAIL: test_rounded_one_digit (test_regression.T.test_rounded_one_digit)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 6, in test_rounded_one_digit\n    def test_rounded_one_digit(self): self.assertEqual(bytes2human(1023.99,1),'1.0K')\n                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '0.0Z' != '1.0K'\n- 0.0Z\n+ 1.0K\n\n\n----------------------------------------------------------------------\nRan 4 tests in 0.001s\n\nFAILED (failures=4)\n",
+            "untrusted_execution_certified": false,
+            "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+          },
+          "failure_reason": "targeted_tests_failed"
+        },
+        {
+          "number": 2,
+          "status": "failed",
+          "generations": [
+            {
+              "symbol": "bytes2human",
+              "seconds": 2.422,
+              "response_sha256": "3b99a18824955ac34386fa0a15d08faeb9561d7e8a4bcb4e112a20056bed68d5"
+            }
+          ],
+          "test": {
+            "passed": false,
+            "returncode": 1,
+            "timeout": false,
+            "error": null,
+            "elapsed_seconds": 0.241,
+            "output": "======================================================================\nFAIL: test_existing (test_regression.T.test_existing)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 7, in test_existing\n    def test_existing(self): self.assertEqual(bytes2human(1024),'1K')\n                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '0Z' != '1K'\n- 0Z\n+ 1K\n\n\n======================================================================\nFAIL: test_rounded_kib (test_regression.T.test_rounded_kib)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 5, in test_rounded_kib\n    def test_rounded_kib(self): self.assertEqual(bytes2human(1023.5),'1K')\n                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '0Z' != '1K'\n- 0Z\n+ 1K\n\n\n======================================================================\nFAIL: test_rounded_megabyte (test_regression.T.test_rounded_megabyte)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 4, in test_rounded_megabyte\n    def test_rounded_megabyte(self): self.assertEqual(bytes2human(1048575),'1M')\n                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '0Z' != '1M'\n- 0Z\n+ 1M\n\n\n======================================================================\nFAIL: test_rounded_one_digit (test_regression.T.test_rounded_one_digit)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 6, in test_rounded_one_digit\n    def test_rounded_one_digit(self): self.assertEqual(bytes2human(1023.99,1),'1.0K')\n                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '0.0Z' != '1.0K'\n- 0.0Z\n+ 1.0K\n\n\n----------------------------------------------------------------------\nRan 4 tests in 0.001s\n\nFAILED (failures=4)\n",
+            "untrusted_execution_certified": false,
+            "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+          },
+          "failure_reason": "targeted_tests_failed"
+        }
+      ],
+      "source_sha256": "cf2633cbf116ed218c093b7624a874388dba8910bf5b1ee40190cd8189f6232a",
+      "tests_sha256": "2f49d8d0862492878469344576880118be2f2674bd90250e7ae156b92b0c0330",
+      "baseline": {
+        "passed": false,
+        "returncode": 1,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 0.241,
+        "output": "======================================================================\nFAIL: test_rounded_kib (test_regression.T.test_rounded_kib)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 5, in test_rounded_kib\n    def test_rounded_kib(self): self.assertEqual(bytes2human(1023.5),'1K')\n                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '1024B' != '1K'\n- 1024B\n+ 1K\n\n\n======================================================================\nFAIL: test_rounded_megabyte (test_regression.T.test_rounded_megabyte)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 4, in test_rounded_megabyte\n    def test_rounded_megabyte(self): self.assertEqual(bytes2human(1048575),'1M')\n                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '1024K' != '1M'\n- 1024K\n+ 1M\n\n\n======================================================================\nFAIL: test_rounded_one_digit (test_regression.T.test_rounded_one_digit)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 6, in test_rounded_one_digit\n    def test_rounded_one_digit(self): self.assertEqual(bytes2human(1023.99,1),'1.0K')\n                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '1024.0B' != '1.0K'\n- 1024.0B\n+ 1.0K\n\n\n----------------------------------------------------------------------\nRan 4 tests in 0.001s\n\nFAILED (failures=3)\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "baseline_reproduced": true,
+      "elapsed_seconds": 6.19
+    }
+  ],
+  "sandbox_preflight": {
+    "network_denied": true,
+    "loopback_inference_unreachable": true,
+    "source_writes_denied": true,
+    "root_writes_denied": true,
+    "secrets_absent": true,
+    "uid_unprivileged": true,
+    "capabilities_empty": true,
+    "no_new_privileges": true,
+    "seccomp_active": true,
+    "memory_limit_enforced": true,
+    "swap_disabled": true,
+    "cpu_quota_verified": true,
+    "pid_limit_verified": true,
+    "tmpfs_bounded_noexec": true,
+    "wall_clock_enforced": true,
+    "cleanup_verified": true,
+    "output_bounded": true,
+    "docker_socket_absent": true,
+    "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+    "untrusted_execution_certified": false
+  },
+  "completed": 5,
+  "attempted": 5,
+  "passed": 0,
+  "blocked": 0,
+  "model_calls": 12
+}

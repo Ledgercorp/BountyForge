@@ -1,0 +1,96 @@
+name: BountyForge explicitly gated CPU acceptance
+
+# Public standard-runner CPU acceptance: one explicitly tagged owned-branch push or manual dispatch.
+# Post-hardening compatibility check of the original three owned fixtures.
+# No cron. No third-party fixture execution. No secrets.
+on:
+  push:
+    branches: [engineering/bounded-autonomy-20261020]
+    paths: ['.github/workflows/manual-cpu-canary.yml']
+  workflow_dispatch:
+    inputs:
+      billing_ack:
+        description: Enter verified_zero_spend only after personally checking hard billing controls
+        required: true
+        default: not_verified
+        type: choice
+        options:
+          - not_verified
+          - verified_zero_spend
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bountyforge-repair-worker
+  cancel-in-progress: false
+
+jobs:
+  cpu-acceptance:
+    if: ${{ (github.event_name == 'push' && contains(github.event.head_commit.message, '[cpu-acceptance]')) || (github.event_name == 'workflow_dispatch' && inputs.billing_ack == 'verified_zero_spend') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      BOUNTYFORGE_SUBMIT_ENABLED: '0'
+    steps:
+      - name: Checkout trusted BountyForge source without persistent token
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Python 3.11
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Regression gate
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -v
+          python -m unittest discover -s benchmarks/phase4 -v
+      - name: Restore public checksum-pinned Qwen cache
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: ~/.cache/bountyforge/models
+          key: bountyforge-public-qwen25-coder-1p5b-cc324af0-v1
+      - name: Download and verify public CPU assets
+        run: |
+          set -euo pipefail
+          bash scripts/bootstrap_actions_inference.sh --verify-only
+      - name: Launch private loopback inference
+        shell: bash
+        run: |
+          set -euo pipefail
+          nohup bash scripts/bootstrap_actions_inference.sh --serve \
+            > "$RUNNER_TEMP/bountyforge-llama.log" 2>&1 </dev/null &
+          echo "$!" > "$RUNNER_TEMP/bountyforge-llama.pid"
+          ready=0
+          for i in $(seq 1 70); do
+            if curl --fail --silent http://127.0.0.1:8080/health | grep -q '"status":"ok"'; then
+              ready=1; break
+            fi
+            sleep 2
+          done
+          [[ "$ready" == 1 ]] || { echo 'Model did not become healthy'; exit 2; }
+      - name: Execute synthetic-only Qwen canary and verify evidence
+        run: |
+          set -euo pipefail
+          mkdir -p evidence-run
+          python -m scripts.autonomous_cycle --scan offline --canary \
+            --local-port 8080 --output evidence-run/cycle.json
+          python -m scripts.validate_evidence evidence-run/cycle.json
+          # Keep the evidence if the synthetic canary fails; assess status after all 3 trials.
+      - name: Verify three owned synthetic Qwen repairs
+        run: |
+          set -euo pipefail
+          python -m scripts.synthetic_cpu_benchmark --local-port 8080 --output evidence-run/synthetic.json
+      - name: Accept only proven canary and three-case results
+        run: |
+          set -euo pipefail
+          python -c 'import json; a=json.load(open("evidence-run/cycle.json")); b=json.load(open("evidence-run/synthetic.json")); assert a["record"]["canary"]["status"] == "synthetic_review_ready"; assert b["record"]["all_cases_passed"] is True'
+      - name: Upload sanitized acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bountyforge-cpu-acceptance-${{ github.run_id }}
+          path: evidence-run/
+          if-no-files-found: ignore
+          retention-days: 2

@@ -12,6 +12,7 @@ import hashlib
 import json
 import os
 import resource
+import re
 import shutil
 import signal
 import subprocess
@@ -64,7 +65,7 @@ def _run_tests(root: Path, timeout: int = MAX_SECONDS) -> dict:
     except OSError as exc:
         return {'passed': False, 'exit_code': None, 'timeout': False,
                 'seconds': round(time.monotonic()-started, 3), 'output': 'Runner unavailable: ' + type(exc).__name__}
-    return {'passed': code == 0 and not expired, 'exit_code': code,
+    return {'passed': code == 0 and not expired and bool(re.search(rb'Ran [1-9][0-9]* tests?',output)) and output.rstrip().endswith(b'OK'), 'exit_code': code,
             'timeout': expired, 'seconds': round(time.monotonic()-started, 3),
             'output': output[:MAX_OUTPUT].decode('utf-8', errors='replace')}
 
@@ -96,7 +97,8 @@ def _fixture_hash(root: Path) -> str:
 
 def repair_fixture(issue: dict, fixture_root: Path, approved_paths: list[str], model,
                    *, max_attempts: int = MAX_ATTEMPTS, strategy: str = 'full',
-                   editable_lines: dict[str, list[int]] | None = None) -> dict:
+                   editable_lines: dict[str, list[int]] | None = None,
+                   test_runner=None) -> dict:
     """Prepare patch evidence, never commit, push, submit or run outside fixture.
 
     First test must reproduce a failure. Every model attempt is validated,
@@ -116,13 +118,14 @@ def repair_fixture(issue: dict, fixture_root: Path, approved_paths: list[str], m
         if len(allowed) != 1 or (strategy == 'line' and (not isinstance(editable_lines, dict) or set(editable_lines) != set(allowed))):
             raise DraftRejected('Line strategy requires one trusted path; explicit lines required for manual line mode')
     start = time.monotonic()
+    runner = test_runner or _run_tests
     with tempfile.TemporaryDirectory(prefix='bountyforge-worker-') as temp:
         root = Path(temp) / 'base'
-        _contained_copy(Path(fixture_root).resolve(strict=True), root)
+        _contained_copy(Path(fixture_root), root)
         for item in allowed:
             _verify_existing(root, item)
         fingerprint = _fixture_hash(root)
-        initial = _run_tests(root)
+        initial = runner(root)
         report = {'status': 'failed', 'scenario': str(issue.get('title', ''))[:140],
                   'controlled_synthetic_fixture': True, 'source_sha256': fingerprint,
                   'baseline': initial, 'attempts': [], 'verified_payout': False,
@@ -140,6 +143,9 @@ def repair_fixture(issue: dict, fixture_root: Path, approved_paths: list[str], m
                 report['scope_reason'] = type(exc).__name__
                 return report
             report['inferred_editable_lines'] = editable_lines[allowed[0]]
+        if (initial.get('exit_code') != 1 or 'FAIL:' not in initial.get('output','')
+                or 'FAILED (failures=' not in initial['output'] or 'errors=' in initial['output']):
+            report['error'] = 'baseline_not_assertion_failure'; return report
         feedback = None
         for number in range(1, max_attempts + 1):
             attempt = {'number': number, 'status': 'failed'}
@@ -173,7 +179,7 @@ def repair_fixture(issue: dict, fixture_root: Path, approved_paths: list[str], m
                     file_path.write_text(entry['content'], encoding='utf-8')
                     if path.endswith('.py'):
                         ast.parse(entry['content'], filename=path)
-                verified = _run_tests(work)
+                verified = runner(work)
                 attempt['test'] = verified
                 attempt['diff'] = '\n'.join(entry['diff'] for entry in result['files'])[:12000]
                 if verified['passed']:
@@ -185,7 +191,11 @@ def repair_fixture(issue: dict, fixture_root: Path, approved_paths: list[str], m
                     break
                 attempt['error'] = 'test_failure_or_timeout'
                 feedback = verified['output'][-420:]
-            except (DraftRejected, ValueError, RuntimeError, OSError) as exc:
+            except (RuntimeError, OSError) as exc:
+                attempt['error'] = 'model_or_runner_unavailable'
+                report['attempts'].append(attempt)
+                break  # Do not overlap inference after an endpoint timeout.
+            except (DraftRejected, ValueError) as exc:
                 attempt['error'] = type(exc).__name__
                 feedback = type(exc).__name__
             report['attempts'].append(attempt)

@@ -1,0 +1,776 @@
+{
+  "retrieved_at": "2026-10-21T12:16:29.230Z",
+  "source": "GitHub fetch_issue connector",
+  "issues": [
+    {
+      "url": "https://github.com/vaipakam/vaipakam/issues/2621",
+      "issue": {
+        "url": "https://github.com/vaipakam/vaipakam/issues/2621",
+        "title": "Reward day close: enforce the day-close safety rules on-chain (clock, route, report shape, expected list)",
+        "issue_number": 2621,
+        "state": "open",
+        "state_reason": null,
+        "comments": 0,
+        "created_at": "2026-10-21T09:30:55Z",
+        "updated_at": "2026-10-21T10:58:33Z",
+        "closed_at": null,
+        "labels": [
+          "enhancement",
+          "security"
+        ],
+        "assignees": [],
+        "body_sha256": "1377f7f963e344ec6398717e82f2739dadf6f7ad0cb91a80899d30af8cfbb8e7",
+        "body_excerpt": "Found in Codex review of #2616 (the keeper's reward day-close pass, #2612). Widened after 17 review rounds: about ten of those findings were variations on one root. `closeDay` and `finalizeDay` are permissionless. The keeper can refuse to send an unsafe call, but it cannot stop anyone else from sending one. So every rule below is enforced only for the keeper's own calls, and each rule that matters belongs in the contract.\n\n## Rules the keeper enforces off-chain today (#2616)\n\nEach is an irreversible call that the keeper holds while its precondition is unknown or false. Anyone else can still make the call.\n\n1. **Reward clock alignment.** A mirror's `closeDay(d)` sums that chain's day `d` into Base's day `d`. If the two Diamonds' `getInteractionLaunchTimestamp` differ, the same day number covers different hours, and unrelated interest is summed into one global total. Likewise Base's `finalizeDay(d)` with a report from a misaligned mirror.\n2. **Report route.** A mirror's messenger sends reports to its own `baseChainId`, which is a separate setting from the Diamond's reporter config. If they differ, the day is stamped sent here and the report never reaches Base.\n3. **Report shape.** Only the B4 report has Base's late path. An older shape reaching a finalized day is refused with `ReportAfterFinalization` after its fee is paid, and the day is stamped sent for good.\n4. **Base on its own expected list.** `finalizeDay` against a list that leaves Base out sums no Base interest into the day, irreversibly. An empty list finalizes every day as zero.\n\n## The race no off-chain check can close (the original finding)\n\nThe keeper reads the messenger, then sends `closeDay`. The close dispatches through whatever `s.rewardMessenger` holds **when the transaction runs**. If governance rotates the messenger in between (to a pre-B4 one, or one routed elsewhere), the close still lands, the day is stamped sent, and the report cannot be re-sent. Meanwhile the keeper reads each close's `ReportSent` event and raises an ops alert when the report left through a messenger other than the one it checked. That detects the race; it does not prevent it.\n\n## Options for a contract-side fix\n\n- **Clock:** the reporter config (or the CCIP registry) carries Base's launch timestamp; `closeDay` on a mirror reverts unless its own launch equals it, and Base's ingress refuses a report whose source clock d",
+        "body_excerpt_truncated": true,
+        "qualification_excerpt": "own calls, and each rule that matters belongs in the contract.\n1. **Reward clock alignment.** A mirror's `closeDay(d)` sums that chain's day `d` into Base's day `d`. If the two Diamonds' `getInteractionLaunchTimestamp` differ, the same day number covers different hours, and unrelated interest is summed into one global total. Likewise Base's `finalizeDay(d)` with a report from a misaligned mirror.\n3. **Report shape.** Only the B4 report has Base's late path. An older shape reaching a finalized day is refused with `ReportAfterFinalization` after its fee is paid, and the day is stamped sent for good.\nThe keeper reads the messenger, then sends `closeDay`. The close dispatches through whatever `s.rewardMessenger` holds **when the transaction runs**. If governance rotates the messenger in between (to a pre-B4 one, or one routed elsewhere), the close still lands, the day is stamped sent, and the report cannot be re-sent. Meanwhile the keeper reads each close's `ReportSent` event and raises an ops alert when the report left through a messenger other than the one it checked. That detects the race; it does not prevent it.\n- **Route:** `setRewardMessenger` refuses a messenger whose `baseChainId` is not the configured Base, and so does the messenger's `setBaseChainId` while it is the Diamond's messenger. Or `closeDay` checks the two at the moment of the close.\n- **Shape:** `closeDay` takes the messenger address (or a minimum shape) the caller checked, and reverts if `s.rewardMessenger` differs. Or Base's ingress accepts late older-shape reports the way it accepts late B4 ones (dropping the day figures, applying the chain-wide figures).\nEach of these touches `RewardReporterFacet`, `RewardAggregatorFacet`, `AdminFacet` or the messenger, so it lands with a fresh deploy under the slice 2\u20133 rules. Once they land, the keeper's matching holds become defence in depth rather than the only line.\nGovernance rotation of the reward messenger is an admin action behind the multisig and timelock. The race needs a rotation during an in-flight close, so it is rare but not impossible, and the loss is irreversible. The other three rules need only a misconfiguration, which is the likelier case."
+      }
+    },
+    {
+      "url": "https://github.com/paraspell/xcm-tools/issues/2155",
+      "issue": {
+        "url": "https://github.com/paraspell/xcm-tools/issues/2155",
+        "title": "[Bug bounty] min-transferable-amount swallows non-AmountTooLowError and dry-runs an undefined tx",
+        "issue_number": 2155,
+        "state": "open",
+        "state_reason": null,
+        "comments": 9,
+        "created_at": "2026-10-16T06:51:34Z",
+        "updated_at": "2026-10-21T11:24:14Z",
+        "closed_at": null,
+        "labels": [
+          "Confirmed bug \ud83e\udeb2",
+          "Bug bounty \ud83d\udcb0"
+        ],
+        "assignees": [],
+        "body_sha256": "302ad780681fd4e06d6280a00928ab2754a064347c7515a4377bdf58a189dafb",
+        "body_excerpt": "# \ud83d\udc1e Bug Report\n\n## \ud83d\udd0d Describe the Bug\n\nIn `getMinTransferableAmount`, the transaction-building step is wrapped in a `try/catch` that **only** handles `AmountTooLowError`. Any **other** error thrown while building the transaction is silently swallowed: the `catch` block does nothing for it, so `tx` is left `undefined` and execution continues into `dryRunInternal({ tx: undefined, ... })`.\n\n**File:** `packages/sdk-core/src/transfer/transferable-amount/getMinTransferableAmount.ts:116-141`\n\n[code omitted; not executed]\n\n`dryRunInternal` immediately forwards `tx` to `api.getDryRunCall(...)`, and every API implementation dereferences the transaction. For PAPI (`packages/sdk/src/PapiApi.ts`):\n\n[code omitted; not executed]\n\nSo instead of the real, meaningful error being propagated to the caller (which the API layer would normally turn into a clean `400`), the user gets a confusing `500` with an internal `TypeError`, OR \u2014 if the dry run happens to be short-circuited/mocked \u2014 a bogus minimum amount is returned as if the build had succeeded.\n\nThis is a regression introduced together with the `#1463` fix: that fix added the `AmountTooLowError` retry but the `try/catch` was left without an `else`/re-throw for other errors, and this path is untested (see \"To Reproduce\").\n\nThis is **not** a duplicate of `#1463` (which is the `AmountTooLowError` case) nor of `#1466` (which is about the invalid-address `400`/`500` on this endpoint \u2014 `validateAddress` is now called first, `getMinTransferableAmount.ts:36`).\n\n---\n\n## \ud83e\uddea To Reproduce\n\nThe existing tests cover the `AmountTooLowError` case but there is **no test** for any other error type.\n\n**File:** `packages/sdk-core/src/transfer/transferable-amount/getMinTransferableAmount.test.ts:321`\n\n[code omitted; not executed]\n\nAdd a test with a plain (non-`AmountTooLowError`) rejection and observe that `dryRunInternal` **is** called, with `tx === undefined`:\n\n[code omitted; not executed]\n\nRun:\n[code omitted; not executed]\n\nI verified this locally: the probe passes (i.e. the bug is real), and `dryRunInternal` is invoked with `tx: undefined`.\n\n**Public endpoint:** `POST https://api.lightspell.xyz/v4/min-transferable-amount` with any currency/route where building the min-amount transaction throws something other than `AmountTooLowError` (e.g. an `IncompatibleCurrencyError` / `ScenarioNotSupportedError` / `RoutingResolutionError` / fetch failur",
+        "body_excerpt_truncated": true,
+        "qualification_excerpt": "**File:** `packages/sdk-core/src/transfer/transferable-amount/getMinTransferableAmount.ts:116-141`\n`dryRunInternal` immediately forwards `tx` to `api.getDryRunCall(...)`, and every API implementation dereferences the transaction. For PAPI (`packages/sdk/src/PapiApi.ts`):\nThis is **not** a duplicate of `#1463` (which is the `AmountTooLowError` case) nor of `#1466` (which is about the invalid-address `400`/`500` on this endpoint \u2014 `validateAddress` is now called first, `getMinTransferableAmount.ts:36`).\n**File:** `packages/sdk-core/src/transfer/transferable-amount/getMinTransferableAmount.test.ts:321`\n- Same class of defect as the paid issue `#1466` (\"Invalid addresses return 500 instead of 400 for min-transferable-amount endpoint\"), which confirms that a wrong status code / opaque error on this endpoint is considered a valid, rewardable bug.\n## \u2705 Contributor Eligibility\n- [x] I disclose any AI tools used to help write this report (or confirm none were used), and I understand and can explain its contents myself.\n- [x] This report was authored and submitted by a human \u2014 not opened autonomously by an AI agent.\n- [x] If I go on to fix this issue myself, I understand every commit must be signed (`-S`) and include `Signed-off-by` and `AI-Assisted-By` trailers.\n- [ ] On-chain identity on Polkadot Asset Hub \u2014 **in progress, address + Subscan link will be provided here as soon as it is set** (same as issue #2153).\nAI tools used: OpenCode (Big-Pickle) for code analysis and drafting assistance.\n## \ud83d\udcb8 Polkadot Asset Hub Address (Optional \u2013 for reward eligibility)\nPolkadot Asset Hub Address: *(to be provided together with the on-chain identity above)*\n> Rewards sent to CEX addresses **may not arrive** and **cannot be recovered**."
+      }
+    },
+    {
+      "url": "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912",
+      "issue": {
+        "url": "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1912",
+        "title": "[Bounty] [Bounty: $105] checkStellarRecipientReady must not report RPC outages as missing",
+        "issue_number": 1912,
+        "state": "open",
+        "state_reason": null,
+        "comments": 7,
+        "created_at": "2026-10-15T21:54:22Z",
+        "updated_at": "2026-10-21T11:35:52Z",
+        "closed_at": null,
+        "labels": [
+          "bounty",
+          "real"
+        ],
+        "assignees": [],
+        "body_sha256": "f0b7ab21aa6c0601f72cac2d4bacecb4d943b24601f2dfff711235d632700b91",
+        "body_excerpt": "### \u8d4f\u91d1\u5e73\u53f0 / Platform\nGitHub\n\n### \u539f\u59cb\u94fe\u63a5 / Source URL\nhttps://github.com/Parabola-org/parabola/issues/4\n\n### \u6f0f\u6d1e\u63cf\u8ff0 / Description\n[Bounty: $105] checkStellarRecipientReady must not report RPC outages as missing accounts\n\n**Context**\n`checkStellarRecipientReady` in `src/chains/stellar.ts:144-177` wraps `server.getAccount(recipient)` in a bare `catch` that returns `{ exists: false, hasTrustline: false, ready: false }`. Any failure \u2014 DNS error, RPC 503, rate limit on the public mainnet endpoint (which `src/constants.ts:49-52` explicitly warns is rate-limited) \u2014 is indistinguishable from an account that genuinely was never funded. `assertStellarRecipientReady` in `src/transfer.ts:207-223` then throws \"recipient does not exist yet. It must be funded with at least the minimum XLM reserve\", sending the caller down the wrong remediation path for what is actually an infrastructure problem.\n\n**Proposed Change**\nInspect the error from `getAccount` and only map the Stellar SDK's account-not-found condition to `exists: false`. Anything else (transport errors, 5xx responses) should propagate as `IrisRequestError`-style infrastructure failure \u2014 or a new small error type if that fits better \u2014 so callers can retry instead of instructing end users to fund an account that may already exist.\n\n**Acceptance Criteria**\n\n- The SDK's account-not-found error still yields `{ exists: false, hasTrustline: false, ready: false }`.\n- A mocked transport/5xx failure rejects instead of returning a \"not exists\" status.\n- `assertStellarRecipientReady` error messages remain accurate for the true not-exists case.\n- Unit tests cover both branches with a mocked `rpc.Server`.\n- Verified by the `typecheck-test-build` job in `.github/workflows/ci.yml`.\n\n**Suggested Label**: bug\n**Bounty:** $105\n**ETA:** 48 hours\n\n### \u79ef\u5206\u5e01\u5956\u52b1 / Coin Reward\n131 coins\n\n### \u771f\u5b9e\u8d4f\u91d1\uff08USD\uff09/ Real Reward\n$105\n\n### \u96be\u5ea6 / Difficulty\nMedium\n\n### \u8ba4\u9886\u65b9\u5f0f\n\u8bc4\u8bba `/claim` \u9501\u5b9a\u4efb\u52a1 24h\n\n### \u5151\u6362\u8bf4\u660e\n> \u67e5\u770b [REWARD_POLICY.md](REWARD_POLICY.md) \u4e86\u89e3\u5151\u6362\u89c4\u5219",
+        "body_excerpt_truncated": false,
+        "qualification_excerpt": "[Bounty: $105] checkStellarRecipientReady must not report RPC outages as missing accounts\n`checkStellarRecipientReady` in `src/chains/stellar.ts:144-177` wraps `server.getAccount(recipient)` in a bare `catch` that returns `{ exists: false, hasTrustline: false, ready: false }`. Any failure \u2014 DNS error, RPC 503, rate limit on the public mainnet endpoint (which `src/constants.ts:49-52` explicitly warns is rate-limited) \u2014 is indistinguishable from an account that genuinely was never funded. `assertStellarRecipientReady` in `src/transfer.ts:207-223` then throws \"recipient does not exist yet. It must be funded with at least the minimum XLM reserve\", sending the caller down the wrong remediation path for what is actually an infrastructure problem.\nInspect the error from `getAccount` and only map the Stellar SDK's account-not-found condition to `exists: false`. Anything else (transport errors, 5xx responses) should propagate as `IrisRequestError`-style infrastructure failure \u2014 or a new small error type if that fits better \u2014 so callers can retry instead of instructing end users to fund an account that may already exist.\n**Bounty:** $105\n### \u79ef\u5206\u5e01\u5956\u52b1 / Coin Reward\n### \u771f\u5b9e\u8d4f\u91d1\uff08USD\uff09/ Real Reward\n> \u67e5\u770b [REWARD_POLICY.md](REWARD_POLICY.md) \u4e86\u89e3\u5151\u6362\u89c4\u5219"
+      }
+    },
+    {
+      "url": "https://github.com/taverns-red/toast-stats/issues/2224",
+      "issue": {
+        "url": "https://github.com/taverns-red/toast-stats/issues/2224",
+        "title": "Confirmed-Distinguished override divides distinguishedPercent by activeClubs, not Paid Club Base",
+        "issue_number": 2224,
+        "state": "open",
+        "state_reason": null,
+        "comments": 0,
+        "created_at": "2026-10-21T11:14:59Z",
+        "updated_at": "2026-10-21T11:14:59Z",
+        "closed_at": null,
+        "labels": [
+          "bug"
+        ],
+        "assignees": [],
+        "body_sha256": "96510076a3e4ef9b313ee9ab0716d817380d0a21daeb07b6e24e33e13cc12ed4",
+        "body_excerpt": "Found while fixing #2221 (PR #2223), not yet verified by a test. The #304 confirmed-Distinguished override computes `distinguishedPercent` over `activeClubs`, while the #545 rule uses Paid Club Base. Neither is pinned by a test.\n\n## Acceptance criteria\n- Confirm which base TI's Distinguished District percentage uses (cite the source in a comment).\n- A failing test pins the correct divisor, then the fix.\n- Rankings unchanged on dates where the override doesn't run.\n\n\ud83e\udd16 Generated with [Claude Code](https://claude.com/claude-code)",
+        "body_excerpt_truncated": false,
+        "qualification_excerpt": "Found while fixing #2221 (PR #2223), not yet verified by a test. The #304 confirmed-Distinguished override computes `distinguishedPercent` over `activeClubs`, while the #545 rule uses Paid Club Base. Neither is pinned by a test."
+      }
+    },
+    {
+      "url": "https://github.com/kwilson21/tally/issues/738",
+      "issue": {
+        "url": "https://github.com/kwilson21/tally/issues/738",
+        "title": "Spec \u00a78.9: a paid invoice should look for its charge around its paid date",
+        "issue_number": 738,
+        "state": "open",
+        "state_reason": null,
+        "comments": 1,
+        "created_at": "2026-10-20T01:45:13Z",
+        "updated_at": "2026-10-21T11:16:56Z",
+        "closed_at": null,
+        "labels": [
+          "review-followup"
+        ],
+        "assignees": [],
+        "body_sha256": "5e8d43b9be29099e327b13a8abfb3bf6995a9bee062c3d09b93a7799c42c557d",
+        "body_excerpt": "A paid invoice becomes a step-1 receipt, which looks for its charge around the receipt's `date`. An invoice issued Sep 1 and paid Oct 15 would look around Sep 1 and miss the October charge, though Clairic read `paid_on`. Use the paid date as the receipt's date for matching when one was read.\n\nFrom Codex's review of #727: https://github.com/kwilson21/tally/pull/727#discussion_r4320624569\n\nFiled under decision 96 after the third round of review fixes on #727: it changes no money, data, keyboard, screen-reader or privacy rule.\n\n\ud83e\udd16 Generated with [Claude Code](https://claude.com/claude-code)",
+        "body_excerpt_truncated": false,
+        "qualification_excerpt": "A paid invoice becomes a step-1 receipt, which looks for its charge around the receipt's `date`. An invoice issued Sep 1 and paid Oct 15 would look around Sep 1 and miss the October charge, though Clairic read `paid_on`. Use the paid date as the receipt's date for matching when one was read."
+      }
+    },
+    {
+      "url": "https://github.com/Naris404/clash_royale_rl_agent/issues/41",
+      "issue": {
+        "url": "https://github.com/Naris404/clash_royale_rl_agent/issues/41",
+        "title": "25: Outcome reward with potential shaping",
+        "issue_number": 41,
+        "state": "open",
+        "state_reason": null,
+        "comments": 0,
+        "created_at": "2026-10-21T11:12:32Z",
+        "updated_at": "2026-10-21T11:12:32Z",
+        "closed_at": null,
+        "labels": [
+          "ready-for-agent"
+        ],
+        "assignees": [],
+        "body_sha256": "826468258ee6db1a1cc8469a2e7cfa2cd36b4945c3b222a9c71eb0aa0128d2eb",
+        "body_excerpt": "**Blocked by:** #36\n\n## Parent\n\n#34\n\n## What to build\n\nMake the reward outcome-driven with potential-based shaping (ADR-0002), per decision step:\n\u03bb_win \u00b7 outcome (last step only: win +1, loss \u22121, draw 0) + \u03bb_crown \u00b7 (\u03b3\u00b7\u03a6_crown(s\u2032) \u2212 \u03a6_crown(s)) + \u03bb_hp \u00b7 (\u03b3\u00b7\u03a6_hp(s\u2032) \u2212 \u03a6_hp(s)), where \u03a6_crown = own Crowns \u2212 enemy Crowns, \u03a6_hp = (own tower HP \u2212 enemy tower HP) / max tower HP per player, \u03b3 is PPO's \u03b3 applied per decision step, and \u03a6(terminal) = 0. Defaults \u03bb_win = 1.0, \u03bb_crown = 0.2, \u03bb_hp = 0.5, all configurable. The outcome follows the match rules (Regulation Crowns, first Crown in Overtime, Tiebreak). Troop trade value, kill/loss delta and the elixir-leak penalty are removed.\n\n## Acceptance criteria\n\n- [ ] The last step carries \u00b1\u03bb_win for a win/loss and 0 for a draw, decided by the match rules including Overtime and the Tiebreak\n- [ ] With \u03b3 = 1 the shaping terms sum to zero over any full match (\u03a6(terminal) = 0)\n- [ ] Setting \u03bb_crown = \u03bb_hp = 0 yields the outcome-only reward (the no-shaping ablation) without code changes\n- [ ] The reward is symmetric: player 0 and player 1 get negated rewards for the same transition\n- [ ] No auxiliary reward terms remain\n- [ ] `docs/rl-agent.md` reward section updated\n- [ ] `python -m pytest` green",
+        "body_excerpt_truncated": false,
+        "qualification_excerpt": "Make the reward outcome-driven with potential-based shaping (ADR-0002), per decision step:\n- [ ] Setting \u03bb_crown = \u03bb_hp = 0 yields the outcome-only reward (the no-shaping ablation) without code changes\n- [ ] The reward is symmetric: player 0 and player 1 get negated rewards for the same transition\n- [ ] No auxiliary reward terms remain\n- [ ] `docs/rl-agent.md` reward section updated\n- [ ] `python -m pytest` green"
+      }
+    },
+    {
+      "url": "https://github.com/auscaster/frantic-board/issues/541",
+      "issue": {
+        "url": "https://github.com/auscaster/frantic-board/issues/541",
+        "title": "Frantic bounty #143: Write and validate your own MAP description with the mailschema package",
+        "issue_number": 541,
+        "state": "open",
+        "state_reason": null,
+        "comments": 183,
+        "created_at": "2026-10-20T04:15:53Z",
+        "updated_at": "2026-10-21T12:13:10Z",
+        "closed_at": null,
+        "labels": [
+          "bounty",
+          "funded",
+          "delivered",
+          "accepted",
+          "needs-work",
+          "paid"
+        ],
+        "assignees": [],
+        "body_sha256": "afdca930592d191ff9160e3eca79abf1877573b31e1f516d511c62eca07958fb",
+        "body_excerpt": "Frantic bounty #143\n\nWrite and validate your own MAP description with the mailschema package\n\nWorker price: $2\nSlots: 40 (filled)\nStatus: needs work\nClaim: https://gofrantic.com/bounties/143\nFunding receipt: https://gofrantic.com/r/24ba7537\n\nFrantic is the source of truth. This GitHub issue is a mirrored board thread.",
+        "body_excerpt_truncated": false,
+        "qualification_excerpt": "Frantic bounty #143\nFunding receipt: https://gofrantic.com/r/24ba7537"
+      }
+    },
+    {
+      "url": "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133",
+      "issue": {
+        "url": "https://github.com/valerielinc-ops/frontaliere-si-o-no/issues/12133",
+        "title": "rewarded offerwall ad-visibility diagnosis",
+        "issue_number": 12133,
+        "state": "open",
+        "state_reason": null,
+        "comments": 11,
+        "created_at": "2026-10-07T12:38:28Z",
+        "updated_at": "2026-10-21T10:41:22Z",
+        "closed_at": null,
+        "labels": [
+          "agent:triaged",
+          "fu-prio:high",
+          "fu-prio:low",
+          "from-decompose",
+          "automation-deferred"
+        ],
+        "assignees": [],
+        "body_sha256": "5c79b5459afc75e13a35b4b1c81f2d235bc245b889a4ad27cc068a78a0f1538c",
+        "body_excerpt": "## Scheda\n- CAUSA: La telemetria di produzione non distingue ancora un hide site-side dal comportamento dell\u2019Offerwall Google dopo il click \u00abCandidati\u00bb: il sito emette gi\u00e0 `rewarded_offer_ads_open`, `rewarded_offer_ads_offerwall` e `rewarded_offer_ads_return`, ma manca la correlazione GA4 richiesta per attribuire il delta `ads_total - ads_visible`.\n- FIX: Correlare per browser e finestra di almeno un giorno gli eventi `rewarded_offer_ads_open`, `rewarded_offer_ads_offerwall` e `rewarded_offer_ads_return`; solo se la prova attribuisce l\u2019hide al sito, correggere il percorso in `components/community/RewardedApplicationOffer.tsx` e aggiornare `tests/services/adVisibilitySnapshot.test.ts`, mantenendo Auto Ads attivi.\n- METRICA: prima=1 atteso=0 | COMANDO: `npx vitest run tests/services/adVisibilitySnapshot.test.ts` (guardia locale dell\u2019instrumentation; il delta GA4 non ha un comando repository perch\u00e9 \u00e8 un dato di produzione).\n- OSSERVATORE: `tests/services/adVisibilitySnapshot.test.ts` deve restare verde e il percorso non deve introdurre gating o opt-out di AdSense/Auto Ads; la diagnosi deve riportare la correlazione degli eventi prima di qualunque fix site-side.\n\n## Origine\nParent: #10831 \u2014 FU-2026-10-02-012, diagnosi della scomparsa degli annunci dopo \u00abCandidati\u00bb.",
+        "body_excerpt_truncated": false,
+        "qualification_excerpt": "- CAUSA: La telemetria di produzione non distingue ancora un hide site-side dal comportamento dell\u2019Offerwall Google dopo il click \u00abCandidati\u00bb: il sito emette gi\u00e0 `rewarded_offer_ads_open`, `rewarded_offer_ads_offerwall` e `rewarded_offer_ads_return`, ma manca la correlazione GA4 richiesta per attribuire il delta `ads_total - ads_visible`.\n- FIX: Correlare per browser e finestra di almeno un giorno gli eventi `rewarded_offer_ads_open`, `rewarded_offer_ads_offerwall` e `rewarded_offer_ads_return`; solo se la prova attribuisce l\u2019hide al sito, correggere il percorso in `components/community/RewardedApplicationOffer.tsx` e aggiornare `tests/services/adVisibilitySnapshot.test.ts`, mantenendo Auto Ads attivi.\n- METRICA: prima=1 atteso=0 | COMANDO: `npx vitest run tests/services/adVisibilitySnapshot.test.ts` (guardia locale dell\u2019instrumentation; il delta GA4 non ha un comando repository perch\u00e9 \u00e8 un dato di produzione).\n- OSSERVATORE: `tests/services/adVisibilitySnapshot.test.ts` deve restare verde e il percorso non deve introdurre gating o opt-out di AdSense/Auto Ads; la diagnosi deve riportare la correlazione degli eventi prima di qualunque fix site-side."
+      }
+    },
+    {
+      "url": "https://github.com/bodanator/Lockdown-Browser-Reversal/issues/1",
+      "issue": {
+        "url": "https://github.com/bodanator/Lockdown-Browser-Reversal/issues/1",
+        "title": "Can you help me abbput this my email:[public email redacted] (paid ,no free)",
+        "issue_number": 1,
+        "state": "open",
+        "state_reason": null,
+        "comments": 0,
+        "created_at": "2026-10-21T11:23:56Z",
+        "updated_at": "2026-10-21T11:23:56Z",
+        "closed_at": null,
+        "labels": [],
+        "assignees": [],
+        "body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "body_excerpt": "",
+        "body_excerpt_truncated": false,
+        "qualification_excerpt": ""
+      }
+    },
+    {
+      "url": "https://github.com/RinoPaw/Genshin-Reverse/issues/31",
+      "issue": {
+        "url": "https://github.com/RinoPaw/Genshin-Reverse/issues/31",
+        "title": "[RE] Authenticate original 7.1 chest identity and reward source chain",
+        "issue_number": 31,
+        "state": "open",
+        "state_reason": null,
+        "comments": 16,
+        "created_at": "2026-10-20T17:25:22Z",
+        "updated_at": "2026-10-21T10:53:18Z",
+        "closed_at": null,
+        "labels": [],
+        "assignees": [],
+        "body_sha256": "761b3a1d81c4f0699a6e1246bf9318e3f9d19f8cce57462c3b5681e205ba9e66",
+        "body_excerpt": "## 7.1 scene class registration negatives and reader candidate crosscheck (2026-10-21)\n\nThe two original-client Scene loader row class pointer static slots were confirmed at `0x57EA618` (SceneTag) and `0x58113D0` (SceneExcel). The exact-EXE [native registration scan](https://github.com/RinoPaw/Genshin-Reverse/actions/runs/39548584709) found **zero directly file-backed** complete VA pointers, candidate RVA dwords or neighbor VA pointers to either location. [Pinned negative-scope report](https://github.com/RinoPaw/Genshin-Reverse/blob/main/versions/7.1.0-global/analyses/progression/economy/7.1-chest-scene-row-class-pointer-registration.json) \u00b7 [strict source-gated scanner](https://github.com/RinoPaw/Genshin-Reverse/blob/main/scripts/probe-7.1-scene-class-pointer-registration.py). The one-off workflow has been retired, with permanent evidence retained. Runtime class initialization and alternate registration encodings remain entirely possible.\n\nA new exact source-artifact [intersection report](https://github.com/RinoPaw/Genshin-Reverse/blob/main/versions/7.1.0-global/analyses/progression/economy/7.1-chest-scene-native-row-reader-candidate-intersection.json), reproduced by [SHA-256-guarded tool](https://github.com/RinoPaw/Genshin-Reverse/blob/main/scripts/audit-7.1-scene-reader-candidate-intersection.py), combines the existing 485/168 native keywriter method populations with metadata-neighbor candidates:\n\n- **SceneTag:** two intersect: `BHENIHLFFDD.GMENPOPMKAA` (method 696555, native first-row reader already falsified on source bytes) and `IKEJJGKKAOO.GMENPOPMKAA` (method 696558, still unverified). Exactly **69** native method candidates have a single wrapper call followed only by a matching `0x28` key store.\n- **SceneExcel:** **zero** intersect metadata-neighbor methods; 13 native methods have a single wrapper call and only matching `0x50` key store. Previously rejected nearby method 279984 is outside the matching keywriter population.\n\n**No vtable+0xF0 target proven.** Nearby metadata is a heuristic, not a parent-type registration proof. Single key stores cannot identify the row reader either. The original 1,147 SceneTag and 2,377 SceneExcel table count/loop proofs remain valid; no current evidence authorizes `scene/group/config` joins or server `drop_tag`, root and reward rates in AstaPS.\n\n## Native 7.1 scene row class pointers and wrapped-key reader candidate",
+        "body_excerpt_truncated": true,
+        "qualification_excerpt": "in of authoritative Global 7.1 payout/weights and authentic client scene ownership.\n- Literal changes include root `51010000`: child quantity strings `1.2 \u2192 1` and `1.8 \u2192 1`, and root `51010500`: item `102` quantity `30 \u2192 20`. The decimal notation and server runtime semantics are not authenticated; do not convert these to verified payout amounts.\n- Reproducible opt-in `--selected-roots` comparison, input SHA-256, and synthetic regression cases are in [Genshin-Reverse `1c68456`](https://github.com/RinoPaw/Genshin-Reverse/commit/1c68456d41677a5d1a32dcfd79fb1ccf3377fb10). Read-only historical research only; no AstaPS Loot changes. Global 7.1 client/server reward authority remains **UNRESOLVED**.\n**Evidence class:** exact 7.1 client asset *location and raw bytes* confirmed; native Gadget grade, scene placement, `drop_tag`, reward selection and original probability remain **UNRESOLVED**. The **11** missing guessed names do not prove server drop tables absent.\nTemporary hosted-workflow owner: this #31 investigation; hosted need: pinned Sophon chunks and AnimeStudio exporter unavailable in chat runtime. Named output: path-hash result and fingerprint-only metadata (no proprietary bundle committed). Exit condition: evidence on `main` and a reusable probe, now met. Temporary branch/workflow `research/chest-native-index-71` should be retired. Do not change AstaPS Loot payout values.\n- The exact official Global 7.1 Sophon Gadget binary identities and three source payload hashes are preserved in [`7.1-chest-native-gadget-asset-evidence.json`](https://github.com/RinoPaw/Genshin-Reverse/blob/main/versions/7.1.0-global/analyses/progression/economy/7.1-chest-native-gadget-asset-evidence.json). The bounded 14-path index probe found 3 Gadget hits and 11 misses; no native drop table was recovered.\n- Next: validate actual native field layout and full binary row decoder, bind native Gadget row IDs against pinned original bytes, then independently establish server-owned chest grade/selection/payout provenance. 7.1 drop weights remain **UNRESOLVED**; AstaPS CSS rewards were not changed. The one-off probe workflow was retired, and main CI passed after restoring the generic RVA workflow."
+      }
+    },
+    {
+      "url": "https://github.com/globe-and-citizen/cnc-portal/issues/2952",
+      "issue": {
+        "url": "https://github.com/globe-and-citizen/cnc-portal/issues/2952",
+        "title": "feat: \u2728 value Safe swaps at what was actually paid",
+        "issue_number": 2952,
+        "state": "open",
+        "state_reason": null,
+        "comments": 0,
+        "created_at": "2026-10-21T11:02:03Z",
+        "updated_at": "2026-10-21T11:02:04Z",
+        "closed_at": null,
+        "labels": [],
+        "assignees": [
+          "Georginio-prod"
+        ],
+        "body_sha256": "8630585708917a1d72cdabf35fa16c4ced79fecb13ed17e658861a05eb432df1",
+        "body_excerpt": "## Description\n\n**Is your feature request related to a problem? Please describe.** When the Safe swaps one token for another, Accounting values the\ntoken it receives at that token's own market price. The books then show an \"exchange loss\" that is only a price difference, not money\nlost, and the cost of the token keeps the market noise of the day. Two Safe movements mined in the same block can also be replayed in the\nwrong order, which breaks the average cost of the tokens.\n\n**Describe the solution you'd like** Book the token received at what the swap actually paid for it:\n\n- When a stablecoin is spent or received, its amount sets the cost or the proceeds directly. No market price is needed.\n- Between two non-stable tokens, the token given up is valued at the same daily rate the books already use everywhere else.\n- A token sold later leaves the books at its weighted-average cost; the difference with the proceeds is an exchange gain or loss.\n- Movements mined in the same block are replayed in their on-chain order.\n- The General Ledger explains each swap: the executed ratio, the quantities, and what the received token cost.\n\nNothing is stored in the database for this; the books are rebuilt from the chain as today.\n\n**Describe alternatives you've considered** Storing an hourly price for every swap in the database. It only helps swaps between two\nnon-stable tokens and adds a second price rule to the books, so it was dropped.\n\n**Additional context** First of three parts of the Safe P&L work (with the verified swap fees and the Safe P&L issues).\n\n## Acceptance Criteria\n\n- `AC-US-ACCT-002-13` and `AC-US-ACCT-002-14` in the\n  [Accounting feature](https://github.com/globe-and-citizen/cnc-portal/blob/develop/docs/features/accounting/README.md#external-safe-asset-exchanges).\n\n## Relationship validation plan\n\nFollow\n[Development Relationship Validation](https://github.com/globe-and-citizen/cnc-portal/blob/develop/docs/development-guide/relationship-validation.md)\nbefore implementation. Assess all checklist types and expand applicable relationships; justify grouped non-applicable types. Link canonical\nexpectations instead of copying their criteria.\n\n**Scope / canonical expectations:** Safe swap valuation and replay order in the Accounting read model; `AC-US-ACCT-002-13`,\n`AC-US-ACCT-002-14`.\n\n**Affected consumers:** Accounting (General Ledger, Trial Balance, Balance Sheet",
+        "body_excerpt_truncated": true,
+        "qualification_excerpt": "**Describe the solution you'd like** Book the token received at what the swap actually paid for it:"
+      }
+    },
+    {
+      "url": "https://github.com/ahaqqu/KajianQ/issues/167",
+      "issue": {
+        "url": "https://github.com/ahaqqu/KajianQ/issues/167",
+        "title": "P2: Reviewer pre-gate \u2014 decision-model citation screen before the paid LLM reviewer (ADR-0042 adoption)",
+        "issue_number": 167,
+        "state": "open",
+        "state_reason": null,
+        "comments": 2,
+        "created_at": "2026-09-18T23:29:09Z",
+        "updated_at": "2026-10-21T11:06:20Z",
+        "closed_at": null,
+        "labels": [
+          "ready-for-agent",
+          "feature"
+        ],
+        "assignees": [],
+        "body_sha256": "309f25ed4cb9cb3a08e43706d9d0651d9866cf176d9425da75059fdd092ccaf8",
+        "body_excerpt": "## Problem Statement\n\nEvery answer pays for the cross-vendor LLM reviewer (the most expensive per-query LLM line in the cost model after the generator), even when the answer is clean \u2014 all citations exactly grounded, nothing to challenge. The owner pays for reviewer scrutiny that a much cheaper judgment would have cleared. Meanwhile the ADR-0042 multilingual decision-model gate has now passed: Jev (the pinned decision model on the TypeSafe AI vendor) scored 21/21 on relevance/rerank/citation judgment in Arabic, Indonesian, and English over verbatim product passages (bench report committed alongside ADR-0042). The pipeline has no mechanism to use that cheap, measured judgment to decide when full reviewer scrutiny is actually needed.\n\n## Solution\n\nWire the decision model into the existing Reviewer stage as a **pre-gate**: before the paid cross-vendor reviewer call, one batched decision call checks every citation of the draft answer \u2014 \"does the cited passage genuinely support the claim as stated?\" \u2014 using the same Noul judgment shape the gate benchmarked. When every citation clears the support threshold, the answer is considered reviewed-clean and the paid LLM reviewer is **skipped**. When any citation scores below threshold, is ambiguous, or the decision call itself fails, the draft **escalates to the full LLM reviewer exactly as today** \u2014 reviewer safety never depends on the decision model alone.\n\nFrom the user's perspective nothing changes except cost and latency: answers carry the same review guarantee (every answer is reviewed \u2014 by the deterministic validator, the decision pre-gate, and the LLM reviewer on escalation), the trace still shows exactly what checked the answer and what it cost, and the skipped-reviewer case is visible in the trace rather than silent.\n\n## User Stories\n\n1. As the product owner, I want clean answers to skip the paid LLM reviewer when a measured cheap judge clears them, so that my per-answer review cost drops by an order of magnitude on the common path.\n2. As the product owner, I want any citation the pre-gate doubts to escalate to the full LLM reviewer, so that reviewer quality on contested answers is unchanged from today.\n3. As the product owner, I want the decision vendor's failures (timeout, rate limit, outage) to fall open to the LLM reviewer, so that an early-access vendor outage can never weaken the review guarantee.\n4. As t",
+        "body_excerpt_truncated": true,
+        "qualification_excerpt": "an \u2014 all citations exactly grounded, nothing to challenge. The owner pays for reviewer scrutiny that a much cheaper judgment would have cleared. Meanwhile the ADR-0042 multilingual decision-model gate has now passed: Jev (the pinned decision model on the TypeSafe AI vendor) scored 21/21 on relevance/rerank/citation judgment in Arabic, Indonesian, and English over verbatim product passages (bench report committed alongside ADR-0042). The pipeline has no mechanism to use that cheap, measured judgment to decide when full reviewer scrutiny is actually needed.\nWire the decision model into the existing Reviewer stage as a **pre-gate**: before the paid cross-vendor reviewer call, one batched decision call checks every citation of the draft answer \u2014 \"does the cited passage genuinely support the claim as stated?\" \u2014 using the same Noul judgment shape the gate benchmarked. When every citation clears the support threshold, the answer is considered reviewed-clean and the paid LLM reviewer is **skipped**. When any citation scores below threshold, is ambiguous, or the decision call itself fails, the draft **escalates to the full LLM reviewer exactly as today** \u2014 reviewer safety never depends on the decision model alone.\n1. As the product owner, I want clean answers to skip the paid LLM reviewer when a measured cheap judge clears them, so that my per-answer review cost drops by an order of magnitude on the common path.\n8. As an admin debugging a flagged answer, I want the pre-gate's model identity, tokens, latency, and cost on the trace, so that I can reconstruct exactly why the answer passed review without re-running anything.\n- **Order preserved: deterministic validator first** (free, exact-match), pre-gate second, paid LLM reviewer last. A draft that fails the deterministic validator never spends on either.\n- **Traceability (non-negotiable):** every pre-gate call lands on the answer trace with model identity, tokens in/out, latency, and computed cost as a recorded trace event; the skip verdict and the escalation reason (low score / ambiguity / vendor failure) are first-class trace content, rendered from the persisted trace like every other review outcome \u2014 never server logs."
+      }
+    },
+    {
+      "url": "https://github.com/SoroWill/sorowill-contracts/issues/662",
+      "issue": {
+        "url": "https://github.com/SoroWill/sorowill-contracts/issues/662",
+        "title": "Keeper bounty calculation doesn't validate bounty recipient address is still valid at distribution time",
+        "issue_number": 662,
+        "state": "open",
+        "state_reason": null,
+        "comments": 2,
+        "created_at": "2026-10-19T15:09:00Z",
+        "updated_at": "2026-10-21T11:35:22Z",
+        "closed_at": null,
+        "labels": [
+          "High",
+          "Stellar Wave",
+          "security"
+        ],
+        "assignees": [],
+        "body_sha256": "9d293294ec5655b3024a5e7df40082a11aab251674998d7066ff6abcb4bd2969",
+        "body_excerpt": "## Description\n\nIf keeper address becomes invalid between creation and release, bounty transfer fails, locking funds.\n\n## Technical Context\n\nsrc/lib.rs: distribute function, bounty recipient handling\n\n## Acceptance Criteria\n\n- [ ] Validate keeper address before transfer\n- [ ] Test with invalid keeper\n- [ ] Document keeper address validation",
+        "body_excerpt_truncated": false,
+        "qualification_excerpt": "If keeper address becomes invalid between creation and release, bounty transfer fails, locking funds.\nsrc/lib.rs: distribute function, bounty recipient handling"
+      }
+    },
+    {
+      "url": "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915",
+      "issue": {
+        "url": "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/1915",
+        "title": "[Bounty] [Bounty: $105] Preserve burnTxHash when Stellar confirmation polling hits transi",
+        "issue_number": 1915,
+        "state": "open",
+        "state_reason": null,
+        "comments": 11,
+        "created_at": "2026-10-15T21:54:24Z",
+        "updated_at": "2026-10-21T11:24:18Z",
+        "closed_at": null,
+        "labels": [
+          "bounty",
+          "real"
+        ],
+        "assignees": [],
+        "body_sha256": "06e4066471b0b9c76555e26201af7c30e5e26183eca1df1145070bf3be33d9aa",
+        "body_excerpt": "### \u8d4f\u91d1\u5e73\u53f0 / Platform\nGitHub\n\n### \u539f\u59cb\u94fe\u63a5 / Source URL\nhttps://github.com/Parabola-org/parabola/issues/1\n\n### \u6f0f\u6d1e\u63cf\u8ff0 / Description\n[Bounty: $105] Preserve burnTxHash when Stellar confirmation polling hits transient RPC errors\n\n**Context**\n`pollTransactionStatus` in `src/chains/stellar.ts:71-86` calls `server.getTransaction(hash)` inside a bare `while` loop with no error handling. A single transient RPC failure (connection reset, 5xx from the Soroban RPC) rejects the whole loop with whatever error the Stellar SDK threw \u2014 a bare error with no hash attached. This contradicts the module's own contract: the comment directly below (lines 81-85) says the hash must be surfaced via `SubmissionTimeoutError` because the transaction was already broadcast. Today that guarantee only holds for the timeout path, not the more common blip path. A caller that gets the bare error loses the only handle for recovering a possibly-landed transaction.\n\n**Proposed Change**\nWrap `getTransaction` so transient failures increment a consecutive-failure counter and retry with a short backoff, mirroring the tolerance policy already used for Iris in `src/iris/poll.ts` (`IRIS_MAX_CONSECUTIVE_FAILURES`). When the overall deadline passes \u2014 whether from repeated transient failures or simply never confirming \u2014 throw `SubmissionTimeoutError` carrying the hash. Genuinely terminal statuses (`FAILED`) keep throwing immediately.\n\n**Acceptance Criteria**\n\n- A mocked `getTransaction` that throws N-1 times transiently then returns `SUCCESS` resolves with the hash.\n- A mocked `getTransaction` that always throws rejects with `SubmissionTimeoutError` whose `.hash` equals the submitted hash.\n- `FAILED` status still rejects immediately without exhausting retries.\n- Retry count and backoff are constants with a short comment explaining the tolerance, consistent with `src/iris/poll.ts`.\n- Verified by the `typecheck-test-build` job in `.github/workflows/ci.yml`.\n\n**Suggested Label**: bug\n**Bounty:** $105\n**ETA:** 48 hours\n\n### \u79ef\u5206\u5e01\u5956\u52b1 / Coin Reward\n131 coins\n\n### \u771f\u5b9e\u8d4f\u91d1\uff08USD\uff09/ Real Reward\n$105\n\n### \u96be\u5ea6 / Difficulty\nMedium\n\n### \u8ba4\u9886\u65b9\u5f0f\n\u8bc4\u8bba `/claim` \u9501\u5b9a\u4efb\u52a1 24h\n\n### \u5151\u6362\u8bf4\u660e\n> \u67e5\u770b [REWARD_POLICY.md](REWARD_POLICY.md) \u4e86\u89e3\u5151\u6362\u89c4\u5219",
+        "body_excerpt_truncated": false,
+        "qualification_excerpt": "[Bounty: $105] Preserve burnTxHash when Stellar confirmation polling hits transient RPC errors\n`pollTransactionStatus` in `src/chains/stellar.ts:71-86` calls `server.getTransaction(hash)` inside a bare `while` loop with no error handling. A single transient RPC failure (connection reset, 5xx from the Soroban RPC) rejects the whole loop with whatever error the Stellar SDK threw \u2014 a bare error with no hash attached. This contradicts the module's own contract: the comment directly below (lines 81-85) says the hash must be surfaced via `SubmissionTimeoutError` because the transaction was already broadcast. Today that guarantee only holds for the timeout path, not the more common blip path. A caller that gets the bare error loses the only handle for recovering a possibly-landed transaction.\nWrap `getTransaction` so transient failures increment a consecutive-failure counter and retry with a short backoff, mirroring the tolerance policy already used for Iris in `src/iris/poll.ts` (`IRIS_MAX_CONSECUTIVE_FAILURES`). When the overall deadline passes \u2014 whether from repeated transient failures or simply never confirming \u2014 throw `SubmissionTimeoutError` carrying the hash. Genuinely terminal statuses (`FAILED`) keep throwing immediately.\n- Retry count and backoff are constants with a short comment explaining the tolerance, consistent with `src/iris/poll.ts`.\n**Bounty:** $105\n### \u79ef\u5206\u5e01\u5956\u52b1 / Coin Reward\n### \u771f\u5b9e\u8d4f\u91d1\uff08USD\uff09/ Real Reward\n> \u67e5\u770b [REWARD_POLICY.md](REWARD_POLICY.md) \u4e86\u89e3\u5151\u6362\u89c4\u5219"
+      }
+    },
+    {
+      "url": "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323",
+      "issue": {
+        "url": "https://github.com/AgesEmpire/StellarSwipe-Contract/issues/1323",
+        "title": "Require reward campaign funds before campaign activation",
+        "issue_number": 1323,
+        "state": "closed",
+        "state_reason": "completed",
+        "comments": 4,
+        "created_at": "2026-10-17T15:27:06Z",
+        "updated_at": "2026-10-21T12:11:28Z",
+        "closed_at": "2026-10-21T12:11:16Z",
+        "labels": [
+          "Stellar Wave",
+          "rust",
+          "Contract"
+        ],
+        "assignees": [
+          "lawrencesunday311-sketch"
+        ],
+        "body_sha256": "b4d1c04705c8f8c536434e72f611ab59b60523a94283417bde07e851472a2a19",
+        "body_excerpt": "## Description\nA campaign should not become claimable until its promised reward budget is actually available to the contract. Define a funding handshake that prevents underfunded campaigns from opening.\n\n## What done looks like\n- Activation verifies the funded balance covers the campaign budget and asset.\n- Underfunded activation leaves campaign state unchanged.\n- Tests cover exact funding, short funding, and funding in the wrong asset.",
+        "body_excerpt_truncated": false,
+        "qualification_excerpt": "A campaign should not become claimable until its promised reward budget is actually available to the contract. Define a funding handshake that prevents underfunded campaigns from opening.\n- Activation verifies the funded balance covers the campaign budget and asset.\n- Underfunded activation leaves campaign state unchanged.\n- Tests cover exact funding, short funding, and funding in the wrong asset."
+      }
+    },
+    {
+      "url": "https://github.com/Refract-Protocol/refract-contracts/issues/313",
+      "issue": {
+        "url": "https://github.com/Refract-Protocol/refract-contracts/issues/313",
+        "title": "Implement Sponsor Escrow Top-Up and Low-Balance Auto-Refill for Bounty Programs",
+        "issue_number": 313,
+        "state": "open",
+        "state_reason": null,
+        "comments": 4,
+        "created_at": "2026-10-17T08:00:29Z",
+        "updated_at": "2026-10-21T11:51:06Z",
+        "closed_at": null,
+        "labels": [
+          "Stellar Wave"
+        ],
+        "assignees": [
+          "sylvanus-max"
+        ],
+        "body_sha256": "cda903d3d8be3ce39779e3f097d4818e586f22a0f12c46bcd690817dc57384ba",
+        "body_excerpt": "**Description:**\nAdd funding-lifecycle controls to `RefractBounty`: sponsors can top up a program's escrow at any time, per-program refill rules define a minimum balance threshold and refill amount, and a keeper-executable auto-refill draws from a timelock-approved treasury allowance. Programs below their threshold emit a low-balance event and stop accepting new submissions.\n\n**Problem Statement & Context:**\nBounty escrows are funded once and then silently run dry; a researcher can submit a valid disclosure against a program that cannot pay, which is a reputation and trust failure. Sponsors also have no supported way to add funds after launch. Without a refill mechanism the bounty program's escrow guarantees in `SECURITY.md` hold only until the first payout.\n\n**Scope & Acceptance Criteria:**\n- Permissionless `top_up` entrypoint that credits a program's escrow and emits a funding event with source tagging.\n- Per-program refill policy (threshold, refill amount, enabled flag) settable by program sponsor or governance, subject to the timelock-gated parameter rules.\n- Keeper-executable auto-refill that respects the policy, is rate-limited, and is a no-op (not an error) when the balance is already above threshold.\n- Programs below threshold reject new submissions with a distinct error code and emit low-balance/recovered events.\n- Out of scope: the program registry itself, treasury budget appropriation, and fiat funding rails.\n\n**Implementation Guidelines:**\n1. Key Files/Modules: `bounty/src/lib.rs` (escrow accounting, submission gate), `treasury/src/lib.rs` (allowance draw), `timelock/` (policy approval), `tests/` (integration).\n2. Design/Architecture: keep escrow balances in a per-program record with source-tagged contributions; auto-refill performs a treasury \u2192 bounty transfer only when the policy is armed and the treasury allowance is sufficient, and must be idempotent per ledger window.\n3. Edge Cases/Constraints: concurrent auto-refill calls must not double-draw; a failed treasury draw must leave the program state unchanged; refill must not bypass the program's own budget ceiling; emit events even on skipped refills for operator visibility.\n4. Testing: unit tests for threshold behaviour, disabled policy, insufficient allowance, and idempotency; integration test of treasury allowance \u2192 keeper refill \u2192 submission re-enabled; a test that a below-threshold program",
+        "body_excerpt_truncated": true,
+        "qualification_excerpt": "Add funding-lifecycle controls to `RefractBounty`: sponsors can top up a program's escrow at any time, per-program refill rules define a minimum balance threshold and refill amount, and a keeper-executable auto-refill draws from a timelock-approved treasury allowance. Programs below their threshold emit a low-balance event and stop accepting new submissions.\nBounty escrows are funded once and then silently run dry; a researcher can submit a valid disclosure against a program that cannot pay, which is a reputation and trust failure. Sponsors also have no supported way to add funds after launch. Without a refill mechanism the bounty program's escrow guarantees in `SECURITY.md` hold only until the first payout.\n- Permissionless `top_up` entrypoint that credits a program's escrow and emits a funding event with source tagging.\n- Out of scope: the program registry itself, treasury budget appropriation, and fiat funding rails.\n1. Key Files/Modules: `bounty/src/lib.rs` (escrow accounting, submission gate), `treasury/src/lib.rs` (allowance draw), `timelock/` (policy approval), `tests/` (integration).\n2. Design/Architecture: keep escrow balances in a per-program record with source-tagged contributions; auto-refill performs a treasury \u2192 bounty transfer only when the policy is armed and the treasury allowance is sufficient, and must be idempotent per ledger window.\n- All acceptance criteria met; coverage floors for `bounty` and `treasury` upheld.\nRepo files: `bounty/src/lib.rs`, `treasury/src/lib.rs`, `SECURITY.md`, `timelock/`."
+      }
+    },
+    {
+      "url": "https://github.com/CypherNaught-0x/nodecraft/issues/631",
+      "issue": {
+        "url": "https://github.com/CypherNaught-0x/nodecraft/issues/631",
+        "title": "Providers: a definitive refusal of a paid submit shouldn't count as possibly billed",
+        "issue_number": 631,
+        "state": "open",
+        "state_reason": null,
+        "comments": 0,
+        "created_at": "2026-10-21T11:26:13Z",
+        "updated_at": "2026-10-21T11:26:13Z",
+        "closed_at": null,
+        "labels": [
+          "area:providers",
+          "difficulty:medium"
+        ],
+        "assignees": [],
+        "body_sha256": "2109eecae43e30d91c1460764d214b42cdea812f3b9d6981b316b1fb6fd68b0c",
+        "body_excerpt": "## Problem\n\nAn adapter calls `SubmitContext::unknown()` before it sends a paid request. After that, any failure of the request counts as **possibly billed**, including a definitive 4xx refusal whose body proves the provider created no job.\n\nFor Comfy Cloud (#626, and tripo has the same pattern), these replies mean the provider made no job and released the idempotency key:\n\n- `429 queue_full`\n- `429 rate_limited`\n- `402 insufficient_credits`\n- `422 invalid_workflow`\n\n(See `POST /api/v2/jobs` in Comfy's v2 spec.) Even so, the run:\n\n- keeps its budget reservation as maybe-billed;\n- tells the person the job may exist;\n- is never retried, because `retry_ambiguous_submit` is false. So a briefly busy cloud fails the run instead of backing off.\n\n## Proposal\n\nAdd audited evidence to the delivery contract in `crates/providers/src/delivery.rs`. A request that comes back with a parsed, provider-documented \"not accepted\" refusal would then count as not sent.\n\nOne option is a crate-private `SubmitContext::refused()`, used only after an adapter has matched a code from a documented allowlist. Then:\n\n- the run releases its reservation;\n- `queue_full` and `rate_limited` go through the normal transient retry and back-off.\n\n## Acceptance\n\n- [ ] A crate-private, audited way to mark an \"unknown\" paid request as refused by the provider. Transport errors, 5xx and unparsed bodies stay unknown.\n- [ ] Comfy Cloud and tripo use it for their documented refusal codes.\n- [ ] Tests:\n  - [ ] a `queue_full` create is retried with back-off and charged once;\n  - [ ] a 5xx and a lost reply stay possibly billed.\n\nFound in the review of #626.\n\n\ud83e\udd16 Generated with [Claude Code](https://claude.com/claude-code)",
+        "body_excerpt_truncated": false,
+        "qualification_excerpt": "An adapter calls `SubmitContext::unknown()` before it sends a paid request. After that, any failure of the request counts as **possibly billed**, including a definitive 4xx refusal whose body proves the provider created no job.\nAdd audited evidence to the delivery contract in `crates/providers/src/delivery.rs`. A request that comes back with a parsed, provider-documented \"not accepted\" refusal would then count as not sent.\n- [ ] A crate-private, audited way to mark an \"unknown\" paid request as refused by the provider. Transport errors, 5xx and unparsed bodies stay unknown."
+      }
+    },
+    {
+      "url": "https://github.com/paraspell/xcm-tools/issues/2153",
+      "issue": {
+        "url": "https://github.com/paraspell/xcm-tools/issues/2153",
+        "title": "[Bug bounty] Acala exchange: destination fee buffer applied to the whole output instead of only the fee (amountOut inflated ~10%)",
+        "issue_number": 2153,
+        "state": "open",
+        "state_reason": null,
+        "comments": 3,
+        "created_at": "2026-10-15T14:32:45Z",
+        "updated_at": "2026-10-21T11:28:08Z",
+        "closed_at": null,
+        "labels": [
+          "Confirmed bug \ud83e\udeb2",
+          "Bug bounty \ud83d\udcb0"
+        ],
+        "assignees": [],
+        "body_sha256": "7bc67d247c73fee0744713bc83d96be269ce0b9313742684147309c3135def7d",
+        "body_excerpt": "# \ud83d\udc1e Bug Report\n\n## \ud83d\udd0d Describe the Bug\n\nIn the **Acala exchange** SWAP path (`packages/swap`), when the destination token is the Acala native asset (`ACA`), the destination fee buffer is applied to the **whole remaining output** instead of only to the fee.\n\n**File:** `packages/swap/src/exchanges/Acala/AcalaExchange.ts:114`\n\n[code omitted; not executed]\n\n`padValueBy(x, 10)` = `x \u00d7 11000 / 10000` = **1.1\u00d7**, so the expression computes:\n\n[code omitted; not executed]\n\ni.e. it **inflates the swap output by ~10%**, instead of buffering the fee. The intended behaviour (used by every other exchange) is:\n\n[code omitted; not executed]\n\n**Every other exchange buffers the fee only:**\n\n| Exchange | File:Line | Code |\n|----------|-----------|------|\n| AssetHub | `AssetHubExchange.ts:100` | `amountOut - padValueBy(toDestFeeCurrencyTo, FEE_BUFFER_PCT)` \u2705 |\n| Bifrost | `BifrostExchange.ts:94` | `amountOut - padValueBy(toDestTxFee, FEE_BUFFER_PCT)` \u2705 |\n| **Acala** | `AcalaExchange.ts:114` | `padValueBy(amountOut - toDestTransactionFee, FEE_BUFFER_PCT)` \u274c |\n\nThis is a **long-standing** issue: the pre-bigint code did exactly the same thing with the old `FEE_BUFFER = 1.1` constant:\n\n[code omitted; not executed]\n\nso the refactor in `e0d227e3a` faithfully preserved the incorrect formula.\n\n> Note: previous fee analysis (issue #2049) marked Acala as \u2705 only because it *calls* `padValueBy`; it did not check that the buffer is applied to the wrong operand.\n\n---\n\n## \ud83e\uddea To Reproduce\n\nThe existing unit test **encodes the buggy value**.\n\n**File:** `packages/swap/src/exchanges/Acala/AcalaExchange.test.ts:180-188`\n\n[code omitted; not executed]\n\nWith the mocks in the same file (`output.amount = '42'`, ACA decimals = 12, `toDestTransactionFee = 1n`):\n\n[code omitted; not executed]\n\nDifference: `4_199_999_999_999` \u2248 **+10.0%** overstated output.\n\nRun:\n[code omitted; not executed]\n\n---\n\n## \ud83d\udda5\ufe0f Environment\n\n- XCM Tool: SWAP extension (`packages/swap`)\n- Component: `AcalaExchange.swapCurrency` (destination = Acala native `ACA`)\n- Version: `main` @ `427057dd` (2026-10-14)\n\n---\n\n## \ud83d\udca1 Expected Behavior\n\nApply the buffer to the **destination fee only**, matching Bifrost and AssetHub, and guard against a negative result:\n\n[code omitted; not executed]\n\nAnd update the test expectation from `46199999999998n` to `41999999999999n`.\n\n---\n\n## \ud83d\udccd Additional Context\n\n**Impact.** The returned `amountOut` is a real in",
+        "body_excerpt_truncated": true,
+        "qualification_excerpt": "ts:94` | `amountOut - padValueBy(toDestTxFee, FEE_BUFFER_PCT)` \u2705 |\n| **Acala** | `AcalaExchange.ts:114` | `padValueBy(amountOut - toDestTransactionFee, FEE_BUFFER_PCT)` \u274c |\nso the refactor in `e0d227e3a` faithfully preserved the incorrect formula.\n**File:** `packages/swap/src/exchanges/Acala/AcalaExchange.test.ts:180-188`\n- `getSwapInfo` uses it to build the destination info reported to the user (`buildExchangeDestInfo`, `getSwapInfo.ts:147`) \u2192 the UI overstates the amount the user will receive by ~10%.\n- `getSwapFee` / `getRouterFees` use it as the amount for the exchange \u2192 destination transfer fee estimation (`getSwapFee.ts:38,76`; `getRouterFees.ts:65-71`) \u2192 fees are estimated for an amount larger than actually received.\n- In the **three-leg route**, `prepareExtrinsics` passes this `amountOut` straight into `buildFromExchangeExtrinsic` as the amount of the actual Acala \u2192 destination transfer (`prepareExtrinsics.ts:44-56`). Because Acala's value is `1.1 \u00d7 (amountOut \u2212 fee)` \u2014 larger than the post-swap balance \u2014 the transfer can exceed the available balance and fail.\n## \u2705 Contributor Eligibility\n- [ ] I have set an on-chain identity on the Polkadot People Chain for my AssetHub address (below) and requested a registrar judgement of at least `Reasonable` (verifiable via [Subscan](https://people-polkadot.subscan.io/)). **(in progress \u2014 will provide the address + Subscan link here as soon as it is set)**\n- [x] I disclose any AI tools used to help write this report (or confirm none were used), and I understand and can explain its contents myself.\n- [x] This report was authored and submitted by a human \u2014 not opened autonomously by an AI agent.\n- [x] If I go on to fix this issue myself, I understand every commit must be signed (`-S`) and include `Signed-off-by` and `AI-Assisted-By` trailers.\n- [x] This is the only bug bounty issue I currently have reserved.\nAI tools used: OpenCode (Big-Pickle) for code analysis and drafting assistance.\n## \ud83d\udcb8 Polkadot Asset Hub Address (Optional \u2013 for reward eligibility)\nPolkadot Asset Hub Address: *(to be provided together with the on-chain identity above)*\n> Rewards sent to CEX addresses **may not arrive** and **cannot be recovered**."
+      }
+    },
+    {
+      "url": "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1",
+      "issue": {
+        "url": "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/1",
+        "title": "[BOUNTY $50] SKILL: Generate a structured CHANGELOG from git history",
+        "issue_number": 1,
+        "state": "open",
+        "state_reason": null,
+        "comments": 2376,
+        "created_at": "2026-03-27T00:55:36Z",
+        "updated_at": "2026-10-21T11:27:08Z",
+        "closed_at": null,
+        "labels": [
+          "bounty",
+          "skill",
+          "good first issue"
+        ],
+        "assignees": [],
+        "body_sha256": "b4cc6f88e6e98b26009dbdf9c7e2a0d98084d9f5d967f35d7f34d7be314bbd0b",
+        "body_excerpt": "## \ud83d\udcb0 Bounty: $50 \u2014 powered by [Opire](https://opire.dev)\n\n## Description\nCreate a Claude Code skill (`SKILL.md`) or a bash script that automatically generates\na structured `CHANGELOG.md` from a project's git history.\n\n## Acceptance Criteria\n- [ ] Works via `/generate-changelog` command or `bash changelog.sh`\n- [ ] Fetches commits since the last git tag\n- [ ] Auto-categorizes into: `Added` / `Fixed` / `Changed` / `Removed`\n- [ ] Outputs a properly formatted `CHANGELOG.md`\n- [ ] Tested on a real GitHub repo (include a sample output in the PR)\n- [ ] README with setup instructions in 3 steps or fewer\n\n## How to Claim\n1. Comment `/opire try` in this issue\n2. Submit a PR with your solution\n3. Payment is released automatically on merge \u2705\n\n## Accepted Stack\nBash, Python, or native Claude Code `SKILL.md`.",
+        "body_excerpt_truncated": false,
+        "qualification_excerpt": "## \ud83d\udcb0 Bounty: $50 \u2014 powered by [Opire](https://opire.dev)\nBash, Python, or native Claude Code `SKILL.md`."
+      }
+    },
+    {
+      "url": "https://github.com/DLC-link/decentralization-manager/issues/563",
+      "issue": {
+        "url": "https://github.com/DLC-link/decentralization-manager/issues/563",
+        "title": "Attach AmuletRules and the open round when executing a paid credential accept",
+        "issue_number": 563,
+        "state": "open",
+        "state_reason": null,
+        "comments": 0,
+        "created_at": "2026-10-21T11:30:47Z",
+        "updated_at": "2026-10-21T11:30:49Z",
+        "closed_at": null,
+        "labels": [
+          "enhancement"
+        ],
+        "assignees": [
+          "schronck"
+        ],
+        "body_sha256": "fbfb608d637f79d678d032abd6f309b7c00c8a8e131ce525af7b8cb989f63137",
+        "body_excerpt": "## Problem\n\n`AcceptPaidCredential` (from #125) executes `UserService_AcceptPaidCredentialOffer`. That choice reads three contracts the DSO signs: `AmuletRules`, an `OpenMiningRound` and, optionally, a `FeaturedAppRight`. The governance party is not a stakeholder of any of them. The execute submission therefore has to attach them as disclosed contracts.\n\nToday the UI's domain execute posts `disclosed_contracts: []`. The backend adds disclosed contracts on its own only for `AcceptTransfer` and `RequestDevNetFeaturedAppRight`. So an accept proposed from the UI reaches its threshold and then fails at execution on a real network.\n\nThe backend also has no source for an open round's disclosure blob. The DSO `/dso` call returns only `latest_mining_round`, and that round has not opened yet.\n\n## Workaround\n\nAn API caller can execute the accept by passing the `AmuletRules` and open-round blobs in `disclosed_contracts`.\n\n## Options\n\n- **A.** Add a scan URL per network to decman's config. Prefill the open round at propose time. Attach it and `AmuletRules` at execute time. The #125 helper recommended this.\n- **B.** Read the contracts through the validator's scan proxy. This needs new config that points at the validator.\n- **C.** Let the executor paste the blobs in the execute dialog.\n\n## Timing\n\nThe open round that the transfer context pins closes about 20 minutes after it opens. The proposal must reach its threshold and execute inside that window. Option A should pick the newest open round at propose time for that reason.\n\n## Context\n\nFound while building #125. That work shipped as `Refs #125`, so #125 stays open until this lands.",
+        "body_excerpt_truncated": false,
+        "qualification_excerpt": "`AcceptPaidCredential` (from #125) executes `UserService_AcceptPaidCredentialOffer`. That choice reads three contracts the DSO signs: `AmuletRules`, an `OpenMiningRound` and, optionally, a `FeaturedAppRight`. The governance party is not a stakeholder of any of them. The execute submission therefore has to attach them as disclosed contracts."
+      }
+    },
+    {
+      "url": "https://github.com/Drago-Labs/golden-raccoon/issues/368",
+      "issue": {
+        "url": "https://github.com/Drago-Labs/golden-raccoon/issues/368",
+        "title": "Security: Summarize published bug bounty and vulnerability disclosure programs",
+        "issue_number": 368,
+        "state": "open",
+        "state_reason": null,
+        "comments": 4,
+        "created_at": "2026-10-17T22:19:12Z",
+        "updated_at": "2026-10-21T11:32:08Z",
+        "closed_at": null,
+        "labels": [
+          "enhancement",
+          "help wanted",
+          "Stellar Wave",
+          "priority: p1",
+          "wave: pending 400",
+          "area: security",
+          "area: data"
+        ],
+        "assignees": [],
+        "body_sha256": "f477f32f235aa7a2f2780ce6ca66ea3e63de94865f36963b1885447c3c749fdc",
+        "body_excerpt": "**Contributor note:** Wait for maintainer assignment before starting. Follow [CONTRIBUTING.md](https://github.com/Drago-Labs/golden-raccoon/blob/main/CONTRIBUTING.md). Include reproducible verification evidence in the pull request.\n\n## Summary\n\nAdd a read-only summary of whether a project publishes a vulnerability disclosure policy or bug bounty, what it covers, and whether the listed scope matches the project's deployed contracts.\n\n## Problem\n\nAudit coverage shows past reviews, but not whether the project has an ongoing channel for researchers. Programs often omit the contracts users actually interact with.\n\n## Scope\n\n- Discover `security.txt` (RFC 9116), project documentation links, and configured bounty-platform listings, recording source and fetch time.\n- Parse contact, policy, expiry, and scope; flag expired `security.txt` files.\n- Compare in-scope contract addresses with the project's known deployments and list uncovered ones.\n- Extract maximum reward and severity tiers when published, without inferring missing values.\n- Provide an accessible page with project input, program summary, scope comparison, source list, and coverage notice through a feature-local service and API route.\n- Document what the summary does and does not establish.\n\n## Implementation layout\n\nKeep each responsibility in its own module so it can be reviewed and tested on its own. Do not merge modules into a single service file or tests into a single suite.\n\n- `frontend/src/server/research/disclosure-programs/`: `schema.ts`, `projectIdentity.ts`, `securityTxt.ts`, `docsDiscovery.ts`, `platformListings.ts`, `scopeParser.ts`, `deploymentComparison.ts`, `rewardTiers.ts`, `coverage.ts`, `errors.ts`, `limits.ts`, `service.ts`, `index.ts`. `errors.ts` holds the typed error and state union; `limits.ts` holds pagination, timeout, and size bounds; `index.ts` is the only public entry point.\n- `frontend/src/components/research/disclosure-programs/`: `DisclosureSummary.tsx`, `ProjectInput.tsx`, `ProgramSummary.tsx`, `ScopeComparison.tsx`, `SourceList.tsx`, `CoverageNotice.tsx`, `useWorkbenchState.ts`.\n- `frontend/src/app/insights/disclosure-programs/page.tsx` and `frontend/src/app/api/insights/disclosure-programs/route.ts`.\n- `frontend/tests/features/disclosure-programs/`: `fixtures.ts`, `securityTxt.test.ts`, `scope.test.ts`, `discovery.test.ts`, `rewards.test.ts`, `service.test.ts`, `route.test",
+        "body_excerpt_truncated": true,
+        "qualification_excerpt": "**Contributor note:** Wait for maintainer assignment before starting. Follow [CONTRIBUTING.md](https://github.com/Drago-Labs/golden-raccoon/blob/main/CONTRIBUTING.md). Include reproducible verification evidence in the pull request.\nAdd a read-only summary of whether a project publishes a vulnerability disclosure policy or bug bounty, what it covers, and whether the listed scope matches the project's deployed contracts.\n- Discover `security.txt` (RFC 9116), project documentation links, and configured bounty-platform listings, recording source and fetch time.\n- Extract maximum reward and severity tiers when published, without inferring missing values.\n- `frontend/src/server/research/disclosure-programs/`: `schema.ts`, `projectIdentity.ts`, `securityTxt.ts`, `docsDiscovery.ts`, `platformListings.ts`, `scopeParser.ts`, `deploymentComparison.ts`, `rewardTiers.ts`, `coverage.ts`, `errors.ts`, `limits.ts`, `service.ts`, `index.ts`. `errors.ts` holds the typed error and state union; `limits.ts` holds pagination, timeout, and size bounds; `index.ts` is the only public entry point.\n- `frontend/src/components/research/disclosure-programs/`: `DisclosureSummary.tsx`, `ProjectInput.tsx`, `ProgramSummary.tsx`, `ScopeComparison.tsx`, `SourceList.tsx`, `CoverageNotice.tsx`, `useWorkbenchState.ts`.\n- `frontend/src/app/insights/disclosure-programs/page.tsx` and `frontend/src/app/api/insights/disclosure-programs/route.ts`.\n- `frontend/tests/features/disclosure-programs/`: `fixtures.ts`, `securityTxt.test.ts`, `scope.test.ts`, `discovery.test.ts`, `rewards.test.ts`, `service.test.ts`, `route.test.ts`, `component.test.tsx`, with recorded responses in `data/` (`full-program.json`, `expired-security-txt.json`, `no-program.json`, `provider-unavailable.json`)."
+      }
+    },
+    {
+      "url": "https://github.com/auscaster/frantic-board/issues/540",
+      "issue": {
+        "url": "https://github.com/auscaster/frantic-board/issues/540",
+        "title": "Frantic bounty #141: Let your agent onboard itself through the Nitrosend MCP server and send one email",
+        "issue_number": 540,
+        "state": "open",
+        "state_reason": null,
+        "comments": 45,
+        "created_at": "2026-10-20T04:15:47Z",
+        "updated_at": "2026-10-21T12:11:44Z",
+        "closed_at": null,
+        "labels": [
+          "bounty",
+          "funded",
+          "available",
+          "claimed",
+          "delivered",
+          "needs-work"
+        ],
+        "assignees": [],
+        "body_sha256": "227faca282738beccffbe2b5433a42601579c550037c20e078da187d7c46e5a7",
+        "body_excerpt": "Frantic bounty #141\n\nLet your agent onboard itself through the Nitrosend MCP server and send one email\n\nWorker price: $1\nSlots: 100 (87 available)\nStatus: Available\nClaim: https://gofrantic.com/bounties/141\nFunding receipt: https://gofrantic.com/r/61735cc5\n\nFrantic is the source of truth. This GitHub issue is a mirrored board thread.",
+        "body_excerpt_truncated": false,
+        "qualification_excerpt": "Frantic bounty #141\nFunding receipt: https://gofrantic.com/r/61735cc5"
+      }
+    },
+    {
+      "url": "https://github.com/markabramov1993/arbitr/issues/8",
+      "issue": {
+        "url": "https://github.com/markabramov1993/arbitr/issues/8",
+        "title": "[RADAR] High-value blockchain bounty discovery",
+        "issue_number": 8,
+        "state": "open",
+        "state_reason": null,
+        "comments": 1,
+        "created_at": "2026-09-13T00:54:51Z",
+        "updated_at": "2026-10-21T11:40:00Z",
+        "closed_at": null,
+        "labels": [],
+        "assignees": [],
+        "body_sha256": "4973d6a31ed02bda84dea1dd2cb84a97d5d39a4a6d1933f4ab9b9e3b814fc680",
+        "body_excerpt": "# Blockchain bounty radar\n\nUTC: 2026-10-21T11:39:56.551266+00:00\n\n## High-value verified/discovery hits (>=500 nominal)\n- Superteam | nominal 319000 | DISCOVERY | https://superteam.fun/earn/bounties | cts All Content Design Dev Other USD Total Value Earned Opportunities Listed Are you a dev? We have prizes worth $319,000+ for you Submit to any of the Crypto World&#x27;s Fair sidetracks on Earn and stand to win from $319,000+. Deadline for submissions is 13 \n- Superteam | nominal 319000 | DISCOVERY | https://superteam.fun/earn/opportunities/development-bounties | cts All Content Design Dev Other USD Total Value Earned Opportunities Listed Are you a dev? We have prizes worth $319,000+ for you Submit to any of the Crypto World&#x27;s Fair sidetracks on Earn and stand to win from $319,000+. Deadline for submissions is 13 \n- Superteam | nominal 319000 | DISCOVERY | https://superteam.fun/earn/skill/blockchain | nts All Content Design Dev Other USD Total Value Earned Opportunities Listed Are you a dev? We have prizes worth $319,000+ for you Submit to any of the Crypto World&#x27;s Fair sidetracks on Earn and stand to win from $319,000+. Deadline for submissions is 13 \n\nMAX_NOMINAL_DISCOVERY=319000\n\nDiscovery is not payout proof. Eligibility, funding, deadlines, competition and acceptance still require verification.",
+        "body_excerpt_truncated": false,
+        "qualification_excerpt": "# Blockchain bounty radar\nDiscovery is not payout proof. Eligibility, funding, deadlines, competition and acceptance still require verification."
+      }
+    },
+    {
+      "url": "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/12",
+      "issue": {
+        "url": "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/12",
+        "title": "P02-S01 \u2014 A mentor can publish availability and receive a paid question",
+        "issue_number": 12,
+        "state": "closed",
+        "state_reason": "not_planned",
+        "comments": 1,
+        "created_at": "2026-10-20T20:44:35Z",
+        "updated_at": "2026-10-21T11:40:48Z",
+        "closed_at": "2026-10-21T11:40:48Z",
+        "labels": [
+          "feature",
+          "priority-medium",
+          "risk-high"
+        ],
+        "assignees": [],
+        "body_sha256": "a2b0ad26d1fa8da89a958f6d662152e1c90414dc9caa5b67ce4ed0b0d4704b2b",
+        "body_excerpt": "> **Superseded 2026-10-21.** This issue belongs to the pilot tree (written answers, PLN 200). The scope was re-baselined to the 1.0 backlog (E01\u2013E07); the pilot brief is archived in `.ai/specs/archive/2026-10-20-pilot/`. Kept for history.\n\nBacklog source: .ai/specs/archive/2026-10-20-pilot/2026-10-20-product-brief-pilot.md\nBacklog id: P02-S01\nEpic: #6\nDepends on: P01-S02 (#11)\nTasks: #13 (P02-S01-T01 \u2014 mentor sign-in)\n\n## \ud83c\udfaf Change\n\n**Problem.** Developers who get stuck on a specific, time-bound problem lose half a day to a week; one developers' Discord shows 21% of help threads with no human reply and a median wait of 67 minutes among the answered ones (brief, Problems; interviews and one data export, signals not market conclusions).\n\n**Who has it.** a mentor\n\n**Expected outcome.** A paid question appears for the mentor only within their published availability, with the time the window ends.\n\n## \ud83d\udccb Scope\n\n**Out of scope.** A public mentor list (D03).\n\n## \u2705 Acceptance criteria\n- Given a signed-in mentor, when they publish availability, then mentees can ask only within it (R03).\n- Given a paid question within availability, when it arrives, then the mentor sees it and the time the window ends.\n- Given a user who is not that mentor, when they try to publish availability or read that mentor's questions, then access is denied (negative case, covered by a test; risk-high).\n\n## \ud83d\udccb Decisions in play\n- R03 \u2014 four business hours within published availability\n- D11 \u2014 one window for all mentors\n\n## \u26a0\ufe0f Open questions\n- Closed: mentors have invited accounts and sign in with e-mail and password (D17, R09).\n- Q12: which time zone defines business hours, and whether the four-hour clock stops outside published availability; non-blocking, detail for the spec.\n\n## \ud83d\udcdd Design authority\n\nThis repository has no code yet for this slice; the brief's ids and the acceptance criteria are the design authority: `.ai/specs/product-brief.md` (decision records in `.ai/specs/research/decisions/`); not yet committed to the repository when this issue was filed.\n\n## \ud83c\udff7\ufe0f Label rationale\n\n\ud83e\udd16 `om-backlog` via `om-prepare-issue` \u2014 one label per line with the reason:\n- `feature` \u2014 the item is a product capability\n- `priority-medium` \u2014 ordinary feature work, also the default reading of unset\n- `risk-high` \u2014 touches money or login sessions (SDLC risk-high rules)",
+        "body_excerpt_truncated": false,
+        "qualification_excerpt": "**Problem.** Developers who get stuck on a specific, time-bound problem lose half a day to a week; one developers' Discord shows 21% of help threads with no human reply and a median wait of 67 minutes among the answered ones (brief, Problems; interviews and one data export, signals not market conclusions).\n**Expected outcome.** A paid question appears for the mentor only within their published availability, with the time the window ends.\n- Given a paid question within availability, when it arrives, then the mentor sees it and the time the window ends."
+      }
+    },
+    {
+      "url": "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/49",
+      "issue": {
+        "url": "https://github.com/KatarzynaSzajnaPrimotly/ai_techleaders_project/issues/49",
+        "title": "E03-S06 \u2014 DevMentor keeps 20% of a paid session and the mentor's share is paid out through Stripe Connect",
+        "issue_number": 49,
+        "state": "open",
+        "state_reason": null,
+        "comments": 0,
+        "created_at": "2026-10-21T11:40:03Z",
+        "updated_at": "2026-10-21T11:40:03Z",
+        "closed_at": null,
+        "labels": [
+          "feature",
+          "priority-medium",
+          "risk-high"
+        ],
+        "assignees": [],
+        "body_sha256": "b7b9257a5534a2e7015ef052440b30894c729953a6f7c1a29cb1f3b20679910e",
+        "body_excerpt": "Backlog source: .ai/specs/product-brief.md\nBacklog id: E03-S06\nEpic: #31\nDepends on: E03-S03 (#46), E02-S05 (#43)\nIteration: 1.1 (D13)\n\n## Summary\n- Problem: R10 sets the fee and R05 the payout channel. In the first iteration the operator pays mentors by bank transfer by hand and logs it (D28, R20, which closed Q19). That is manual work and a money-flow risk that D28 itself says to verify with a lawyer or Stripe. Mentors will not hand over bank details before the first booking (`.ai/specs/research/2026-09-03-interview-senior-python-meetups.md`), which fits paying after the session through Connect. Code fact: no transfer method, payout entity or Connect field exists in this repo.\n- Who has it: mentors waiting to be paid; the operator reconciling by hand.\n- Expected outcome: after a session ends, the mentor's share is transferred through Stripe Connect and nothing else; mentors without finished onboarding are held and told; the fee is the one in force at booking; a refunded session takes no fee and pays nothing; sessions already paid by hand are never paid twice. Checked by the acceptance criteria and money-gate tests.\n\n## Spec\nDesign authority: `.ai/specs/product-brief.md` (R05, R10, R20). Implementation spec `.ai/specs/YYYY-MM-DD-fee-split-and-payouts.md` is owed before implementing; it must choose between separate transfers after the session and destination charges at Checkout. Destination charges would need onboarding before any booking, which contradicts R05's \"before the first payout\" and the mentors' \"no bank details before the first booking\"; separate transfers is the drafted default.\n\n## Analysis\n- Already done in E03-S03 under D28: the owed snapshot on the booking (`feePercentApplied`, `platformFeeCents`, `mentorShareCents`) and the pure `computeFeeSplit`. This story reads them, does not recompute, and changes only how the fee is chosen: from the operator setting (E02-S04 `platform-settings.service.ts`, env-backed until E05-S02; neither exists yet) instead of the named 20% constant, for bookings confirmed after the change.\n- New: `Payout` entity (`packages/db/src/entities/payments/payout.entity.ts`: booking unique, mentor profile, `amountCents`, `status` held | pending | transferred | failed | manual, `stripeTransferId`, `heldReason`), repository, port, `packages/core/src/services/payments/payout.service.ts`; gateway port method `transfer({ amountCen",
+        "body_excerpt_truncated": true,
+        "qualification_excerpt": " fee and no payout, held without onboarding, transfer idempotent on retry, transfer failure then retry, `manual` skipped, mentor sees only their own payouts, non-operator 403, concurrent double run gives one transfer.\n- Given a paid session that was held, When the payout runs, Then the platform fee and the mentor's share equal the snapshot taken at booking. (R10)\n- Given a mentor with completed Connect onboarding, When the payout runs, Then the share is transferred through Stripe Connect and through nothing else. (R05)\n- Given a mentor without Connect onboarding, When the payout would run, Then it is held and the mentor is told. (R05, negative)\n- Given the operator changes the fee, When later sessions are paid, Then the new fee applies to them and not to earlier ones. (R10, money)\n- Given a refunded session, When fees are computed, Then no fee is taken and nothing is paid out. (negative)\n- Given a session already paid by hand (marked `manual`), When the payout runs, Then it is not paid again. (R20, negative)\n- Given the payout run is triggered twice at once, When both finish, Then each session was transferred at most once. (idempotency, negative)\n- Given a session that has not ended, When the payout runs, Then it is not paid. (negative)\n- D04 / R05 \u2014 Stripe only, Connect for payouts, onboarding before the first payout (owner: founder A)\n- D30 \u2014 owed to the mentor is the price less the 20% fee, recorded since the first iteration; this story automates the split and payout (owner: founder A)\n\"Database schema and migrations\": new table (payout history). \"Repository ports\" and the gateway port: additive. \"HTTP API routes and response envelope\": new operator route. No CLI change. `risk-high` (money), `needs-qa`, second reviewer, no self-QA.\nConnect onboarding (E02-S05); the settings screen (E05-S02); a scheduler or worker; payouts for the first iteration (done by hand, D28).\n- Should a dispute (E05-S03) pause a payout, and how long after the session end does a transfer wait, since a transfer cannot be recalled by the product \u2014 non-blocking (owner: founder A)\n- E02-S05 and E02-S04 field names (`payoutsEnabled`, `feePercent`) are from the reference and do not exist yet."
+      }
+    },
+    {
+      "url": "https://github.com/paraloom-labs/paraloom-core/issues/1166",
+      "issue": {
+        "url": "https://github.com/paraloom-labs/paraloom-core/issues/1166",
+        "title": "[BOUNTY] High: Cross-cluster (mainnet-beta vs devnet) ShieldedNote storage collision & dropPhantomNotes note destruction, stranded gas SOL on token-to-token reshield swaps, and unverified inner CPI frame eventPayloads (paraloom-wallet)",
+        "issue_number": 1166,
+        "state": "open",
+        "state_reason": null,
+        "comments": 0,
+        "created_at": "2026-10-21T11:47:24Z",
+        "updated_at": "2026-10-21T11:47:24Z",
+        "closed_at": null,
+        "labels": [],
+        "assignees": [],
+        "body_sha256": "687e16a9300dd839ff4d3b3ca339e75012ef77b266b30eaaf2ba50f35b670ef4",
+        "body_excerpt": "**Target Repository:** [paraloom-labs/paraloom-wallet](https://github.com/paraloom-labs/paraloom-wallet)\r\n**Upstream Issue:** https://github.com/paraloom-labs/paraloom-wallet/issues/101\r\n**Companion Fix PR:** https://github.com/paraloom-labs/paraloom-wallet/pull/102\r\n\r\n# [BOUNTY] Cross-Cluster (`mainnet-beta` vs `devnet`) `ShieldedNote` Collision & Destructive `dropPhantomNotes` Eviction, Stranded Self-Funded Gas SOL in Token-to-Token Round-Trip Swaps, and Failed-CPI `eventPayloads` Tree Contamination (`paraloom-wallet`)\r\n\r\n## Summary\r\n\r\nA source-code audit of `paraloom-labs/paraloom-wallet` at commit `1e79eec8fbe99cd7e1381f6971c855bdce883d41` identified four related defects across shielded note storage, phantom-note reconciliation, private swap gas sweeping, and client-side Merkle tree event attribution:\r\n\r\n1. **Cross-Cluster (`mainnet-beta` vs `devnet`) `ShieldedNote` Storage Collision, Destructive Cross-Cluster `dropPhantomNotes` Eviction, and Mainnet Spend Bricking (`lib/paraloom/notes.ts:10-156`, `lib/paraloom/transactFlow.ts:66-135, 190-387`, `lib/paraloom/scan.ts:94-158`, `src/background/index.ts:632-688, 803-931`, `src/popup/Home.tsx:287-340, 1049`)**:\r\n   - As documented in `lib/paraloom/constants.ts:1-4`, the same bridge program ID (`8gPsRSm1CAw38mfzc1bcLMUXyFN7LnS8k6CV5hPUTWrP`) is deployed on both `mainnet-beta` and `devnet`, and `src/popup/Home.tsx:1215-1238` provides a live Mainnet Beta / Devnet network selector (`handleNetworkChange`).\r\n   - However, `ShieldedNote` (`lib/paraloom/notes.ts:10-30`) has no `network` field, and `paraloom_notes` (`lib/paraloom/notes.ts:32-48`) keys notes solely by `account` (`shieldedAddress`), pooling `mainnet-beta` and `devnet` notes into a single unpartitioned list.\r\n   - **Destructive Cross-Cluster Note Eviction**: `handlePrivateSwap` (`src/background/index.ts:854, 871-883, 925-930`) always connects to `PRIVATE_SWAP_RPC_URL` (`mainnet-beta`), loads `getNotes(shieldedAddress)` (containing both `mainnet-beta` and `devnet` notes), and passes them to `dropPhantomNotes(mainnetConnection, shieldedAddress, candidates)`. Because every unspent `devnet` transfer or change note (`leafIndex === undefined && !!n.commitment`) older than 120s is absent from the `mainnet-beta` Merkle tree (`fetchV3Leaves(mainnetConnection)`), `dropPhantomNotes` calls `markNoteSpentByCommitment(account, n.commitment)` \u2014 **permanently marking th",
+        "body_excerpt_truncated": true,
+        "qualification_excerpt": "ventPayloads` (`lib/paraloom/transact.ts:128-147`) pushes `Program data:` lines into `out` immediately while `stack[stack.length - 1] === expectedProgramId`, before knowing whether that invocation frame exits with `Program <id> success` or `Program <id> failed: ...` (or is truncated mid-frame). Furthermore, `if (/^Program \\S+ (success|failed)/.test(line))` pops `stack` without verifying that the exiting program ID matches `stack[stack.length - 1]`.\n### 1. Unpartitioned `ShieldedNote` Storage & Cross-Cluster `dropPhantomNotes` / `selectNotes` (`lib/paraloom/notes.ts`, `lib/paraloom/transactFlow.ts`, `src/background/index.ts`, `src/popup/Home.tsx`)\nIn `lib/paraloom/notes.ts:32-48`:\nAnd in `src/background/index.ts:803-838`:\n### 2. Unswept Gas SOL Remainder in `privateSwapFromToken` (`lib/paraloom/privateSwap.ts:608-633`)\nIn `lib/paraloom/privateSwap.ts:625-633`:\n### 3. Eager `eventPayloads` Collection & Unchecked Frame Pops (`lib/paraloom/transact.ts:128-147`)\nIn `lib/paraloom/transact.ts:128-147`:\n1. **`lib/paraloom/notes.ts`**:\n   - Partition `getNotes`, `addNote`, `addDiscoveredNote`, `markNoteSpent`, `markNoteSpentByCommitment`, `markNoteSpentByIdentity`, `setNoteLeafIndex`, `shieldedBalance`, and `shieldedTokenBalances` by `network` (defaulting to `\"mainnet-beta\"` for full backward compatibility).\n2. **`lib/paraloom/transactFlow.ts`, `lib/paraloom/scan.ts`, `src/background/index.ts`, `src/popup/Home.tsx`**:\n   - Scope `dropPhantomNotes` and `handlePrivateSwap` in `src/background/index.ts` to `\"mainnet-beta\"`, and pass the active `network` in `handleShieldedBalance`, `handleShieldedTokenBalances`, `backgroundScan`, and `Home.tsx` (`loadBalances` and Activity explorer links).\n   - Call `recoverReshields(getConnection(\"mainnet-beta\"), wallet.shieldedAddress)` in `Home.tsx:314` to match `reconcileSwapOutputs`.\n3. **`lib/paraloom/privateSwap.ts`**:\n   - In `privateSwapFromToken`, sweep any unused self-funded gas SOL (`solBal - RESHIELD_FEE_RESERVE > 0n`) back into the shielded pool via `depositV3` after `reshieldToken` completes on token-to-token round-trip swaps.\n4. **`lib/paraloom/transact.ts`**:\nPayout (USDC, Solana): 84B2mrPhPqR39iL4U3NmuXLnYQyAzR76HwcJBpqP6whj"
+      }
+    },
+    {
+      "url": "https://github.com/auscaster/frantic-board/issues/538",
+      "issue": {
+        "url": "https://github.com/auscaster/frantic-board/issues/538",
+        "title": "Frantic bounty #139: Send your first email with the Nitrosend CLI and report how it went",
+        "issue_number": 538,
+        "state": "open",
+        "state_reason": null,
+        "comments": 181,
+        "created_at": "2026-10-20T04:15:36Z",
+        "updated_at": "2026-10-21T12:13:07Z",
+        "closed_at": null,
+        "labels": [
+          "bounty",
+          "funded",
+          "available",
+          "claimed",
+          "delivered",
+          "accepted",
+          "needs-work",
+          "paid"
+        ],
+        "assignees": [],
+        "body_sha256": "699a20b498dac9ea809c0ee80771d4e5fed9184000d1c3819266860f8ccb9cf6",
+        "body_excerpt": "Frantic bounty #139\n\nSend your first email with the Nitrosend CLI and report how it went\n\nWorker price: $1\nSlots: 100 (53 available)\nStatus: Available\nClaim: https://gofrantic.com/bounties/139\nFunding receipt: https://gofrantic.com/r/508e13d6\n\nFrantic is the source of truth. This GitHub issue is a mirrored board thread.",
+        "body_excerpt_truncated": false,
+        "qualification_excerpt": "Frantic bounty #139\nFunding receipt: https://gofrantic.com/r/508e13d6"
+      }
+    },
+    {
+      "url": "https://github.com/louisianahelpr/louisianahelpr/issues/3497",
+      "issue": {
+        "url": "https://github.com/louisianahelpr/louisianahelpr/issues/3497",
+        "title": "When a Helpr agrees to give back part of a job's price, should the poster get back exactly that amount, or the same share of everything they paid (the price plus any rush fee and tax), less the card processing fee?",
+        "issue_number": 3497,
+        "state": "open",
+        "state_reason": null,
+        "comments": 0,
+        "created_at": "2026-10-21T11:41:37Z",
+        "updated_at": "2026-10-21T11:41:37Z",
+        "closed_at": null,
+        "labels": [
+          "owner-needed"
+        ],
+        "assignees": [],
+        "body_sha256": "1495453f69b4d3a9ad89cf50375ec45ca7703868a58cda128b6bfbfca1cfa368",
+        "body_excerpt": "**Open item:** Q2298\n\n1. **Recommended:** The same share of everything they paid, less the card processing fee (how it works now, and how an admin's split already works)\n2. Exactly the amount asked, less its share of the card processing fee (the rush fee and tax share stay with the platform and Helpr as today's price split decides)\n\nAnswer with: `node scripts/owner-needed.mjs answer <issue> <number>`",
+        "body_excerpt_truncated": false,
+        "qualification_excerpt": "1. **Recommended:** The same share of everything they paid, less the card processing fee (how it works now, and how an admin's split already works)"
+      }
+    },
+    {
+      "url": "https://github.com/paraloom-labs/paraloom-core/issues/1160",
+      "issue": {
+        "url": "https://github.com/paraloom-labs/paraloom-core/issues/1160",
+        "title": "[BOUNTY] Medium: CommitmentGenerator scheme mismatch (Poseidon vs Pedersen), proof_codec trailing-byte/endianness bugs, transaction validation gaps, and Coordinator HA failover task stranding",
+        "issue_number": 1160,
+        "state": "open",
+        "state_reason": null,
+        "comments": 4,
+        "created_at": "2026-10-21T06:27:09Z",
+        "updated_at": "2026-10-21T11:48:54Z",
+        "closed_at": null,
+        "labels": [],
+        "assignees": [],
+        "body_sha256": "63d7c6c285f37f312b476b24bc023b170f042cf3041b91d468572dde8c06c718",
+        "body_excerpt": "## Summary\n\n**Severity:** Medium ($150 USDC \u2014 Stage 1 Public Beta Bug Bounty)\n**Affected In-Scope Modules:**\n- `src/privacy/commitment.rs` (`CommitmentGenerator::commit_note`, `CommitmentGenerator::verify_opening`, `CommitmentGenerator::commit`)\n- `src/privacy/proof_codec.rs` (`field_to_bytes`, `bytes_to_field`, `deserialize_proof`, `deserialize_vk`)\n- `src/privacy/transaction.rs` (`TransferTx::verify_structure`, `WithdrawTx::verify`, `TrackedTransaction::mark_verified`, `TrackedTransaction::mark_rejected`)\n- `src/coordinator/mod.rs`, `src/coordinator/role.rs`, `src/node/mod.rs`, `src/validator/mod.rs` (`try_promote_if_stalled`, `start_stall_watchdog`, `start_heartbeat_broadcast`, `submit_task`)\n\nWe identified **four distinct zero-duplicate vulnerabilities** across `src/privacy/` (`commitment.rs`, `proof_codec.rs`, `transaction.rs`) and the `src/node/` + `src/coordinator/` HA failover and shard-dispatch state machine:\n\n---\n\n## Vulnerability 1: `CommitmentGenerator::commit_note` Uses Poseidon While `CommitmentGenerator::verify_opening` / `commit` Use BN254 Pedersen, Causing 100% Verification Failure (`src/privacy/commitment.rs:10\u201329`)\n\n### Root Cause\nIn `src/privacy/commitment.rs:10\u201329`, `CommitmentGenerator` mixes two incompatible cryptographic commitment schemes on the same struct:\n1. `CommitmentGenerator::commit(value: u64, randomness: &[u8; 32]) -> Commitment` (lines 14\u201317) and `CommitmentGenerator::verify_opening(commitment: &Commitment, value: u64, randomness: &[u8; 32]) -> bool` (lines 26\u201328) delegate to `crate::privacy::pedersen::commit` and `crate::privacy::pedersen::verify`, which compute and verify a compressed BN254 `G1Affine` elliptic-curve Pedersen point $C = v \\cdot G + r \\cdot H$.\n2. However, `CommitmentGenerator::commit_note(note: &ShieldedNote) -> Commitment` (lines 21\u201323) delegates to `note.commitment()` (`src/privacy/types.rs:255\u2013262`), which computes a 4-input **Poseidon sponge hash** `poseidon_commit_spend(Fr::from(self.amount), pubkey_fr, blinding_fr, asset_id_fr)` serialized as a 32-byte little-endian `Fr` element.\n\n[code omitted; not executed]\n\n### Impact\nAny commitment generated via `CommitmentGenerator::commit_note(&note)` fails `CommitmentGenerator::verify_opening(&commitment, note.amount, &note.randomness)` **100% of the time** (either failing `G1Affine::deserialize_compressed` when the 32-byte Poseidon `Fr` output is not a valid ",
+        "body_excerpt_truncated": true,
+        "qualification_excerpt": "ys promote simultaneously at `stall_threshold` (split-brain).\n3. **`Coordinator::submit_task` Swallows Send Failures/Timeouts and Retains Disconnected Validators (`src/coordinator/mod.rs:356\u2013400`, `src/node/mod.rs:1788`)**:\n   - `submit_task` marks each shard `TaskStatus::Assigned` (line 360) *before* calling `send_message`. If `send_message` returns `Ok(Err(e))` or hits the 1-second `tokio::time::timeout` (`Err(_)`), lines 390\u2013399 only log an error without rolling back the shard status or reassigning it, and `Node::run`'s peer-disconnect handler (`src/node/mod.rs:1788`) never removes disconnected peers from `Coordinator.validators`.\n1. **`src/privacy/commitment.rs`**: Align `CommitmentGenerator` on a single commitment scheme (or provide explicit `verify_note_opening(commitment: &Commitment, note: &ShieldedNote) -> bool` that checks `*commitment == note.commitment()`, and document `commit` / `verify_opening` as Pedersen-specific).\n2. **`src/privacy/proof_codec.rs`**: In `deserialize_proof`, `deserialize_vk`, and `bytes_to_field`, check `if cursor.position() as usize != bytes.len() { return Err(...); }` to reject trailing bytes; in `field_to_bytes`, either serialize big-endian via `field.into_bigint().to_bytes_be()` or update the implementation/documentation to match little-endian `to_bytes_le()`.\n3. **`src/privacy/transaction.rs`**: Reject duplicate/zero `input_nullifiers` and duplicate `output_commitments` in `TransferTx::verify_structure`; require `self.to_public.len() == 32`, `self.amount > self.fee`, and `self.input_nullifier.0 != [0u8; 32]` in `WithdrawTx::verify`; guard `TrackedTransaction::mark_verified` against `TransactionStatus::Rejected` and reset `self.confirmations = 0` in `mark_rejected`.\n4. **`src/coordinator/mod.rs`, `src/coordinator/role.rs`, `src/node/mod.rs`**: On standby promotion, re-dispatch all mirrored `TaskStatus::Assigned` shards with `coordinator_id = self.network.local_peer_id()`, spawn `start_heartbeat_broadcast`, add deterministic standby rank backoff to `is_stalled`, roll back/reassign shards when `send_message` fails or times out in `submit_task`, and prune disconnected peers from `Coordinator.validators`.\n## Payout Wallet Address"
+      }
+    },
+    {
+      "url": "https://github.com/Marko026/luxwebstore/issues/25",
+      "issue": {
+        "url": "https://github.com/Marko026/luxwebstore/issues/25",
+        "title": "A paid Checkout becomes an Order with a confirmation page",
+        "issue_number": 25,
+        "state": "open",
+        "state_reason": null,
+        "comments": 0,
+        "created_at": "2026-10-21T08:47:13Z",
+        "updated_at": "2026-10-21T11:46:50Z",
+        "closed_at": null,
+        "labels": [
+          "ready-for-agent"
+        ],
+        "assignees": [],
+        "body_sha256": "5349aa1552dacccf97408fde6d12526385c5dcba6bc90634144220a02920316b",
+        "body_excerpt": "## Parent\n\n#21\n\n## What to build\n\nA paid Checkout becomes an Order. When Stripe confirms payment, through its webhook or when the Customer comes back to the confirmation page (whichever is first), exactly one Order is created from our Checkout, the bought units leave the Bag, and the Customer sees their Order number, Order items, total, email and delivery address. Stripe's expiry event closes an unpaid Checkout.\n\n## Acceptance criteria\n\n- [ ] Order and Order item tables as in the spec: Order number from a Postgres identity or sequence, shown as `LUX-` plus the number; the Checkout it came from (unique; set null when the Checkout is deleted with a stale Guest, ADR 0004); owner user nullable, set null on delete; email; delivery address (name, lines, city, postal code, country); total in cents. Order item: product with restrict delete, quantity, unit price in cents, product name. No status column. Migration added; ask before running it.\n- [ ] `completeCheckout(db, payments, sessionId)`: if the session is paid and no Order exists for the Checkout, in one transaction creates the Order and Order items from our Checkout (not Stripe's line items), copies email and delivery address from Stripe, marks the Checkout paid and removes the bought quantities from the Bag (a Bag item that reaches 0 is removed; units added meanwhile stay). Calling it again returns the same Order; an unpaid session creates nothing.\n- [ ] Closing a Checkout whose Stripe session turns out paid (left open by the previous ticket) now completes it.\n- [ ] `completeCheckout` decides by whether an Order already exists for the Checkout, not by `state = 'open'`: since PR #32, moving a Guest's Checkouts on sign-in marks an older Checkout that Stripe reports paid as `paid` before any Order exists, and it must still become an Order.\n- [ ] `getOrder(db, ownerId, sessionId)` returns the Order only to its owner.\n- [ ] Webhook route at `src/app/api/stripe/webhook`: verifies Stripe's signature on the raw body, handles `checkout.session.completed` (complete) and `checkout.session.expired` (close), returns 200 for other events. Read the Next 16 route handler docs first.\n- [ ] Confirmation page at Stripe's success URL: calls `completeCheckout`, then `getOrder` for the current user; anyone else or an unknown id gets 404. Shows the Order number, Order items with packshot, name, quantity and price, the total with \"VA",
+        "body_excerpt_truncated": true,
+        "qualification_excerpt": "A paid Checkout becomes an Order. When Stripe confirms payment, through its webhook or when the Customer comes back to the confirmation page (whichever is first), exactly one Order is created from our Checkout, the bought units leave the Bag, and the Customer sees their Order number, Order items, total, email and delivery address. Stripe's expiry event closes an unpaid Checkout.\n- [ ] Order and Order item tables as in the spec: Order number from a Postgres identity or sequence, shown as `LUX-` plus the number; the Checkout it came from (unique; set null when the Checkout is deleted with a stale Guest, ADR 0004); owner user nullable, set null on delete; email; delivery address (name, lines, city, postal code, country); total in cents. Order item: product with restrict delete, quantity, unit price in cents, product name. No status column. Migration added; ask before running it.\n- [ ] `completeCheckout(db, payments, sessionId)`: if the session is paid and no Order exists for the Checkout, in one transaction creates the Order and Order items from our Checkout (not Stripe's line items), copies email and delivery address from Stripe, marks the Checkout paid and removes the bought quantities from the Bag (a Bag item that reaches 0 is removed; units added meanwhile stay). Calling it again returns the same Order; an unpaid session creates nothing.\n- [ ] Closing a Checkout whose Stripe session turns out paid (left open by the previous ticket) now completes it.\n- [ ] `completeCheckout` decides by whether an Order already exists for the Checkout, not by `state = 'open'`: since PR #32, moving a Guest's Checkouts on sign-in marks an older Checkout that Stripe reports paid as `paid` before any Order exists, and it must still become an Order.\n- [ ] Tests through the Checkout module: complete creates one Order with the right items, total, email and address and removes only the bought quantities; complete twice gives one Order; an unpaid session creates nothing; a catalogue price or name change after start does not change the Order; `getOrder` returns nothing for another owner; deleting an ordered product is refused; deleting a Guest keeps their Order with no owner."
+      }
+    },
+    {
+      "url": "https://github.com/airdropia/earn-ops/issues/3",
+      "issue": {
+        "url": "https://github.com/airdropia/earn-ops/issues/3",
+        "title": "bounty digest 2026-10-21",
+        "issue_number": 3,
+        "state": "open",
+        "state_reason": null,
+        "comments": 0,
+        "created_at": "2026-10-21T11:47:31Z",
+        "updated_at": "2026-10-21T11:47:31Z",
+        "closed_at": null,
+        "labels": [],
+        "assignees": [],
+        "body_sha256": "2eb05ce12ed8599f878e97ba83d13bd9ffd69d959d4ca7c646bbac472a69192a",
+        "body_excerpt": "Automated digest 2026-10-21T11:47:30.516Z\n\n## pool payment state\n- asi: paymentMode=disabled committed=0 cap=$1,000 chain=solana status=active\n- canonry: paymentMode=disabled committed=0 cap=$0 chain=solana status=paused\n- darling-arm64: paymentMode=disabled committed=0 cap=$0 chain=solana status=paused\n- delta-star: paymentMode=disabled committed=0 cap=$0 platform pool chain=null status=active\n- eliza: paymentMode=disabled committed=0 cap=$1,000 chain=solana status=active\n- feed: paymentMode=disabled committed=0 cap=$1,000 chain=solana status=paused\n- heir-elements-sdk: paymentMode=disabled committed=0 cap=$100 chain=solana status=paused\n- nurosos: paymentMode=disabled committed=0 cap=$0 chain=solana status=paused\n- payzcode-ai: paymentMode=disabled committed=0 cap=$0 chain=solana status=paused\n- slopdotcash: paymentMode=disabled committed=0 cap=$1,000 chain=solana status=active\n- thenetwork: paymentMode=disabled committed=0 cap=$0 chain=solana status=active\n\n## elizaOS/eliza - 19 open issues\n- #37194 Discord connector ignores message edits, so the agent keeps answering the old text\n- #37175 A directly addressed turn ends silent when a repair after the terminal review returns IGNORE\n- #37043 Reminder and alarm requests routed to \"general\" load no reminder or alarm tool\n- #37041 BROWSER actions are offered when no browser target can act\n- #37039 plugin-openai records a rate-limited stream attempt as a successful empty call\n- #37037 Calendar create, update and delete results give the planner the same event two times\n- #37035 Eliza Cloud image descriptions get the title \"Image Analysis\" when the model writes the label in bold\n- #37033 A runtime failure on an unaddressed group message looks like a normal IGNORE\n- #37031 Discord stores other bots' status reactions as dialogue, with backslashes in the text\n- #37027 The ATTACHMENTS provider hides room attachments unless the request uses English attachment words\n- #37025 Stage 1 shows a reply's referenced message before the task, away from the reply\n- #37023 A background memory job repeats a failing model call up to 5 times when the model uses all output tokens\n- #37021 Agent says it cannot make images when asked to remake an image or to use image gen\n- #37019 Dialogue history drops the attachments of earlier messages in the same room\n- #37017 Stage 1 rejects the history ids it prints, and the turn fails\n- #36589 [",
+        "body_excerpt_truncated": true,
+        "qualification_excerpt": "- #37039 plugin-openai records a rate-limited stream attempt as a successful empty call\n- #910 Implement private security bounty programs (SEC-01 to SEC-18)\n- #904 Enable mainnet payouts: attester, executor and payments worker\n- #903 Independent security audit of escrow v2 and counsel review of the identity attester\n- #640 Human review and QA: close the October 11 Slop product audit"
+      }
+    },
+    {
+      "url": "https://github.com/paraspell/xcm-tools/issues/2174",
+      "issue": {
+        "url": "https://github.com/paraspell/xcm-tools/issues/2174",
+        "title": "[Bug bounty] Hydration calculateFee passes raw units as a decimal string, so the fee is estimated on an oversized trade",
+        "issue_number": 2174,
+        "state": "open",
+        "state_reason": null,
+        "comments": 2,
+        "created_at": "2026-10-21T10:15:00Z",
+        "updated_at": "2026-10-21T11:57:37Z",
+        "closed_at": null,
+        "labels": [
+          "Confirmed bug \ud83e\udeb2",
+          "Bug bounty \ud83d\udcb0",
+          "Paid \ud83d\udcb8"
+        ],
+        "assignees": [
+          "dudo50"
+        ],
+        "body_sha256": "41acf301a21ef6df07fcb713221a8fdc5f33114420e915012bb0562a9e0136d4",
+        "body_excerpt": "# \ud83d\udc1e Bug Report\n\n## \ud83d\udd0d Describe the Bug\n\n`calculateFee` passes the raw-unit `bigint` amount to `TradeRouter.getBestSell` **as a string** ([calculateFee.ts:27\u201331](https://github.com/paraspell/xcm-tools/blob/de8d2266ced92c755655e861d17c7dddcc00a25a/packages/swap/src/exchanges/Hydration/utils/calculateFee.ts#L27-L31)):\n\n[code omitted; not executed]\n\nIn `@galacticcouncil/sdk-next` 2.3.2, `TradeRouter.toSellSwaps` treats a string as a decimal token amount and scales it by the asset's decimals (a `bigint` is used as-is). So the fee-estimation trade is built for `amount \u00d7 10^decimals`. For example, 1000 HDX is quoted as 10\u00b9\u2075 HDX.\n\nThe real swap path handles this correctly. It calls `formatUnits(amountWithoutFee, decimals)` before `getBestSell` ([HydrationExchange.ts:69\u201378](https://github.com/paraspell/xcm-tools/blob/de8d2266ced92c755655e861d17c7dddcc00a25a/packages/swap/src/exchanges/Hydration/HydrationExchange.ts#L69-L78)), and `getAmountOut` does the same ([L162\u2013168](https://github.com/paraspell/xcm-tools/blob/de8d2266ced92c755655e861d17c7dddcc00a25a/packages/swap/src/exchanges/Hydration/HydrationExchange.ts#L162-L168)). As a result, the fee is estimated on a different (oversized) trade than the one that is actually submitted.\n\nThe read-only fee comparisons and their limits are under Additional Context. I have not measured a funded account's final fee, swap outcome, or balance change.\n\n## \ud83e\uddea To Reproduce\n\n**Unit test.** Add this inside the existing `describe('calculateFee', \u2026)` in `packages/swap/src/exchanges/Hydration/utils/calculateFee.test.ts`. It uses the file's existing imports and `mockTxBuilderFactory`:\n\n[code omitted; not executed]\n\n[code omitted; not executed]\n\nThe new test fails (`\"1000000000000\"` received instead of `\"1\"`), and the 4 existing tests pass.\n\n**Live, read-only check (optional).** I quoted each pair on Hydration mainnet twice: once the way `swapCurrency` does (decimal string) and once the way `calculateFee` does (raw units as a string). For each quote I built the tx with the SDK's `txBuilderFactory` and read `partial_fee` via `tx.getPaymentInfo(getFakeTxCreator(addr))`, the same call ParaSpell's `getPaymentInfo` uses. Nothing was signed or submitted. Core of the script:\n\n[code omitted; not executed]\n\nI can share the full script on request.\n\n## \ud83d\udda5\ufe0f Environment\n\n- OS: Windows\n- XCM Tool: XCM Router / `@paraspell/swap` 14.4.3 (local commit `82266c",
+        "body_excerpt_truncated": true,
+        "qualification_excerpt": "ut 0.02\u20130.03 HDX). For USDT\u2192DOT, the raw-string quote used 5 pools instead of 4. The other 5 pairs had the same `partial_fee`. These are transaction fee estimates, not measurements of the final fee deducted by `calculateFee`.\n- When an `origin` is set, `swapCurrency` subtracts the calculated `tradeFee` from the swap amount (`amount - tradeFee`). The effect on a funded user's final swap and balance was not measured in this check.\n- **Limitation:** my test address had no balance, so both the real and the estimate trades were built as `Router.sell_all`. For a funded account, the real trade would normally be `Router.sell` / `Omnipool.sell`, while the estimate would still be `sell_all` (its inflated amount always exceeds the balance). I did not measure that case.\n**Suggested severity: \ud83d\udfe2 Low.** The measured read-only `partial_fee` differences were small; I have not measured the final fee or swap outcome for a funded account. For comparison, [#1484](https://github.com/paraspell/xcm-tools/issues/1484) was closed as a marginal (~$0.01) fee difference. I'm reporting this one because it's a separate root cause (wrong units passed to the router), and because it can change which route the fee is estimated on.\n## \u2705 Contributor Eligibility\n- [x] I have set an on-chain identity on the Polkadot People Chain for my AssetHub address (below) and requested a registrar judgement of at least `Reasonable` ([KnownGood judgement](https://dotid.app/id/14ivC9Qg7Bjqdng1h5uTRK1HQQZi4B4K1Gy7fkX6P8LHpsSy)).\n- [x] I disclose any AI tools used to help write this report (or confirm none were used), and I understand and can explain its contents myself.\n- [x] This report was authored and submitted by a human \u2014 not opened autonomously by an AI agent.\n- [x] If I go on to fix this issue myself, I understand every commit must be signed (`-S`) and include `Signed-off-by` and `AI-Assisted-By` trailers.\n- [x] This is the only bug bounty issue I currently have reserved.\nAI disclosure: ChatGPT/Codex helped identify the issue and write the unit test; Claude Code verified it, ran the live read-only fee comparison, and helped draft the report. I reviewed it, understand the finding, and am submitting it myself."
+      }
+    },
+    {
+      "url": "https://github.com/cashubtc/cdk/issues/2325",
+      "issue": {
+        "url": "https://github.com/cashubtc/cdk/issues/2325",
+        "title": "bug(cdk-mint-rpc): force-paid mint quote RPC can over credit quotes",
+        "issue_number": 2325,
+        "state": "open",
+        "state_reason": null,
+        "comments": 1,
+        "created_at": "2026-08-11T18:46:43Z",
+        "updated_at": "2026-10-21T11:50:59Z",
+        "closed_at": null,
+        "labels": [
+          "bug",
+          "area:mint",
+          "needs-review"
+        ],
+        "assignees": [],
+        "body_sha256": "f25e240b4fc5269d3aef059f43e06a241fe3961065205f683ead8b77be8fd85f",
+        "body_excerpt": "`UpdateNut04Quote` marks a quote paid by synthesizing a payment derived from the\nquote itself \u2014 `amount.unwrap_or(amount_paid)` \u2014 without checking what has\nalready been paid (`crates/cdk-mint-rpc/src/proto/server.rs`, `update_nut04_quote`,\n~L744).\n\nFor payment methods that accept more than one payment per quote (bolt12,\nonchain, custom), the synthetic payment carries a different id from real backend\npayments, so nothing deduplicates:\n\n- A quote for 100 sats that already received 40 gets another 100 credited \u2192 140 mintable.\n- An already-satisfied quote gets re-played: force paid credits its amount again\n  (once only, repeat calls no-op), letting a wallet mint a second time. E.g. onchain,\n  32,000 sats received \u2192 64,000 mintable.\n\nBOLT11 is unaffected\n\n**Possible fix pontification:** \n* reject force-paid on any quote that isn't fully unpaid (`FAILED_PRECONDITION`)\n* and/or consider an optional `amount` parameter so operators credit a specific received payment and credit amountless quotes\n* deprecate the call entirely in favor of an UpdatePaidAmount rpc call",
+        "body_excerpt_truncated": false,
+        "qualification_excerpt": "`UpdateNut04Quote` marks a quote paid by synthesizing a payment derived from the\nquote itself \u2014 `amount.unwrap_or(amount_paid)` \u2014 without checking what has\nalready been paid (`crates/cdk-mint-rpc/src/proto/server.rs`, `update_nut04_quote`,\n- An already-satisfied quote gets re-played: force paid credits its amount again\n* reject force-paid on any quote that isn't fully unpaid (`FAILED_PRECONDITION`)\n* deprecate the call entirely in favor of an UpdatePaidAmount rpc call"
+      }
+    }
+  ]
+}

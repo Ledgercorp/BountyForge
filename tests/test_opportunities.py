@@ -17,7 +17,7 @@ class OpportunityTests(unittest.TestCase):
         r=grade(self.candidate(),now=NOW)
         self.assertEqual(r.tier,'B')
         self.assertFalse(r.verified_escrow)
-        self.assertTrue(r.actionable)
+        self.assertFalse(r.actionable)
     def test_closure_beats_platform_claim(self):
         x=self.candidate();x['github_state']='closed'
         r=grade(x,now=NOW)

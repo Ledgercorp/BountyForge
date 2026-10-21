@@ -95,3 +95,15 @@ scope test, and three recovered diagnosis-verifier tests cover negative states.
 Workflow YAML and every shell block parsed; actionlint was unavailable. No live
 inference during development. `historical-v7-freeze.json` pins the implementation
 and original fixture hashes before observing any new historical model output.
+
+## Private review integration
+
+`bountyforge.paid_intake` connects the existing Stripe gate, review ledger and
+private CAS adapter through an internal command accepting only a bounded
+Checkout identifier on stdin. It refuses known model/publication credentials,
+GitHub Actions and unapproved volume configuration. It never accepts source or
+dispatches execution/delivery. Fresh payment checks occur even for duplicates.
+Six integration tests passed with mocked HTTPS and real ephemeral private
+SQLite files; full local regression **319 tests, 312 passed, seven skipped**.
+This is not a private deployment, payment verification or customer-code
+execution certification. No actual Stripe request or order was processed.

@@ -80,8 +80,9 @@ fulfillment step. Payment authorization is not evidence of actual bank payout.
 
 BountyForge's last historical held-out real-model benchmark was 0/5 verified
 repairs; synthetic owned fixtures alone are not sufficient for customer work.
-The stronger Groq model adapter has passed mocked transport tests but no
-live benchmark, and the existing sandbox does not admit arbitrary customer
+The stronger Groq model completed **2/4 owned structural repairs**, both
+independently replayed in run `39677572877`. That development result does not
+establish paid-job reliability, and the existing sandbox does not admit arbitrary customer
 repositories. It would be irresponsible to promise an autonomous $49 fix until
 the claim is measured on reproducible held-out tasks, privacy is reviewed and
 the owner approves public service terms.
@@ -90,8 +91,8 @@ the owner approves public service terms.
 
 1. Verify BountyForge's current Stripe live account readiness and obtain
    explicit authorization for the offer's scope and fixed pricing.
-2. Run pinned owned-fixture GPT-OSS comparative benchmark on standard Linux
-   only after free-plan proof and a restricted credential are configured.
+2. Preserve the completed owned GPT-OSS benchmark; verify broader fixed
+   evaluation evidence, inference privacy and applicable quotas before a pilot.
 3. Develop a private intake workspace with a fixed source contract, threat
    model and customer-specific tests; do not put private customer code in a
    public GitHub Actions run or artifact.
@@ -111,3 +112,7 @@ For current integration fixes, private review-store tests and deployment blocker
 see [revenue review](REVENUE_REVIEW_2026_10_21.md) and
 [private store contract](PRIVATE_PAID_REVIEW_STORE.md). The store is review-only,
 separate from the synthetic ledger, and rejects state inside this source checkout.
+
+The offline-tested [private review command](PRIVATE_PAID_REVIEW_COMMAND.md) now
+connects that store to fresh read-only provider checks. It accepts no source,
+dispatches no repair, and has no deployed private volume or public endpoint.

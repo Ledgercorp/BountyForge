@@ -197,3 +197,42 @@ coordination leases and model health. Status with no completed cycles no longer
 labels a worker as verified. Final deployment and original three-case compatibility
 run are recorded after execution. No paid services, external submissions or
 repair cron were enabled.
+
+## Final compatibility and dashboard verification
+
+Commit `abef9009878b1b83b88c392526ee45148e453a44` passed
+[original CPU acceptance 39594116526](https://github.com/Ledgercorp/BountyForge/actions/runs/39594116526)
+with the new validator and generation constraints. This preserves the previously
+proven synthetic path; the exact three-case receipt is checked in the final
+summary. Regression run 39594123115 also succeeded.
+
+The raw GitHub branch URL remained stale even with the query key, so that first
+cache mitigation was not sufficient. The fixed read-only GitHub Contents API
+route was tested next and returned the actual current blob
+`2b01078f2700f43e43812811bd2c9f9f52616b88`: **three completed synthetic cycles,
+zero active/expired leases, 25 unverified discoveries**. The adapter exposes the
+blob SHA and observation time, fails to unknown on read errors/rate limits, and
+uses no authentication credential. No claim of constant model availability.
+Dashboard regression path coverage now includes `dashboard/**`.
+
+Final security checks not performed/claimed: arbitrary hostile-repository
+certification, full upstream Boltons suites, comprehensive kernel-escape review,
+CPU/PID pressure stress tests beyond live cgroup limit readback, and full browser
+rendering of the private dashboard. Namespace rootfs tests remain seven explicit
+skips. Actual live negative Docker, HTTP and validator tests are documented above.
+All original historical task sources, manifest and acceptance tests are unchanged
+from recovered HEAD. Both required historical commits remain ancestors. Main
+stays the production baseline; PR #1 remains draft.
+
+Owner-facing status deployment: v9 then v10 were live/private; final Contents API
+adapter is verified in draft execution and committed before final deployment.
+The final version and PR/regression links are listed in the final acceptance
+summary. No external bounty claim, outside PR, email, message, contract, account
+registration or financial commitment occurred. No paid inference, larger runner,
+Oracle VM, new paid infrastructure or Mac access. Additional authorized purchases
+$0, confirmed revenue $0; account invoices were not independently audited.
+
+**DRY_RUN_READY** for complete bounded internal cycles. **NOT_READY** for real
+paid bounty operation. Recurring repair scheduling remains inactive: default
+branch activation would advance beyond the preserved production baseline while
+real-code safety, funding and repair-reliability gates remain unsatisfied.

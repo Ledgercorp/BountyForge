@@ -12,12 +12,16 @@ export default async function(req,res) {
     const report=typeof raw==='string'?JSON.parse(raw):(raw||{});
     let operations=null;
     try {
-      const response=await fetch('https://raw.githubusercontent.com/Ledgercorp/BountyForge/state/bountyforge-ledger-v1/state/ledger.json?observed='+Math.floor(Date.now()/30000),
-                                 {signal:AbortSignal.timeout(5000),headers:{'Accept':'application/json'}});
+      const response=await fetch('https://api.github.com/repos/Ledgercorp/BountyForge/contents/state/ledger.json?ref=state/bountyforge-ledger-v1',
+                                 {signal:AbortSignal.timeout(5000),headers:{'Accept':'application/vnd.github+json'}});
       if(!response.ok)throw Error('Ledger unavailable');
       const text=await response.text();
-      if(text.length>512000)throw Error('Ledger too large');
-      operations=projectState(JSON.parse(text));
+      if(text.length>1024000)throw Error('Ledger response too large');
+      const file=JSON.parse(text);
+      if(file.type!=='file'||file.encoding!=='base64'||!Number.isInteger(file.size)||file.size>512000||
+         !/^[a-f0-9]{40}$/.test(file.sha)||typeof file.content!=='string')throw Error('Invalid ledger representation');
+      const ledger=JSON.parse(atob(file.content.replace(/\s/g,'')));
+      operations={...projectState(ledger),ledger_blob_sha:file.sha,observed_at:new Date().toISOString()};
     } catch(e) { /* Keep unknown status unknown; never infer model health. */ }
     return res.json({
       state:'ok',data_source:'Private discovery history and public GitHub durable coordination ledger',

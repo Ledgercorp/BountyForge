@@ -236,3 +236,32 @@ $0, confirmed revenue $0; account invoices were not independently audited.
 paid bounty operation. Recurring repair scheduling remains inactive: default
 branch activation would advance beyond the preserved production baseline while
 real-code safety, funding and repair-reliability gates remain unsatisfied.
+
+## Hosted interruption and conditional-write probe
+
+Commit `89f5e8738e68265b1c08d3fcda6279226509ba81` adds an explicit manual-only
+recovery-probe input; normal leases remain 900 seconds. Probe leases are ten
+seconds, validated by the same Queue bounds. Local regression: 180 cases,
+7 skips (173 executed passes), 6 harness tests and 4 dashboard tests.
+
+[Probe run 39594818372](https://github.com/Ledgercorp/BountyForge/actions/runs/39594818372)
+**failed intentionally with exit 75** after persisting a claim and proving the
+live GitHub Contents API rejected an update with a stale SHA. Its discovery
+passed, repair/publication skipped and model calls were zero. This is an expected
+fault-injection failure, not a repair failure or a falsely successful workflow.
+The remote ledger was independently read after termination: running, attempts 1,
+expired lease, no result. A second workflow instance at exactly the same revision
+([recovery 39595024636](https://github.com/Ledgercorp/BountyForge/actions/runs/39595024636))
+was dispatched normally; its result is recorded in the final acceptance summary.
+
+Original synthetic compatibility is confirmed from logs: run 39594116526
+verified pinned model/runtime hashes, addition canary, and **3/3 original owned
+synthetic repairs** after capability hardening. Latest dashboard v11 is live and
+private (deployed 2026-10-21T11:48:31 UTC). Current Contents-based status exposed
+three completed cycles, no active/expired leases and the exact ledger blob SHA.
+
+A final read-only runner-policy snapshot was added to regression artifacts to
+inspect current AppArmor/user-namespace sysctls, process capabilities and seccomp.
+It does not modify policy or retry the rejected unshare mechanism. A current
+snapshot cannot prove the exact historical kernel/LSM audit rule from the original
+run; that attribution remains explicitly limited to the observed UID-map EPERM.

@@ -40,6 +40,7 @@ class HostedGroqTests(unittest.TestCase):
             self.assertEqual(request.get_method(), 'POST')
             self.assertEqual(request.full_url, 'https://api.groq.com/openai/v1/chat/completions')
             self.assertEqual(request.get_header('Authorization'), 'Bearer sk_test_0123456789')
+            self.assertEqual(request.get_header('User-agent'), 'BountyForge-Owned-Canary/1')
             self.assertEqual(payload['model'], 'openai/gpt-oss-120b')
             self.assertTrue(payload['response_format']['json_schema']['strict'])
             self.assertEqual(payload['response_format']['json_schema']['schema']

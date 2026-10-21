@@ -5,7 +5,7 @@ This module **does not authorize arbitrary third-party test execution**. It has 
 ## Tested controls (Python 3.13 x86-64 Linux)
 
 * Unprivileged user, network, mount, and PID namespaces, rootfs chroot. An isolated `/work` tmpfs is mounted at 32 MiB; only preflight-approved files are copied there by a trusted launcher.
-* Minimal offline Python standard-library rootfs, no `/proc`, no host repository or credential mounts, no package installers.
+* Minimal offline Python standard-library rootfs, no `/proc`, no host repository or credential mounts, no package installers. The base is a read-only bind mount inside the disposable mount namespace; only `/work` is a writable tmpfs. Permission bits alone do not make files owned by the mapped UID immutable.
 * Drop Linux capabilities, set `no_new_privs`, seccomp deny rules for `clone/clone3/fork/vfork`, `socket`, `mount`, `umount2`, `pivot_root`, `ptrace`, `unshare`, and `bpf`.
 * RLIMIT CPU=8 sec, virtual memory=512 MiB, per-file write=1 MiB, file handles=64, core dumps=0; parent wall clock timeout 2–30 sec, SIGKILL process group on timeout, new PID namespace terminates child descendants.
 * No internet egress, no credential/environment inheritance, no persistent source modifications.

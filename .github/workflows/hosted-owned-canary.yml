@@ -50,47 +50,69 @@ jobs:
           python -m unittest discover -s tests -p 'test_phase5_development.py' -v
 
 
-  credential-metadata-only-probe:
-    # One read-only API metadata call on this exact authorized diagnostic commit.
-    # No model inference, no source execution and no provider response-body logging.
-    if: ${{ github.repository == 'Ledgercorp/BountyForge' && github.ref == 'refs/heads/engineering/revenue-linux-scout-20261021' && github.event_name == 'push' && github.event.head_commit.message == '[bf-groq-model-metadata-probe-once]' }}
+  credential-chat-minimal-probe:
+    # Exactly one minimal owned 'Hello' request; no customer/source data.
+    if: ${{ github.repository == 'Ledgercorp/BountyForge' && github.ref == 'refs/heads/engineering/revenue-linux-scout-20261021' && github.event_name == 'push' && github.event.head_commit.message == '[bf-groq-simple-post-probe-once]' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 3
     permissions:
       contents: read
     steps:
-      - name: Validate the scoped Groq key using GET models metadata only
+      - name: Distinguish Chat API access from authenticated model metadata
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED: ${{ vars.BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED }}
         run: |
           python - <<'PY'
           import json, os, urllib.request, urllib.error
+          if os.environ.get('BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED') != '1':
+              raise SystemExit('chat_probe: no_free_plan_attestation')
           key = os.environ.get('GROQ_API_KEY', '')
           if not key:
-              raise SystemExit('metadata_probe: missing_secret')
-          class DenyRedirect(urllib.request.HTTPRedirectHandler):
+              raise SystemExit('chat_probe: missing_secret')
+          class NoRedirect(urllib.request.HTTPRedirectHandler):
               def redirect_request(self, req, fp, code, msg, headers, url):
-                  raise RuntimeError('redirect forbidden')
-          request = urllib.request.Request('https://api.groq.com/openai/v1/models',
-              headers={'Authorization': 'Bearer ' + key,
-                       'User-Agent': 'BountyForge-Owned-Metadata/1'}, method='GET')
-          opener=urllib.request.build_opener(urllib.request.ProxyHandler({}), DenyRedirect())
+                  raise RuntimeError('redirect rejected')
+          req = urllib.request.Request(
+              'https://api.groq.com/openai/v1/chat/completions',
+              data=json.dumps({'model':'openai/gpt-oss-120b',
+                  'messages':[{'role':'user','content':'Reply with OK.'}],
+                  'reasoning_effort':'low','include_reasoning':False,
+                  'max_completion_tokens':128, 'stream':False}).encode('utf-8'),
+              headers={'Authorization':'Bearer '+key,
+                       'Content-Type':'application/json',
+                       'User-Agent':'BountyForge-Owned-Metadata/1'},
+              method='POST')
+          opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),NoRedirect())
           try:
-              with opener.open(request, timeout=15) as response:
-                  raw=response.read(65537)
-                  status=response.status
-              if len(raw)>65536:raise ValueError('oversize')
+              with opener.open(req,timeout=15) as response:
+                  raw=response.read(4097)
+              if len(raw)>4096:raise ValueError('oversize')
               data=json.loads(raw)
-              if not isinstance(data,dict) or not isinstance(data.get('data'),list):
-                  raise ValueError('unexpected metadata')
-              available=any(isinstance(x,dict) and x.get('id')=='openai/gpt-oss-120b'
-                  for x in data['data'])
-              print('metadata_probe: http_200; target_listed=' + str(available).lower())
+              if not isinstance(data,dict) or not isinstance(data.get('choices'),list):
+                  raise ValueError('unexpected response')
+              print('chat_probe: http_200; model_responded=true')
           except urllib.error.HTTPError as exc:
-              code = exc.code if type(exc.code) is int and 100 <= exc.code <= 599 else 0
-              print('metadata_probe: http_' + str(code) + '; target_listed=unknown')
+              code=exc.code if type(exc.code) is int and 100<=exc.code<=599 else 0
+              kind='unknown'
+              try:
+                  content=exc.read(4097)
+                  if len(content)<=4096:
+                      try:
+                          error=json.loads(content)
+                          if isinstance(error,dict) and isinstance(error.get('error'),dict):
+                              kind='json_error'
+                              error_code=error['error'].get('code')
+                              if error_code in ('model_permission_blocked_org',
+                                                'model_permission_blocked_project'):
+                                  kind=error_code
+                      except ValueError:
+                          kind='non_json_error'
+              except Exception:
+                  pass
+              print('chat_probe: http_'+str(code)+'; error_category='+kind)
           except Exception:
-              print('metadata_probe: transport_or_schema_error; target_listed=unknown')
+              print('chat_probe: transport_or_schema_error')
           PY
 
   explicitly-approved-owned-model:

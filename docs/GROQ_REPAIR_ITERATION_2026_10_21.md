@@ -199,7 +199,8 @@ submission or financial commitment. Confirmed received revenue remains **$0**.
   post-measurement partial-scope retry correction. Hosted
   [39682486049](https://github.com/Ledgercorp/BountyForge/actions/runs/39682486049):
   **321 total, 314 passed, seven skipped, zero failures**. Ten harness and four
-  dashboard tests also passed locally. No new live inference after the freeze.
+  dashboard tests also passed locally. No live inference followed the frozen
+  historical experiment.
 
 Exact per-commit changed files, infrastructure, evidence links, deployment,
 security skips, purchases, external actions and unresolved gates are recorded

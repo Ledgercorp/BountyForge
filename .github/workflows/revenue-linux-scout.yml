@@ -1,0 +1,64 @@
+name: BountyForge revenue scout on standard Linux
+
+# Research only. Cron activates only if later merged to the default branch.
+# No model calls, paid services, external claims, source execution or submissions.
+on:
+  push:
+    branches: [engineering/revenue-linux-scout-20261021]
+    paths:
+      - '.github/workflows/revenue-linux-scout.yml'
+      - 'bountyforge/revenue_scout.py'
+      - 'tests/test_revenue_scout.py'
+  workflow_dispatch:
+    inputs:
+      scan_mode:
+        description: Read-only live research or offline smoke test
+        type: choice
+        options: [offline, live]
+        default: offline
+  schedule:
+    - cron: '17 12 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bountyforge-revenue-scout
+  cancel-in-progress: false
+
+jobs:
+  research-only:
+    if: ${{ github.repository == 'Ledgercorp/BountyForge' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    steps:
+      - name: Checkout trusted repository without stored credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Standard Python on public hosted Ubuntu
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Verify worker boundaries offline
+        run: python -m unittest discover -s tests -p test_revenue_scout.py -v
+      - name: Perform only read-only prospect research
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          SCAN_MODE: ${{ github.event_name == 'push' && 'live' || github.event_name == 'schedule' && 'live' || inputs.scan_mode }}
+          BOUNTYFORGE_SUBMIT_ENABLED: '0'
+        run: |
+          set -euo pipefail
+          mkdir -p revenue-evidence
+          python -m bountyforge.revenue_scout \
+            --mode "$SCAN_MODE" \
+            --output revenue-evidence/prospects.json \
+            --summary revenue-evidence/summary.md
+          cat revenue-evidence/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Retain sanitized prospect list for 2 days
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bountyforge-revenue-research-${{ github.run_id }}
+          path: revenue-evidence/prospects.json
+          retention-days: 2

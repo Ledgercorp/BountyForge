@@ -9,6 +9,8 @@ on:
       - '.github/workflows/revenue-linux-scout.yml'
       - 'bountyforge/revenue_scout.py'
       - 'tests/test_revenue_scout.py'
+      - 'bountyforge/groq_adapter.py'
+      - 'tests/test_groq_adapter.py'
   workflow_dispatch:
     inputs:
       scan_mode:
@@ -41,7 +43,9 @@ jobs:
         with:
           python-version: '3.11'
       - name: Verify worker boundaries offline
-        run: python -m unittest discover -s tests -p test_revenue_scout.py -v
+        run: |
+          python -m unittest discover -s tests -p test_revenue_scout.py -v
+          python -m unittest discover -s tests -p test_groq_adapter.py -v
       - name: Perform only read-only prospect research
         env:
           GITHUB_TOKEN: ${{ github.token }}

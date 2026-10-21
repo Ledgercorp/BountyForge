@@ -13,6 +13,8 @@ on:
       - 'tests/test_groq_adapter.py'
       - 'bountyforge/stripe_order_gate.py'
       - 'tests/test_stripe_order_gate.py'
+      - 'bountyforge/paid_review_ledger.py'
+      - 'tests/test_paid_review_ledger.py'
   pull_request:
     branches: [engineering/bounded-autonomy-20261020]
     paths:
@@ -23,6 +25,8 @@ on:
       - 'tests/test_groq_adapter.py'
       - 'bountyforge/stripe_order_gate.py'
       - 'tests/test_stripe_order_gate.py'
+      - 'bountyforge/paid_review_ledger.py'
+      - 'tests/test_paid_review_ledger.py'
   workflow_dispatch:
     inputs:
       scan_mode:

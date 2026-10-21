@@ -2,8 +2,8 @@ name: BountyForge owned Qwen diagnosis protocol study
 
 # One-shot evidence only. No recurring schedule and no commercial code.
 on:
-  push:
-    branches: [engineering/revenue-linux-scout-20261021]
+  pull_request:
+    branches: [engineering/bounded-autonomy-20261020]
     paths:
       - '.github/workflows/owned-qwen-v6-study.yml'
 
@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   compare-owned-fixtures:
-    if: ${{ github.repository == 'Ledgercorp/BountyForge' && github.event_name == 'push' && github.ref == 'refs/heads/engineering/revenue-linux-scout-20261021' }}
+    if: ${{ github.repository == 'Ledgercorp/BountyForge' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     env:

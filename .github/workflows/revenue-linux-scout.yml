@@ -11,6 +11,14 @@ on:
       - 'tests/test_revenue_scout.py'
       - 'bountyforge/groq_adapter.py'
       - 'tests/test_groq_adapter.py'
+  pull_request:
+    branches: [engineering/bounded-autonomy-20261020]
+    paths:
+      - '.github/workflows/revenue-linux-scout.yml'
+      - 'bountyforge/revenue_scout.py'
+      - 'tests/test_revenue_scout.py'
+      - 'bountyforge/groq_adapter.py'
+      - 'tests/test_groq_adapter.py'
   workflow_dispatch:
     inputs:
       scan_mode:
@@ -30,7 +38,7 @@ concurrency:
 
 jobs:
   research-only:
-    if: ${{ github.repository == 'Ledgercorp/BountyForge' }}
+    if: ${{ github.repository == 'Ledgercorp/BountyForge' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 6
     steps:
@@ -49,7 +57,7 @@ jobs:
       - name: Perform only read-only prospect research
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          SCAN_MODE: ${{ github.event_name == 'push' && 'live' || github.event_name == 'schedule' && 'live' || inputs.scan_mode }}
+          SCAN_MODE: ${{ github.event_name == 'pull_request' && 'offline' || github.event_name == 'push' && 'live' || github.event_name == 'schedule' && 'live' || inputs.scan_mode }}
           BOUNTYFORGE_SUBMIT_ENABLED: '0'
         run: |
           set -euo pipefail

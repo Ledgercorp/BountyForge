@@ -109,6 +109,25 @@ class PaidReviewTests(unittest.TestCase):
                         worker.review_payment(SESSION)
                 self.assertEqual(worker.store.writes, 0)
 
+    def test_existing_state_without_revision_cannot_be_written(self):
+        worker=self.build();worker.store.value={'version':1,'orders':[]}
+        with patch.object(StripeOrderGate,'verify',return_value=evidence()):
+            with self.assertRaises(ReviewLedgerRejected):worker.review_payment(SESSION)
+        self.assertEqual(worker.store.writes,0)
+
+    def test_failed_cas_cannot_mutate_store_read_reference(self):
+        worker=self.build();state={'version':1,'orders':[]}
+        worker.store.read=lambda:(state,'1')
+        worker.store.conflict=True
+        with patch.object(StripeOrderGate,'verify',return_value=evidence()):
+            with self.assertRaises(ReviewLedgerRejected):worker.review_payment(SESSION)
+        self.assertEqual(state['orders'],[])
+
+    def test_boolean_schema_version_is_corrupt_state(self):
+        worker=self.build();worker.store.value={'version':True,'orders':[]};worker.store.version='1'
+        with patch.object(StripeOrderGate,'verify',return_value=evidence()):
+            with self.assertRaises(ReviewLedgerRejected):worker.review_payment(SESSION)
+
 
 if __name__ == '__main__':
     unittest.main()

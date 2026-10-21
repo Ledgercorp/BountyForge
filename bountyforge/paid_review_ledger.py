@@ -5,6 +5,7 @@ customer identifiers or credentials are retained in this ledger.
 """
 from __future__ import annotations
 import hashlib
+import copy
 import re
 from datetime import datetime
 
@@ -20,7 +21,7 @@ class ReviewLedgerRejected(ValueError):
 
 def _validate_state(state):
     if (not isinstance(state, dict) or set(state) != {'version', 'orders'}
-            or state['version'] != 1 or not isinstance(state['orders'], list)
+            or type(state['version']) is not int or state['version'] != 1 or not isinstance(state['orders'], list)
             or len(state['orders']) > MAX_PENDING):
         raise ReviewLedgerRejected('Unrecognized paid-review ledger')
     seen = set()
@@ -82,7 +83,11 @@ class PaidReviewLedger:
             if revision is not None:
                 raise ReviewLedgerRejected('Unversioned paid-review state')
             state = {'version': 1, 'orders': []}
+        elif revision is None:
+            raise ReviewLedgerRejected('Existing paid-review state lacks a CAS revision')
         _validate_state(state)
+        # Never mutate the object returned by a store before CAS commits it.
+        state = copy.deepcopy(state)
         if any(x['session_sha256'] == digest for x in state['orders']):
             return {'status': 'already_recorded', 'session_sha256': digest,
                     'execution_authorized': False, 'external_submission_authorized': False}

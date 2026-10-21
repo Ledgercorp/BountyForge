@@ -36,7 +36,7 @@ def record(session_overrides=None, payment_overrides=None):
     charge = {'id': CHARGE_ID, 'livemode': True, 'payment_intent': PAYMENT_ID,
               'status': 'succeeded', 'paid': True, 'captured': True,
               'refunded': False, 'disputed': False,
-              'amount_refunded': 0, 'currency': 'usd', 'amount': 4900}
+              'amount_refunded': 0, 'currency': 'usd', 'amount': 4900, 'amount_captured': 4900}
     session.update(session_overrides or {})
     intent.update(payment_overrides or {})
     return session, intent, charge
@@ -147,6 +147,19 @@ class StripeOrderGateTests(unittest.TestCase):
                 Response(json.dumps(x).encode()) for x in (session, payment, charge)]
             with self.assertRaises(OrderNotVerified):
                 self.make_gate().verify(SESSION_ID)
+
+    def test_full_privilege_secret_key_is_not_admitted(self):
+        with patch.dict(os.environ, {**CFG, 'STRIPE_SECRET_KEY':'sk_live_'+'x'*30},clear=True):
+            with self.assertRaises(OrderNotVerified):StripeOrderGate()
+
+    def test_charge_must_independently_confirm_exact_captured_amount(self):
+        for captured in (None, True, 100, 5000):
+            session, payment, charge = record()
+            charge['amount_captured'] = captured
+            with patch('urllib.request.build_opener') as build:
+                build.return_value.open.side_effect=[Response(json.dumps(x).encode()) for x in (session,payment,charge)]
+                with self.subTest(captured=captured),self.assertRaises(OrderNotVerified):
+                    self.make_gate().verify(SESSION_ID)
 
 
 if __name__ == '__main__':

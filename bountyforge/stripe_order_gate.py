@@ -12,6 +12,7 @@ SESSION = re.compile(r'cs_live_[a-zA-Z0-9]{20,100}\Z')
 PAYMENT = re.compile(r'pi_[a-zA-Z0-9]{12,100}\Z')
 CHARGE = re.compile(r'ch_[a-zA-Z0-9]{12,100}\Z')
 LINK = re.compile(r'plink_[a-zA-Z0-9]{12,100}\Z')
+RESTRICTED_KEY = re.compile(r'rk_live_[a-zA-Z0-9_]{10,256}\Z')
 MAX_RESPONSE_BYTES = 65536
 
 
@@ -31,7 +32,7 @@ class StripeOrderGate:
         key = os.environ.get('STRIPE_SECRET_KEY', '')
         link = os.environ.get('BOUNTYFORGE_APPROVED_PAYMENT_LINK', '')
         amount = os.environ.get('BOUNTYFORGE_APPROVED_AMOUNT_CENTS', '')
-        if (not key.startswith(('rk_live_', 'sk_live_')) or len(key) < 18
+        if (not RESTRICTED_KEY.fullmatch(key)
                 or not LINK.fullmatch(link) or not amount.isdecimal()
                 or not 100 <= int(amount) <= 100000):
             raise OrderNotVerified('Stripe payment verification not configured')
@@ -101,6 +102,8 @@ class StripeOrderGate:
                 or type(charge.get('amount_refunded')) is not int
                 or charge['amount_refunded'] != 0
                 or charge.get('currency') != 'usd'
+                or type(charge.get('amount_captured')) is not int
+                or charge['amount_captured'] != self._amount
                 or type(charge.get('amount')) is not int
                 or charge['amount'] != self._amount):
             raise OrderNotVerified('Charge is absent, incomplete, refunded or disputed')

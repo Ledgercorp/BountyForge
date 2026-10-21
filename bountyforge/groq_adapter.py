@@ -1,0 +1,108 @@
+"""Opt-in Groq GPT-OSS adapter for owned-fixture-only BountyForge evaluation.
+
+Never put a write token in this process. No automatic fallback, billing,
+job submission, commands, or third-party repository execution is permitted.
+"""
+from __future__ import annotations
+import copy
+import json
+import os
+import urllib.request
+
+URL = 'https://api.groq.com/openai/v1/chat/completions'
+MODEL_ID = 'openai/gpt-oss-120b'
+MAX_CALLS = 6
+MAX_RESPONSE_BYTES = 65536
+
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        raise RuntimeError('External model redirects prohibited')
+
+
+class HostedGroqModel:
+    """Works with propose_lines; only explicit owner-authorized owned inputs."""
+
+    def __init__(self):
+        if (os.environ.get('BOUNTYFORGE_GROQ_FREE_PLAN_ATTESTED') != '1'
+                or not os.environ.get('GROQ_API_KEY')):
+            raise ValueError('Hosted Groq model not enabled or Free Plan not attested')
+        self._key = os.environ['GROQ_API_KEY']
+        self.last_call = None
+        self.calls = 0
+
+    @staticmethod
+    def _lines(prompt):
+        if not isinstance(prompt, str) or len(prompt.encode('utf-8')) > 3600:
+            raise ValueError('Invalid bounded prompt')
+        try:
+            values = json.loads(prompt)['editable_lines']
+        except (KeyError, TypeError, ValueError) as exc:
+            raise ValueError('Missing trusted line scope') from exc
+        if (not isinstance(values, list) or not 1 <= len(values) <= 30
+                or any(type(x) is not int or x < 1 for x in values)
+                or len(set(values)) != len(values)):
+            raise ValueError('Invalid trusted line scope')
+        return sorted(values)
+
+    def complete_line(self, system, user, max_tokens=125):
+        from bountyforge.lineedit import LINE_SCHEMA
+        lines = self._lines(user)
+        schema = copy.deepcopy(LINE_SCHEMA)
+        schema['properties']['changes']['items']['properties']['line']['enum'] = lines
+        return self._complete(system, user, max_tokens, schema, 'bounded_line_patch')
+
+    def complete_diagnosis(self, system, user, max_tokens=125):
+        lines = self._lines(user)
+        schema = {'type': 'object', 'properties': {
+            'lines': {'type': 'array', 'minItems': 1, 'maxItems': 3,
+                      'uniqueItems': True, 'items': {'type': 'integer', 'enum': lines}},
+            'reason': {'type': 'string', 'maxLength': 400},
+        }, 'required': ['lines', 'reason'], 'additionalProperties': False}
+        return self._complete(system, user, max_tokens, schema, 'bounded_line_diagnosis')
+
+    def _complete(self, system, user, max_tokens, schema, name):
+        self.last_call = None
+        if (not isinstance(system, str) or len(system.encode('utf-8')) > 3600
+                or type(max_tokens) is not int or not 1 <= max_tokens <= 150):
+            raise ValueError('Invalid generation budget')
+        if self.calls >= MAX_CALLS:
+            raise RuntimeError('Hosted inference call budget exhausted')
+        self.calls += 1  # Count before making HTTP request; no automatic retries.
+        payload = json.dumps({
+            'model': MODEL_ID,
+            'messages': [{'role': 'system', 'content': system},
+                         {'role': 'user', 'content': user}],
+            'max_completion_tokens': max_tokens,
+            'temperature': 0,
+            'stream': False,
+            'response_format': {'type': 'json_schema', 'json_schema': {
+                'name': name, 'strict': True, 'schema': schema}},
+        }).encode('utf-8')
+        req = urllib.request.Request(URL, data=payload, method='POST', headers={
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + self._key,
+        })
+        try:
+            opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoRedirect())
+            with opener.open(req, timeout=30) as response:
+                raw = response.read(MAX_RESPONSE_BYTES + 1)
+            if len(raw) > MAX_RESPONSE_BYTES:
+                raise ValueError('Response over budget')
+            result = json.loads(raw)
+            choice = result['choices'][0]
+            answer = choice['message']['content']
+            if choice.get('finish_reason') != 'stop':
+                raise ValueError('Incomplete hosted model response')
+            if not isinstance(answer, str) or not answer.strip() or len(answer.encode()) > 3000:
+                raise ValueError('Invalid hosted model response')
+            json.loads(answer)
+            usage = result.get('usage') or {}
+            self.last_call = {'finish_reason': 'stop',
+                              'completion_tokens': usage.get('completion_tokens'),
+                              'prompt_tokens': usage.get('prompt_tokens'),
+                              'provider': 'groq', 'model': MODEL_ID}
+            return answer.strip()
+        except Exception:
+            # Never echo HTTP errors, request bodies, prompts or API credentials.
+            raise RuntimeError('Hosted inference unavailable or rejected; no retry or fallback') from None

@@ -30,6 +30,8 @@ concurrency:
 
 jobs:
   safe-scan:
+    # Never run source supplied by arbitrary public fork PRs.
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     steps:

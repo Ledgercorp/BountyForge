@@ -57,7 +57,7 @@ jobs:
       - name: Perform only read-only prospect research
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          SCAN_MODE: ${{ github.event_name == 'pull_request' && 'offline' || github.event_name == 'push' && 'live' || github.event_name == 'schedule' && 'live' || inputs.scan_mode }}
+          SCAN_MODE: ${{ github.event_name == 'pull_request' && 'live' || github.event_name == 'push' && 'live' || github.event_name == 'schedule' && 'live' || inputs.scan_mode }}
           BOUNTYFORGE_SUBMIT_ENABLED: '0'
         run: |
           set -euo pipefail

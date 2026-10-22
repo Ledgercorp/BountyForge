@@ -126,6 +126,7 @@ class RegistryAcquisitionTests(unittest.TestCase):
         with self.assertRaises(RegistryEvidenceUnavailable) as found:
             acquire_pinned_python_metadata(pin, opener=opener)
         self.assertNotIn('private token', str(found.exception))
+        self.assertIn('platform_manifest', str(found.exception))
 
     def test_pin_is_required_and_never_accepted_from_remote_tag(self):
         for bad in ('latest','sha256:'+'0'*64, 'sha256:'+'A'*64, None):

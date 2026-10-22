@@ -23,10 +23,15 @@ def check():
             'runtime_execution_admitted':False,
             'commercial_fulfillment_authorized':False,
         }
-    except RegistryEvidenceUnavailable:
+    except RegistryEvidenceUnavailable as error:
+        permitted = ('reference_pin','anonymous_token','pinned_reference',
+                     'platform_manifest','config_blob','metadata_chain')
+        stage = next((p for p in permitted if str(error).endswith(' at ' + p)),
+                     'unclassified_failure')
         return {
             'kind':'one_shot_public_python_metadata',
             'result':'UNAVAILABLE_OR_UNVERIFIED',
+            'blocked_stage':stage,
             'compressed_layer_bytes_verified':False,
             'publisher_signature_verified':False,
             'sbom_attestation_verified':False,

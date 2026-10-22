@@ -75,10 +75,13 @@ def acquire_pinned_python_metadata(index_pin, *, opener=None):
     The pin is supplied by *trusted* application policy, not the registry.
     This routine is intentionally unable to authorize a runtime.
     """
+    stage = 'reference_pin'
     try:
         pin = _digest(index_pin)
         client = opener if opener is not None else _opener()
+        stage = 'anonymous_token'
         token = _valid_token(_read(_TOKEN_URL, max_bytes=16_384, opener=client))
+        stage = 'pinned_reference'
         index = _read(_REGISTRY + '/manifests/' + pin, token=token, opener=client)
         if 'sha256:' + hashlib.sha256(index).hexdigest() != pin:
             raise RegistryEvidenceUnavailable('Pinned index bytes differ')
@@ -96,6 +99,7 @@ def acquire_pinned_python_metadata(index_pin, *, opener=None):
             if len(platform) != 1:
                 raise RegistryEvidenceUnavailable('Unique amd64 child missing')
             child = _digest(platform[0].get('digest'))
+            stage = 'platform_manifest'
             manifest = _read(_REGISTRY + '/manifests/' + child, token=token, opener=client)
             if 'sha256:' + hashlib.sha256(manifest).hexdigest() != child:
                 raise RegistryEvidenceUnavailable('Child manifest digest mismatch')
@@ -107,7 +111,9 @@ def acquire_pinned_python_metadata(index_pin, *, opener=None):
         if type(desc) is not dict or type(desc.get('config')) is not dict:
             raise RegistryEvidenceUnavailable('Image configuration descriptor missing')
         confighash = _digest(desc['config'].get('digest'))
+        stage = 'config_blob'
         config = _read(_REGISTRY + '/blobs/' + confighash, token=token, opener=client)
+        stage = 'metadata_chain'
         checked = verify_pinned_image_reference(
             index, manifest, config, expected_reference_digest=pin)
         return {
@@ -121,7 +127,7 @@ def acquire_pinned_python_metadata(index_pin, *, opener=None):
             'runtime_execution_admitted': False,
         }
     except (RegistryEvidenceUnavailable, OCIReviewRejected):
-        raise RegistryEvidenceUnavailable('Pinned OCI metadata not authenticated') from None
+        raise RegistryEvidenceUnavailable('Pinned OCI metadata blocked at ' + stage) from None
     except (TypeError, KeyError, AttributeError, ValueError, RecursionError,
             OSError, UnicodeError):
-        raise RegistryEvidenceUnavailable('Pinned OCI acquisition unavailable') from None
+        raise RegistryEvidenceUnavailable('Pinned OCI acquisition blocked at ' + stage) from None

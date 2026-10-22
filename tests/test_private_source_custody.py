@@ -70,7 +70,7 @@ class PrivateSourceCustodyTests(unittest.TestCase):
         result = self.snapshot()
         self.assertEqual(result['kind'], 'private_custody_snapshot')
         self.assertEqual(result['source_sha256'], self.payload['source_sha256'])
-        self.assertEqual(result['test_sha256'], self.payload['tests_sha256'])
+        self.assertEqual(result['tests_sha256'], self.payload['tests_sha256'])
         for key in ('execution_authorized', 'source_accepted', 'delivery_authorized',
                     'model_sharing_verified', 'fresh_payment_verified', 'private_worker_admitted'):
             self.assertIs(result[key], False)

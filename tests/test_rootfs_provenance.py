@@ -38,6 +38,11 @@ class RootfsProvenanceTests(unittest.TestCase):
                             key=lambda p: len(p.parts), reverse=True):
             child.chmod(0o700 if child.parts[-1] in ('work', 'tmp') else 0o500)
 
+    def test_offline_builder_marks_all_runtime_roots_nonwritable(self):
+        builder = (Path(__file__).resolve().parents[1] /
+                   'isolation/build_rootfs.sh').read_text()
+        self.assertIn('chmod -R a-w "$root/usr" "$root/lib" "$root/lib64"', builder)
+
     def test_hash_is_stable_and_requires_external_exact_pin(self):
         report = inventory_rootfs(self.path)
         self.assertEqual(report['kind'], 'rootfs_file_provenance_inventory')

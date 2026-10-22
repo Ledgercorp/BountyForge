@@ -11,7 +11,7 @@ from unittest.mock import patch
 from bountyforge.paid_review_store import SQLitePaidReviewStore
 from bountyforge.paid_scope_review import SQLiteScopeReviewStore, PaidScopeReview
 from bountyforge.private_source_inventory import PrivateSourceRejected
-from bountyforge.private_source_custody import create_review_snapshot, verify_private_snapshot
+from bountyforge.private_source_custody import create_review_snapshot, verify_private_snapshot, verify_recorded_private_snapshot
 
 NOW = 1792616400
 KEY = b'unit-private-custody-owner-secret-33'
@@ -151,6 +151,61 @@ class PrivateSourceCustodyTests(unittest.TestCase):
             with self.assertRaises(PrivateSourceRejected):
                 self.snapshot()
         self.assertFalse(any(p.name.startswith('sealed-') for p in self.vault.iterdir()))
+
+    def test_snapshot_reopens_with_current_signed_lease_without_original_source(self):
+        result = self.snapshot()
+        self.source.unlink()
+        self.test.unlink()
+        evidence = verify_recorded_private_snapshot(
+            self.vault / result['snapshot_name'], self.review, SESSION,
+            token=self.lease['token'], expected_fence=self.lease['fence'], now=NOW + 3)
+        self.assertEqual(evidence['snapshot_sha256'], result['snapshot_sha256'])
+        self.assertTrue(evidence['signed_scope_matched'])
+        self.assertTrue(evidence['review_lease_validated'])
+        self.assertFalse(evidence['execution_authorized'])
+        self.assertFalse(evidence['fresh_payment_verified'])
+
+    def test_revoked_lease_invalidates_snapshot_verification_but_not_custody_bytes(self):
+        result = self.snapshot()
+        self.review.hold(SESSION, reason='cancelled', now=NOW + 2)
+        with self.assertRaises(PrivateSourceRejected):
+            verify_recorded_private_snapshot(
+                self.vault / result['snapshot_name'], self.review, SESSION,
+                token=self.lease['token'], expected_fence=self.lease['fence'], now=NOW + 3)
+        self.assertTrue(verify_private_snapshot(
+            self.vault / result['snapshot_name'], self.payload)['hashes_verified'])
+
+    def test_snapshot_review_expiry_wrong_key_and_stale_fence_fail_closed(self):
+        result = self.snapshot()
+        snapshot_path = self.vault / result['snapshot_name']
+        for fence, when in ((self.lease['fence'] + 1, NOW + 2),
+                            (self.lease['fence'], NOW + 61)):
+            with self.assertRaises(PrivateSourceRejected):
+                verify_recorded_private_snapshot(
+                    snapshot_path, self.review, SESSION,
+                    token=self.lease['token'], expected_fence=fence, now=when)
+        other = PaidScopeReview(
+            self.review.store, self.review.payment_reviews,
+            approval_key=b'a-different-custody-verifier-key-32bytes')
+        with self.assertRaises(PrivateSourceRejected):
+            verify_recorded_private_snapshot(
+                snapshot_path, other, SESSION,
+                token=self.lease['token'], expected_fence=self.lease['fence'], now=NOW+3)
+
+    def test_concurrent_scope_revocation_during_snapshot_read_is_terminal(self):
+        import bountyforge.private_source_custody as custody
+        result = self.snapshot()
+        real_read = custody.verify_private_snapshot
+        def revoke_on_read(*args):
+            verified = real_read(*args)
+            self.review.hold(SESSION, reason='owner_revoked', now=NOW + 3)
+            return verified
+        with patch('bountyforge.private_source_custody.verify_private_snapshot',
+                   side_effect=revoke_on_read):
+            with self.assertRaises(PrivateSourceRejected):
+                verify_recorded_private_snapshot(
+                    self.vault / result['snapshot_name'], self.review, SESSION,
+                    token=self.lease['token'], expected_fence=self.lease['fence'], now=NOW+3)
 
     def test_vault_with_existing_source_or_symlink_not_allowed(self):
         with self.assertRaises(PrivateSourceRejected):

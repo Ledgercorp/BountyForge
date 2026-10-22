@@ -207,6 +207,39 @@ class PrivateSourceCustodyTests(unittest.TestCase):
                     self.vault / result['snapshot_name'], self.review, SESSION,
                     token=self.lease['token'], expected_fence=self.lease['fence'], now=NOW+3)
 
+    def test_injected_partial_write_failure_never_publishes_snapshot(self):
+        import bountyforge.private_source_custody as custody
+        original_write = custody._write_file
+        called = [0]
+        def fail_second_write(*args, **kwargs):
+            called[0] += 1
+            if called[0] == 2:
+                raise OSError('simulated disk full')
+            return original_write(*args, **kwargs)
+        with patch('bountyforge.private_source_custody._write_file',
+                   side_effect=fail_second_write):
+            with self.assertRaises(PrivateSourceRejected):
+                self.snapshot()
+        self.assertEqual(called[0], 2)
+        self.assertFalse(any(x.name.startswith('sealed-') for x in self.vault.iterdir()))
+
+    def test_payment_review_mutation_during_snapshot_reopen_fails(self):
+        import bountyforge.private_source_custody as custody
+        result = self.snapshot()
+        real_reopen = custody.verify_private_snapshot
+        def change_paid_revision(*args, **kwargs):
+            verified = real_reopen(*args, **kwargs)
+            state, version = self.review.payment_reviews.read()
+            self.review.payment_reviews.write(state, version)
+            return verified
+        with patch('bountyforge.private_source_custody.verify_private_snapshot',
+                   side_effect=change_paid_revision):
+            with self.assertRaises(PrivateSourceRejected):
+                verify_recorded_private_snapshot(
+                    self.vault / result['snapshot_name'], self.review, SESSION,
+                    token=self.lease['token'], expected_fence=self.lease['fence'],
+                    now=NOW+3)
+
     def test_vault_with_existing_source_or_symlink_not_allowed(self):
         with self.assertRaises(PrivateSourceRejected):
             create_review_snapshot(self.source_root, self.source_root, self.review, SESSION,

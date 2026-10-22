@@ -38,8 +38,9 @@ class PrivateJobContractTests(unittest.TestCase):
     def setUp(self):
         self.mocked=patch.dict(sys.modules,stubs())
         self.mocked.start();self.addCleanup(self.mocked.stop)
-        self.proof=patch.object(job,'verify_oci_manifest_chain',return_value={
-            'index_digest':DIGEST,
+        self.proof=patch.object(job,'verify_pinned_image_reference',return_value={
+            'pinned_reference_digest':DIGEST,
+            'pinned_reference_kind':'linux_amd64_manifest',
             'publisher_signature_verified':False,
             'runtime_execution_admitted':False})
         self.proof.start();self.addCleanup(self.proof.stop)
@@ -48,7 +49,7 @@ class PrivateJobContractTests(unittest.TestCase):
         r=call()
         self.assertEqual(r['status'],'REVIEWED_NOT_ADMITTED')
         self.assertTrue(r['current_signed_custody_reverified'])
-        self.assertTrue(r['oci_index_to_config_digests_verified'])
+        self.assertTrue(r['oci_pinned_reference_to_config_digests_verified'])
         self.assertGreaterEqual(len(r['blocking_requirements']),7)
         for k in ('customer_source_authorized','execution_authorized',
                   'delivery_authorized','fresh_payment_verified',
@@ -58,10 +59,10 @@ class PrivateJobContractTests(unittest.TestCase):
         self.assertNotIn('/private-snapshot',str(r))
 
     def test_provenance_is_bound_to_fixed_docker_image_digest(self):
-        from bountyforge.private_job_contract import verify_oci_manifest_chain
+        from bountyforge.private_job_contract import verify_pinned_image_reference
         call()
-        args=verify_oci_manifest_chain.call_args.kwargs
-        self.assertEqual(args['expected_index_digest'],DIGEST)
+        args=verify_pinned_image_reference.call_args.kwargs
+        self.assertEqual(args['expected_reference_digest'],DIGEST)
 
     def test_failed_current_custody_and_revocation_do_not_pass(self):
         mod=sys.modules['bountyforge.private_source_custody']
@@ -81,18 +82,19 @@ class PrivateJobContractTests(unittest.TestCase):
         with self.assertRaises(job.PrivateJobReviewBlocked):call()
 
     def test_wrong_verified_index_digest_cannot_be_accepted(self):
-        job.verify_oci_manifest_chain.return_value={
-            'index_digest':'sha256:'+'0'*64,
+        job.verify_pinned_image_reference.return_value={
+            'pinned_reference_digest':'sha256:'+'0'*64,
             'publisher_signature_verified':False,
             'runtime_execution_admitted':False}
         with self.assertRaises(job.PrivateJobReviewBlocked):call()
 
     def test_missing_or_spoofed_provenance_rejected(self):
-        job.verify_oci_manifest_chain.return_value={'index_digest':DIGEST,
+        job.verify_pinned_image_reference.return_value={'pinned_reference_digest':DIGEST,
+            'pinned_reference_kind':'linux_amd64_manifest',
                     'publisher_signature_verified':True,
                     'runtime_execution_admitted':True}
         with self.assertRaises(job.PrivateJobReviewBlocked):call()
-        job.verify_oci_manifest_chain.side_effect=job.OCIReviewRejected('secret source')
+        job.verify_pinned_image_reference.side_effect=job.OCIReviewRejected('secret source')
         with self.assertRaises(job.PrivateJobReviewBlocked) as caught:call()
         self.assertNotIn('secret source',str(caught.exception))
 

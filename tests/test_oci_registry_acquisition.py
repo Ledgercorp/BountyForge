@@ -69,6 +69,23 @@ class RegistryAcquisitionTests(unittest.TestCase):
         self.assertNotIn('Bearer ', str(result))
         self.assertNotIn('x'*24, str(result))
 
+
+    def test_direct_pinned_manifest_uses_three_requests_and_no_index_lookup(self):
+        index, manifest, config=fixture()
+        from bountyforge.oci_runtime_provenance import MANIFEST
+        pin=descriptor(manifest,MANIFEST)['digest']
+        config_digest=json.loads(manifest)['config']['digest']
+        urls=[_TOKEN_URL,_REGISTRY+'/manifests/'+pin,
+              _REGISTRY+'/blobs/'+config_digest]
+        opener=Opener(dict(zip(urls,[
+            Response(b'{"token":"'+b'x'*24+b'"}'),
+            Response(manifest),Response(config)])))
+        evidence=acquire_pinned_python_metadata(pin,opener=opener)
+        self.assertEqual(opener.urls,urls)
+        self.assertEqual(evidence['pinned_reference_kind'],'linux_amd64_manifest')
+        self.assertEqual(evidence['pinned_reference_digest'],pin)
+        self.assertFalse(evidence['publisher_signature_verified'])
+
     def test_registry_supplied_wrong_index_bytes_rejected(self):
         pin, opener, urls = setup()
         opener.mapping[urls[1]] = Response(b'{"tampered":true}')

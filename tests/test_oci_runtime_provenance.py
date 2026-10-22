@@ -3,7 +3,7 @@ import json
 import unittest
 from copy import deepcopy
 from bountyforge.oci_runtime_provenance import (
-    CONFIG, INDEX, MANIFEST, OCIReviewRejected, verify_oci_manifest_chain)
+    CONFIG, INDEX, MANIFEST, OCIReviewRejected, verify_oci_manifest_chain, verify_pinned_image_reference)
 
 
 def blob(d):
@@ -110,5 +110,35 @@ class OCIProvenanceTests(unittest.TestCase):
                 verify_oci_manifest_chain(i,m,c, expected_index_digest=digest)
         with self.assertRaises(OCIReviewRejected):review(i,m,b'not JSON')
         with self.assertRaises(OCIReviewRejected):review(i,m,c+b'x'*(2*1024*1024))
+
+    def test_directly_pinned_amd64_manifest_and_existing_index_both_verify(self):
+        index, manifest, config = fixture()
+        direct_pin=descriptor(manifest, MANIFEST)['digest']
+        verified=verify_pinned_image_reference(
+            manifest,manifest,config,expected_reference_digest=direct_pin)
+        self.assertEqual(verified['pinned_reference_kind'],'linux_amd64_manifest')
+        self.assertEqual(verified['pinned_reference_digest'],direct_pin)
+        self.assertTrue(verified['pinned_reference_to_config_digests_verified'])
+        self.assertIsNone(verified['index_digest'])
+        self.assertFalse(verified['runtime_execution_admitted'])
+        multi=verify_pinned_image_reference(
+            index,manifest,config,
+            expected_reference_digest=descriptor(index, INDEX)['digest'])
+        self.assertEqual(multi['pinned_reference_kind'],'multi_platform_index')
+
+    def test_direct_manifest_mismatch_or_substitution_is_rejected(self):
+        _,manifest,config=fixture()
+        pin=descriptor(manifest,MANIFEST)['digest']
+        for parts in ((manifest,manifest+b' ',config),
+                      (manifest,manifest,config+b' '),
+                      (manifest+b' ',manifest+b' ',config)):
+            with self.subTest(size=len(parts[0])),self.assertRaises(OCIReviewRejected):
+                verify_pinned_image_reference(*parts,expected_reference_digest=pin)
+        wrong=json.loads(config);wrong['architecture']='arm64'
+        cb=blob(wrong);m=json.loads(manifest);m['config']=descriptor(cb,CONFIG)
+        newer=blob(m)
+        with self.assertRaises(OCIReviewRejected):
+            verify_pinned_image_reference(newer,newer,cb,
+                expected_reference_digest=descriptor(newer,MANIFEST)['digest'])
 
 if __name__ == '__main__': unittest.main()

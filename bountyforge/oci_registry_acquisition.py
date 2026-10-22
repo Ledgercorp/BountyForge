@@ -11,7 +11,7 @@ import urllib.error
 import urllib.request
 from .oci_runtime_provenance import (
     DOCKER_CONFIG, DOCKER_INDEX, DOCKER_MANIFEST, CONFIG, INDEX, MANIFEST,
-    OCIReviewRejected, _digest, _strict_json, verify_oci_manifest_chain,
+    OCIReviewRejected, _digest, _strict_json, verify_pinned_image_reference,
 )
 
 _TOKEN_URL = ('https://auth.docker.io/token?service=registry.docker.io&'
@@ -83,28 +83,33 @@ def acquire_pinned_python_metadata(index_pin, *, opener=None):
         if 'sha256:' + hashlib.sha256(index).hexdigest() != pin:
             raise RegistryEvidenceUnavailable('Pinned index bytes differ')
         obj = _strict_json(index)
-        if type(obj) is not dict or obj.get('mediaType') not in (INDEX, DOCKER_INDEX):
-            raise RegistryEvidenceUnavailable('Pinned image is not an OCI index')
-        manifests = obj.get('manifests')
-        if type(manifests) is not list or not 1 <= len(manifests) <= 64:
-            raise RegistryEvidenceUnavailable('Manifest descriptor set invalid')
-        platform = [m for m in manifests if type(m) is dict
-                    and type(m.get('platform')) is dict
-                    and m['platform'].get('os') == 'linux'
-                    and m['platform'].get('architecture') == 'amd64']
-        if len(platform) != 1:
-            raise RegistryEvidenceUnavailable('Unique amd64 child missing')
-        child = _digest(platform[0].get('digest'))
-        manifest = _read(_REGISTRY + '/manifests/' + child, token=token, opener=client)
-        if 'sha256:' + hashlib.sha256(manifest).hexdigest() != child:
-            raise RegistryEvidenceUnavailable('Child manifest digest mismatch')
+        if type(obj) is not dict:
+            raise RegistryEvidenceUnavailable('Pinned registry object malformed')
+        if obj.get('mediaType') in (INDEX, DOCKER_INDEX):
+            manifests = obj.get('manifests')
+            if type(manifests) is not list or not 1 <= len(manifests) <= 64:
+                raise RegistryEvidenceUnavailable('Manifest descriptor set invalid')
+            platform = [m for m in manifests if type(m) is dict
+                        and type(m.get('platform')) is dict
+                        and m['platform'].get('os') == 'linux'
+                        and m['platform'].get('architecture') == 'amd64']
+            if len(platform) != 1:
+                raise RegistryEvidenceUnavailable('Unique amd64 child missing')
+            child = _digest(platform[0].get('digest'))
+            manifest = _read(_REGISTRY + '/manifests/' + child, token=token, opener=client)
+            if 'sha256:' + hashlib.sha256(manifest).hexdigest() != child:
+                raise RegistryEvidenceUnavailable('Child manifest digest mismatch')
+        elif obj.get('mediaType') in (MANIFEST, DOCKER_MANIFEST):
+            manifest = index
+        else:
+            raise RegistryEvidenceUnavailable('Unsupported OCI reference type')
         desc = _strict_json(manifest)
         if type(desc) is not dict or type(desc.get('config')) is not dict:
             raise RegistryEvidenceUnavailable('Image configuration descriptor missing')
         confighash = _digest(desc['config'].get('digest'))
         config = _read(_REGISTRY + '/blobs/' + confighash, token=token, opener=client)
-        checked = verify_oci_manifest_chain(
-            index, manifest, config, expected_index_digest=pin)
+        checked = verify_pinned_image_reference(
+            index, manifest, config, expected_reference_digest=pin)
         return {
             **checked, 'source': 'anonymous_docker_hub_library_python',
             'acquired_over_https': True,

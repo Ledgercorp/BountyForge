@@ -160,3 +160,67 @@ def _read_config(raw, advertised):
     if type(obj) is not dict:
         raise OCIReviewRejected('Invalid image config')
     return obj, actual
+
+
+def verify_pinned_image_reference(reference_bytes, platform_manifest_bytes,
+                                  config_bytes, *, expected_reference_digest):
+    """Verify an *index* or a directly pinned linux/amd64 manifest by SHA.
+
+    A digest may pin a single-platform image manifest, not a multi-platform
+    index. For that case platform_manifest_bytes must equal reference_bytes.
+    This returns only hash evidence, never publisher or execution authority.
+    """
+    pin = _digest(expected_reference_digest)
+    reference, measured = _read(
+        reference_bytes, digest=pin,
+        allowed=(INDEX, DOCKER_INDEX, MANIFEST, DOCKER_MANIFEST))
+    if reference['mediaType'] in (INDEX, DOCKER_INDEX):
+        result = verify_oci_manifest_chain(
+            reference_bytes, platform_manifest_bytes, config_bytes,
+            expected_index_digest=pin)
+        return {**result, 'pinned_reference_digest': measured,
+                'pinned_reference_kind': 'multi_platform_index',
+                'pinned_reference_to_config_digests_verified': True}
+    if type(platform_manifest_bytes) is not bytes or platform_manifest_bytes != reference_bytes:
+        raise OCIReviewRejected('Pinned platform manifest differs from supplied child')
+    config_digest, config_size = _descriptor(reference.get('config'),
+                                             (CONFIG, DOCKER_CONFIG))
+    if type(config_bytes) is not bytes or len(config_bytes) != config_size:
+        raise OCIReviewRejected('Pinned image config length mismatch')
+    config, checked_config_digest = _read_config(config_bytes, config_digest)
+    if config.get('os') != 'linux' or config.get('architecture') != 'amd64':
+        raise OCIReviewRejected('Pinned platform config mismatch')
+    layers = reference.get('layers')
+    if type(layers) is not list or not 1 <= len(layers) <= MAX_LAYERS:
+        raise OCIReviewRejected('Pinned image layers absent or excessive')
+    compressed = set()
+    for layer in layers:
+        digest, _ = _descriptor(layer, LAYERS)
+        if digest in compressed:
+            raise OCIReviewRejected('Duplicate compressed layer digest')
+        compressed.add(digest)
+    rootfs = config.get('rootfs')
+    diff_ids = rootfs.get('diff_ids') if type(rootfs) is dict else None
+    if (type(rootfs) is not dict or rootfs.get('type') != 'layers'
+            or type(diff_ids) is not list or len(diff_ids) != len(layers)
+            or any(type(d) is not str or SHA.fullmatch(d) is None for d in diff_ids)):
+        raise OCIReviewRejected('Uncompressed layer digest closure missing')
+    return {
+        'schema': 1, 'kind': 'oci_pinned_platform_manifest_review',
+        'pinned_reference_digest': measured,
+        'pinned_reference_kind': 'linux_amd64_manifest',
+        'index_digest': None,
+        'platform_manifest_digest': measured,
+        'config_digest': checked_config_digest,
+        'layer_descriptor_count': len(layers),
+        'pinned_reference_to_config_digests_verified': True,
+        'index_to_config_digests_verified': False,
+        'compressed_layer_bytes_verified': False,
+        'publisher_signature_verified': False,
+        'build_provenance_attestation_verified': False,
+        'sbom_attestation_verified': False,
+        'independent_pin_origin_verified': False,
+        'runtime_execution_admitted': False,
+        'customer_source_authorized': False,
+        'delivery_authorized': False,
+    }

@@ -12,7 +12,8 @@ def check():
         return {
             'kind':'one_shot_public_python_metadata',
             'result':'METADATA_HASHES_VERIFIED',
-            'index_digest':evidence['index_digest'],
+            'pinned_reference_digest':evidence['pinned_reference_digest'],
+            'pinned_reference_kind':evidence['pinned_reference_kind'],
             'platform_manifest_digest':evidence['platform_manifest_digest'],
             'config_digest':evidence['config_digest'],
             'layer_descriptor_count':evidence['layer_descriptor_count'],

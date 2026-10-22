@@ -5,7 +5,7 @@ Even passing all *reviewable* prerequisites leaves the job NOT_ADMITTED.
 """
 from __future__ import annotations
 
-from .oci_runtime_provenance import OCIReviewRejected, verify_oci_manifest_chain
+from .oci_runtime_provenance import OCIReviewRejected, verify_pinned_image_reference
 
 
 class PrivateJobReviewBlocked(ValueError):
@@ -48,11 +48,11 @@ def review_private_job_prerequisites(snapshot_root, coordinator, session, *,
         boundary = review_owned_docker_proof(owned_docker_proof)
         if boundary.get('docker_image_digest') != IMAGE.split('@', 1)[1]:
             raise PrivateJobReviewBlocked('Selected container digest mismatch')
-        provenance = verify_oci_manifest_chain(
+        provenance = verify_pinned_image_reference(
             oci_index, oci_manifest, oci_config,
-            expected_index_digest=IMAGE.split('@', 1)[1])
+            expected_reference_digest=IMAGE.split('@', 1)[1])
         second = current_custody()
-        if provenance.get('index_digest') != IMAGE.split('@', 1)[1]:
+        if provenance.get('pinned_reference_digest') != IMAGE.split('@', 1)[1]:
             raise PrivateJobReviewBlocked('Unexpected index pin')
         if (first.get('snapshot_sha256') != second.get('snapshot_sha256')
                 or first.get('lease_fence') != second.get('lease_fence')
@@ -75,10 +75,11 @@ def review_private_job_prerequisites(snapshot_root, coordinator, session, *,
         'schema': 1, 'kind': 'private_job_prerequisite_review',
         'status': 'REVIEWED_NOT_ADMITTED',
         'snapshot_sha256': second['snapshot_sha256'],
-        'index_digest': provenance['index_digest'],
+        'pinned_reference_digest': provenance['pinned_reference_digest'],
+        'pinned_reference_kind': provenance['pinned_reference_kind'],
         'owned_container_digest_matched': True,
         'current_signed_custody_reverified': True,
-        'oci_index_to_config_digests_verified': True,
+        'oci_pinned_reference_to_config_digests_verified': True,
         'trusted_producer_signature_verified': False,
         'owned_docker_attestation_authenticated': False,
         'private_code_executed': False,

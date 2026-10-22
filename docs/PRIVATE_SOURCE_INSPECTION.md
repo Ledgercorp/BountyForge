@@ -74,10 +74,13 @@ approved scope describes, *before* any hypothetical execution decision.
   **green**, 388 total, 380 passed, 8 default rootfs skips. Real private
   temporary SQLite journals and fake signed payments were used, not Stripe.
 
-The last added test also exercises **concurrent revocation during byte
-inspection** and must pass in the next hosted acceptance. No new model
-benchmark was requested; the historical 1/5, owned structural 2/4 and frozen
-paired 3/4 versus 2/4 remain independent, unchanged measurements.
+- [39702635270](https://github.com/Ledgercorp/BountyForge/actions/runs/39702635270):
+  final additional **concurrent-revocation** negative check passed; 389 total,
+  **381 passed, 8 default rootfs skips**.
+
+No new model benchmark was requested; the historical 1/5, owned structural
+2/4 and frozen paired 3/4 versus 2/4 remain independent, unchanged
+measurements.
 
 ## Explicit limits before anything can be commercially admitted
 

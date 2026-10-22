@@ -92,6 +92,21 @@ class PrivateSourceInventoryTests(unittest.TestCase):
         with self.assertRaises(PrivateSourceRejected):
             inspect_private_source(linked, self.approval)
 
+    def test_root_symlink_swap_during_open_does_not_follow_replacement(self):
+        original_open = os.open
+        relocated = Path(self.tmp.name) / 'relocated-private'
+        swapped = [False]
+        def swap_on_open(name, flags, *args, **kwargs):
+            if not swapped[0] and str(name) == str(self.root):
+                swapped[0] = True
+                self.root.rename(relocated)
+                self.root.symlink_to(relocated, target_is_directory=True)
+            return original_open(name, flags, *args, **kwargs)
+        with patch('bountyforge.private_source_inventory.os.open', side_effect=swap_on_open):
+            with self.assertRaises(PrivateSourceRejected):
+                self.inspect()
+        self.assertTrue(swapped[0], 'Test must reproduce the directory swap')
+
     def test_unapproved_extra_file_and_hidden_artifact_rejected(self):
         extra = self.root / 'requirements.txt'
         extra.write_text('requests\n')

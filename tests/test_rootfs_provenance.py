@@ -73,8 +73,10 @@ class RootfsProvenanceTests(unittest.TestCase):
     def test_extra_file_and_empty_directory_change_digest(self):
         expected = inventory_rootfs(self.path)['tree_sha256']
         extra = self.path / 'usr/lib/python3.13/extra.py'
+        extra.parent.chmod(0o700)
         extra.write_bytes(b'pass\n')
         extra.chmod(0o400)
+        extra.parent.chmod(0o500)
         with self.assertRaises(RootfsProvenanceRejected):
             verify_rootfs_pin(self.path, expected)
         extra.parent.chmod(0o700)
@@ -90,14 +92,19 @@ class RootfsProvenanceTests(unittest.TestCase):
         linked = self.path / 'usr/lib/python3.13/escaped'
         linked.parent.chmod(0o700)
         linked.symlink_to(sibling)
+        linked.parent.chmod(0o500)
         with self.assertRaises(RootfsProvenanceRejected):
             inventory_rootfs(self.path)
+        linked.parent.chmod(0o700)
         linked.unlink()
         os.link(self.lib, linked)
+        linked.parent.chmod(0o500)
         with self.assertRaises(RootfsProvenanceRejected):
             inventory_rootfs(self.path)
+        linked.parent.chmod(0o700)
         linked.unlink()
         os.mkfifo(linked, mode=0o600)
+        linked.parent.chmod(0o500)
         with self.assertRaises(RootfsProvenanceRejected):
             inventory_rootfs(self.path)
 

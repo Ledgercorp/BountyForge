@@ -58,7 +58,7 @@ def _read(raw, *, digest=None, allowed):
         raise OCIReviewRejected('OCI blob differs from advertised digest')
     try:
         obj = _strict_json(raw)
-    except (ValueError, UnicodeError):
+    except (ValueError, UnicodeError, RecursionError):
         raise OCIReviewRejected('Malformed OCI JSON') from None
     if (type(obj) is not dict or type(obj.get('schemaVersion')) is not int
             or obj['schemaVersion'] != 2 or obj.get('mediaType') not in allowed):
@@ -67,7 +67,8 @@ def _read(raw, *, digest=None, allowed):
 
 
 def _descriptor(data, allowed):
-    if type(data) is not dict or data.get('mediaType') not in allowed:
+    if (type(data) is not dict or type(data.get('mediaType')) is not str
+            or data['mediaType'] not in allowed):
         raise OCIReviewRejected('Untrusted OCI descriptor type')
     digest = _digest(data.get('digest'))
     size = data.get('size')
@@ -154,7 +155,7 @@ def _read_config(raw, advertised):
         raise OCIReviewRejected('Image config digest mismatch')
     try:
         obj = _strict_json(raw)
-    except (ValueError, UnicodeError):
+    except (ValueError, UnicodeError, RecursionError):
         raise OCIReviewRejected('Malformed image config') from None
     if type(obj) is not dict:
         raise OCIReviewRejected('Invalid image config')

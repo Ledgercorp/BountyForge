@@ -71,6 +71,15 @@ class OCIProvenanceTests(unittest.TestCase):
         idata=json.loads(i);idata['manifests'][0].update(descriptor(updatedm,MANIFEST))
         with self.assertRaises(OCIReviewRejected):review(blob(idata),updatedm,updated)
 
+    def test_nonstring_layer_media_type_rejected_without_typeerror(self):
+        i,m,c=fixture()
+        document=json.loads(m)
+        document['layers'][0]['mediaType']=['unexpected']
+        child=blob(document)
+        index=json.loads(i)
+        index['manifests'][0].update(descriptor(child,MANIFEST))
+        with self.assertRaises(OCIReviewRejected):review(blob(index),child,c)
+
     def test_rejects_remote_blob_urls(self):
         i,m,c=fixture(); data=json.loads(m)
         data['layers'][0]['urls']=['https://example.invalid/key']

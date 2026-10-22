@@ -80,6 +80,13 @@ class PrivateJobContractTests(unittest.TestCase):
         mod.review_owned_docker_proof=lambda _: {'docker_image_digest':'sha256:'+'0'*64}
         with self.assertRaises(job.PrivateJobReviewBlocked):call()
 
+    def test_wrong_verified_index_digest_cannot_be_accepted(self):
+        job.verify_oci_manifest_chain.return_value={
+            'index_digest':'sha256:'+'0'*64,
+            'publisher_signature_verified':False,
+            'runtime_execution_admitted':False}
+        with self.assertRaises(job.PrivateJobReviewBlocked):call()
+
     def test_missing_or_spoofed_provenance_rejected(self):
         job.verify_oci_manifest_chain.return_value={'index_digest':DIGEST,
                     'publisher_signature_verified':True,

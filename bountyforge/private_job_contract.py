@@ -52,6 +52,8 @@ def review_private_job_prerequisites(snapshot_root, coordinator, session, *,
             oci_index, oci_manifest, oci_config,
             expected_index_digest=IMAGE.split('@', 1)[1])
         second = current_custody()
+        if provenance.get('index_digest') != IMAGE.split('@', 1)[1]:
+            raise PrivateJobReviewBlocked('Unexpected index pin')
         if (first.get('snapshot_sha256') != second.get('snapshot_sha256')
                 or first.get('lease_fence') != second.get('lease_fence')
                 or first.get('source_sha256') != second.get('source_sha256')
@@ -65,7 +67,8 @@ def review_private_job_prerequisites(snapshot_root, coordinator, session, *,
                 or provenance['runtime_execution_admitted'] is not False):
             raise PrivateJobReviewBlocked('Unexpected provenance authorization')
     except (PrivateSourceRejected, OwnedBoundaryRejected, OCIReviewRejected,
-            PrivateJobReviewBlocked, ValueError, TypeError, AttributeError):
+            PrivateJobReviewBlocked, ValueError, TypeError, AttributeError,
+            KeyError, OSError, OverflowError):
         raise PrivateJobReviewBlocked('Private execution prerequisite review blocked') from None
     # This report does not contain token, session, source path or source bytes.
     return {

@@ -27,7 +27,16 @@
       "failed": 0
     }
   ],
-  "latest_security_revision_hosted_run": "pending_verification",
+  "latest_security_revision_hosted_run": {
+    "commit": "ef6f569cd94f0902790712a2cb513597781d3a93",
+    "run_id": 39762578159,
+    "url": "https://github.com/Ledgercorp/BountyForge/actions/runs/39762578159",
+    "ran": 453,
+    "passed": 445,
+    "skipped": 8,
+    "failed": 0,
+    "code_before_push_tested_on_linux": true
+  },
   "trust": {
     "oci_metadata_chain_logic_locally_verified": true,
     "actual_live_pinned_image_oci_blobs_authenticated": false,
@@ -52,5 +61,12 @@
     "new_spending_usd": 0,
     "actual_customer_source_executed": false,
     "real_received_revenue_usd": 0
+  },
+  "phase_disposition": {
+    "5A": "bounded synthetic OCI chain verifier implemented; actual image origin and layers unverified",
+    "5B": "existing 20/20 owned container retained; no new production sandbox admitted",
+    "5C": "signed custody plus pinned OCI + owned Docker review-only contract implemented",
+    "5D": "existing repair engine and exposed scores preserved; no new independent model score",
+    "5E": "private payment/scope remains draft; no customer order or revenue"
   }
 }

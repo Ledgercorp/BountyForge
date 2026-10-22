@@ -38,8 +38,13 @@ The previous two integrated hosted CI runs passed:
 - Phase 5C: https://github.com/Ledgercorp/BountyForge/actions/runs/39762097354
   (451 run, 443 passed, 8 existing namespace-rootfs skips).
 
-The last additional security-hardening commit adds two negative tests.
-Its own GitHub CI run must be checked separately before asserting green.
+The final source-hardening commit added two negative tests for malformed
+layer media types and a mismatched return digest from the OCI verifier.
+Those exact changes were tested locally and passed
+[hosted CI #39762578159](https://github.com/Ledgercorp/BountyForge/actions/runs/39762578159):
+**453 tests, 445 passed, eight existing namespace-rootfs skips, zero failures**.
+The workflow remained PR-only, and read-only prospect research reported
+zero verified payable prospects and zero model calls.
 
 No real private customer code, Groq calls, paid inference, GPU pods,
 public service launch, Docker image pull, Mac access, contract, customer
@@ -72,3 +77,23 @@ investigate a dedicated private host with per-job I/O, syscall/kernel,
 identity and provenance controls. None is presently admitted.
 
 **Business disposition: NOT_READY. Verified received revenue: $0.**
+
+## Phase 5B, 5D and 5E completion boundary
+
+Phase 5B: The previous owned-only Linux Docker security acceptance remains
+20/20 under the exact pinned digest. This continuation did not claim a
+newly reviewed seccomp policy, authenticated builder chain, per-job I/O
+controller, independent kernel security review or production host.
+Private-source execution remains strictly disabled.
+
+Phase 5D: The repair engine and previously frozen scoring were not altered.
+No new held-out model evaluation was run. Tuning on already exposed fixtures
+would not establish independent commercial accuracy.
+
+Phase 5E: Existing Stripe read-only payment verification, private review
+store, signed scopes and custody remain draft engineering. They do not
+create a customer job queue, public offer, delivery permission, recorded
+income, or legal customer/model-sharing authorization.
+
+**Overall disposition: engineering accepted within non-executing scope;
+commercial fulfillment remains NOT_READY.**

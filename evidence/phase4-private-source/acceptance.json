@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "kind": "bountyforge_private_source_review_acceptance",
+  "checkpoint_date_utc": "2026-10-22",
+  "upstream_pr": 2,
+  "source_branch": "engineering/revenue-linux-scout-20261021",
+  "base_before_takeover": "6627f9f26be1f946fc57ce730a2fde4d65e4189f",
+  "result": "review_only_no_private_execution",
+  "private_source_or_customer_data_processed": false,
+  "new_model_calls": 0,
+  "additional_spend_usd": 0,
+  "authenticated_live_payment_reads": 0,
+  "received_revenue_usd": 0,
+  "new_files": [
+    "bountyforge/private_source_inventory.py",
+    "tests/test_private_source_inventory.py",
+    "tests/test_private_source_lease.py",
+    "docs/PRIVATE_SOURCE_INSPECTION.md"
+  ],
+  "checks": {
+    "source_shape_and_hashes": true,
+    "files_exact_allowlist": true,
+    "require_private_owner_permissions": true,
+    "symlink_and_hardlink_rejection": true,
+    "component_dirfd_O_NOFOLLOW": true,
+    "declared_stdlib_only": true,
+    "nonexecuting_AST_parse": true,
+    "permission_change_fails_closed": true,
+    "valid_signed_scope_verified": true,
+    "historical_paid_review_record_required": true,
+    "fenced_review_lease_required": true,
+    "revocation_during_byte_read_rejected": true,
+    "all_results_nonexecuting": true
+  },
+  "tdd": {
+    "missing_feature_red_run": 39701821754,
+    "first_green_run": 39701937220,
+    "symlink_race_red_run": 39702129453,
+    "symlink_race_green_run": 39702207513,
+    "missing_signed_review_red_run": 39702444111,
+    "signed_review_green_run": 39702503179,
+    "final_concurrent_revocation_green_run": 39702635270
+  },
+  "final_hosted": {
+    "run_url": "https://github.com/Ledgercorp/BountyForge/actions/runs/39702635270",
+    "total": 389,
+    "passed": 381,
+    "failed": 0,
+    "skipped": 8,
+    "skipped_scope": "original repo namespace/rootfs tests on GitHub Ubuntu; prior Codex Cloud Linux executed 8/8; no new claims"
+  },
+  "preserved_frozen_benchmarks": {
+    "historical_gpt_oss_v7": "1/5, eight calls",
+    "owned_gpt_oss_structural": "2/4, six calls",
+    "phase4_maintenance_pair_line": "2/4, four calls",
+    "phase4_maintenance_pair_statement": "3/4, four calls",
+    "phase4_maintenance_pair_run": 39697530398
+  },
+  "permissions": {
+    "execution_authorized": false,
+    "customer_source_accepted": false,
+    "private_worker_admitted": false,
+    "delivery_authorized": false,
+    "verified_customer_consent": false,
+    "verified_model_sharing": false,
+    "fresh_payment_authorized": false,
+    "published_service": false,
+    "production_deployed": false
+  },
+  "outstanding": [
+    "offline byte inspection is point-in-time only, not sealed source custody",
+    "per-job cgroup/syscall/ABI, rootfs provenance, dependency closure, kernel assessment",
+    "separate trusted private persistent staging and immutable revalidation at execution",
+    "owner-verified source rights and actual model-sharing consent",
+    "fresh payment verification and owner-authorized commercial terms and delivery",
+    "independent real-world repair quality and provider billing verification"
+  ]
+}

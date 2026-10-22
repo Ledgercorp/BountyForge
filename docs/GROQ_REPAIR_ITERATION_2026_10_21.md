@@ -249,3 +249,27 @@ integration/context tests exposed four failures and an indentation error;
 all fixed. Final core freeze: **333 total tests, 326 passed, seven existing
 rootfs skips**, including 12 new statement/worker tests. No live inference,
 historical rerun, evaluation fixture inspection, spending or deployment yet.
+
+## Phase 4 completed — 2026-10-22 UTC
+
+The frozen opt-in statement core `5f3f0cc` now has an independently authored
+owned comparison at evaluated SHA `e712bdf86b1475501153c68c1ce334411949fac4`:
+**line 2/4 vs statement 3/4, eight total GPT-OSS calls**, all five successful
+proposals independently replayed without inference credentials. This is a
+small owned system comparison, not real-world/commercial accuracy. Historical
+1/5 remains unchanged; no exposed-set rerun or post-result tuning occurred.
+
+Integrated regression **372/372 passed with zero skips** in existing Codex Cloud
+using the trusted rootfs. Hosted **372 total,364 passed,8 rootfs skips** in run
+39697466242. The original seven rootfs checks plus new immutability probe actually
+passed here; the private execution boundary remains unadmitted. Metadata-only
+paid scope review adds fenced recovery and blocking holds, never execution.
+
+[Full cumulative phase ledger](PHASE4_RELIABILITY_2026_10_21.md) and
+[machine-readable acceptance](../evidence/phase4-reliability/acceptance.json)
+record exact commits/files, tests, raw evidence, usage, limits and blockers.
+Main/PR1/dashboard v11/synthetic state remain intact; PR2 remains draft. No
+production merge, deployment, repair/sales schedule, customer source/order,
+external submission, paid service or financial commitment. Additional
+infrastructure spending $0; provider billing independently unresolved; confirmed
+received revenue $0. Internal DRY_RUN_READY; paid operation NOT_READY.

@@ -2,10 +2,11 @@
 import hashlib
 import json
 import unittest
+import urllib.request
 from unittest.mock import Mock
 
 from bountyforge.oci_registry_acquisition import (
-    RegistryEvidenceUnavailable, _REGISTRY, _TOKEN_URL,
+    RegistryEvidenceUnavailable, _REGISTRY, _TOKEN_URL, _RestrictedBlobRedirect,
     acquire_pinned_python_metadata,
 )
 from test_oci_runtime_provenance import blob, descriptor, fixture
@@ -85,6 +86,41 @@ class RegistryAcquisitionTests(unittest.TestCase):
         self.assertEqual(evidence['pinned_reference_kind'],'linux_amd64_manifest')
         self.assertEqual(evidence['pinned_reference_digest'],pin)
         self.assertFalse(evidence['publisher_signature_verified'])
+
+
+    def test_signed_blob_cdn_redirect_strips_registry_bearer(self):
+        digest='a'*64
+        original=urllib.request.Request(
+            _REGISTRY+'/blobs/sha256:'+digest,
+            headers={'Authorization':'Bearer secret-token'},method='GET')
+        cdn=('https://production.cloudflare.docker.com/registry-v2/docker/registry/v2'
+             '/blobs/sha256/aa/'+digest+'/data?verify=opaque-signature')
+        control=_RestrictedBlobRedirect()
+        follow=control.redirect_request(original,None,307,'',{},cdn)
+        self.assertEqual(follow.full_url,cdn)
+        self.assertIsNone(follow.get_header('Authorization'))
+        with self.assertRaises(RegistryEvidenceUnavailable):
+            control.redirect_request(original,None,307,'',{},cdn)
+        for candidate in (
+            'http://production.cloudflare.docker.com/blobs/'+digest,
+            'https://example.com/blobs/'+digest,
+            'https://production.cloudflare.docker.com/blobs/different',
+            'https://production.cloudflare.docker.com.evil.invalid/blobs/'+digest,
+            'https://person@production.cloudflare.docker.com/blobs/'+digest,
+            'https://production.cloudflare.docker.com:8443/blobs/'+digest,
+        ):
+            with self.subTest(candidate=candidate), self.assertRaises(RegistryEvidenceUnavailable):
+                _RestrictedBlobRedirect().redirect_request(
+                    original,None,307,'',{},candidate)
+
+    def test_manifest_and_wrong_status_redirects_rejected(self):
+        original=urllib.request.Request(_REGISTRY+'/manifests/sha256:'+'a'*64)
+        dest='https://production.cloudflare.docker.com/blobs/'+'a'*64
+        with self.assertRaises(RegistryEvidenceUnavailable):
+            _RestrictedBlobRedirect().redirect_request(original,None,307,'',{},dest)
+        source=urllib.request.Request(_REGISTRY+'/blobs/sha256:'+'a'*64)
+        with self.assertRaises(RegistryEvidenceUnavailable):
+            _RestrictedBlobRedirect().redirect_request(source,None,302,'',{},dest)
 
     def test_registry_supplied_wrong_index_bytes_rejected(self):
         pin, opener, urls = setup()

@@ -9,6 +9,8 @@ import hashlib
 import json
 import urllib.error
 import urllib.request
+import urllib.parse
+import re
 from .oci_runtime_provenance import (
     DOCKER_CONFIG, DOCKER_INDEX, DOCKER_MANIFEST, CONFIG, INDEX, MANIFEST,
     OCIReviewRejected, _digest, _strict_json, verify_pinned_image_reference,
@@ -25,13 +27,46 @@ class RegistryEvidenceUnavailable(ValueError):
     """No trustworthy bounded registry response was available."""
 
 
-class _NoRedirect(urllib.request.HTTPRedirectHandler):
+class _RestrictedBlobRedirect(urllib.request.HTTPRedirectHandler):
+    """One TLS-only Docker Hub blob handoff; never forward bearer headers."""
+    def __init__(self):
+        super().__init__()
+        self.used = False
+
     def redirect_request(self, request, fp, code, msg, headers, newurl):
-        raise RegistryEvidenceUnavailable('Registry redirect rejected')
+        if self.used or code != 307 or request.get_method() != 'GET':
+            raise RegistryEvidenceUnavailable('Unexpected Docker CDN redirect')
+        origin = request.full_url
+        prefix = _REGISTRY + '/blobs/sha256:'
+        if not origin.startswith(prefix):
+            raise RegistryEvidenceUnavailable('Redirect from unapproved registry resource')
+        digest = origin[len(prefix):]
+        if re.fullmatch('[0-9a-f]{64}', digest) is None:
+            raise RegistryEvidenceUnavailable('Redirected blob digest malformed')
+        dest = urllib.parse.urlsplit(newurl)
+        host = dest.hostname or ''
+        r2 = re.fullmatch(
+            r'docker-images-prod\.[a-z0-9-]+\.r2\.cloudflarestorage\.com',
+            host)
+        s3 = re.fullmatch(
+            r'docker-images-prod\.s3(?:\.[a-z0-9-]+)?\.amazonaws\.com',
+            host)
+        approved = host == 'production.cloudflare.docker.com' or r2 or s3
+        if (not approved or dest.scheme != 'https' or dest.port is not None
+                or dest.username is not None or dest.password is not None
+                or dest.fragment or digest not in dest.path):
+            raise RegistryEvidenceUnavailable('Docker CDN redirect destination rejected')
+        self.used = True
+        # A new Request without Authorization protects the Docker Hub token.
+        return urllib.request.Request(
+            newurl,
+            headers={'User-Agent': 'BountyForge-Anonymous-OCI-Review/1'},
+            method='GET')
 
 
 def _opener():
-    return urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoRedirect())
+    return urllib.request.build_opener(
+        urllib.request.ProxyHandler({}), _RestrictedBlobRedirect())
 
 
 def _read(url, *, token=None, max_bytes=_METADATA_LIMIT, opener):

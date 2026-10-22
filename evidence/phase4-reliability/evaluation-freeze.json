@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "phase": "repair_reliability",
+  "core_revision": "5f3f0cc668d3993f013759133223e204fa61c904",
+  "core_sha256": {
+    "bountyforge/worker.py": "564678b2c00c750ee580a4bb802d9f5236258b2d7cf24b30da03ebfdf4d655fb",
+    "bountyforge/statements.py": "7ee92b1a794ce221042196ac7e5fedd97792691184f3d2709d182787ecfeb460",
+    "bountyforge/lineedit.py": "cfafdde8490cd3f7f84e7f3ef3a10aa0bc43973baa3468ec431e7ee4d2205e14",
+    "bountyforge/repair_context.py": "fb0aac6f25e7ad23e7fbedba20d6638c523c5304508bedfcd5b892d419f7b70f",
+    "bountyforge/curated_tasks.py": "048bf0efe8e44278d4fb5a34ebc951b1d27c7034fb28a77da94f6990b965d48f",
+    "bountyforge/curated_docker.py": "0beb01183867f514029f466274e641f5e9e2860de7a56d34fe725a12b61dfa2f",
+    "bountyforge/groq_adapter.py": "6e808c41baab332356af5ac27d15b115b673dd4c0aedf2f608d5071b36298137",
+    "bountyforge/drafts.py": "e5336eb40548b72fae901d6b281ffd0d45de5d2cbf04f0189f2721f700b29af5",
+    "bountyforge/line_scope.py": "df2d83ccc9f290b387df299625c63fe16729a63029cc481c9a05d00adc0f6128"
+  },
+  "evaluation_catalog_revision": "7687104d0b34d43f6b08ce598df2e764e467ec3b",
+  "catalog_manifest_sha256": "f46c86ae7bb86340f8bb195001a68a5eb868c608b5a3b584bbc6284a4e7179bf",
+  "evaluation_source": "independently_authored_owned_synthetic_maintenance",
+  "held_out_until_core_freeze": true,
+  "historical_set_rerun": false,
+  "planned_protocols": [
+    "ast_contract_v7",
+    "ast_statement_v1"
+  ],
+  "max_calls_total": 8,
+  "max_attempts_per_case_per_protocol": 1,
+  "max_completion_tokens_per_call": 1024,
+  "minimum_interval_seconds": 60,
+  "counterbalanced_order": true,
+  "shared_baseline_executions": 4,
+  "production_or_customer_quality_claim": false,
+  "model_or_historical_solutions_supplied": false,
+  "billing_independently_verified": false,
+  "live_evaluation_status": "not_dispatched"
+}

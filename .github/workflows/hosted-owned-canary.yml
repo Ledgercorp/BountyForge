@@ -20,7 +20,7 @@ on:
         description: 'Frozen owned development suite (never customer or external source)'
         required: true
         type: choice
-        options: [structural, original]
+        options: [structural, original, maintenance_pair]
         default: structural
 
 permissions:
@@ -48,6 +48,8 @@ jobs:
           python -m unittest discover -s tests -p 'test_groq_adapter.py' -v
           python -m unittest discover -s tests -p 'test_owned_canary*.py' -v
           python -m unittest discover -s tests -p 'test_phase5_development.py' -v
+          python -m unittest discover -s tests -p 'test_statement*.py' -v
+          python -m unittest discover -s tests -p 'test_phase6*.py' -v
 
 
   explicitly-approved-owned-model:
@@ -95,6 +97,11 @@ jobs:
           set -euo pipefail
           [[ -n "$GROQ_API_KEY" ]] || exit 2
           mkdir -p hosted-evidence
+          if [[ "$BOUNTYFORGE_OWNED_SUITE" == maintenance_pair ]]; then
+            python -m scripts.phase6_evaluate --live --proof hosted-evidence/sandbox-preflight.json \
+              --output hosted-evidence/maintenance-pair.json
+            exit 0
+          fi
           python - <<'PY'
           import json, os
           from pathlib import Path
@@ -117,6 +124,11 @@ jobs:
       - name: Independently replay reported successes without provider credentials
         run: |
           set -euo pipefail
+          if [[ "$BOUNTYFORGE_OWNED_SUITE" == maintenance_pair ]]; then
+            python -m scripts.phase6_replay hosted-evidence/maintenance-pair.json \
+              --revision "$GITHUB_SHA" --output hosted-evidence/maintenance-replay.json
+            exit 0
+          fi
           python -m scripts.replay_owned_canary hosted-evidence/groq-owned-v5.json \
             --suite "$BOUNTYFORGE_OWNED_SUITE" --revision "$GITHUB_SHA" \
             --output hosted-evidence/groq-owned-replay.json
@@ -128,5 +140,7 @@ jobs:
             hosted-evidence/groq-owned-v5.json
             hosted-evidence/sandbox-preflight.json
             hosted-evidence/groq-owned-replay.json
+            hosted-evidence/maintenance-pair.json
+            hosted-evidence/maintenance-replay.json
           if-no-files-found: ignore
           retention-days: 2

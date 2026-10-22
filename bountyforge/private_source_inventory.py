@@ -14,7 +14,8 @@ import stat
 import sys
 from pathlib import Path
 
-from bountyforge.paid_scope_review import _approval_shape
+from bountyforge.paid_scope_review import _approval_shape, _canonical, PaidScopeReview
+from bountyforge.paid_review_ledger import _validate_state as validate_payment_review
 
 MAX_FILE_BYTES = 131072
 _NOFOLLOW = os.O_NOFOLLOW | os.O_CLOEXEC
@@ -192,3 +193,56 @@ def inspect_private_source(root, approval_payload):
         raise
     except (OSError, ValueError, TypeError, KeyError, AttributeError):
         raise PrivateSourceRejected('Private source inspection unavailable') from None
+
+
+def inspect_recorded_private_scope(root, review, session, *, token, expected_fence, now):
+    """Read only exact locally staged bytes while a signed review lease is valid.
+
+    This deliberately never issues execution/delivery approval. It does not
+    independently attest customer rights, model-sharing consent or fresh Stripe
+    payment. Both journal databases and all source files stay private.
+    """
+    try:
+        if (type(review) is not PaidScopeReview or not isinstance(session, str)
+                or not isinstance(token, str)
+                or len(token) != 32 or any(c not in '0123456789abcdef' for c in token)
+                or type(expected_fence) is not int or expected_fence < 1
+                or type(now) is not int or now < 0):
+            raise PrivateSourceRejected('Private review claim invalid')
+        state, revision = review._read()
+        if revision is None:
+            raise PrivateSourceRejected('Private review has no durable revision')
+        plan = review._plan(state, session)
+        lease = plan['lease']
+        approval = plan['approval']
+        payload = _approval_shape(approval)
+        if (plan['state'] != 'awaiting_private_execution_admission'
+                or plan['hold_reasons'] or plan['fence'] != expected_fence
+                or lease is None or now >= lease['expires_at']
+                or now >= payload['expires_at']
+                or payload['session_sha256'] != session
+                or not hmac.compare_digest(
+                    hashlib.sha256(token.encode('ascii')).hexdigest(),
+                    lease['token_sha256'])
+                or not hmac.compare_digest(approval['signature'],
+                    hmac.new(review._key, _canonical(payload), hashlib.sha256).hexdigest())):
+            raise PrivateSourceRejected('Private approval or review lease rejected')
+        payments, _ = review.payment_reviews.read()
+        validate_payment_review(payments)
+        if not any(record['session_sha256'] == session for record in payments['orders']):
+            raise PrivateSourceRejected('Historical payment review missing')
+        evidence = inspect_private_source(root, payload)
+        # Reject concurrent hold/revocation/CAS changes during file inspection.
+        _, latest_revision = review._read()
+        if latest_revision != revision:
+            raise PrivateSourceRejected('Private review state changed during inspection')
+        return {**evidence, 'session_sha256': session,
+                'lease_fence': expected_fence,
+                'signed_scope_matched': True,
+                'review_lease_validated': True,
+                'prior_payment_review_present': True,
+                'fresh_payment_verified': False}
+    except PrivateSourceRejected:
+        raise
+    except (ValueError, TypeError, KeyError, AttributeError, OSError):
+        raise PrivateSourceRejected('Private review/source binding unavailable') from None

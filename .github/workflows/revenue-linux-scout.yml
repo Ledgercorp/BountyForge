@@ -54,14 +54,14 @@ jobs:
             cat revenue-evidence/host-observation.json
             printf '\n'
           } >> "$GITHUB_STEP_SUMMARY"
-      - name: Once-only anonymous pinned Python OCI metadata inspection
-        timeout-minutes: 2
+      - name: Once-only public pinned Python layer integrity verification
+        timeout-minutes: 4
         run: |
           set -euo pipefail
-          python -m scripts.check_pinned_oci
+          python -m scripts.check_pinned_layers
           {
-            printf '### Public Python OCI metadata (not publisher trust or execution admission)\n\n'
-            cat revenue-evidence/public-runtime-oci.json
+            printf '### Fixed public Docker image layer integrity (NOT publisher trust)\n\n'
+            cat revenue-evidence/oci-layer-review.json
             printf '\n'
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Perform only read-only prospect research
@@ -85,5 +85,5 @@ jobs:
           path: |
             revenue-evidence/prospects.json
             revenue-evidence/host-observation.json
-            revenue-evidence/public-runtime-oci.json
+            revenue-evidence/oci-layer-review.json
           retention-days: 2

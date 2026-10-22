@@ -26,12 +26,19 @@ def check():
     except RegistryEvidenceUnavailable as error:
         permitted = ('reference_pin','anonymous_token','pinned_reference',
                      'platform_manifest','config_blob','metadata_chain')
-        stage = next((p for p in permitted if str(error).endswith(' at ' + p)),
+        reason_codes = ('cdn_host','cdn_url','cdn_digest_path',
+                        'cdn_redirect_count','transport','oversize',
+                        'empty_or_oversize','http_status',
+                        'config_digest','invalid_metadata_or_unknown')
+        stage = next((p for p in permitted if (' at ' + p) in str(error)),
                      'unclassified_failure')
+        reason = next((r for r in reason_codes if str(error).endswith(':' + r)),
+                      'unclassified_failure')
         return {
             'kind':'one_shot_public_python_metadata',
             'result':'UNAVAILABLE_OR_UNVERIFIED',
             'blocked_stage':stage,
+            'blocked_reason':reason,
             'compressed_layer_bytes_verified':False,
             'publisher_signature_verified':False,
             'sbom_attestation_verified':False,

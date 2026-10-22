@@ -52,10 +52,14 @@ class _RestrictedBlobRedirect(urllib.request.HTTPRedirectHandler):
             r'docker-images-prod\.s3(?:\.[a-z0-9-]+)?\.amazonaws\.com',
             host)
         approved = host == 'production.cloudflare.docker.com' or r2 or s3
-        if (not approved or dest.scheme != 'https' or dest.port is not None
+        if not approved:
+            raise RegistryEvidenceUnavailable('Docker CDN host not allowlisted')
+        if (dest.scheme != 'https' or dest.port is not None
                 or dest.username is not None or dest.password is not None
-                or dest.fragment or digest not in dest.path):
-            raise RegistryEvidenceUnavailable('Docker CDN redirect destination rejected')
+                or dest.fragment):
+            raise RegistryEvidenceUnavailable('Docker CDN URL policy rejected')
+        if digest not in dest.path:
+            raise RegistryEvidenceUnavailable('Docker CDN digest path mismatch')
         self.used = True
         # A new Request without Authorization protects the Docker Hub token.
         return urllib.request.Request(
@@ -161,8 +165,21 @@ def acquire_pinned_python_metadata(index_pin, *, opener=None):
             'attestation_verified': False,
             'runtime_execution_admitted': False,
         }
-    except (RegistryEvidenceUnavailable, OCIReviewRejected):
-        raise RegistryEvidenceUnavailable('Pinned OCI metadata blocked at ' + stage) from None
+    except (RegistryEvidenceUnavailable, OCIReviewRejected) as error:
+        reasons = {
+            'Docker CDN host not allowlisted': 'cdn_host',
+            'Docker CDN URL policy rejected': 'cdn_url',
+            'Docker CDN digest path mismatch': 'cdn_digest_path',
+            'Unexpected Docker CDN redirect': 'cdn_redirect_count',
+            'Registry request unavailable': 'transport',
+            'Registry content length exceeded': 'oversize',
+            'Missing or oversized registry response': 'empty_or_oversize',
+            'Registry response status rejected': 'http_status',
+            'Pinned image config digest mismatch': 'config_digest',
+        }
+        reason = reasons.get(str(error), 'invalid_metadata_or_unknown')
+        raise RegistryEvidenceUnavailable(
+            'Pinned OCI metadata blocked at ' + stage + ':' + reason) from None
     except (TypeError, KeyError, AttributeError, ValueError, RecursionError,
             OSError, UnicodeError):
         raise RegistryEvidenceUnavailable('Pinned OCI acquisition blocked at ' + stage) from None

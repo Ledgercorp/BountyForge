@@ -99,6 +99,12 @@ class RegistryAcquisitionTests(unittest.TestCase):
         follow=control.redirect_request(original,None,307,'',{},cdn)
         self.assertEqual(follow.full_url,cdn)
         self.assertIsNone(follow.get_header('Authorization'))
+        official_new=cdn.replace('production.cloudflare.docker.com',
+                                  'production.cloudfront.docker.com')
+        new_follow=_RestrictedBlobRedirect().redirect_request(
+            original,None,307,'',{},official_new)
+        self.assertEqual(new_follow.full_url,official_new)
+        self.assertIsNone(new_follow.get_header('Authorization'))
         with self.assertRaises(RegistryEvidenceUnavailable):
             control.redirect_request(original,None,307,'',{},cdn)
         for candidate in (

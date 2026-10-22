@@ -54,7 +54,8 @@ class _RestrictedBlobRedirect(urllib.request.HTTPRedirectHandler):
         s3 = re.fullmatch(
             r'docker-images-prod\.s3(?:\.[a-z0-9-]+)?\.amazonaws\.com',
             host)
-        approved = host == 'production.cloudflare.docker.com' or r2 or s3
+        approved = host in ('production.cloudflare.docker.com',
+                            'production.cloudfront.docker.com') or r2 or s3
         if not approved:
             safe_host = host if re.fullmatch(r'[a-z0-9.-]{1,253}', host) else None
             raise RegistryEvidenceUnavailable(

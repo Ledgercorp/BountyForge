@@ -101,7 +101,7 @@ class PrivateSourceInventoryTests(unittest.TestCase):
         original_open = os.open
         swapped = [False]
         def swap_on_open(name, flags, *args, **kwargs):
-            if not swapped[0] and str(name) == str(self.root):
+            if not swapped[0] and (str(name) == str(self.root) or (str(name) == 'staging' and 'dir_fd' in kwargs)):
                 swapped[0] = True
                 staging.rename(relocated)
                 staging.symlink_to(relocated, target_is_directory=True)

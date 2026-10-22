@@ -39,23 +39,22 @@ def _open_private_root(path):
     root = Path(path)
     if not root.is_absolute() or '..' in root.parts:
         raise PrivateSourceRejected('Private staging path must be absolute')
-    # Refuse symlinked parents before opening the private staging directory.
-    for component in list(reversed(root.parents)) + [root]:
-        if stat.S_ISLNK(component.lstat().st_mode):
-            raise PrivateSourceRejected('Symlink ancestor prohibited')
     checkout = Path(__file__).resolve().parents[1]
     if root == checkout or root.is_relative_to(checkout):
         raise PrivateSourceRejected('Private staged source cannot live in public checkout')
-    existing = root.lstat()
-    _private_stat(existing, directory=True)
-    descriptor = os.open(root, _DIR)
-    current = os.fstat(descriptor)
-    if (existing.st_ino, existing.st_dev) != (current.st_ino, current.st_dev):
-        os.close(descriptor)
-        raise PrivateSourceRejected('Private staging root changed')
-    _private_stat(current, directory=True)
-    return descriptor
-
+    # Open each ancestor by dirfd with O_NOFOLLOW. A one-time lstat followed
+    # by open(root) would follow an ancestor symlink introduced in between.
+    current = os.open('/', _DIR)
+    try:
+        for component in root.parts[1:]:
+            next_fd = os.open(component, _DIR, dir_fd=current)
+            os.close(current)
+            current = next_fd
+        _private_stat(os.fstat(current), directory=True)
+        return current
+    except BaseException:
+        os.close(current)
+        raise
 
 def _read_regular(fd, path_parts):
     current = os.dup(fd)

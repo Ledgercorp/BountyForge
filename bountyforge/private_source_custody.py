@@ -18,6 +18,7 @@ from bountyforge.private_source_inventory import (
     inspect_recorded_private_scope
 )
 from bountyforge.paid_scope_review import PaidScopeReview, _approval_shape, _canonical
+from bountyforge.paid_review_ledger import _validate_state as validate_payment_review
 
 _RECEIPT = 'snapshot.json'
 _FLAGS = os.O_CREAT | os.O_EXCL | os.O_WRONLY | _NOFOLLOW
@@ -279,3 +280,59 @@ def create_review_snapshot(source_root, vault_root, review, session, *, token,
         raise
     except (OSError, ValueError, TypeError, KeyError, AttributeError):
         raise PrivateSourceRejected('Private custody capture unavailable') from None
+
+
+def verify_recorded_private_snapshot(snapshot_root, review, session, *,
+                                     token, expected_fence, now):
+    """Read and rehash a completed inert snapshot under current signed review.
+
+    This is not fresh payment, consent, model sharing, dependency admission,
+    runtime security approval or an execution/delivery capability.
+    """
+    try:
+        if (type(review) is not PaidScopeReview or not isinstance(session, str)
+                or not isinstance(token, str)
+                or len(token) != 32 or any(c not in '0123456789abcdef' for c in token)
+                or type(expected_fence) is not int or expected_fence < 1
+                or type(now) is not int or now < 0):
+            raise PrivateSourceRejected('Private custody review authorization invalid')
+        state, revision = review._read()
+        if revision is None:
+            raise PrivateSourceRejected('No durable private scope revision')
+        plan = review._plan(state, session)
+        approval = plan['approval']
+        payload = _approval_shape(approval)
+        lease = plan['lease']
+        if (plan['state'] != 'awaiting_private_execution_admission'
+                or plan['hold_reasons'] or plan['fence'] != expected_fence
+                or lease is None or lease['expires_at'] <= now
+                or payload['expires_at'] <= now
+                or payload['session_sha256'] != session
+                or not hmac.compare_digest(
+                    hashlib.sha256(token.encode('ascii')).hexdigest(),
+                    lease['token_sha256'])
+                or not hmac.compare_digest(
+                    approval['signature'],
+                    hmac.new(review._key, _canonical(payload), hashlib.sha256).hexdigest())):
+            raise PrivateSourceRejected('Signed private custody review claim rejected')
+        reviews, payment_revision = review.payment_reviews.read()
+        validate_payment_review(reviews)
+        if payment_revision is None or not any(
+                item['session_sha256'] == session for item in reviews['orders']):
+            raise PrivateSourceRejected('Prior payment review record missing')
+        evidence = verify_private_snapshot(snapshot_root, payload)
+        # Any intervening revocation, lease recovery or payment-history change
+        # invalidates the read. New evidence is still not a job authorization.
+        _, next_revision = review._read()
+        _, next_payment_revision = review.payment_reviews.read()
+        if next_revision != revision or next_payment_revision != payment_revision:
+            raise PrivateSourceRejected('Private custody review state changed during read')
+        return {**evidence, 'session_sha256': session, 'lease_fence': expected_fence,
+                'signed_scope_matched': True, 'review_lease_validated': True,
+                'prior_payment_review_present': True,
+                'fresh_payment_verified': False, 'execution_authorized': False,
+                'delivery_authorized': False, 'source_accepted': False}
+    except PrivateSourceRejected:
+        raise
+    except (OSError, ValueError, TypeError, KeyError, AttributeError):
+        raise PrivateSourceRejected('Private custody review verification unavailable') from None

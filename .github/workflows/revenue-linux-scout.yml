@@ -54,6 +54,21 @@ jobs:
             cat revenue-evidence/host-observation.json
             printf '\n'
           } >> "$GITHUB_STEP_SUMMARY"
+      - name: Once-only owned Docker pressure denial observation
+        timeout-minutes: 4
+        run: |
+          set -euo pipefail
+          mkdir -p revenue-evidence
+          python -m scripts.observe_owned_container --output revenue-evidence/owned-container-observation.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('revenue-evidence/owned-container-observation.json').read_text())
+          with open(__import__('os').environ['GITHUB_STEP_SUMMARY'],'a') as f:
+              f.write('### Owned Docker pressure verification (NOT private source admission)\n')
+              f.write('Result: '+r['result']+'. Reason: '+r['reason']+'.\n')
+              f.write('Customer code executed: false. Payment/model credentials: none.\n')
+          PY
       - name: Perform only read-only prospect research
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -75,4 +90,5 @@ jobs:
           path: |
             revenue-evidence/prospects.json
             revenue-evidence/host-observation.json
+            revenue-evidence/owned-container-observation.json
           retention-days: 2

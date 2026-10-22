@@ -25,6 +25,9 @@ _METADATA_LIMIT = 2 * 1024 * 1024
 
 class RegistryEvidenceUnavailable(ValueError):
     """No trustworthy bounded registry response was available."""
+    def __init__(self, message, *, blocked_host=None):
+        super().__init__(message)
+        self.blocked_host = blocked_host
 
 
 class _RestrictedBlobRedirect(urllib.request.HTTPRedirectHandler):
@@ -53,7 +56,9 @@ class _RestrictedBlobRedirect(urllib.request.HTTPRedirectHandler):
             host)
         approved = host == 'production.cloudflare.docker.com' or r2 or s3
         if not approved:
-            raise RegistryEvidenceUnavailable('Docker CDN host not allowlisted')
+            safe_host = host if re.fullmatch(r'[a-z0-9.-]{1,253}', host) else None
+            raise RegistryEvidenceUnavailable(
+                'Docker CDN host not allowlisted', blocked_host=safe_host)
         if (dest.scheme != 'https' or dest.port is not None
                 or dest.username is not None or dest.password is not None
                 or dest.fragment):
@@ -179,7 +184,9 @@ def acquire_pinned_python_metadata(index_pin, *, opener=None):
         }
         reason = reasons.get(str(error), 'invalid_metadata_or_unknown')
         raise RegistryEvidenceUnavailable(
-            'Pinned OCI metadata blocked at ' + stage + ':' + reason) from None
+            'Pinned OCI metadata blocked at ' + stage + ':' + reason,
+            blocked_host=(error.blocked_host
+                if isinstance(error, RegistryEvidenceUnavailable) else None)) from None
     except (TypeError, KeyError, AttributeError, ValueError, RecursionError,
             OSError, UnicodeError):
         raise RegistryEvidenceUnavailable('Pinned OCI acquisition blocked at ' + stage) from None

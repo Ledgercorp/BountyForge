@@ -39,6 +39,8 @@ def check():
             'result':'UNAVAILABLE_OR_UNVERIFIED',
             'blocked_stage':stage,
             'blocked_reason':reason,
+            'cdn_hostname':(error.blocked_host if reason == 'cdn_host'
+                            and error.blocked_host is not None else None),
             'compressed_layer_bytes_verified':False,
             'publisher_signature_verified':False,
             'sbom_attestation_verified':False,

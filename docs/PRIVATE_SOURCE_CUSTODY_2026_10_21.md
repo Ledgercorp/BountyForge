@@ -91,9 +91,11 @@ Github-hosted Linux test evidence:
 - [39704271773](https://github.com/Ledgercorp/BountyForge/actions/runs/39704271773):
   green, 401 total, 393 passed, eight existing rootfs skips.
 
-The additional final write-failure and payment-revision negatives were added
-separately and require confirming their final hosted CI run before counting
-them as passed. No live Groq inference was used; the frozen historical 1/5,
+- [39704442166](https://github.com/Ledgercorp/BountyForge/actions/runs/39704442166):
+  final hosted **403 tests, 395 passed, 8 existing rootfs skips**, zero failures.
+  Includes injected partial-write and changed payment-review revision tests.
+
+No live Groq inference was used; the frozen historical 1/5,
 owned structural 2/4 and fresh owned paired line 2/4 vs statement 3/4
 benchmarks are unchanged.
 

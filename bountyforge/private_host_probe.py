@@ -131,6 +131,8 @@ def _cgroup_relative_path(raw):
     if len(fields) != 1 or not fields[0].startswith('0::/'):
         return None
     path = fields[0][4:]
+    if path == '':
+        return []  # cgroup v2 root is represented as 0::/
     parts = path.split('/')
     if any(part in ('.', '..', '') for part in parts):
         return None

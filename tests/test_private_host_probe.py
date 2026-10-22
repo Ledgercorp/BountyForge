@@ -137,5 +137,18 @@ class HostProbeTests(unittest.TestCase):
             self.assertFalse(assess_host_facts(facts)['private_execution_admitted'])
 
 
+
+    def test_root_cgroup_is_not_a_missing_path(self):
+        from bountyforge.private_host_probe import _cgroup_relative_path
+        self.assertEqual(_cgroup_relative_path('0::/\n'), [])
+        self.assertEqual(_cgroup_relative_path('0::/one/two\n'), ['one', 'two'])
+        for sample in ('0::/../escape\n', '0::/one//two\n',
+                       '0::/one/./two\n', '1::/wrong\n',
+                       '0::/one\\two\n', '0::/one\ntwo\n'):
+            with self.subTest(value=sample):
+                self.assertIsNone(_cgroup_relative_path(sample))
+        self.assertIsNone(_cgroup_relative_path(None))
+
+
 if __name__ == '__main__':
     unittest.main()

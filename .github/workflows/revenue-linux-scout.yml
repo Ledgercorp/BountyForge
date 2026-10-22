@@ -43,6 +43,17 @@ jobs:
           python-version: '3.11'
       - name: Full Python regression plus revenue, Groq and Stripe gates
         run: python -m unittest discover -s tests -v
+      - name: Observe Linux host without namespace launch or untrusted execution
+        run: |
+          set -euo pipefail
+          mkdir -p revenue-evidence
+          python -m scripts.observe_private_host > revenue-evidence/host-observation.json
+          {
+            printf '### Linux host observation (not execution admission)\n\n'
+            printf 'Namespace launch not attempted. No customer code, model or payment credentials used.\n\n'
+            cat revenue-evidence/host-observation.json
+            printf '\n'
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Perform only read-only prospect research
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -61,5 +72,7 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: bountyforge-revenue-research-${{ github.run_id }}
-          path: revenue-evidence/prospects.json
+          path: |
+            revenue-evidence/prospects.json
+            revenue-evidence/host-observation.json
           retention-days: 2

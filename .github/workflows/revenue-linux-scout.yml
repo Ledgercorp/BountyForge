@@ -54,6 +54,16 @@ jobs:
             cat revenue-evidence/host-observation.json
             printf '\n'
           } >> "$GITHUB_STEP_SUMMARY"
+      - name: Once-only anonymous pinned Python OCI metadata inspection
+        timeout-minutes: 2
+        run: |
+          set -euo pipefail
+          python -m scripts.check_pinned_oci
+          {
+            printf '### Public Python OCI metadata (not publisher trust or execution admission)\n\n'
+            cat revenue-evidence/public-runtime-oci.json
+            printf '\n'
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Perform only read-only prospect research
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -75,4 +85,5 @@ jobs:
           path: |
             revenue-evidence/prospects.json
             revenue-evidence/host-observation.json
+            revenue-evidence/public-runtime-oci.json
           retention-days: 2

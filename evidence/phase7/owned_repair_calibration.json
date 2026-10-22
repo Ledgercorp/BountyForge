@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "kind": "phase7_owned_repair_calibration",
+  "cases": [
+    "page-offset-boundary",
+    "tenant-key-collision",
+    "retry-millisecond-units",
+    "even-median-aggregation"
+  ],
+  "authored_by": "LeftSock owned fixture only",
+  "baseline_failures_reproduced": 4,
+  "reference_repairs_verified": 4,
+  "live_ai_model_calls": 0,
+  "ai_repairs_proposed": 0,
+  "independent_ai_repairs_verified": 0,
+  "hidden_unseen_evaluation": false,
+  "commercial_accuracy_established": false,
+  "local_linux_unit_tests_total": 11,
+  "local_linux_unit_tests_passed": 11,
+  "customer_source_executed": false,
+  "payment_verified": false,
+  "model_sharing_authorized": false,
+  "private_execution_admitted": false,
+  "received_revenue_usd": 0,
+  "additional_spending_usd": 0
+}

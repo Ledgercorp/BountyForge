@@ -3,14 +3,7 @@ name: BountyForge revenue scout on standard Linux
 # Research only. No recurring schedule. Live research requires manual dispatch.
 # No model calls, paid services, external claims, source execution or submissions.
 on:
-  push:
-    branches: [engineering/revenue-linux-scout-20261021]
-    paths:
-      - '.github/workflows/revenue-linux-scout.yml'
-      - 'bountyforge/**'
-      - 'tests/**'
-      - 'scripts/**'
-      - 'benchmarks/**'
+  # PR checks only: avoid duplicate push + PR jobs and failure emails.
   pull_request:
     branches: [engineering/bounded-autonomy-20261020]
     paths:

@@ -58,3 +58,38 @@ statistically meaningful independent real-world repair benchmark.
 Both PRs remain drafts, main/dashboard unchanged; paid operation NOT_READY
 and verified revenue $0. No Mac, new infrastructure spending, GPU pods,
 customer code, paid inference or external jobs were used.
+
+
+## Current signed custody-to-boundary review integration
+
+After saving the original 20/20 owned-container evidence and removing the
+temporary PR workflow probe, the new review_signed_snapshot_with_owned_probe
+helper now invokes actual verify_recorded_private_snapshot on a separate,
+owner-private fixture vault. That existing verifier reopens the exact byte
+snapshot, authenticates a signed stored scope and current fenced review lease,
+and rejects stale/revoked journals, changed bytes and mismatched identity.
+
+Only **after** successfully reopening under current authorization does it
+join the result to the already-existing pinned Docker observation. The
+companion owned-proof validator checks 20 strict controls, the exact Docker
+image digest and bounded CPU/PID pressure data.
+
+An integrated owned-only test proves legitimate review metadata can be
+recognized, rejects a revoked lease and tampered private snapshot, and
+fails on an invalid Docker control or swapped image digest. It also
+proves a verified result **does not** mark customer code as executed,
+private custody as reopened *inside* Docker, fresh payment as verified,
+or execution as authorized.
+
+Final [GitHub Actions run #39713490313](https://github.com/Ledgercorp/BountyForge/actions/runs/39713490313):
+**436 tests, 428 passed, 8 existing namespace/rootfs skips, zero failures.**
+The historical 20/20 Docker result remains bound to the unchanged
+run #39713017968; it was NOT rerun, and no extra inference or image pull
+occurred during the integrated metadata tests.
+
+This is a review-only integrity bridge, **not a per-job security handshake**.
+A proof dictionary supplied by a caller is not independently signed;
+the old Docker observation may no longer describe the later host; and
+customer source cannot be processed without a separately authorized,
+securely enforced private job boundary. All production and financial
+controls remain disabled.

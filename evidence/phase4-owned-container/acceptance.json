@@ -28,5 +28,21 @@
   "ordinary_github_host_admitted": false,
   "additional_spending_usd": 0,
   "commercial_revenue_usd": 0,
-  "one_time_probe_removed_from_ci": true
+  "one_time_probe_removed_from_ci": true,
+  "custody_bridge": {
+    "revision": "1d8db11cb2ff81575d7aca442caea24742ef6857",
+    "github_actions_run": 39713490313,
+    "tests": {
+      "total": 436,
+      "passed": 428,
+      "existing_skips": 8,
+      "failed": 0
+    },
+    "invokes_current_signed_snapshot_verification": true,
+    "actual_customer_source_processed": false,
+    "snapshot_executed_inside_docker": false,
+    "raw_docker_proof_is_authentic_signed_attestation": false,
+    "private_execution_admitted": false,
+    "production_deployment": false
+  }
 }

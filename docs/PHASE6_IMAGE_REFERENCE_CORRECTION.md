@@ -49,8 +49,13 @@ state remains `REVIEWED_NOT_ADMITTED` or fails closed.
 - New locally constructed synthetic negatives cover both reference
   types, mutated bytes, wrong config and a real identity check on the
   exact configured image digest.
-- A second pinned-image registry acquisition run is required to
-  establish which actual public bytes can now be verified.
+- Subsequent verified registry acquisition identified the actual
+  Docker CloudFront CDN and confirmed the pinned manifest/config:
+  https://github.com/Ledgercorp/BountyForge/actions/runs/39765769522.
+- Exact image layers were then streamed and independently verified,
+  including uncompressed gzip DiffIDs:
+  https://github.com/Ledgercorp/BountyForge/actions/runs/39766309534.
+  See `docs/PHASE6_PINNED_RUNTIME_LAYERS.md` for the custody boundary.
 
 Even a successful live metadata run still lacks full compressed layer
 hashes, uncompressed bytes, trusted publisher signatures, independently

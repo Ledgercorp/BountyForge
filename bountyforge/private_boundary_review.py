@@ -78,3 +78,18 @@ def compare_review_only_custody(boundary,custody):
       'customer_rights_verified':False,'fresh_payment_verified':False,
       'dependency_closure_verified':False,'private_execution_admitted':False,
       'production_delivery_authorized':False,'not_ready':True}
+
+
+def review_signed_snapshot_with_owned_probe(snapshot_root, review, session, *,
+                                            token, expected_fence, now, owned_proof):
+    """Reopen signed current custody and compare owned Docker *metadata* only.
+
+    No snapshot is mounted in Docker, no private code is executed or shared,
+    and no caller-supplied proof can create customer execution permission.
+    """
+    proof = review_owned_docker_proof(owned_proof)
+    from bountyforge.private_source_custody import verify_recorded_private_snapshot
+    custody = verify_recorded_private_snapshot(
+        snapshot_root, review, session, token=token,
+        expected_fence=expected_fence, now=now)
+    return compare_review_only_custody(proof, custody)

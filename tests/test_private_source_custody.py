@@ -240,6 +240,47 @@ class PrivateSourceCustodyTests(unittest.TestCase):
                     token=self.lease['token'], expected_fence=self.lease['fence'],
                     now=NOW+3)
 
+    def test_current_signed_custody_can_be_reviewed_against_owned_docker_proof_only(self):
+        from bountyforge.curated_docker import IMAGE
+        from bountyforge.private_boundary_review import (
+            CONTROLS, review_signed_snapshot_with_owned_probe, OwnedBoundaryRejected)
+        root = self.snapshot()
+        snapshot = self.vault / root['snapshot_name']
+        owned = {**{key: True for key in CONTROLS},
+                 'image_digest': IMAGE.split('@', 1)[1],
+                 'untrusted_execution_certified': False,
+                 'pid_current_at_denial': 64, 'pid_denial_events': 2,
+                 'probe_threads': 51, 'cpu_throttled_periods': 2,
+                 'cpu_pressure_wall_seconds': 3.0, 'cpu_pressure_used_seconds': 2.8}
+        def inspect(proof):
+            return review_signed_snapshot_with_owned_probe(
+                snapshot, self.review, SESSION, token=self.lease['token'],
+                expected_fence=self.lease['fence'], now=NOW+3,
+                owned_proof=proof)
+        report = inspect(owned)
+        self.assertTrue(report['private_custody_metadata_present'])
+        self.assertTrue(report['owned_docker_observed'])
+        self.assertFalse(report['private_custody_reopened_in_container'])
+        self.assertFalse(report['private_execution_admitted'])
+        self.assertTrue(report['not_ready'])
+        with self.assertRaises(OwnedBoundaryRejected):
+            inspect({**owned, 'network_denied': False})
+        with self.assertRaises(OwnedBoundaryRejected):
+            inspect({**owned, 'image_digest': 'sha256:' + '0'*64})
+        self.source.unlink()
+        self.test.unlink()
+        self.assertTrue(inspect(owned)['private_custody_metadata_present'])
+        source_copy = snapshot / self.payload['source_path']
+        source_copy.chmod(0o600)
+        source_copy.write_text('def value():\n    return -99\n')
+        source_copy.chmod(0o600)
+        with self.assertRaises(PrivateSourceRejected):
+            inspect(owned)
+        source_copy.write_text('def value():\n    return 2\n')
+        self.review.hold(SESSION, reason='owner_revoked', now=NOW+2)
+        with self.assertRaises(PrivateSourceRejected):
+            inspect(owned)
+
     def test_vault_with_existing_source_or_symlink_not_allowed(self):
         with self.assertRaises(PrivateSourceRejected):
             create_review_snapshot(self.source_root, self.source_root, self.review, SESSION,

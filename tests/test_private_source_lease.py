@@ -5,6 +5,8 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
+import bountyforge.private_source_inventory as inventory
 
 from bountyforge.paid_review_store import SQLitePaidReviewStore
 from bountyforge.paid_scope_review import SQLiteScopeReviewStore, PaidScopeReview
@@ -109,6 +111,18 @@ class PrivateReviewLeaseBindingTests(unittest.TestCase):
             inspect_recorded_private_scope(
                 self.source_root, impostor, SESSION,
                 token=self.claim['token'], expected_fence=self.claim['fence'], now=NOW + 2)
+
+    def test_concurrent_revocation_during_byte_scan_fails_closed(self):
+        real_inspect = inventory.inspect_private_source
+        def revoke_after_read(root, payload):
+            evidence = real_inspect(root, payload)
+            self.journal.hold(SESSION, reason='owner_revoked', now=NOW + 1)
+            return evidence
+        with patch('bountyforge.private_source_inventory.inspect_private_source',
+                   side_effect=revoke_after_read):
+            with self.assertRaises(PrivateSourceRejected):
+                self.inspect()
+        self.assertEqual(self.scope_store.read()[0]['plans'][0]['state'], 'blocked')
 
     def test_claim_cannot_be_pretended_from_plain_dict(self):
         with self.assertRaises(PrivateSourceRejected):

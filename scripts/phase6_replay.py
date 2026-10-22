@@ -174,12 +174,18 @@ def validate_report(raw, *, expected_revision):
                 and attempts[0].get('error') not in ('model_or_runner_unavailable', 'independent_verification_failed'),
                 'Worker attempt blocked or incomplete')
         attempt = attempts[0]
-        require((worker.get('status') == 'review_ready') == success
-                and (attempt.get('status') == 'passed') == success,
-                'Worker success contradicts arm status')
+        require(worker.get('status') == ('review_ready' if success else 'failed')
+                and attempt.get('status') == ('passed' if success else 'failed')
+                and type(worker.get('model_calls')) is int and worker['model_calls'] == 1,
+                'Worker terminal state or model count contradicts arm status')
         call = calls[numbers[0]-1]
         require(call.get('id') == spec['id'] and call.get('arm') == arm, 'Model call attributed to wrong paired arm')
         validate_prompt(call, spec, arm, baselines[spec['id']])
+        candidate = None; source_rejection = None
+        try:
+            candidate = stage_response(spec, arm, call['response'])
+        except (DraftRejected, OSError, ValueError, TypeError, KeyError, SyntaxError) as exc:
+            source_rejection = str(exc)[:450]
         check = attempt.get('test')
         if check is not None:
             require(isinstance(check, dict) and check.get('timeout') is False
@@ -190,16 +196,26 @@ def validate_report(raw, *, expected_revision):
             if arm == 'statement':
                 require(test_passed(worker.get('independent_verification')),
                         'Statement worker lacks its independent regression')
-            try:
-                candidate = stage_response(spec, arm, call['response'])
-            except (DraftRejected, OSError, ValueError, TypeError, KeyError, SyntaxError):
-                raise EvaluationRejected('Success failed independent source validation') from None
+            require(candidate is not None and source_rejection is None,
+                    'Success failed independent source validation')
             require(worker.get('patch') == [{'path': spec['file'], 'diff': candidate['diff']}]
                     and attempt.get('diff') == candidate['diff'], 'Claimed success patch differs from raw proposal')
             prepared.append((spec, arm, call['response'], candidate)); scores[arm] += 1
         else:
-            require(not test_passed(check) and worker.get('patch') is None,
-                    'Failed arm has contradictory passing test or patch')
+            require(worker.get('patch') is None, 'Failed arm cannot contain a review-ready patch')
+            if source_rejection is not None:
+                require(check is None and attempt.get('error') == 'DraftRejected'
+                        and row.get('source_validation_error') == source_rejection,
+                        'Source-rejected arm lacks reproducible rejection evidence')
+            else:
+                require(candidate is not None and isinstance(check,dict) and check.get('passed') is False
+                        and type(check.get('exit_code')) is int and check['exit_code'] == 1
+                        and re.search(r'Ran [1-9][0-9]* tests?', check['output']) is not None
+                        and 'FAILED (' in check['output']
+                        and attempt.get('error') == 'test_failure_or_timeout'
+                        and row.get('source_validation_error') is None
+                        and attempt.get('diff') == candidate['diff'],
+                        'Source-valid failed arm lacks completed failing isolated regression')
     require(used == list(range(1, count+1)), 'Calls are missing, duplicated or out of evaluation order')
     require(report.get('scores') == scores, 'Paired score does not reconcile')
     return report, prepared

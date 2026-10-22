@@ -201,7 +201,7 @@ def evaluate(*, model, proof, output, revision):
     report = {'schema': 1, 'kind': 'owned_maintenance_paired_evaluation', 'revision': revision,
               'core_revision': CORE_REVISION, 'core_sha256': CORE_SHA256,
               'catalog_revision': CATALOG_REVISION, 'catalog_manifest_sha256': CATALOG_SHA256,
-              'image': IMAGE, 'sandbox_preflight': copy.deepcopy(proof), 'status': 'running',
+              'image': IMAGE, 'sandbox_preflight': copy.deepcopy(proof), 'status': 'running', 'score_final': False,
               'commercial_bounty': False, 'external_submission': False,
               'billing_independently_verified': False, 'customer_source_accepted': False,
               'max_model_calls': 8, 'max_attempts_per_arm': 1, 'model_calls': 0,
@@ -302,7 +302,10 @@ def evaluate(*, model, proof, output, revision):
                                     strategy=arm, editable_lines={spec['file']: editable_scope(source, spec['symbol'])},
                                     test_runner=runner)
         row['worker'] = worker
-        if any(a.get('error') == 'model_or_runner_unavailable' for a in worker.get('attempts', [])):
+        if worker.get('error') == 'independent_verification_failed':
+            row.update(status='blocked', failure_reason='independent_verification_failed')
+            inference_available = False
+        elif any(a.get('error') == 'model_or_runner_unavailable' for a in worker.get('attempts', [])):
             row.update(status='blocked', failure_reason='inference_or_sandbox_unavailable')
             inference_available = False
         elif worker.get('error') in ('baseline_not_assertion_failure', 'baseline_timeout', 'baseline_does_not_reproduce'):

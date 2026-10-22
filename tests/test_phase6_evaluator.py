@@ -58,6 +58,18 @@ class PairedEvaluatorTests(unittest.TestCase):
         self.assertTrue(all(c['response_sha256'] == hashlib.sha256(c['response'].encode()).hexdigest() for c in report['calls']))
         self.assertTrue(all(c['metadata']['completion_tokens'] == 100 for c in report['calls']))
 
+    def test_non_assertion_baseline_is_blocked_without_final_score(self):
+        module = load_module('scripts.phase6_evaluate')
+        bad = {'passed':False,'returncode':1,'timeout':False,'error':None,
+               'output':'ERROR: test_import (Contract.test_import)\nRan 1 test\nFAILED (errors=1)', 'elapsed_seconds':.1}
+        model=InvalidModel()
+        with tempfile.TemporaryDirectory() as directory, patch.object(module,'_execute',return_value=bad):
+            report=module.evaluate(model=model,proof=proof(),output=Path(directory)/'report.json',revision='a'*40)
+        self.assertEqual(report['status'],'blocked')
+        self.assertEqual(report.get('score_final'),False)
+        self.assertEqual(report['model_calls'],0)
+        self.assertTrue(all(row['status']=='blocked' for row in report['arms']))
+
     def test_bad_proof_never_runs_docker_or_inference(self):
         module = load_module('scripts.phase6_evaluate')
         model = InvalidModel(); bad = proof(); bad['network_denied'] = False
@@ -146,6 +158,40 @@ class PairedEvaluatorTests(unittest.TestCase):
         self.assertEqual(len(report['calls']), 1)
         self.assertEqual(report['calls'][0]['error'], 'RuntimeError')
         self.assertEqual(sum(a['status'] == 'blocked' for a in report['arms']), 8)
+
+    def test_independent_worker_failure_cannot_be_a_completed_experiment(self):
+        module=load_module('scripts.phase6_evaluate')
+        failed={'passed':False,'returncode':1,'timeout':False,'error':None,
+                'output':'FAIL: test_contract (Contract.test_contract)\nRan 6 tests\nFAILED (failures=1)','elapsed_seconds':.1}
+        def failed_worker(issue,root,paths,model,**kwargs):
+            model.complete_line('UNIT_ONLY', '{"editable_lines":[2]}',150)
+            return {'status':'failed','error':'independent_verification_failed',
+                    'attempts':[{'number':1,'status':'failed','error':'independent_verification_failed'}]}
+        with tempfile.TemporaryDirectory() as directory, patch.object(module,'_execute',return_value=failed), \
+                patch.object(module,'repair_fixture',side_effect=failed_worker):
+            report=module.evaluate(model=InvalidModel(),proof=proof(),output=Path(directory)/'report.json',revision='a'*40)
+        self.assertEqual(report['status'],'blocked')
+        self.assertFalse(report['score_final'])
+
+    def test_candidate_sandbox_failure_blocks_and_fuses_remaining_inference(self):
+        module = load_module('scripts.phase6_evaluate')
+        from bountyforge.curated_docker import CuratedSandboxUnavailable
+        class Neutral(InvalidModel):
+            def complete_line(self,system,prompt,max_tokens):
+                super().complete_line(system,prompt,max_tokens)
+                data=json.loads(prompt); line=data['editable_lines'][-1]
+                row=next(r.split(': ',1)[1] for r in data['source_lines_untrusted'].split('\n')
+                         if r.startswith(str(line)+': '))
+                return json.dumps({'changes':[{'line':line,'new':row+' # UNIT_ONLY'}]})
+        failed = {'passed':False,'returncode':1,'timeout':False,'error':None,
+                  'output':'FAIL: test_contract (Contract.test_contract)\nRan 6 tests\nFAILED (failures=1)','elapsed_seconds':.1}
+        with tempfile.TemporaryDirectory() as directory, \
+                patch.object(module,'_execute',side_effect=[failed]*4+[CuratedSandboxUnavailable('UNIT_ONLY')]):
+            report=module.evaluate(model=Neutral(),proof=proof(),output=Path(directory)/'report.json',revision='a'*40)
+        self.assertEqual(report['status'],'blocked')
+        self.assertFalse(report['score_final'])
+        self.assertEqual(report['model_calls'],1)
+        self.assertTrue(all(row['status']=='blocked' for row in report['arms']))
 
     def test_interruption_preserves_incomplete_call_without_promoting_success(self):
         module = load_module('scripts.phase6_evaluate')

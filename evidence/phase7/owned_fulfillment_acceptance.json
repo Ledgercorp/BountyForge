@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "kind": "phase7_synthetic_fulfillment_rehearsal",
+  "fixture": "owned-total-arithmetic-v1",
+  "job_id": "synthetic_0123456789abcdef",
+  "owned_baseline_has_defect": true,
+  "owned_candidate_passes_four_vectors": true,
+  "source_authored_by": "LeftSock synthetic fixture",
+  "status": "AWAITING_OWNER_APPROVAL",
+  "local_linux_tests": {
+    "ran": 8,
+    "passed": 8,
+    "failed": 0
+  },
+  "guarded_states": [
+    "CREATED",
+    "SCOPE_REVIEWED",
+    "PROPOSED",
+    "VERIFIED",
+    "AWAITING_OWNER_APPROVAL",
+    "HELD"
+  ],
+  "durable_sqlite_cas_in_temporary_owned_directory": true,
+  "package_digest_checked_before_review_transition": true,
+  "real_payment_verified": false,
+  "actual_customer_rights_verified": false,
+  "customer_code_executed": false,
+  "private_execution_admitted": false,
+  "model_calls": 0,
+  "real_customer_orders": 0,
+  "delivery_authorized": false,
+  "actual_paid_job_repair_quality_benchmark": false,
+  "received_revenue_usd": 0,
+  "additional_spending_usd": 0,
+  "production_deployed": false,
+  "local_mac_accessed": false,
+  "runtime_publisher_signature_verified": false,
+  "signed_sbom_verified": false,
+  "known_limitations": [
+    "demonstration exercises fixed owned bytes only",
+    "no trusted production hosting or crash-atomic SQLite+filesystem package",
+    "no private customer authorization or fresh Stripe order",
+    "no new independent AI model performance claim"
+  ]
+}

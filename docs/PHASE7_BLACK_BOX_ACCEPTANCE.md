@@ -68,3 +68,31 @@ owner delivery approval and resilient private hosting are still absent.
 
 Preserve production `main`, both draft PRs, the zero-spend restriction,
 no local Mac and no external bounty/customer operations.
+
+## Measured hosted acceptance
+
+Completed [GitHub Actions #39772397037](https://github.com/Ledgercorp/BountyForge/actions/runs/39772397037)
+at commit `b4f8c9012b7341d4f2a679543c7bc9087fff9579`.
+
+- Full suite **492 tests, 484 passed, 8 existing namespace/rootfs skips, 0 failures**.
+- All **five** new external-process Black Box scenarios passed.
+- No unexpected source, customer file or live paid order used.
+- The subprocess probes verified that temporary owned-demo output paths
+  were cleaned and no private review database was created in the rejected
+  payment scenarios.
+- Test assertions verify missing execution and delivery capabilities in
+  every generated JSON response. The fake Stripe key is a nonfunctional
+  sentinel; this is a *denial-path test*, not a real payment-provider test.
+- Real-world publisher identity, source consent, payment freshness and
+  independent model accuracy remain outside the tested boundaries.
+
+The pre-fix argument behavior is established directly by the previous
+entrypoint implementation, which never examined `sys.argv`. The security
+fix was validated against the real CLI subprocess in the hosted acceptance;
+the historical pre-fix subprocess output itself was not preserved as a
+separate runner artifact. Do not exaggerate that evidence.
+
+The final code audit confirmed only three changed paths in the Black Box
+patch: the CLI, its subprocess acceptance tests and this report. The
+production worker, Stripe client, repo CI trigger, rooted Docker host
+configuration and user/customer artifacts were not changed.

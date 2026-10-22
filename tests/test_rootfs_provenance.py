@@ -34,8 +34,9 @@ class RootfsProvenanceTests(unittest.TestCase):
         ):
             p.write_bytes(data)
             p.chmod(0o500 if p in (self.python, self.runner) else 0o400)
-        for folder in reversed(folders):
-            (self.path / folder).chmod(0o500)
+        for child in sorted((p for p in self.path.rglob('*') if p.is_dir()),
+                            key=lambda p: len(p.parts), reverse=True):
+            child.chmod(0o700 if child.parts[-1] in ('work', 'tmp') else 0o500)
 
     def test_hash_is_stable_and_requires_external_exact_pin(self):
         report = inventory_rootfs(self.path)
@@ -76,8 +77,10 @@ class RootfsProvenanceTests(unittest.TestCase):
         extra.chmod(0o400)
         with self.assertRaises(RootfsProvenanceRejected):
             verify_rootfs_pin(self.path, expected)
+        extra.parent.chmod(0o700)
         extra.unlink()
         (self.path / 'usr/lib/python3.13/extra-empty').mkdir(mode=0o500)
+        extra.parent.chmod(0o500)
         with self.assertRaises(RootfsProvenanceRejected):
             verify_rootfs_pin(self.path, expected)
 
@@ -85,6 +88,7 @@ class RootfsProvenanceTests(unittest.TestCase):
         sibling = Path(self.path.parent) / 'sibling-lib'
         sibling.write_bytes(self.lib.read_bytes())
         linked = self.path / 'usr/lib/python3.13/escaped'
+        linked.parent.chmod(0o700)
         linked.symlink_to(sibling)
         with self.assertRaises(RootfsProvenanceRejected):
             inventory_rootfs(self.path)
@@ -110,7 +114,9 @@ class RootfsProvenanceTests(unittest.TestCase):
         with self.assertRaises(RootfsProvenanceRejected):
             inventory_rootfs(self.path)
         self.runner.chmod(0o500)
+        self.python.parent.chmod(0o700)
         self.python.unlink()
+        self.python.parent.chmod(0o500)
         with self.assertRaises(RootfsProvenanceRejected):
             inventory_rootfs(self.path)
 
@@ -121,23 +127,29 @@ class RootfsProvenanceTests(unittest.TestCase):
             inventory_rootfs(pointer)
         previous = os.open
         parent = self.path.parent
-        redirect = Path(self.path.parent.parent) / 'relocated-provenance'
-        # A one-time lstat check is insufficient if an ancestor changes before
-        # the last directory component opens.
-        copy = parent / 'nested-root'
-        self.path.rename(copy)
-        root = copy
+        staging = parent / 'staging'
+        moved = parent / 'relocated-staging'
+        staging.mkdir(mode=0o700)
+        self.path.rename(staging / 'owned-rootfs')
         replaced = [False]
         def swap(name, flags, *args, **kwargs):
-            if not replaced[0] and str(name) == parent.name and 'dir_fd' in kwargs:
+            if not replaced[0] and str(name) == 'staging' and 'dir_fd' in kwargs:
                 replaced[0] = True
-                parent.rename(redirect)
-                parent.symlink_to(redirect, target_is_directory=True)
+                staging.rename(moved)
+                staging.symlink_to(moved, target_is_directory=True)
             return previous(name, flags, *args, **kwargs)
-        with patch('bountyforge.rootfs_provenance.os.open', side_effect=swap):
-            with self.assertRaises(RootfsProvenanceRejected):
-                inventory_rootfs(root)
-        self.assertTrue(replaced[0])
+        try:
+            with patch('bountyforge.rootfs_provenance.os.open', side_effect=swap):
+                with self.assertRaises(RootfsProvenanceRejected):
+                    inventory_rootfs(staging / 'owned-rootfs')
+            self.assertTrue(replaced[0])
+        finally:
+            if staging.is_symlink():
+                staging.unlink()
+            if moved.exists():
+                moved.rename(staging)
+            (staging / 'owned-rootfs').rename(self.path)
+            staging.rmdir()
 
     def test_inventory_does_not_execute_or_import_runtime_contents(self):
         with patch('subprocess.Popen', side_effect=AssertionError('must not execute')):

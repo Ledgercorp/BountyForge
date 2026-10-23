@@ -244,7 +244,7 @@ def _rpc_response(child, request_id, *, timeout=20):
                 continue
             chunk = os.read(child.stdout.fileno(), 4096)
             if not chunk:
-                raise IsolationUnavailable("SDK_RPC_STREAM_CLOSED")
+                raise IsolationUnavailable("SDK_RPC_STREAM_CLOSED_EXIT_" + str(child.poll() if child.poll() is not None else "ACTIVE"))
             data += chunk
             if len(data) > 16384:
                 raise IsolationUnavailable("SDK_RPC_RESPONSE_BUDGET")
@@ -284,7 +284,7 @@ def confirm_hardened_sdk_server(docker, workspace, native):
     try:
         child = subprocess.Popen(
             cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL, bufsize=0,
+            stderr=subprocess.PIPE, bufsize=0,
             env={"HOME": "/tmp", "PATH": "/usr/local/bin:/usr/bin:/bin"},
             start_new_session=True)
     except OSError:
@@ -325,6 +325,27 @@ def confirm_hardened_sdk_server(docker, workspace, native):
             raise IsolationUnavailable("SDK_RPC_EXIT_UNCONFIRMED") from None
         if child.returncode != 0:
             raise IsolationUnavailable("SDK_RPC_EXIT_REJECTED")
+    except IsolationUnavailable as failure:
+        # Never echo the native runtime's stderr or host paths. Classify a
+        # bounded local diagnostic from a child without provider credentials.
+        categories = {
+            "injection": "DEPENDENCY", "missing": "MISSING",
+            "permission": "PERMISSION", "api key": "AUTH",
+            "invalid": "INVALID", "unsupported": "UNSUPPORTED",
+            "oom": "MEMORY", "memory": "MEMORY", "profile": "PROFILE",
+            "patch": "PATCH",
+        }
+        category = "UNCLASSIFIED"
+        try:
+            os.set_blocking(child.stderr.fileno(), False)
+            detail = os.read(child.stderr.fileno(), 32768).decode("utf-8", "replace").lower()
+            for term, label in categories.items():
+                if term in detail:
+                    category = label
+                    break
+        except (OSError, ValueError):
+            pass
+        raise IsolationUnavailable(str(failure) + "_DIAGNOSTIC_" + category) from None
     except (OSError, BrokenPipeError, subprocess.SubprocessError):
         raise IsolationUnavailable("SDK_RPC_IO_UNAVAILABLE") from None
     finally:

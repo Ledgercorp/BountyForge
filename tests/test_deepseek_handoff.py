@@ -2,7 +2,7 @@
 import copy
 import json
 import unittest
-from bountyforge.deepseek_handoff import HarnessHandoffRejected, prepare_harness_handoff
+from deepseek_harness_handoff import HarnessHandoffRejected, prepare_harness_handoff
 
 TASK = {
     'engine': 'CODEX_AGENT', 'proposal_protocol': 'ast_statement_v1',

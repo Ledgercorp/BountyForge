@@ -66,7 +66,7 @@ jobs:
             sleep 2
           done
           [[ "$ready" == 1 ]] || { echo 'Pinned local Qwen did not become healthy'; exit 2; }
-      - name: Continue only the final 12 unseen cases and independently replay passing candidates
+      - name: Attempt only network_word_order and independently replay passing candidates
         env:
           BOUNTYFORGE_QWEN_COST_ACK: ${{ inputs.confirm_zero_cost || (github.event_name == 'push' && contains(github.event.head_commit.message, '[qwen-frozen-eval]')) }}
           BOUNTYFORGE_QWEN_PUSH_ACK: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[qwen-frozen-eval]') }}

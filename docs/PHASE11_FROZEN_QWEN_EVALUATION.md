@@ -87,13 +87,38 @@ case is blocked/unverified, not a targeted-test failure. The report records
 wall time; these fields do not reconcile, so the inference timing accumulator
 requires correction before reporting a reliable combined runtime.
 
-The workflow now resumes from this second SHA-pinned aggregate and skips all
-eight exposed cases. It keeps the same model, prompt, source, tests and repair
-core for the remaining 12, counting all 14 prior calls against the original
-40-call cap. This is still a split-run result on a fixed suite, not a fresh
-held-out evaluation. The full catalog is now exposed and must not be used for
-prompt tuning or another independent accuracy claim; a new unseen suite is
-required.
+## Third measurement segment
+
+At commit `c328532d597e2af0dc5464d3d757a602f24f76bd`, hosted run
+[39935203508](https://github.com/Ledgercorp/BountyForge/actions/runs/39935203508)
+again passed the test gate, pinned model/runtime verification and all 20 Docker
+controls. Its report is
+[`partial_qwen_39935203508.json`](../evidence/phase11/partial_qwen_39935203508.json)
+with SHA-256 `b2621e12fb2118534ba7b67b9cdc1dcbca32594d0b7fd13f8bedc4f86186433c`.
+It dispatched 11 previously untouched cases, using 21 calls. The cumulative
+total is **35 calls, 34,215 prompt tokens and 2,445 completion tokens**. It
+records 218.014 seconds summed from model-call timers and 131.584 seconds for
+this segment's coordinator wall time; the timer totals exceed the wall clock,
+so the inference timing accumulator is inconsistent and should not be cited
+as a reliable total runtime.
+
+The aggregate has 19 cases attempted, zero accepted patches, zero targeted
+test executions of a model candidate, and zero independent replays. Thirteen
+cases were routed to source/patch validation rejection across the suite, two
+to ineffective proposals, one to other patch validation, and three to the
+generic inference/test-runner failure category. These category counts sum to
+19. Most model proposals failed the existing required-binding/source
+validator; no validator or Docker rule was loosened. Three cases stopped at
+`model_or_runner_unavailable` before a candidate test receipt. Accuracy for
+the full 20-case suite remains **null** because `network_word_order` has not
+yet been dispatched. It is accurate to say zero independently verified
+repairs among the 19 attempted cases; this is not a completed 0/20 score.
+
+The final continuation is pinned to this aggregate and skips all 19 exposed
+cases. It will try only `network_word_order`, counting the existing 35 calls
+against the 40-call global ceiling. This fixed set is now exposed and cannot
+support another independent accuracy claim or prompt tuning; a new unseen
+suite is required.
 
 Actual financial spend remains $0; local inference uses no model API. Customer
 execution, private source, payments, delivery, external submissions and

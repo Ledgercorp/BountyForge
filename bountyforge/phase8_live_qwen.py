@@ -26,13 +26,17 @@ SELECTION = 'benchmarks/phase8/supplemental_tasks/selection.json'
 SELECTION_SHA256 = '55e7de2b2c59eaaea75a494315df5b95cea5eeabcaeb835309a517f43abb891e'
 MAX_ATTEMPTS = 2
 MAX_TOTAL_CALLS = 40
-RESUME_REPORT = 'evidence/phase11/partial_qwen_39934425118.json'
-RESUME_REPORT_SHA256 = 'd217280a31a7dabd6e8bb03b9e64a588d7daa9abaf678a2a88b5442e7d01e47d'
-PREVIOUS_RUN_ID = 39934425118
-PREVIOUS_COMMIT = '4df5b182cce04d8fb68b5a3bcd3b4f0e58d70f13'
+RESUME_REPORT = 'evidence/phase11/partial_qwen_39935203508.json'
+RESUME_REPORT_SHA256 = 'b2621e12fb2118534ba7b67b9cdc1dcbca32594d0b7fd13f8bedc4f86186433c'
+PREVIOUS_RUN_ID = 39935203508
+PREVIOUS_COMMIT = 'c328532d597e2af0dc5464d3d757a602f24f76bd'
 EXPOSED_CASES = ('stock_admission', 'booking_intersection', 'literal_tail',
                  'line_termination', 'duration_label', 'shipping_cartons',
-                 'block_indentation', 'running_measurements')
+                 'block_indentation', 'running_measurements', 'endpoint_authority',
+                 'archive_classification', 'markup_text', 'csv_field_encoding',
+                 'cyclic_sequence', 'configuration_switch', 'terminal_run_summary',
+                 'rectangular_columns', 'rooted_segments', 'utf8_prefix_budget',
+                 'wildcard_empty_prefix')
 MODEL_SHA256 = 'cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046'
 RUNTIME_SHA256 = '152e33221c9c9d37816a8ee9943f8d87339199197c80cb692559c9756b2027d8'
 
@@ -93,8 +97,8 @@ def load_resume_report(catalog: Catalog, tasks: list[dict]) -> dict:
             or prior.get('selected_cases') != expected_ids
             or prior.get('attempted_cases') != len(EXPOSED_CASES)
             or [row.get('case_id') for row in prior.get('cases', [])] != list(EXPOSED_CASES)
-            or prior.get('inference_calls') != 14
-            or sum(row.get('model_calls', 0) for row in prior.get('cases', [])) != 14
+            or prior.get('inference_calls') != 35
+            or sum(row.get('model_calls', 0) for row in prior.get('cases', [])) != 35
             or prior.get('verified_successes') != 0
             or prior.get('independently_replayed_successes') != 0
             or prior.get('customer_execution_authorized') is not False
@@ -126,19 +130,23 @@ def load_resume_report(catalog: Catalog, tasks: list[dict]) -> dict:
         row['failure_category'] = _category(session, row.get('independent_replay'))
         row['status'] = 'failed_or_unverified'
     segments = prior.get('run_segments')
-    if (not isinstance(segments, list) or len(segments) != 2
-            or [str(segment.get('run_id')) for segment in segments] != ['39896337388', str(PREVIOUS_RUN_ID)]
+    if (not isinstance(segments, list) or len(segments) != 3
+            or [str(segment.get('run_id')) for segment in segments]
+               != ['39896337388', '39934425118', str(PREVIOUS_RUN_ID)]
             or [case_id for segment in segments for case_id in segment.get('cases', [])]
                != list(EXPOSED_CASES)
             or segments[0].get('commit') != '777004ca60f0b3252c97112e851f22c89944f273'
             or segments[0].get('calls') != 11
             or segments[0].get('report_sha256') != 'b3bd0415afbc3a910e3de797e819c7f5c6a7b2cc190894b823b25811007d47c7'
-            or segments[1].get('commit') != PREVIOUS_COMMIT
-            or segments[1].get('calls') != 3):
+            or segments[1].get('commit') != '4df5b182cce04d8fb68b5a3bcd3b4f0e58d70f13'
+            or segments[1].get('calls') != 3
+            or segments[2].get('commit') != PREVIOUS_COMMIT
+            or segments[2].get('calls') != 21):
         raise EvaluationRejected('Prior evaluation segments do not match the pinned continuation history')
     history = prior.get('preflight_history')
-    if (not isinstance(history, list) or len(history) != 2
-            or [str(row.get('run_id')) for row in history] != ['39896337388', str(PREVIOUS_RUN_ID)]):
+    if (not isinstance(history, list) or len(history) != 3
+            or [str(row.get('run_id')) for row in history]
+               != ['39896337388', '39934425118', str(PREVIOUS_RUN_ID)]):
         raise EvaluationRejected('Prior Docker admission history is incomplete')
     return prior
 

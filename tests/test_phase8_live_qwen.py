@@ -85,7 +85,7 @@ class LiveQwenAdmissionTests(unittest.TestCase):
             report = live.evaluate(output=Path(directory)/'report.json')
             model.assert_not_called()
             self.assertEqual(report['status'], 'blocked')
-            self.assertEqual(report['inference_calls'], 14)
+            self.assertEqual(report['inference_calls'], 35)
             self.assertIsNone(report['accuracy'])
 
     def test_resume_source_digest_is_fixed_before_any_new_inference(self):
@@ -93,7 +93,7 @@ class LiveQwenAdmissionTests(unittest.TestCase):
         tasks = catalog.tasks()
         resumed = live.load_resume_report(catalog, tasks)
         self.assertEqual([row['case_id'] for row in resumed['cases']], list(live.EXPOSED_CASES))
-        self.assertEqual(resumed['inference_calls'], 14)
+        self.assertEqual(resumed['inference_calls'], 35)
         self.assertEqual(resumed['cases'][0]['failure_category'], 'source_or_patch_validation_rejection')
         self.assertEqual(resumed['cases'][3]['failure_category'], 'ineffective_model_proposal')
         self.assertEqual(resumed['cases'][5]['failure_category'], 'inference_or_test_runner_failure')
@@ -108,11 +108,11 @@ class LiveQwenAdmissionTests(unittest.TestCase):
         def session_for(task):
             return {
                 'schema': 1, 'protocol': 'owned_statement_session_v8',
-                'status': 'review_ready' if task['id'] == 'endpoint_authority' else 'failed',
-                'patch': [{'path': 'subject.py', 'diff': 'owned diff'}] if task['id'] == 'endpoint_authority' else None,
+                'status': 'review_ready' if task['id'] == 'network_word_order' else 'failed',
+                'patch': [{'path': 'subject.py', 'diff': 'owned diff'}] if task['id'] == 'network_word_order' else None,
                 'model_calls': 1, 'calls': [{'seconds': 0.25, 'metadata': {'prompt_tokens': 10, 'completion_tokens': 4}}],
-                'worker': {'status': 'review_ready' if task['id'] == 'endpoint_authority' else 'failed',
-                           'attempts': ([{'status': 'passed'}] if task['id'] == 'endpoint_authority'
+                'worker': {'status': 'review_ready' if task['id'] == 'network_word_order' else 'failed',
+                           'attempts': ([{'status': 'passed'}] if task['id'] == 'network_word_order'
                                         else [{'error': 'test_failure_or_timeout'}])},
                 'source_sha256': task['sha256']['subject.py'],
                 'tests_sha256': task['sha256']['tests/test_regression.py'],
@@ -140,18 +140,19 @@ class LiveQwenAdmissionTests(unittest.TestCase):
         replay.assert_called_once()
         self.assertEqual(processed, [spec['id'] for spec in remaining_specs])
         self.assertEqual(report['attempted_cases'], 20)
-        self.assertEqual(report['inference_calls'], 26)
+        self.assertEqual(report['inference_calls'], 36)
         self.assertEqual(report['independently_replayed_successes'], 1)
         self.assertEqual(report['accuracy'], {'verified_repairs': 1, 'attempted': 20})
         self.assertEqual(report['status'], 'completed')
-        self.assertEqual(report['prompt_tokens'], 12092)
+        self.assertEqual(report['prompt_tokens'], 34225)
         self.assertEqual(report['failure_category_counts']['independently_replayed_success'], 1)
-        self.assertEqual(report['proposal_and_verification_counts']['targeted_test_failures'], 11)
-        self.assertEqual(report['proposal_and_verification_counts']['source_validation_rejections'], 10)
-        self.assertEqual(report['proposal_and_verification_counts']['ineffective_proposals_rejected'], 2)
-        self.assertEqual(report['failure_category_counts']['source_or_patch_validation_rejection'], 5)
-        self.assertEqual(report['failure_category_counts']['ineffective_model_proposal'], 1)
-        self.assertEqual(report['failure_category_counts']['inference_or_test_runner_failure'], 2)
+        self.assertEqual(report['proposal_and_verification_counts']['targeted_test_failures'], 0)
+        self.assertEqual(report['proposal_and_verification_counts']['source_validation_rejections'], 25)
+        self.assertEqual(report['proposal_and_verification_counts']['ineffective_proposals_rejected'], 4)
+        self.assertEqual(report['failure_category_counts']['source_or_patch_validation_rejection'], 13)
+        self.assertEqual(report['failure_category_counts']['ineffective_model_proposal'], 2)
+        self.assertEqual(report['failure_category_counts']['inference_or_test_runner_failure'], 3)
+        self.assertEqual(report['failure_category_counts']['other_patch_validation_rejection'], 1)
         self.assertFalse(saved['customer_execution_authorized'])
         self.assertFalse(saved['delivery_authorized'])
         self.assertEqual(len(saved['cases']), 20)

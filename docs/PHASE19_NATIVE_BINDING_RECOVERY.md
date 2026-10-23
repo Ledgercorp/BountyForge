@@ -2,7 +2,8 @@
 
 Status: **MODEL_FREE_SDK_RUNTIME_VERIFIED** in the authorized Codex Linux
 environment. Customer/private execution and commercial operation remain
-**NOT_ADMITTED**. No model accuracy was measured by this acceptance test.
+**NOT_ADMITTED**. SDK acceptance itself measures no model accuracy; the separate
+external Qwen developmental repair result is recorded below.
 
 ## Reconciliation and provenance
 
@@ -278,9 +279,42 @@ commercial feature is enabled by this change.
 
 Runtime startup and live tool refusal do not establish an admitted model
 provider. Groq access, free quota and billing constraints remain independently
-unverified; no provider key is passed to the SDK. Local Qwen remains the primary
-zero-paid-API candidate, subject to its separate resource and handoff admission.
-No model-generated repair is claimed by these receipts. The existing skipped
+unverified; no provider key is passed to the SDK. Local Qwen's separate resource
+and handoff admission passed for the fixed owned experiment above; its candidate
+was verified twice locally. Native SDK agent inference remains unmeasured.
+The existing skipped
 namespace/rootfs tests, private runtime provenance and customer rights/consent
 gates remain separate. Revenue and new spending: **$0**. Production deployment,
 commercial activation, private execution and customer delivery: **none**.
+
+## Final hosted acceptance ledger
+
+[Run 40042278923](https://github.com/Ledgercorp/BountyForge/actions/runs/40042278923)
+passed on `f91585a39d797ef9352a7aad8b220e8e5209bc35`:
+**802 Python tests, 793 passed, nine existing skips, zero failures**, plus
+**8/8 Node tests**. This includes the MCP, queue/SQLite, provider/CLI admission
+and source-validation suites. Runtime acceptance remained model-free and
+passed live initialization, tool refusals, shutdown, interruption and restart.
+
+The separate GitHub runner also replayed the actual recorded Qwen candidate
+through **two new Docker executions**, both **6/6 passed**, matching candidate
+SHA-256 `003fbcb7f5d3f500d28cd9d9bed9dd254dbb02717222d015a1528a2013b65850`.
+It had no model weights, provider credentials or inference calls. This
+corroborates the **same single developmental repair**, not a second success.
+Sanitized durable receipts:
+
+- `evidence/phase19/github-sdk-40042278923.json`, receipt `c198d1f1e8d82a8436165116957833cd411b8e5f66b7061b231c79cbbcecd618`.
+- `evidence/phase19/github-qwen-replay-40042278923.json`, receipt `8b928fbf6702a7020ee9bd066a71ad7c7f37d8648f5933bd8ec330e8dd2eb228`.
+- `evidence/phase19/acceptance-ledger.json` summarizes exact implementation commits, measurements, restrictions and unresolved gates.
+
+The final workflow path filter covers executable source, tests, fixed runtime
+profiles, fixtures and the two evidence inputs used as executable gates.
+Report-only updates need not redownload SDK packages or repeat acceptance.
+Public-repository and same-branch guards, one active job, read-only permissions,
+no checkout credentials and a ten-minute wall limit remain enforced.
+
+**Disposition:** keep the optional SDK recovery and external-model handoff for
+engineering review. Do not enable an SDK model provider, replace the default
+repair engine, activate production or admit customer execution from these
+results. The first useful next milestone is the bounded local SDK-provider
+transport described above, followed by a genuine SDK-agent candidate turn.

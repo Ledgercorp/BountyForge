@@ -3,6 +3,19 @@ name: Phase19 real hardened SDK acceptance (no inference)
 on:
   pull_request:
     branches: [engineering/phase18-sdk-startup-20261023]
+    paths:
+      - '**.py'
+      - '**.js'
+      - '**.mjs'
+      - '**.cjs'
+      - 'phase17/**'
+      - 'phase19/**'
+      - 'fixtures/**'
+      - 'benchmarks/**'
+      - 'isolation/**'
+      - 'evidence/phase19/qwen-owned-handoff.json'
+      - 'evidence/phase19/github-sdk-40040762452.json'
+      - '.github/workflows/phase19-native-binding.yml'
 
 permissions:
   contents: read

@@ -15,6 +15,8 @@ import json
 import os
 from pathlib import Path, PurePosixPath
 import re
+import selectors
+import time
 import shutil
 import stat
 import subprocess
@@ -226,6 +228,121 @@ def inspect_hardened_profile(docker, workspace, native):
             raise IsolationUnavailable("SDK_HARDENED_CLEANUP_UNCONFIRMED") from None
 
 
+
+def _rpc_response(child, request_id, *, timeout=20):
+    """Read one bounded newline-delimited RPC response without host side effects."""
+    watcher = selectors.DefaultSelector()
+    watcher.register(child.stdout, selectors.EVENT_READ)
+    data = b""
+    deadline = time.monotonic() + timeout
+    try:
+        while time.monotonic() < deadline:
+            events = watcher.select(timeout=min(0.5, deadline - time.monotonic()))
+            if not events:
+                if child.poll() is not None:
+                    raise IsolationUnavailable("SDK_RPC_PROCESS_EXITED")
+                continue
+            chunk = os.read(child.stdout.fileno(), 4096)
+            if not chunk:
+                raise IsolationUnavailable("SDK_RPC_STREAM_CLOSED")
+            data += chunk
+            if len(data) > 16384:
+                raise IsolationUnavailable("SDK_RPC_RESPONSE_BUDGET")
+            while b"\n" in data:
+                line, data = data.split(b"\n", 1)
+                try:
+                    response = json.loads(line.decode("utf-8", "strict"))
+                except (ValueError, UnicodeError):
+                    raise IsolationUnavailable("SDK_RPC_MALFORMED_RESPONSE") from None
+                if type(response) is not dict:
+                    raise IsolationUnavailable("SDK_RPC_MALFORMED_RESPONSE")
+                if response.get("id") == request_id:
+                    if (response.get("jsonrpc") != "2.0" or "error" in response
+                            or type(response.get("result")) is not dict):
+                        raise IsolationUnavailable("SDK_RPC_INITIALIZE_REJECTED")
+                    return response["result"]
+                # Ignore only unrelated bounded server notifications with no
+                # request id. Unknown response ids are never treated as proof.
+                if response.get("id") is not None:
+                    raise IsolationUnavailable("SDK_RPC_UNKNOWN_ID")
+        raise IsolationUnavailable("SDK_RPC_INITIALIZE_TIMEOUT")
+    finally:
+        watcher.close()
+
+
+def confirm_hardened_sdk_server(docker, workspace, native):
+    """Initialize and shut down the real offline SDK JSON-RPC server, no agent turn."""
+    name = "bf-p17-" + uuid.uuid4().hex[:16]
+    cmd = sdk_bootstrap_command(docker, workspace, name, native)
+    cmd[-5:] = [
+        IMAGE, "/opt/harness/" + RUNTIME_BIN, "--profile", "sdk-minimal",
+        "--patch", "/workspace/hardened.patch.yml",
+    ]
+    try:
+        child = subprocess.Popen(
+            cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL, bufsize=0,
+            env={"HOME": "/tmp", "PATH": "/usr/local/bin:/usr/bin:/bin"},
+            start_new_session=True)
+    except OSError:
+        raise IsolationUnavailable("SDK_SERVER_LAUNCH_FAILED") from None
+    handshake_ok = False
+    shutdown_ok = False
+    try:
+        initial = {
+            "jsonrpc": "2.0", "id": "phase17-no-inference-init",
+            "method": "initialize",
+            "params": {
+                "cwd": "/workspace", "provider": "deepseek-official",
+                "model": "deepseek-v4-flash"
+            },
+        }
+        child.stdin.write((json.dumps(initial, separators=(",", ":")) + "\n").encode())
+        child.stdin.flush()
+        result = _rpc_response(child, "phase17-no-inference-init")
+        if "serverInfo" in result and type(result["serverInfo"]) is not dict:
+            raise IsolationUnavailable("SDK_RPC_SERVER_INFO_INVALID")
+        handshake_ok = True
+        child.stdin.write((json.dumps({
+            "jsonrpc": "2.0", "id": "phase17-shutdown",
+            "method": "shutdown"
+        }, separators=(",", ":")) + "\n").encode())
+        child.stdin.flush()
+        try:
+            _rpc_response(child, "phase17-shutdown", timeout=8)
+            shutdown_ok = True
+        except IsolationUnavailable:
+            # The server may close its stdio as part of shutdown. Do not
+            # classify an unconfirmed response as successful termination.
+            raise IsolationUnavailable("SDK_RPC_SHUTDOWN_UNCONFIRMED") from None
+        try:
+            child.stdin.close()
+            child.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            raise IsolationUnavailable("SDK_RPC_EXIT_UNCONFIRMED") from None
+        if child.returncode != 0:
+            raise IsolationUnavailable("SDK_RPC_EXIT_REJECTED")
+    except (OSError, BrokenPipeError, subprocess.SubprocessError):
+        raise IsolationUnavailable("SDK_RPC_IO_UNAVAILABLE") from None
+    finally:
+        if child.poll() is None:
+            child.kill()
+            try:
+                child.wait(timeout=5)
+            except (OSError, subprocess.SubprocessError):
+                pass
+        try:
+            subprocess.run([docker, "rm", "-f", name], stdin=subprocess.DEVNULL,
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                           timeout=8, check=False,
+                           env={"HOME": "/tmp", "PATH": "/usr/local/bin:/usr/bin:/bin"})
+        except (OSError, subprocess.SubprocessError):
+            raise IsolationUnavailable("SDK_RPC_CLEANUP_UNCONFIRMED") from None
+    return {"initialize_confirmed": handshake_ok,
+            "shutdown_confirmed": shutdown_ok,
+            "model_requests": 0, "agent_turns": 0}
+
+
 def run_bootstrap(wheel_dir):
     host_gate()
     docker = shutil.which("docker")
@@ -283,7 +400,9 @@ def run_bootstrap(wheel_dir):
             except (OSError, subprocess.SubprocessError):
                 raise IsolationUnavailable("SDK_CONTAINER_CLEANUP_UNCONFIRMED") from None
         hardened_digest = inspect_hardened_profile(docker, workspace, native)
+        sdk_session = confirm_hardened_sdk_server(docker, workspace, native)
         return {
+            "sdk_model_free_rpc_session": sdk_session,
             "sdk_hardened_profile_sha256": hardened_digest,
             "hardened_profile_tools_disabled_by_composition": True,
             "hardened_session_log_uploads_disabled_by_composition": True,

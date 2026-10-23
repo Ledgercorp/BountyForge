@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   sdk-acceptance:
-    if: ${{ github.repository == 'Ledgercorp/BountyForge' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'engineering/phase19-native-binding-20261023' }}
+    if: ${{ github.repository == 'Ledgercorp/BountyForge' && github.event.repository.private == false && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'engineering/phase19-native-binding-20261023' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
@@ -29,6 +29,12 @@ jobs:
         run: node --test tests/dashboard_state.mjs tests/repair_console.cjs
       - name: Existing digest-pinned runtime image
         run: docker pull python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590
+      - name: Replay the recorded Qwen candidate twice without model assets or credentials
+        run: |
+          mkdir -p evidence-run
+          env -i PATH=/usr/local/bin:/usr/bin:/bin HOME="$HOME" PYTHONDONTWRITEBYTECODE=1 \
+            python3 -m phase19_qwen_replay --admit-recorded-owned-replay \
+            --output evidence-run/phase19-qwen-replay.json
       - name: Stage public pinned wheels as inert data (no install or scripts)
         run: |
           mkdir -p "$RUNNER_TEMP/bf-p19-wheels" evidence-run
@@ -48,7 +54,7 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: phase19-sdk-acceptance
-          path: evidence-run/phase19-sdk.json
+          path: evidence-run/*.json
           retention-days: 1
           if-no-files-found: ignore
       - name: Remove disposable package data

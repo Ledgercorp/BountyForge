@@ -166,6 +166,94 @@ tests establish default-off behavior, an immutable two-request/case budget,
 rejection of false SDK receipts and insufficient resource capacity. They do not
 simulate a successful model repair.
 
+### Actual Qwen-authored result
+
+On controller commit `8385181dd96154ee9037bc2d6e10e460d019dac6`, the pinned
+Qwen2.5-Coder-1.5B generated its own candidate for the frozen public
+`weighted-mix` task. No authored correction, reference solution or model
+substitution was supplied. The model response, exact compact prompt, source/test
+identities, independent verifier results and resource measurements are preserved
+in `evidence/phase19/qwen-owned-handoff.json`.
+
+| Measurement | Actual result |
+| --- | --- |
+| Development tasks attempted | 1 |
+| Completion requests / allowed maximum | 1 / 2 |
+| Source-valid model candidates | 1 |
+| Targeted suite | 6/6 passed |
+| Fresh independent Docker replay | 6/6 passed |
+| Verified owned developmental repairs | 1 |
+| Detected regressions in that fixed suite | 0 |
+| Prompt / completion tokens | 386 / 24 |
+| Inference / whole cycle time | 4.341 / 26.341 seconds |
+| Runtime load / process elapsed time | 2.014 / 11.648 seconds |
+| Peak RSS / virtual address size | 1,896,724 / 2,574,644 KiB |
+| Sampled process CPU time | 9.77 seconds |
+| Runtime limits | 2 threads, 180 CPU seconds, 180 wall seconds, 10 GiB address space |
+| Paid API calls / additional spending | 0 / $0 |
+| Native SDK model requests / Codex-authored candidates | 0 / 0 |
+
+Candidate SHA-256:
+`003fbcb7f5d3f500d28cd9d9bed9dd254dbb02717222d015a1528a2013b65850`.
+Model-experiment receipt:
+`d72a3a937c9595bee9f2c656cb238f20e23b4d1d0254cf0de6f08224f2c411ec`.
+Trusted verifier receipt:
+`2613fe9cea9cba0ab573e0040d1f3178e1f289b92d955a78bbaf8e172673e799`.
+The final state is `AWAITING_OWNER_APPROVAL`, with delivery and customer
+execution both false. These are hash-bound receipts, **not signed identity or
+publisher attestations**. CPU counters are sampled, not exact accounting totals.
+
+This proves one actual Qwen-to-Phase16-bridge repair and two isolated test
+executions. It does **not** prove native SDK agent inference, unseen accuracy,
+improved generalization or commercial reliability. The test did not need a
+second request, so live retry quality is unmeasured here. Previous failed model
+comparisons and all frozen evaluations remain unchanged.
+
+The model and runtime were downloaded as inert public data and passed their
+existing full checksums before execution. The model is 1,117,320,768 bytes; the
+runtime archive is 22,240,456 bytes. The first sequential acquisition timed out
+and restarted; that retry was stopped. Four exact HTTP range responses completed
+the partial file, followed by the complete SHA-256 check. The successful range
+phase took 128.307 seconds; **this excludes the earlier acquisition attempts**.
+Network/model acquisition is excluded from the repair-cycle time above. No
+private account, paid inference API, GPU or new infrastructure was involved.
+The local model process exited cleanly; no new model/SDK container remained.
+
+For separate-host confirmation, `phase19_qwen_replay.py` pins the exact original
+model receipt, recreates the same owned task and submits the **unchanged**
+candidate through the bridge. It requires its own explicit opt-in, performs no
+model request, and requires the same candidate hash plus both Docker suites to
+pass. Its CI result is a replay of the existing repair, never another generated
+repair. A modified/rehashed candidate record is refused. The PR workflow runs
+this without model weights or inference credentials.
+
+After the real CLI refusal scenario was added, the complete local suite ran
+**800 tests: 791 passed, nine existing skips** (28.823 seconds). The subsequent
+two recorded-replay admission tests also passed. Final hosted counts and replay
+evidence will be recorded after publication.
+
+## Implementation inventory and next gate
+
+- `phase17_sdk_bootstrap.py`: immutable-cache admission, staging and safe public-package diagnostic metadata.
+- `phase19_native_binding.py`: fixed carrier parsing, ELF/hash checks and sealed cache.
+- `phase19_sdk_acceptance.py` and `phase19/runtime_audit.mjs`: real RPC, live tool denial, forced termination/restart, resource and cleanup evidence.
+- `phase19_qwen_handoff.py` and `phase19/owned_qwen_experiment.json`: opt-in, fixed two-request local Qwen continuation through the existing bridge.
+- `phase19_qwen_replay.py`: exact recorded candidate replay without inference.
+- `tests/test_phase17_sdk_bootstrap.py`, `tests/test_phase19_native_binding.py`, `tests/test_phase19_qwen_handoff.py`, `tests/test_phase19_qwen_replay.py`: admission, sanitization, cleanup, subprocess refusal and replay-integrity regressions.
+- `.github/workflows/phase19-native-binding.yml`, this report and `evidence/phase19/`: public standard-runner acceptance and sanitized durable evidence.
+
+Native startup is no longer the blocker. The pinned SDK defaults to a DeepSeek
+provider; the packaged `dsh-llm-pi-ai` implementation supports explicitly
+configured OpenAI-compatible routes, but no local-model transport has yet been
+admitted inside the SDK's no-network namespace. Host loopback port 8080 is
+deliberately unreachable there. Do not point the SDK at an external provider,
+enable host networking or infer account authorization from a configured key.
+The next useful SDK milestone is a separately bounded, zero-egress local-model
+transport and live candidate turn under the same tool restrictions. The current
+external Qwen handoff works without that extra integration. Groq remains blocked
+by unverified access, quota and billing restrictions. No commercial status,
+production resource, default model, draft state or main history changed.
+
 ## Reproduce and rollback
 
 Stage only the exact two public wheels as inert files; do not install them.

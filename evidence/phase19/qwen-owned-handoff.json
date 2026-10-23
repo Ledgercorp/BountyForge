@@ -1,0 +1,328 @@
+{
+  "additional_spending_usd": 0,
+  "calls": [
+    {
+      "effective_proposal": "{\"changes\":[{\"line\":4,\"new\":\"denominator = sum(weight for value, weight in pairs)\"}]}",
+      "metadata": {
+        "completion_requests": 1,
+        "completion_tokens": 24,
+        "constraint_kind": "json_safe_statement_grammar",
+        "finish_reason": "eos",
+        "input_token_limit": 1898,
+        "prompt_tokens": 386,
+        "tokenized_prompt_tokens": 386,
+        "transport": "llama_native_completion_schema"
+      },
+      "prompt": {
+        "description": "Return the weighted mean of numeric (value, nonnegative weight) pairs, dividing by total weight. Return 0.0 for empty or zero-total-weight input. Support iterators.",
+        "edit_units": [
+          {
+            "end_line": 4,
+            "kind": "statement",
+            "line": 4
+          },
+          {
+            "end_line": 3,
+            "kind": "statement",
+            "line": 3
+          },
+          {
+            "end_line": 2,
+            "kind": "statement",
+            "line": 2
+          },
+          {
+            "end_line": 7,
+            "kind": "statement",
+            "line": 7
+          },
+          {
+            "end_line": 5,
+            "kind": "condition",
+            "line": 5
+          },
+          {
+            "end_line": 6,
+            "kind": "statement",
+            "line": 6
+          }
+        ],
+        "failure_feedback": {
+          "assertions": [
+            "AssertionError: 2.5 != 5",
+            "AssertionError: 12.0 != 6",
+            "AssertionError: 35.0 != 17.5"
+          ],
+          "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+          "failing_tests": [
+            "test_fractional",
+            "test_iterator",
+            "test_weighted"
+          ],
+          "unseen_evaluation": false
+        },
+        "revision_strategy": "INITIAL_MINIMAL_REPAIR",
+        "source": "def weighted_mix(pairs):\n    pairs = list(pairs)\n    numerator = sum(value * weight for value, weight in pairs)\n    denominator = len(pairs)\n    if not denominator:\n        return 0.0\n    return numerator / denominator\n",
+        "target_symbol": "weighted_mix"
+      },
+      "prompt_sha256": "61a6ade8bd5b0e055fb33431e8b0df42a0d71408bab2bccbccac86d1f0918a3d",
+      "response": "{\"changes\":[{\"line\":4,\"new\":\"denominator = sum(weight for value, weight in pairs)\"}]}",
+      "response_sha256": "a5aa37fd77d43f6dfda69dfc4fe6edb13561472781655b2a203510a2c4c1fded",
+      "retained_anchors": [],
+      "seconds": 4.341,
+      "verification": {
+        "candidate_origin": "UNATTESTED_EXTERNAL_HARNESS_OUTPUT",
+        "commercial_admission": "NOT_ADMITTED",
+        "customer_execution_authorized": false,
+        "delivery_authorized": false,
+        "handoff": {
+          "admission": "UNADMITTED_EXTERNAL_CANDIDATE",
+          "case_id": "weighted-mix",
+          "customer_execution_authorized": false,
+          "delivery_authorized": false,
+          "handoff_kind": "DEEPSEEK_HARNESS_OUTPUT_ONLY",
+          "independently_verified": false,
+          "model_identity_attested": false,
+          "proposal_json": "{\"changes\":[{\"line\":4,\"new\":\"denominator = sum(weight for value, weight in pairs)\"}]}",
+          "proposal_sha256": "a5aa37fd77d43f6dfda69dfc4fe6edb13561472781655b2a203510a2c4c1fded",
+          "revision": 0,
+          "schema": 1,
+          "source_sha256": "42a1c42ac048e025d4366813d0ebb0e5ee322885e483324318200f2cab345409",
+          "task_id": "69bf7af892554938a19d3ccd70a4eb7d",
+          "tests_sha256": "01500a264434f3b2bb9639c56d052127d6a6bf90ccf6ca4ce0914d998bfb9210"
+        },
+        "independent_evaluation": false,
+        "independently_verified_owned_development": true,
+        "kind": "DEEPSEEK_HARNESS_OWNED_VERIFIER_BRIDGE",
+        "owned_verifier_receipt": {
+          "attempt": 1,
+          "authorship_basis": "session_submitted_candidate",
+          "authorship_identity_attested": false,
+          "candidate": "def weighted_mix(pairs):\n    pairs = list(pairs)\n    numerator = sum(value * weight for value, weight in pairs)\n    denominator = sum(weight for value, weight in pairs)\n    if not denominator:\n        return 0.0\n    return numerator / denominator\n",
+          "candidate_sha256": "003fbcb7f5d3f500d28cd9d9bed9dd254dbb02717222d015a1528a2013b65850",
+          "case_id": "weighted-mix",
+          "classification": "OWNED_DEVELOPMENT",
+          "customer_execution_authorized": false,
+          "delivery_authorized": false,
+          "diagnostic": "",
+          "diff": "--- a/subject.py\n+++ b/subject.py\n@@ -1,7 +1,7 @@\n def weighted_mix(pairs):\n     pairs = list(pairs)\n     numerator = sum(value * weight for value, weight in pairs)\n-    denominator = len(pairs)\n+    denominator = sum(weight for value, weight in pairs)\n     if not denominator:\n         return 0.0\n     return numerator / denominator\n",
+          "engine": "CODEX_AGENT",
+          "failure_stage": null,
+          "image": "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+          "independent": {
+            "exit_code": 0,
+            "output_sha256": "e370c111a98df15085a51db84a4800db4905f4468cc42b60a06c44b78e22f3e1",
+            "passed": true,
+            "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+            "tests_run": 6
+          },
+          "independent_evaluation": false,
+          "independently_verified": true,
+          "kind": "owned_dual_engine_verification",
+          "outcome": "VERIFIED",
+          "paid_fallback": false,
+          "previous_receipt_sha256": null,
+          "proposal": "{\"changes\":[{\"line\":4,\"new\":\"denominator = sum(weight for value, weight in pairs)\"}]}",
+          "proposal_sha256": "a5aa37fd77d43f6dfda69dfc4fe6edb13561472781655b2a203510a2c4c1fded",
+          "receipt_sha256": "2613fe9cea9cba0ab573e0040d1f3178e1f289b92d955a78bbaf8e172673e799",
+          "revision": 1,
+          "runtime_admission": {
+            "capabilities_empty": true,
+            "cleanup_verified": true,
+            "cpu_pressure_enforced": true,
+            "cpu_quota_verified": true,
+            "docker_socket_absent": true,
+            "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+            "loopback_inference_unreachable": true,
+            "memory_limit_enforced": true,
+            "network_denied": true,
+            "no_new_privileges": true,
+            "output_bounded": true,
+            "pid_limit_verified": true,
+            "pid_pressure_enforced": true,
+            "root_writes_denied": true,
+            "seccomp_active": true,
+            "secrets_absent": true,
+            "source_writes_denied": true,
+            "swap_disabled": true,
+            "tmpfs_bounded_noexec": true,
+            "uid_unprivileged": true,
+            "untrusted_execution_certified": false,
+            "wall_clock_enforced": true
+          },
+          "runtime_admission_sha256": "4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108",
+          "schema": 1,
+          "signature_verified": false,
+          "source_sha256": "42a1c42ac048e025d4366813d0ebb0e5ee322885e483324318200f2cab345409",
+          "state": "AWAITING_OWNER_APPROVAL",
+          "targeted": {
+            "exit_code": 0,
+            "output_sha256": "e370c111a98df15085a51db84a4800db4905f4468cc42b60a06c44b78e22f3e1",
+            "passed": true,
+            "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+            "tests_run": 6
+          },
+          "task_id": "69bf7af892554938a19d3ccd70a4eb7d",
+          "tests_sha256": "01500a264434f3b2bb9639c56d052127d6a6bf90ccf6ca4ce0914d998bfb9210"
+        }
+      }
+    }
+  ],
+  "candidate_author": "QWEN_LOCAL",
+  "capacity_before_inference": {
+    "available_memory_kib": 9032624,
+    "cpus": 3,
+    "disk_free_bytes": 30045028352
+  },
+  "classification": "OWNED_DEVELOPMENT",
+  "codex_generated_candidates": 0,
+  "commercial_admission": "NOT_ADMITTED",
+  "completion_tokens": 24,
+  "customer_execution_authorized": false,
+  "delivery_authorized": false,
+  "elapsed_seconds": 26.341,
+  "experiment_sha256": "9cbba663265a33043949f3e477d838f12791a7acfeb3d11233c73776a4b0db34",
+  "independent_evaluation": false,
+  "independently_verified_owned_repairs": 1,
+  "kind": "PHASE19_OWNED_EXTERNAL_MODEL_HANDOFF",
+  "model_profile": "QWEN_1_5B",
+  "model_requests": 1,
+  "native_sdk_model_requests": 0,
+  "paid_fallback": false,
+  "prompt_tokens": 386,
+  "receipt_sha256": "d72a3a937c9595bee9f2c656cb238f20e23b4d1d0254cf0de6f08224f2c411ec",
+  "runtime": {
+    "address_space_limit_bytes": 10737418240,
+    "context_tokens": 2048,
+    "cpu_limit_seconds": 180,
+    "cpu_observation": "Linux process counters at last sample before shutdown",
+    "load_seconds": 2.014,
+    "model_profile": "QWEN_1_5B",
+    "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+    "observed_cpu_seconds": 9.77,
+    "peak_address_kib": 2574644,
+    "peak_rss_kib": 1896724,
+    "resource_envelope": "LEGACY",
+    "server_elapsed_seconds": 11.648,
+    "server_exit_code": 0,
+    "server_stopped": true,
+    "threads": 2,
+    "unexpected_exit": false,
+    "wall_limit_reached": false,
+    "wall_limit_seconds": 180
+  },
+  "sdk_acceptance_receipt_sha256": "29850a95ff5ae98538d6bc2416723d3bd212c9cbeb3b4fdf74d4be5eb13973a3",
+  "status": "COMPLETED",
+  "submission_capability": "CODEX_AGENT",
+  "submission_capability_is_authorship_attestation": false,
+  "task": {
+    "approved_file": "subject.py",
+    "baseline_feedback": {
+      "assertions": [
+        "AssertionError: 2.5 != 5",
+        "AssertionError: 12.0 != 6",
+        "AssertionError: 35.0 != 17.5"
+      ],
+      "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+      "failing_tests": [
+        "test_fractional",
+        "test_iterator",
+        "test_weighted"
+      ],
+      "unseen_evaluation": false
+    },
+    "case_id": "weighted-mix",
+    "classification": "OWNED_DEVELOPMENT",
+    "customer_execution_authorized": false,
+    "delivery_authorized": false,
+    "description": "Return the weighted mean of numeric (value, nonnegative weight) pairs, dividing by total weight. Return 0.0 for empty or zero-total-weight input. Support iterators.",
+    "edit_units": [
+      {
+        "bindings": [
+          "pairs"
+        ],
+        "end_line": 2,
+        "kind": "statement",
+        "line": 2
+      },
+      {
+        "bindings": [
+          "numerator"
+        ],
+        "end_line": 3,
+        "kind": "statement",
+        "line": 3
+      },
+      {
+        "bindings": [
+          "denominator"
+        ],
+        "end_line": 4,
+        "kind": "statement",
+        "line": 4
+      },
+      {
+        "bindings": [],
+        "end_line": 5,
+        "kind": "condition",
+        "line": 5
+      },
+      {
+        "bindings": [],
+        "end_line": 7,
+        "kind": "statement",
+        "line": 7
+      },
+      {
+        "bindings": [],
+        "end_line": 6,
+        "kind": "statement",
+        "line": 6
+      }
+    ],
+    "editable_lines": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "engine": "CODEX_AGENT",
+    "independent_evaluation": false,
+    "max_attempts": 2,
+    "proposal_protocol": "ast_statement_v1",
+    "revision": 0,
+    "source": "def weighted_mix(pairs):\n    pairs = list(pairs)\n    numerator = sum(value * weight for value, weight in pairs)\n    denominator = len(pairs)\n    if not denominator:\n        return 0.0\n    return numerator / denominator\n",
+    "source_context": {
+      "authorized_anchors": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "called_helpers": [],
+      "prioritized_anchors": [
+        4,
+        3,
+        2,
+        7,
+        5,
+        6
+      ],
+      "scope_policy": "Only authorized anchors in the target function; helpers are context only",
+      "target_range": [
+        1,
+        7
+      ]
+    },
+    "source_sha256": "42a1c42ac048e025d4366813d0ebb0e5ee322885e483324318200f2cab345409",
+    "state": "AWAITING_CODEX_CANDIDATE",
+    "target_symbol": "weighted_mix",
+    "task_id": "69bf7af892554938a19d3ccd70a4eb7d",
+    "tests_sha256": "01500a264434f3b2bb9639c56d052127d6a6bf90ccf6ca4ce0914d998bfb9210"
+  },
+  "valid_candidates": 1
+}

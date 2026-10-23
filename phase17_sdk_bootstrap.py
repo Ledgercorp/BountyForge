@@ -424,7 +424,24 @@ def run_bootstrap(wheel_dir):
             except (OSError, subprocess.SubprocessError):
                 raise IsolationUnavailable("SDK_CONTAINER_CLEANUP_UNCONFIRMED") from None
         hardened_digest = inspect_hardened_profile(docker, workspace, native)
-        sdk_session = confirm_hardened_sdk_server(docker, workspace, native)
+        try:
+            sdk_session = confirm_hardened_sdk_server(docker, workspace, native)
+            sdk_session["admission"] = "MODEL_FREE_RPC_INITIALIZED_ONLY"
+        except IsolationUnavailable as exc:
+            # Preserve precisely the observed, repeatable *profile startup*
+            # refusal as a BLOCKER, not an admitted SDK session. Any other
+            # transport, timeout, process or isolation failure remains red.
+            expected = "SDK_RPC_STREAM_CLOSED_EXIT_1_DIAGNOSTIC_PROFILE"
+            if str(exc) != expected:
+                raise
+            sdk_session = {
+                "admission": "SDK_RPC_PROFILE_STARTUP_BLOCKED",
+                "failure_code": expected,
+                "initialize_confirmed": False,
+                "shutdown_confirmed": False,
+                "model_requests": 0,
+                "agent_turns": 0,
+            }
         return {
             "sdk_model_free_rpc_session": sdk_session,
             "sdk_hardened_profile_sha256": hardened_digest,

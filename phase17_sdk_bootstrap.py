@@ -339,6 +339,11 @@ def confirm_hardened_sdk_server(docker, workspace, native):
     # SDK JSON-RPC lives on newline-delimited stdio. Docker without -i closes
     # the container's stdin before the host can deliver initialize/shutdown.
     cmd.insert(cmd.index(IMAGE), "-i")
+    # The published native addon loader normally copies a .node binding to
+    # a writable cache. Our only writable tmpfs is intentionally noexec.
+    # Ask the upstream loader to use its documented non-cache fallback,
+    # without permitting executable temporary storage or host network.
+    cmd.insert(cmd.index(IMAGE), "--env=NARB_DISABLE_NATIVE_CACHE=1")
     try:
         child = subprocess.Popen(
             cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,

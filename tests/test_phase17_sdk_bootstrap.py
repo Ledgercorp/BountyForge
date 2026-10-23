@@ -110,6 +110,10 @@ class Phase17NativeSDKTests(unittest.TestCase):
         self.assertFalse(got["raw_stderr_disclosed"])
         self.assertNotIn("private-key", json.dumps(got))
         self.assertEqual(got["model_calls"], 0)
+        native = sanitized_boot_diagnostic(b"Error: No usable native binding found for opaque (auto)")
+        self.assertIn("NATIVE_BINDING_UNAVAILABLE", native["signature"])
+        self.assertIn("OPAQUE_NATIVE_PRODUCT", native["signature"])
+        self.assertNotIn("ENOSPC", native["signature"])
         self.assertEqual(got["stderr_bytes_captured"], len(sample))
         ids = sanitized_boot_diagnostic(
             b"required injection for sdk-jsonrpc-server: working-directory\n")["plugin_ids"]

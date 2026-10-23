@@ -1,0 +1,77 @@
+{
+  "additional_spending_usd": 0,
+  "app_server_shutdown_exit_code": 0,
+  "authorization_refusals": 5,
+  "client_api": "codex_app_server_stdio_mcp_status_and_tool_call",
+  "codex_cli_version": "0.163.0",
+  "codex_environment": "managed_linux_execution_environment",
+  "controlled_child_termination": "Codex status changed to failed",
+  "customer_source_used": false,
+  "discovered_tools": [
+    "bountyforge_status",
+    "inspect_owned_calibration",
+    "list_owned_calibration",
+    "preview_owned_review_package",
+    "verify_owned_reference"
+  ],
+  "discovery_status": "connected",
+  "external_operations": [],
+  "inference_calls": 0,
+  "kind": "bountyforge_phase9_codex_mcp_connection_acceptance",
+  "local_regression": {
+    "failed": 0,
+    "passed": 588,
+    "result": "passed",
+    "skipped": 9,
+    "tests": 597,
+    "wall_seconds": 22.12
+  },
+  "mcp_child_environment_names": [
+    "PATH"
+  ],
+  "mcp_server": "bountyforge-owned-review 0.1.0",
+  "model_turns": 0,
+  "persists_across_sessions": false,
+  "private_execution_used": false,
+  "reconnection": "successful on fresh ephemeral Codex thread, followed by status invocation",
+  "registered_in_codex_home": "/run/codex-environment/codex-home",
+  "repository_head_at_connection_test": "aa0989beea682e16fabcd4c3c1d5ca96928dbfa0",
+  "schema": 1,
+  "source_sha256": {
+    "bountyforge/mcp_server.py": "8a80dfc775345da92fb4ae70ffe38c87da5c0b9f31d62acf8ac3c079c6ad8c77",
+    "scripts/codex_mcp_acceptance.py": "407112a57ec6304216b8bb0172ea6f91a03f4f625e63fef652ea7c4e4c7fe170",
+    "tests/test_mcp_stdio_blackbox.py": "0ccd2adb5103353b0dea53f82554f7d55679d61aaf9fc5a6087103fa546431dd"
+  },
+  "standalone_mcp_blackbox": {
+    "failed": 0,
+    "passed": 8,
+    "scenarios": 8
+  },
+  "status": "CODEX_MCP_SESSION_ONLY",
+  "transport": "stdio",
+  "valid_calls": 5,
+  "valid_calls_verified": {
+    "bountyforge_status": {
+      "commercial_launch_authorized": false,
+      "live_model_accuracy": null,
+      "private_execution_admitted": false
+    },
+    "inspect_owned_calibration": {
+      "case_id": "page-offset-boundary",
+      "reference_solution_disclosed": false
+    },
+    "list_owned_calibration": {
+      "public_owned_fixture_count": 4
+    },
+    "preview_owned_review_package": {
+      "delivery_authorized": false,
+      "files_written": 0,
+      "preview_only": true
+    },
+    "verify_owned_reference": {
+      "ai_generated_patch": false,
+      "authorship": "preauthored_reference_only",
+      "case_id": "page-offset-boundary"
+    }
+  }
+}

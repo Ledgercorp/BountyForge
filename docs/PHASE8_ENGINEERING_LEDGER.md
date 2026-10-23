@@ -243,3 +243,32 @@ Those gates do not change the completed owned/simulator acceptance. Customer
 launch and delivery remain separately unauthorized; private execution remains
 NOT_ADMITTED. New live inference cost, additional infrastructure spending and
 confirmed received revenue remain $0.
+
+## Phase 9 Codex MCP connection checkpoint (2026-10-23)
+
+Synchronized Phase 9 MCP source at `aa0989beea682e16fabcd4c3c1d5ca96928dbfa0`.
+Codex CLI `0.163.0` in the managed Linux execution environment registered the
+existing stdio server in the active Codex home and discovered and invoked its
+tools through Codex app-server. The Codex-originated acceptance called all five
+tools, refused five authorization probes, verified that the MCP child received
+only `PATH`, observed failure after controlled child termination, then
+reconnected and called status in a new ephemeral thread. No model turn or
+inference request was started. This connection is **CODEX_MCP_SESSION_ONLY**;
+the active home is under `/run`, and cross-session persistence is unverified.
+
+The initial real discovery exposed the standard MCP `_meta.progressToken` sent
+by Codex. `tools/list` had rejected it. The server now accepts inert object
+metadata on listing and calls while retaining strict rejection of tool-argument
+extras and pagination. The six original stdio Black Box tests plus two new
+metadata tests pass. The full suite now has 597 tests: 588 passed, nine skipped,
+zero failures (22.120 seconds). Detailed Codex-originated results and the exact
+persistence limitation are recorded in
+[`docs/PHASE9_CODEX_CONNECTION_2026_10_23.md`](PHASE9_CODEX_CONNECTION_2026_10_23.md)
+and [`evidence/phase9/codex_mcp_acceptance.json`](../evidence/phase9/codex_mcp_acceptance.json).
+
+OpenAI documentation confirms Codex CLI stdio configuration and notes that
+local MCP transports may not be available in Cloud. A repository-scoped config
+did not enter this app-server's discovered configuration and was removed. No
+authorized persistent MCP host, Secure MCP Tunnel permissions/runtime key, or
+Cloud-managed MCP configuration is available in this session. PR #2 remains a
+draft; production branches and the Phase 8 evaluation remain unchanged.

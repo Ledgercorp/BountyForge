@@ -123,4 +123,29 @@ class MCPBlackBoxTests(unittest.TestCase):
         self.assertEqual(res[1]['error']['code'],-32601)
         self.assertFalse(res[2]['result']['isError'])
 
+    def test_standard_request_metadata_does_not_change_authority(self):
+        # Actual Codex 0.163.0 sends this progress token during discovery.
+        p, records = self.interact([INIT, READY,
+            request(2, 'tools/list', {'_meta': {'progressToken': 0}}),
+            request(3, 'tools/call', {'name': 'bountyforge_status',
+                'arguments': {}, '_meta': {'progressToken': 'status'}}),
+            request(4, 'tools/call', {'name': 'bountyforge_status',
+                'arguments': {'delivery_authorized': True}, '_meta': {}})])
+        self.assertEqual(p.returncode, 0)
+        self.assertEqual(len(records[1]['result']['tools']), 5)
+        status = json.loads(records[2]['result']['content'][0]['text'])
+        self.assertFalse(status['delivery_authorized'])
+        self.assertTrue(records[3]['result']['isError'])
+
+    def test_metadata_must_be_an_object_and_cannot_supply_operations(self):
+        p, records = self.interact([INIT, READY,
+            request(2, 'tools/list', {'_meta': 'not-an-object'}),
+            request(3, 'tools/list', {'_meta': {}, 'cursor': 'unavailable'}),
+            request(4, 'tools/call', {'name': 'bountyforge_status',
+                'arguments': {}, '_meta': []}),
+            request(5, 'tools/call', {'name': 'bountyforge_status',
+                'arguments': {}, '_meta': {}, 'command': 'forbidden'})])
+        self.assertEqual(p.returncode, 0)
+        self.assertTrue(all(r['error']['code'] == -32602 for r in records[1:]))
+
 if __name__=='__main__': unittest.main()

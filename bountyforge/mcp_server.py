@@ -206,12 +206,16 @@ def handle(packet, state):
         return _reply(id_value, result={})
     if method == "tools/list":
         params = packet.get("params", {})
-        if type(params) is not dict or params:
+        # MCP RequestParams permits inert _meta (Codex uses progressToken).
+        # It is not a tool argument, pagination cursor or authorization record.
+        if (type(params) is not dict or set(params) - {"_meta"}
+                or ("_meta" in params and type(params["_meta"]) is not dict)):
             return _fail(id_value, -32602, "No tool pagination supported")
         return _reply(id_value, result={"tools": list(TOOLS)})
     if method == "tools/call":
         params = packet.get("params")
-        if (type(params) is not dict or set(params) - {"name", "arguments"}
+        if (type(params) is not dict or set(params) - {"name", "arguments", "_meta"}
+                or ("_meta" in params and type(params["_meta"]) is not dict)
                 or type(params.get("name")) is not str):
             return _fail(id_value, -32602, "Invalid tool call")
         name = params["name"]

@@ -24,7 +24,7 @@ from bountyforge.curated_docker import IMAGE
 MEMORY_BYTES = 192 * 1024 * 1024
 PIDS_LIMIT = 32
 PROBE_TIMEOUT_SECONDS = 35
-IMAGE_PIN = "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067dfa907ceb30bb86d09da9ee558b19590"
+IMAGE_PIN = "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590"
 # IMAGE_PIN is verified against the existing curated verifier below; a
 # mismatch fails closed instead of silently changing the permitted image.
 

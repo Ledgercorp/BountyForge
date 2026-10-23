@@ -44,3 +44,16 @@ The next plausible route is a separately **version/digest-pinned official Node C
 If the alternative cannot be securely admitted, preserve this as an upstream native runtime packaging blocker and stop actual SDK execution.
 
 No authenticated Groq model access is established (previous HTTP 403). Model requests, verified model-generated repairs and commercial authorization stay **zero / zero / NOT_ADMITTED**. No Mac or paid infrastructure was used.
+
+## Final hosted Phase 18 acceptance
+
+[GitHub Actions run 40037480239](https://github.com/Ledgercorp/BountyForge/actions/runs/40037480239) succeeded on tested code commit `f83c76890a80080a94ae7cbfdc0e6267754e3d40`. Its success signifies that the fail-closed diagnostic and the existing containment held, **not** that the live native SDK server was admitted.
+
+- Focused pinned SDK contract tests: **9/9 passed**.
+- Complete Python regression: **788 total; 779 passed, nine existing skips, zero failures**.
+- Existing digest-pinned Python Docker boundary freshly validated: all 14 required observations true, including no-network, unprivileged UID, no new privileges, no writable workspace and 1 CPU / 192 MiB / 32 PID restrictions.
+- Published SDK `0.2.1rc2` and matching Linux runtime wheel bytes were hash-checked again; native default/hardened profile configuration-only launch succeeded, hardened tool rows and log-upload denial recognized.
+- Actual native JSON-RPC `initialize` **still failed** before a response; classified `SDK_RPC_STREAM_CLOSED_EXIT_1_DIAGNOSTIC_NATIVE_BINDING` with `SDK_RPC_PROFILE_STARTUP_BLOCKED`. Its server invocation reported process exit code 1; provider model requests, agent turns, earned income and verified AI-written repairs **zero**. No SDK forbidden-tool runtime probes were admitted because the session never initialized.
+- No trusted verifier modifications, no locally connected Mac, no new infrastructure provisioning, no credential exposure or billable inference. New spending controlled at $0, without independent account-invoice audit.
+
+The next step is therefore a separately admitted Node CLI/runtime package layout probe for the published native addon, not retrying Groq or loosening isolation. See the native loader documentation referenced above.

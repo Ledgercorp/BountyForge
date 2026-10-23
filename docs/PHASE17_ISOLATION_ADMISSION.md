@@ -149,3 +149,82 @@ be represented as a functioning autonomous DeepSeek agent.
 Any CI failure at download, wheel hash, archive extraction, container
 launch, profile recognition, quota enforcement or cleanup leaves runtime
 and provider admission **blocked**.
+
+
+## Verified Phase 17 final evidence (2026-10-23)
+
+The final tested source checkpoint is
+\`f01b3ba76ba6ec93c6507ed83f528a242d275540\`.
+[GitHub Actions run 40034746229](https://github.com/Ledgercorp/BountyForge/actions/runs/40034746229)
+completed **successfully**, while explicitly preserving a failed SDK
+JSON-RPC initialization as a **blocked admission finding**.
+
+- Focused Docker boundary: **9/9 passed**.
+- Focused native SDK and hardened-profile contract: **8/8 passed**.
+- Full Python regression: **787 total, 778 passed, 9 existing skips,
+  0 failures**.
+- Docker inert-probe fields all true: network isolation, root and
+  workspace read-only, no host Docker socket, UID 65534, zero effective
+  capabilities, no-new-privileges, Docker default seccomp active, cgroup
+  limits for 1 CPU/192 MiB/32 PIDs, writable private /tmp, denied external
+  TCP route. No customer/foreign source executed.
+- Pinned published SDK/runtime wheel SHA-256 digests checked against bytes
+  downloaded during the run. The platform-native payload contains
+  **322,356,339 uncompressed bytes**; SHA checks do not prove a particular
+  source commit produced the native binary.
+- Actual native Harness \`dsh\` executable launched inside locked Docker
+  in **configuration-only mode**, no model calls. Default profile fingerprint
+  \`56feccf005343a895dafccff19abec975a43a9f0f3ed70cb929eef457e5dd1c5\`;
+  default profile still includes persistent Bash and danger-full-access.
+- The separate fixed local overlay
+  \`phase17/hardened-sdk-minimal.patch.yml\` was **applied and composed by
+  the installed native runtime** using \`--patch ... --dump-config\`.
+  All seven listed shell/filesystem/MCP resource rows were disabled in the
+  resulting composition, and the \`session-log-deepseek\` config read
+  \`enabled: false\`. Hardened configuration fingerprint:
+  \`ede8e425f15724a3eeb1ff01b6c691f3dabb870c90d2ac327e00cd58d951da82\`.
+  This is configuration proof, not permission-boundary exploitation testing.
+- A separately bounded attempt to start the hardened SDK JSON-RPC
+  application and issue **only** \`initialize\` and \`shutdown\` (no
+  \`session/prompt\`) **did not initialize**. The native process exited
+  code 1 and closed stdout before the handshake responded:
+  \`SDK_RPC_STREAM_CLOSED_EXIT_1_DIAGNOSTIC_PROFILE\`.
+  The failure category is a sanitized, coarse profile/startup
+  classification; the precise underlying plugin/configuration cause has
+  **not** been established. Retrying with an interactive Docker stdin
+  channel did not resolve it. We did **not** supply a real or fake provider
+  credential, enable host networking, relax the container, or call a model.
+  This exact observed refusal is recorded as
+  \`SDK_RPC_PROFILE_STARTUP_BLOCKED\`, with
+  \`initialize_confirmed=false\`,
+  \`shutdown_confirmed=false\`, \`agent_turns=0\`, and \`model_requests=0\`.
+  New/unexpected failures still cause the CI job to fail.
+
+The initial Phase 17 CI caught a mistyped trusted Docker SHA-256 and stopped;
+that typo was corrected, and later isolation tests passed. A separate native
+wheel bootstrap encountered an insufficient extraction budget, which was
+corrected for the exact hash-verified wheel while keeping a 1 GiB total
+uncompressed cap. Both failures remain in immutable Actions history.
+Attempts to start the SDK application initially closed the stream even before
+interactive Docker stdin forwarding was enabled; the final blocked result
+above is the **measured** current state.
+
+### What remains required
+
+The next highest-value engineering task is diagnosing the pinned native SDK
+profile startup exit under a **read-only, no-key, network-disabled** Docker
+runtime. Verify plugin inject dependencies, required writable runtime paths,
+SDK lifecycle and profile fields without weakening the outer containment or
+supplying provider credentials.
+
+Then require a credential-free, model-free \`initialize\`/\`shutdown\`
+acceptance run with independent refusal probes for forbidden tools.
+Only after that, verify actual $0 API authorization and data-handling
+permissions for a compatible model. Inference must be bounded separately and
+counted explicitly. The previously observed Groq HTTP 403 is **unresolved**.
+No DeepSeek-generated repair, blind accuracy measurement, private customer
+operation, publishing, payment or revenue claim is admitted.
+
+**Final Phase 17 classification:** isolated native CLI config bootstrap:
+\`VERIFIED_DEVELOPMENT\`. Hardened SDK JSON-RPC: \`BLOCKED\`. Model
+inference and repair: \`NOT_RUN\`. Commercial execution: \`NOT_ADMITTED\`.

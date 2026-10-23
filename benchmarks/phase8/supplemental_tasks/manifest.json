@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "kind": "sealed_owned_python_maintenance_supplement",
+  "split": "held_out_until_supplement_catalog_freeze",
+  "provenance": {
+    "owner": "BountyForge / LeftSock Labs",
+    "author": "Independent sealed evaluation agent",
+    "origin": "Original owned supplemental maintenance fixtures, following semantic novelty audit of exposed Phase5/6/7 and Phase8 DEV cases.",
+    "license": "MIT",
+    "authored_date": "2026-10-23",
+    "core_freeze_commit": "48ce3f15a134ba06846d7eda8fe4ac2e594e7563",
+    "reference_repairs_supplied": false,
+    "target_execution": "not_executed_before_admission"
+  },
+  "novelty_review_sha256": "c59bcc638c938afca5d1384bc0aad54bbf8f264bfb42a45ab90b3e428674029b",
+  "tasks": [
+    {
+      "id": "terminal_run_summary",
+      "file": "subject.py",
+      "symbol": "summarize_runs",
+      "category": "consecutive_event_encoding",
+      "complexity": "loop_state",
+      "description": "Summarize consecutive equal event labels as (label, count) tuples, including the final run. Preserve input and keep separated runs distinct.",
+      "sha256": {
+        "subject.py": "abca929e2c7b49c371ac7e463e5ed2135f8617a36f154b2e02beb07c3bdb6f64",
+        "tests/test_regression.py": "c61758dcf202022b7a5215fde4df2cfe150fb7563eadbcf47b6c0734b223b2ca"
+      },
+      "provenance": "Original owned supplemental fixture, authored after semantic novelty audit without reference repairs or target execution.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "rectangular_columns",
+      "file": "subject.py",
+      "symbol": "transpose_cells",
+      "category": "matrix_shape_validation",
+      "complexity": "comprehension_guard",
+      "description": "Transpose a rectangular sequence of rows into lists of columns. Empty and zero-width matrices yield an empty list; all unequal row widths raise ValueError instead of silently truncating cells.",
+      "sha256": {
+        "subject.py": "184864ad249bf202fef426d310770bc2e75f15b20baec832259c4574835e3797",
+        "tests/test_regression.py": "28c5e58587cb4af8c13212c266bc8d94c9d1e649b910cfda10d4d2efe424112f"
+      },
+      "provenance": "Original owned supplemental fixture, authored after semantic novelty audit without reference repairs or target execution.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "rooted_segments",
+      "file": "subject.py",
+      "symbol": "normalize_rooted_path",
+      "category": "lexical_path_normalization",
+      "complexity": "branch_state",
+      "description": "Lexically normalize an absolute slash-separated path: discard empty and dot components, resolve parent components, clamp parents at root, and remove trailing separators. No filesystem access, decoding or symlink resolution.",
+      "sha256": {
+        "subject.py": "e6952ac0d0d9937d962de076bd63bb858a1f40b30d601dbe12b5ba949683f5a6",
+        "tests/test_regression.py": "5e9c598e8633da54ed15a2693652e92aba2bb0fa5bc9d9985fc22f8efd10909a"
+      },
+      "provenance": "Original owned supplemental fixture, authored after semantic novelty audit without reference repairs or target execution.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "utf8_prefix_budget",
+      "file": "subject.py",
+      "symbol": "fit_utf8_prefix",
+      "category": "unicode_byte_budget",
+      "complexity": "loop_binding",
+      "description": "Return the longest contiguous text prefix whose UTF-8 representation fits a nonnegative byte budget, without splitting code points or skipping an oversized leading character. Negative budgets raise ValueError.",
+      "sha256": {
+        "subject.py": "9ce2f477934eb5d37926444b8972f4155a69d83f217e6b99e4411934679139cb",
+        "tests/test_regression.py": "958e615672d769991ed249875ef793b1794da3022dfef5012911651a4f69a7ac"
+      },
+      "provenance": "Original owned supplemental fixture, authored after semantic novelty audit without reference repairs or target execution.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "wildcard_empty_prefix",
+      "file": "subject.py",
+      "symbol": "matches_pattern",
+      "category": "wildcard_dynamic_programming",
+      "complexity": "nested_loop",
+      "description": "Match an entire text against a case-sensitive pattern where question mark matches one character and star matches zero or more. All other characters are literal, including slash and brackets. No escape syntax.",
+      "sha256": {
+        "subject.py": "81816b6efcf4758849b13f824704966c1103fd9fb4459693d538658625a98590",
+        "tests/test_regression.py": "54cde6a6b51ff6c0dba4d4710543b57dccc9af0314e18a42792bad79b5fdd72b"
+      },
+      "provenance": "Original owned supplemental fixture, authored after semantic novelty audit without reference repairs or target execution.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "network_word_order",
+      "file": "subject.py",
+      "symbol": "decode_network_word",
+      "category": "binary_endianness",
+      "complexity": "small",
+      "description": "Decode exactly two bytes as an unsigned network-order 16-bit integer. Reject non-bytes input and incorrect lengths. This decoder performs no I/O.",
+      "sha256": {
+        "subject.py": "08fb79936e13e17d2a4687576d70b6bd6de14f8f114f31f15cffe00dd98e17c2",
+        "tests/test_regression.py": "1f29a6a3c55bacc687c94a1cd1163c94c265aa07a757da5df4c253bbab0a79ae"
+      },
+      "provenance": "Original owned supplemental fixture, authored after semantic novelty audit without reference repairs or target execution.",
+      "baseline_intent": "assertion_failure_not_executed"
+    }
+  ]
+}

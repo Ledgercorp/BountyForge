@@ -1,0 +1,259 @@
+{
+  "schema": 1,
+  "kind": "pre_inference_semantic_novelty_review",
+  "review_date": "2026-10-23",
+  "core_freeze_commit": "48ce3f15a134ba06846d7eda8fe4ac2e594e7563",
+  "original_manifest_sha256": "6c01abe0e35fafbb7aee4de108b512ff53c2f9b0150e3191c3c57b04ae771687",
+  "method": "Manual comparison of intended behavior, defective behavior and repair problem, rather than fixture identifiers. Static source/description inspection only; no target execution, model calls, or reference repairs authored.",
+  "comparison_catalogs": {
+    "benchmarks/phase5/tasks": {
+      "manifest_sha256": "ba78c3e675049d6f607b3ba50e467e5dfce53fbe09f1c789c6a90f3d5a9065b0",
+      "source_sha256": {
+        "inclusive_span": "b118148ae718ab9dde1e74fb7eb4fbb4cf213013ad5c42ff4e5358ebbe0cbc8f",
+        "first_value": "8d52d8cd8e772d2c94ea90eadd96c3ad58124d2c128ec9136764bc7b56096d42",
+        "descending_rank": "7ffcd1d6cf35024bf90515b5fc5c4b22a7bc66c33403f0ccfbd14d1005139806",
+        "trim_tokens": "3a9b8b83b588bff95a91a3d7efb8a8bbd9fa897c392d0ba84826811d0a9c56c7"
+      }
+    },
+    "benchmarks/phase5/structural_tasks": {
+      "manifest_sha256": "41681ddd893059b458bb98303cdb6c4fcd2d69820638a7d75dac74e32cb05172",
+      "source_sha256": {
+        "optional_banner": "41471697d28f6da283ac5a57e76c44e3aa372f9856c95075ab158e7a61c54dd0",
+        "reference_code": "320678c86f6d5c3534d2fd6e901618807e36bb99a53a0ea4c36d33e491ca06bc",
+        "setting_precedence": "86cf3c794cd578cdd021d9aa198e160117940a9b7576a127a6b391df988570eb",
+        "empty_summary": "a8ff267c5adee0e545210f286f45794d277662d5d343c21d002cbbb05ae6d296"
+      }
+    },
+    "benchmarks/phase6/evaluation_tasks": {
+      "manifest_sha256": "f46c86ae7bb86340f8bb195001a68a5eb868c608b5a3b584bbc6284a4e7179bf",
+      "source_sha256": {
+        "page_window": "40ea55d649295b2916db8ce67b1b1a0b33b1f32ed68234584e869a3b4149b1ed",
+        "utc_offset": "57d71b4fed7c4a9fcebf45fcbcdbeaae224399d6b80e3fdba043a7a55543cea7",
+        "integer_fields": "79f9e24c5312c1e828cfdf6af0c6252a83036e38981f8660fa6e4b0e6c27802f",
+        "retry_delay": "6692661297b54fc59c64671e34c92d5eaef12e4b7d70eeb7ba94573166cd32a6"
+      }
+    },
+    "benchmarks/phase8/development_tasks": {
+      "commit": "b5846b3cd17de2921ec70e1ce84d7e4146c8717b",
+      "manifest_sha256": "c6647513ce075aab34b4191b1a45992ad89327c89eade293d9cc0600cbd2adc8",
+      "source_sha256": {
+        "configuration_values": "cdf37afc19bb3d783176102408902946fb014a894ba4af6315fd9db149f2a585",
+        "stable_partition": "f1910ae01408cd0681e8894f6718060f33afe06207f80fc19e7c2c68a5399d12",
+        "weighted_samples": "cf630e7af0ad30edc3274262975ca3eebdab5b18813a45f6fa1aceb99dbcc46c",
+        "discount_continuation": "a8cad8a33207a09a8691182ed420b20727dde178f787e7a8aaea5017b2d15ba2",
+        "canonical_headers": "411876359b6055336e0c318d8c5a33c50ac06a88cd2f63c9f04fd38a9bc0a444",
+        "status_priority": "1ac7c6c81f51d20987222843e0bdeec89e9f199213a25712016f63b8da8e4bc1"
+      }
+    },
+    "bountyforge/phase7_calibration.py": {
+      "file_sha256": "c15eb3dcabf47ca71f2fe98c29b881f7cb201e7257ba86b550f854101f3d192d",
+      "source_sha256": {
+        "page-offset-boundary": "d98d235fee5683b906c1b9a06a7ea8f273cfbf43e39e1270e93c3cc6ddf0f7d3",
+        "tenant-key-collision": "c231eae137dfbae7fed2a67de18044bd8af04cb9ce8288676c8020da40cb080c",
+        "retry-millisecond-units": "821b7ae245b9d05574a3c752c3573110178294284acdfd6bfec22304eaedfc6b",
+        "even-median-aggregation": "3ed6af67485fd83b682122543b06f60e5649d9f09ea60a7b38a11710898f5375"
+      }
+    },
+    "bountyforge/phase7_owned_demo.py": {
+      "file_sha256": "1abdb085d48404b0a624060bd5d97b7e9b5a6cc95764bc769ca0fa0bb7c9e78a",
+      "scope": "Fixed arithmetic total fulfillment rehearsal; no supplemental overlap."
+    }
+  },
+  "original_case_review": [
+    {
+      "id": "stock_admission",
+      "decision": "retain_distinct",
+      "nearest_exposed_cases": [],
+      "reason": "Reservation exact-depletion comparison, distinct from constructing an inclusive range or slicing a page."
+    },
+    {
+      "id": "weighted_measurement",
+      "decision": "exclude_semantic_duplicate",
+      "nearest_exposed_cases": [
+        "phase8/development_tasks/weighted_samples"
+      ],
+      "reason": "Same weighted arithmetic mean repair problem. Input shape, missing numerator weighting and empty-input policy differ; these do not establish freshness."
+    },
+    {
+      "id": "middle_observation",
+      "decision": "exclude_semantic_duplicate",
+      "nearest_exposed_cases": [
+        "phase7/even-median-aggregation"
+      ],
+      "reason": "Same even-length median upper-middle defect; added validation does not make it fresh."
+    },
+    {
+      "id": "booking_intersection",
+      "decision": "retain_distinct",
+      "nearest_exposed_cases": [],
+      "reason": "Half-open interval intersection and empty-interval guards, not inclusive integer enumeration or pagination."
+    },
+    {
+      "id": "query_accumulation",
+      "decision": "retain_thematic_neighbor",
+      "nearest_exposed_cases": [
+        "phase5/tasks/first_value",
+        "phase8/development_tasks/stable_partition"
+      ],
+      "reason": "Accumulates all values per key with encounter order; prior cases preserve one value or partition items. Broad repeated-key/order theme only."
+    },
+    {
+      "id": "literal_tail",
+      "decision": "retain_distinct",
+      "nearest_exposed_cases": [],
+      "reason": "Literal suffix removal preserves earlier occurrences; no earlier affix-removal contract."
+    },
+    {
+      "id": "line_termination",
+      "decision": "retain_distinct",
+      "nearest_exposed_cases": [
+        "phase5/tasks/trim_tokens"
+      ],
+      "reason": "Preserves trailing whitespace while normalizing trailing LF; token stripping/filtering has different required whitespace behavior."
+    },
+    {
+      "id": "duration_label",
+      "decision": "retain_distinct",
+      "nearest_exposed_cases": [],
+      "reason": "Quantity singular/plural formatting; no earlier pluralization repair."
+    },
+    {
+      "id": "shipping_cartons",
+      "decision": "retain_distinct",
+      "nearest_exposed_cases": [],
+      "reason": "Whole carton capacity ceiling; no earlier packing or ceiling-division repair."
+    },
+    {
+      "id": "clock_normalization",
+      "decision": "retain_thematic_neighbor",
+      "nearest_exposed_cases": [
+        "phase6/evaluation_tasks/utc_offset",
+        "phase7/retry-millisecond-units"
+      ],
+      "reason": "Wraps a signed minute offset to a 24-hour pair; earlier cases apply sign to UTC components or convert retry units. Shared time domain only."
+    },
+    {
+      "id": "block_indentation",
+      "decision": "retain_distinct",
+      "nearest_exposed_cases": [
+        "phase5/structural_tasks/optional_banner"
+      ],
+      "reason": "Prefix each real text line without a phantom terminal line, distinct from optional scalar label prefix."
+    },
+    {
+      "id": "redacted_mapping",
+      "decision": "retain_thematic_neighbor",
+      "nearest_exposed_cases": [
+        "phase5/structural_tasks/setting_precedence"
+      ],
+      "reason": "Avoids mutation while deleting selected keys; prior mapping case merges with override precedence and already copies input."
+    },
+    {
+      "id": "running_measurements",
+      "decision": "retain_distinct",
+      "nearest_exposed_cases": [
+        "phase5/structural_tasks/empty_summary"
+      ],
+      "reason": "Prefix sums across every item, distinct from one final arithmetic total and an unbound empty-input variable."
+    },
+    {
+      "id": "encounter_unique",
+      "decision": "retain_thematic_neighbor",
+      "nearest_exposed_cases": [
+        "phase5/tasks/descending_rank",
+        "phase8/development_tasks/stable_partition"
+      ],
+      "reason": "Stable deduplication removes a final sort; earlier cases reverse ranking or preserve both partition lists. Shared order theme only."
+    },
+    {
+      "id": "endpoint_authority",
+      "decision": "retain_distinct",
+      "nearest_exposed_cases": [],
+      "reason": "IPv6 bracket formatting with host/port validation; no earlier authority-formatting contract."
+    },
+    {
+      "id": "archive_classification",
+      "decision": "retain_distinct",
+      "nearest_exposed_cases": [],
+      "reason": "Longest matching supported archive suffix; no earlier suffix-precedence classification."
+    },
+    {
+      "id": "markup_text",
+      "decision": "retain_distinct",
+      "nearest_exposed_cases": [],
+      "reason": "HTML entity replacement order, absent from exposed development fixtures."
+    },
+    {
+      "id": "csv_field_encoding",
+      "decision": "retain_distinct",
+      "nearest_exposed_cases": [
+        "phase6/evaluation_tasks/integer_fields"
+      ],
+      "reason": "CSV quoting of quote/CR/LF characters, not comma-separated integer parsing or blank filtering."
+    },
+    {
+      "id": "cyclic_sequence",
+      "decision": "retain_distinct",
+      "nearest_exposed_cases": [
+        "phase6/evaluation_tasks/page_window",
+        "phase7/page-offset-boundary"
+      ],
+      "reason": "Signed cyclic sequence rotation, distinct from selecting bounded pages."
+    },
+    {
+      "id": "configuration_switch",
+      "decision": "retain_distinct",
+      "nearest_exposed_cases": [
+        "phase8/development_tasks/configuration_values",
+        "phase8/development_tasks/status_priority"
+      ],
+      "reason": "Boolean textual false branch; exposed cases parse delimiter-bearing values or prioritize transient status categories."
+    }
+  ],
+  "conservative_additional_exclusions": [
+    "query_accumulation",
+    "clock_normalization",
+    "redacted_mapping",
+    "encounter_unique"
+  ],
+  "original_count": 20,
+  "semantic_duplicate_exclusions": 2,
+  "supplement_count": 6,
+  "unexposed_problem_count_after_supplement": 24,
+  "conservative_problem_count_after_supplement": 20,
+  "supplement_review": [
+    {
+      "id": "terminal_run_summary",
+      "decision": "retain_distinct",
+      "reason": "Terminal consecutive-run emission, absent from the compared catalogs; not final aggregation or unique grouping."
+    },
+    {
+      "id": "rectangular_columns",
+      "decision": "retain_distinct",
+      "reason": "Reject ragged matrix dimensions before transposition, absent from the compared catalogs."
+    },
+    {
+      "id": "rooted_segments",
+      "decision": "retain_distinct",
+      "reason": "Clamp lexical parent traversal at absolute root, absent from the compared catalogs; no filesystem execution."
+    },
+    {
+      "id": "utf8_prefix_budget",
+      "decision": "retain_distinct",
+      "reason": "UTF-8 code point byte-budget prefix, absent from the compared catalogs; not retry-unit conversion or token trimming."
+    },
+    {
+      "id": "wildcard_empty_prefix",
+      "decision": "retain_distinct",
+      "reason": "Wildcard dynamic-programming empty-prefix state, absent from the compared catalogs; not regex reference-code validation."
+    },
+    {
+      "id": "network_word_order",
+      "decision": "retain_distinct",
+      "reason": "Network-order two-byte decoding, absent from the compared catalogs; not arithmetic total rehearsal or endpoint string formatting."
+    }
+  ],
+  "execution_status": "not_executed_before_admission",
+  "independent_model_accuracy_established": false,
+  "reference_repairs_supplied": false
+}

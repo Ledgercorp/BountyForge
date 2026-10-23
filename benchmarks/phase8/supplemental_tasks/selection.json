@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "novelty": "Twenty reviewed distinct repair problems: excludes two semantic duplicates and four additional thematic neighbors from the frozen primary catalog; see supplemental novelty_review.json for the per-case audit.",
+  "manifests": [
+    {
+      "path": "benchmarks/phase8/evaluation_tasks/manifest.json",
+      "sha256": "6c01abe0e35fafbb7aee4de108b512ff53c2f9b0150e3191c3c57b04ae771687",
+      "case_ids": [
+        "stock_admission",
+        "booking_intersection",
+        "literal_tail",
+        "line_termination",
+        "duration_label",
+        "shipping_cartons",
+        "block_indentation",
+        "running_measurements",
+        "endpoint_authority",
+        "archive_classification",
+        "markup_text",
+        "csv_field_encoding",
+        "cyclic_sequence",
+        "configuration_switch"
+      ]
+    },
+    {
+      "path": "benchmarks/phase8/supplemental_tasks/manifest.json",
+      "sha256": "f34b48d3f1d310188e4efc3b5e35a48d1ed53a883b3e27cfbe8f2aae62a7a851",
+      "case_ids": [
+        "terminal_run_summary",
+        "rectangular_columns",
+        "rooted_segments",
+        "utf8_prefix_budget",
+        "wildcard_empty_prefix",
+        "network_word_order"
+      ]
+    }
+  ]
+}

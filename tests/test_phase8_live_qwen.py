@@ -46,7 +46,7 @@ class LiveQwenAdmissionTests(unittest.TestCase):
                 patch.object(live, 'require_hosted_admission'), \
                 patch.object(live, 'preflight') as preflight, \
                 patch.object(live, 'LocalModel') as model:
-            report = live.evaluate(output=Path(directory)/'report.json', enforce_hosted=False)
+            report = live.evaluate(output=Path(directory)/'report.json')
             preflight.assert_not_called(); model.assert_not_called()
             self.assertEqual(report['status'], 'blocked')
             self.assertIsNone(report['accuracy'])
@@ -59,7 +59,7 @@ class LiveQwenAdmissionTests(unittest.TestCase):
                 patch.object(live, 'require_hosted_admission'), \
                 patch.object(live, 'preflight', side_effect=live.EvaluationRejected('control missing')), \
                 patch.object(live, 'LocalModel') as model:
-            report = live.evaluate(output=Path(directory)/'report.json', enforce_hosted=False)
+            report = live.evaluate(output=Path(directory)/'report.json')
             model.assert_not_called()
             self.assertEqual(report['status'], 'blocked')
             self.assertEqual(report['inference_calls'], 0)

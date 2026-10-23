@@ -3,10 +3,24 @@ import copy
 import json
 from pathlib import Path
 import unittest
+import subprocess
+import sys
+import tempfile
 from unittest.mock import patch
 
 
 class ExternalModelAdmissionTests(unittest.TestCase):
+    def test_real_cli_rejects_missing_admission_and_unauthorized_operation_before_writes(self):
+        root=Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as temp:
+            output=Path(temp)/'result.json'
+            for extra in ([],['--admit-owned-model-experiment','--execute-customer']):
+                with self.subTest(extra=extra):
+                    result=subprocess.run([sys.executable,'-B','-m','phase19_qwen_handoff','--output',str(output),*extra],
+                        cwd=root,capture_output=True,text=True,timeout=10)
+                    self.assertEqual(result.returncode,2);self.assertNotIn('Traceback',result.stderr)
+                    self.assertFalse(output.exists())
+
     def test_inference_is_disabled_without_explicit_experiment_admission(self):
         from phase19_qwen_handoff import run
         with patch('bountyforge.local_model_runtime.LocalRuntime') as runtime:

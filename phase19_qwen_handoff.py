@@ -123,6 +123,7 @@ def main(argv=None):
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--admit-owned-model-experiment',action='store_true')
     parser.add_argument('--output',type=Path,required=True);args=parser.parse_args(argv)
+    if not args.admit_owned_model_experiment:parser.error('Explicit owned model experiment admission required')
     result=run(args.admit_owned_model_experiment)
     args.output.write_text(json.dumps(result,indent=2,sort_keys=True)+'\n')
     print(json.dumps({k:result[k] for k in ('status','model_requests','valid_candidates','independently_verified_owned_repairs')}))

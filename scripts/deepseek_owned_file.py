@@ -19,7 +19,7 @@ from deepseek_harness_handoff import HarnessHandoffRejected
 
 def read_candidate_file(path: Path) -> str:
     """Read one stable, owner-private, regular, single-link file without following symlinks."""
-    if type(path) is not Path or not path.is_absolute():
+    if not isinstance(path, Path) or not path.is_absolute():
         raise HarnessHandoffRejected("ABSOLUTE_CANDIDATE_FILE_REQUIRED")
     flags = os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW | os.O_NONBLOCK
     try:

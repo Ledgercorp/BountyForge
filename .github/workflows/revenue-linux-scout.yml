@@ -12,6 +12,8 @@ on:
       - 'tests/**'
       - 'scripts/**'
       - 'benchmarks/**'
+      - 'fixtures/phase12/**'
+      - 'dashboard/**'
   workflow_dispatch:
     inputs:
       scan_mode:
@@ -43,6 +45,8 @@ jobs:
           python-version: '3.11'
       - name: Full Python regression plus revenue, Groq and Stripe gates
         run: python -m unittest discover -s tests -v
+      - name: Owner console configuration and receipt verification
+        run: node --test tests/dashboard_state.mjs tests/repair_console.cjs
       - name: Observe Linux host without namespace launch or untrusted execution
         run: |
           set -euo pipefail

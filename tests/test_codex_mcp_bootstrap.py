@@ -95,7 +95,10 @@ else:
         records = [json.loads(x) for x in p.stdout.splitlines()]
         self.assertEqual(records[0]["result"]["serverInfo"]["name"],
                          "bountyforge-owned-review")
-        self.assertEqual(len(records[1]["result"]["tools"]),5)
+        self.assertEqual({t['name'] for t in records[1]['result']['tools']},{
+            'bountyforge_status','list_owned_calibration','inspect_owned_calibration',
+            'verify_owned_reference','preview_owned_review_package','list_repair_engines',
+            'list_owned_repair_tasks','prepare_owned_repair','submit_owned_repair','run_owned_qwen'})
 
     def test_cli_register_redacts_sensitive_details(self):
         previous = self.inventory.read_bytes() if self.inventory.exists() else None

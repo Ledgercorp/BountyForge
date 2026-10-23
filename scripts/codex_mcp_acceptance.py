@@ -20,11 +20,13 @@ EXPECTED = {
     "bountyforge_status", "list_owned_calibration",
     "inspect_owned_calibration", "verify_owned_reference",
     "preview_owned_review_package",
+    "list_repair_engines", "list_owned_repair_tasks", "prepare_owned_repair",
+    "submit_owned_repair", "run_owned_qwen",
 }
 
 
 class CodexClient:
-    def __init__(self) -> None:
+    def __init__(self, *, read_timeout=20) -> None:
         if sys.platform != "linux":
             raise RuntimeError("This process-boundary check requires Linux")
         self.process = subprocess.Popen(
@@ -36,6 +38,7 @@ class CodexClient:
         assert self.process.stdout and self.process.stdin
         self.selector.register(self.process.stdout, selectors.EVENT_READ)
         self.buffer = bytearray()
+        self.read_timeout=read_timeout
         self.request_id = 0
         self.rpc("initialize", {"clientInfo": {
             "name": "bountyforge-phase9-blackbox", "version": "1"}})
@@ -43,7 +46,7 @@ class CodexClient:
 
     def _read(self) -> dict:
         assert self.process.stdout
-        deadline = time.monotonic() + 20
+        deadline = time.monotonic() + self.read_timeout
         while time.monotonic() < deadline:
             if b"\n" in self.buffer:
                 line, _, rest = self.buffer.partition(b"\n")
@@ -158,7 +161,7 @@ def main() -> int:
         matches = [item for item in servers if item["name"] == "bountyforge"]
         if (len(matches) != 1 or matches[0]["runtimeStatus"] != "connected"
                 or set(matches[0]["tools"]) != EXPECTED):
-            raise RuntimeError("Codex discovery did not return all five tools")
+            raise RuntimeError("Codex discovery did not return the exact owned tool inventory")
         report["discovered_tools"] = sorted(matches[0]["tools"])
 
         requests = {

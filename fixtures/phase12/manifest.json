@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "classification": "owned_development_only",
+  "cases": [
+    {
+      "id": "sparse-average",
+      "symbol": "sparse_average",
+      "description": "Compute the arithmetic mean of all non-None numeric readings, including zero. Return None for empty or all-missing input. Preserve input.",
+      "sha256": {
+        "subject.py": "7f9348a7eface482f6c6410a274bdbd81e0b30da5159498086709f441f9e97f3",
+        "tests/test_regression.py": "a2fe98d7f9894f19f6b23cbe5a5dafd0cf88988f36581d1e7d6bbe9752234d6b"
+      }
+    },
+    {
+      "id": "label-order",
+      "symbol": "label_order",
+      "description": "Deduplicate labels case-insensitively with casefold, retaining the first spelling and encounter order. Preserve input.",
+      "sha256": {
+        "subject.py": "5dc05941fd3dc5563787921f1466a0afda5831a9843db4aa97926b31636b3f09",
+        "tests/test_regression.py": "270576ce3a57c13fdabccfa523b7c46a962a660c9b5977b8cc4509ff229fc44c"
+      }
+    },
+    {
+      "id": "weighted-mix",
+      "symbol": "weighted_mix",
+      "description": "Return the weighted mean of numeric (value, nonnegative weight) pairs, dividing by total weight. Return 0.0 for empty or zero-total-weight input. Support iterators.",
+      "sha256": {
+        "subject.py": "42a1c42ac048e025d4366813d0ebb0e5ee322885e483324318200f2cab345409",
+        "tests/test_regression.py": "01500a264434f3b2bb9639c56d052127d6a6bf90ccf6ca4ce0914d998bfb9210"
+      }
+    }
+  ]
+}

@@ -22,9 +22,21 @@ The bootstrap deliberately isolates the MCP child environment to PATH.
 Never transfer GitHub/Groq/Stripe/OpenAI credentials into the server process.
 Do not run on the owner's Mac. Do not assume GitHub Actions has Codex installed.
 
-The MCP exposes only fixed authored development fixtures, accurate status and
-an in-memory owned patch review preview. No arbitrary paths, customer inputs,
-model calls, payments, remote network listener or delivery actions are supported.
+The original five MCP tools retain their read-only calibration/status behavior.
+Phase12 adds explicit engine inventory, fixed owned repair preparation, bounded
+Codex-session candidate submission and an explicit QWEN_LOCAL autonomous run.
+Task capabilities are revision-fenced and process-local. There are no arbitrary
+paths, customer inputs, paid APIs, remote listener or delivery actions. The MCP
+child clears inherited variables and uses only a fixed trusted PATH, including
+/usr/local/bin for the existing Linux Docker installation.
+
+CODEX_AGENT means this active Codex session authors the candidate through MCP.
+Do not start codex exec, SDK inference or another agent turn from inside it.
+The app-server helper is only a native MCP transport client and starts no model
+turns. No independently authenticated unattended Codex provider is available.
+All Phase12 examples are developmental; this agent can read their tests.
+
+See docs/PHASE12_DUAL_ENGINE.md and the local dashboard/repair-console.html.
 
 Full details: docs/PHASE10_CODEX_BOOTSTRAP_AND_CHATGPT.md
 

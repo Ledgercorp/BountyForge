@@ -27,6 +27,15 @@ def tool(id, name, arguments=None):
 
 
 class MCPBlackBoxTests(unittest.TestCase):
+    def test_environment_allowlist_uses_trusted_docker_path_and_drops_all_other_variables(self):
+        command=[sys.executable,'-c',
+            'import os,json;from bountyforge.mcp_server import _isolate_environment;'
+            '_isolate_environment();print(json.dumps({"names":sorted(os.environ),"paths":os.get_exec_path()}))']
+        env=dict(os.environ,UNRELATED_SECRET_TOKEN='must-never-be-inherited')
+        p=subprocess.run(command,cwd=ROOT,env=env,capture_output=True,text=True,timeout=5)
+        self.assertEqual(p.returncode,0,'MCP startup environment isolation is missing')
+        self.assertEqual(json.loads(p.stdout),{'names':['PATH'],'paths':['/usr/local/bin','/usr/bin','/bin']})
+
     def interact(self, messages):
         env=dict(os.environ)
         for key in ('GROQ_API_KEY','STRIPE_SECRET_KEY','OPENAI_API_KEY','GITHUB_TOKEN'):
@@ -48,8 +57,13 @@ class MCPBlackBoxTests(unittest.TestCase):
         tools=records[1]['result']['tools']
         self.assertEqual({t['name'] for t in tools},{
             'bountyforge_status','list_owned_calibration', 'inspect_owned_calibration',
-            'verify_owned_reference','preview_owned_review_package'})
-        self.assertTrue(all(t['annotations']['readOnlyHint'] for t in tools))
+            'verify_owned_reference','preview_owned_review_package','list_repair_engines',
+            'list_owned_repair_tasks','prepare_owned_repair','submit_owned_repair','run_owned_qwen'})
+        original={'bountyforge_status','list_owned_calibration','inspect_owned_calibration',
+                  'verify_owned_reference','preview_owned_review_package'}
+        self.assertTrue(all(t['annotations']['readOnlyHint'] for t in tools if t['name'] in original))
+        self.assertTrue(all(not t['annotations']['readOnlyHint'] for t in tools
+                            if t['name'] in {'prepare_owned_repair','submit_owned_repair','run_owned_qwen'}))
         self.assertTrue(all(t['inputSchema']['additionalProperties'] is False for t in tools))
         self.assertEqual(records[2]['result'],{})
 
@@ -132,7 +146,7 @@ class MCPBlackBoxTests(unittest.TestCase):
             request(4, 'tools/call', {'name': 'bountyforge_status',
                 'arguments': {'delivery_authorized': True}, '_meta': {}})])
         self.assertEqual(p.returncode, 0)
-        self.assertEqual(len(records[1]['result']['tools']), 5)
+        self.assertEqual(len(records[1]['result']['tools']), 10)
         status = json.loads(records[2]['result']['content'][0]['text'])
         self.assertFalse(status['delivery_authorized'])
         self.assertTrue(records[3]['result']['isError'])
@@ -147,5 +161,23 @@ class MCPBlackBoxTests(unittest.TestCase):
                 'arguments': {}, '_meta': {}, 'command': 'forbidden'})])
         self.assertEqual(p.returncode, 0)
         self.assertTrue(all(r['error']['code'] == -32602 for r in records[1:]))
+
+    def test_new_engine_tools_are_real_bounded_interfaces_not_arbitrary_source_intake(self):
+        p,records=self.interact([INIT,READY,tool(2,'list_repair_engines'),tool(3,'list_owned_repair_tasks'),
+            tool(4,'prepare_owned_repair',{'case_id':'weighted-mix','engine':'PAID_API'}),
+            tool(5,'prepare_owned_repair',{'case_id':'../../private','engine':'CODEX_AGENT'}),
+            tool(6,'submit_owned_repair',{'task_id':'0'*32,'revision':False,'proposal':{'changes':[]}}),
+            tool(7,'submit_owned_repair',{'task_id':'0'*32,'revision':0,
+                 'proposal':{'changes':[{'line':4,'new':'denominator = 1','path':'secret.py'}]}}),
+            tool(8,'run_owned_qwen',{'task_id':'0'*32,'revision':0})])
+        self.assertEqual(p.returncode,0)
+        payload=json.loads(records[1]['result']['content'][0]['text'])
+        self.assertEqual([x['id'] for x in payload['engines']],['QWEN_LOCAL','CODEX_AGENT'])
+        self.assertFalse(payload['engines'][1]['unattended_backend_available'])
+        tasks=json.loads(records[2]['result']['content'][0]['text'])
+        self.assertEqual(len(tasks['tasks']),3)
+        self.assertFalse(tasks['independent_evaluation'])
+        self.assertTrue(all(x['result']['isError'] for x in records[3:]))
+        self.assertNotIn(b'private',p.stdout.splitlines()[-1])
 
 if __name__=='__main__': unittest.main()

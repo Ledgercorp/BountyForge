@@ -1,6 +1,6 @@
-"""BountyForge MCP stdio, read-only and owned-fixture only.
+"""BountyForge MCP stdio, restricted owned-fixture operations only.
 
-No remote listener, arbitrary file/tool execution, payment, inference or delivery.
+No remote listener, arbitrary file/tool execution, payment or delivery.
 Run from the trusted BountyForge checkout using python -m bountyforge.mcp_server.
 """
 from __future__ import annotations
@@ -14,26 +14,27 @@ from pathlib import Path
 PROTOCOL = "2025-11-25"
 SUPPORTED = {"2025-03-26", "2025-06-18", PROTOCOL}
 NAME = "bountyforge-owned-review"
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 MAX_REQUEST = 8192
 MAX_REQUESTS = 100
 ROOT = Path(__file__).resolve().parents[1]
 
-# This adapter never has authority to use inherited provider or repository tokens.
-for _name in ("GROQ_API_KEY", "OPENAI_API_KEY", "STRIPE_SECRET_KEY",
-              "GITHUB_TOKEN", "GH_TOKEN", "RUNPOD_API_KEY"):
-    os.environ.pop(_name, None)
+def _isolate_environment():
+    # Deny all inherited credentials, not just a list of known provider names.
+    # Docker is installed in /usr/local/bin in the managed Linux environment.
+    os.environ.clear()
+    os.environ['PATH']='/usr/local/bin:/usr/bin:/bin'
 
 
-def _tool(name, description, properties=None, required=None):
+def _tool(name, description, properties=None, required=None, *, stateful=False):
     return {
         "name": name, "description": description,
         "inputSchema": {
             "type": "object", "properties": properties or {},
             "required": required or [], "additionalProperties": False,
         },
-        "annotations": {"readOnlyHint": True, "destructiveHint": False,
-                        "idempotentHint": True, "openWorldHint": False},
+        "annotations": {"readOnlyHint": not stateful, "destructiveHint": False,
+                        "idempotentHint": not stateful, "openWorldHint": False},
     }
 
 
@@ -45,8 +46,27 @@ TOOLS = (
     _tool("verify_owned_reference", "Recheck an exact authored reference repair; not an AI-generated repair score.",
           {"case_id": {"type": "string", "maxLength": 64}}, ["case_id"]),
     _tool("preview_owned_review_package", "Inspect only the static owned patch-review manifest, no files written."),
+    _tool("list_repair_engines", "Select Autonomous Qwen or session-driven Codex Agent; no provider fallback."),
+    _tool("list_owned_repair_tasks", "List exact Phase12 owned DEVELOPMENT tasks, not a hidden evaluation."),
+    _tool("prepare_owned_repair", "Reproduce an exact owned defect, then hand off source and authorized AST edit units. No tests or answers are returned.",
+          {"case_id":{"type":"string","maxLength":64},
+           "engine":{"type":"string","enum":["QWEN_LOCAL","CODEX_AGENT"]}},
+          ["case_id","engine"], stateful=True),
+    _tool("submit_owned_repair", "Verify a Codex-session candidate with existing validators and two isolated Docker observations. No delivery.",
+          {"task_id":{"type":"string","maxLength":32},
+           "revision":{"type":"integer","minimum":0,"maximum":1},
+           "proposal":{"type":"object","properties":{"changes":{"type":"array","minItems":1,"maxItems":3,
+             "items":{"type":"object","properties":{"line":{"type":"integer","minimum":1,"maximum":200},
+             "new":{"type":"string","maxLength":400}},"required":["line","new"],"additionalProperties":False}}},
+             "required":["changes"],"additionalProperties":False}},
+          ["task_id","revision","proposal"], stateful=True),
+    _tool("run_owned_qwen", "Run at most two autonomous requests to the pinned local Qwen runtime for a QWEN_LOCAL task only.",
+          {"task_id":{"type":"string","maxLength":32},
+           "revision":{"type":"integer","minimum":0,"maximum":1}},
+          ["task_id","revision"], stateful=True),
 )
 BY_NAME = {t["name"]: t for t in TOOLS}
+_REPAIRS = None
 
 
 class Rejected(ValueError):
@@ -72,11 +92,24 @@ def _schema_args(name, args):
     if tool is None:
         raise Rejected("Unknown tool")
     schema = tool["inputSchema"]
-    if type(args) is not dict or set(args) != set(schema["required"]):
-        raise Rejected("Tool arguments must match the published schema exactly")
-    if "case_id" in args and (type(args["case_id"]) is not str
-                              or len(args["case_id"]) > 64):
-        raise Rejected("Invalid owned case identifier")
+    def validate(value, spec):
+        kind=spec['type']
+        if kind=='object':
+            if type(value) is not dict or set(value)!=set(spec['required']):
+                raise Rejected('Tool arguments must match the published schema exactly')
+            for key,child in value.items(): validate(child,spec['properties'][key])
+        elif kind=='string':
+            if type(value) is not str or len(value)>spec.get('maxLength',4096):
+                raise Rejected('Invalid string argument')
+            if 'enum' in spec and value not in spec['enum']: raise Rejected('Unknown engine')
+        elif kind=='integer':
+            if type(value) is not int or not spec.get('minimum',0)<=value<=spec.get('maximum',200):
+                raise Rejected('Invalid integer argument')
+        elif kind=='array':
+            if type(value) is not list or not spec['minItems']<=len(value)<=spec['maxItems']:
+                raise Rejected('Invalid bounded array')
+            for child in value: validate(child,spec['items'])
+    validate(args,schema)
     return args
 
 
@@ -111,7 +144,22 @@ def _receipt():
 
 
 def call_tool(name, args):
+    global _REPAIRS
     _schema_args(name, args)
+    if name in {'list_repair_engines','list_owned_repair_tasks','prepare_owned_repair',
+                'submit_owned_repair','run_owned_qwen'}:
+        from bountyforge.repair_engines import RepairService, RepairUnavailable, engine_inventory, task_inventory
+        if name=='list_repair_engines': return {'engines':engine_inventory(),'paid_fallback':False}
+        if name=='list_owned_repair_tasks': return {'tasks':task_inventory(),'independent_evaluation':False}
+        if _REPAIRS is None: _REPAIRS=RepairService()
+        try:
+            if name=='prepare_owned_repair': return _REPAIRS.prepare(**args)
+            if name=='submit_owned_repair': return _REPAIRS.submit(**args)
+            return _REPAIRS.run_qwen(**args)
+        except RepairUnavailable as exc:
+            outcome=str(exc) if str(exc) in {'SANDBOX_ADMISSION_UNAVAILABLE','BASELINE_OBSERVATION_UNAVAILABLE'} else 'SANDBOX_UNAVAILABLE'
+            return {'state':'BLOCKED','outcome':outcome,
+                    'private_execution_admitted':False,'delivery_authorized':False}
     if name == "bountyforge_status":
         return {"kind": "bountyforge_mcp_status", "scope": "recorded_owned_only",
                 "status": "ENGINEERING_READY_FOR_REVIEW",
@@ -199,7 +247,7 @@ def handle(packet, state):
         return _reply(id_value, result={"protocolVersion": version,
             "capabilities": {"tools": {"listChanged": False}},
             "serverInfo": {"name": NAME, "version": VERSION},
-            "instructions": "Owned-only read-only engineering records. No private execution, model inference, customer intake, payments or delivery."})
+            "instructions": "Restricted owned DEVELOPMENT tasks only. Original five tools remain read-only. Codex candidates require explicit task and revision; Qwen requires explicit QWEN_LOCAL selection. No customer source, arbitrary commands, payments or delivery. No unattended Codex backend or paid fallback."})
     if not state["ready"]:
         return _fail(id_value, -32000, "MCP handshake incomplete")
     if method == "ping":
@@ -233,6 +281,7 @@ def handle(packet, state):
 
 
 def main():
+    _isolate_environment()
     state = {"initialized": False, "ready": False}
     for counter in range(MAX_REQUESTS):
         raw = sys.stdin.buffer.readline(MAX_REQUEST + 1)

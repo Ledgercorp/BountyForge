@@ -22,6 +22,47 @@ from bountyforge.phase8_evaluation import (
 )
 from bountyforge.repair_session import repair_owned
 
+
+class CandidateBoundModel:
+    """Retain the actual response for custody binding, without extra inference."""
+    def __init__(self, backend):
+        self.backend=backend
+        self.last_response=None
+        self.last_call=None
+
+    def complete_line(self, system, prompt, max_tokens):
+        self.last_response=None
+        response=self.backend.complete_line(system,prompt,max_tokens)
+        self.last_response=response
+        self.last_call=copy.deepcopy(getattr(self.backend,'last_call',None))
+        return response
+
+
+def candidate_bound_observer(catalog, spec, original, model):
+    """Authorize a changed worker copy only by replaying the exact model edit.
+
+    Phase11 omitted candidate= and therefore rejected all changed bytes as
+    original-source custody failures. No validator is bypassed by this fix.
+    """
+    def run(work):
+        from bountyforge.curated_tasks import editable_scope
+        from bountyforge.repair_session import validate_proposal_bindings
+        from bountyforge.statements import stage_statements
+        current=(Path(work)/'subject.py').read_text()
+        if hashlib.sha256(current.encode()).hexdigest()==spec['sha256']['subject.py']:
+            return observe(catalog,spec,Path(work))
+        source=(Path(original)/'subject.py').read_text()
+        scope=editable_scope(source,spec['symbol'])
+        raw=model.last_response
+        if not isinstance(raw,str):
+            raise EvaluationRejected('Changed source lacks an exact model response')
+        candidate=stage_statements(raw,original,'subject.py',scope,spec['sha256']['subject.py'])['files'][0]['content']
+        validate_proposal_bindings(source,scope,raw)
+        if current!=candidate:
+            raise EvaluationRejected('Changed worker bytes differ from validated model proposal')
+        return observe(catalog,spec,Path(work),candidate=candidate)
+    return run
+
 SELECTION = 'benchmarks/phase8/supplemental_tasks/selection.json'
 SELECTION_SHA256 = '55e7de2b2c59eaaea75a494315df5b95cea5eeabcaeb835309a517f43abb891e'
 MAX_ATTEMPTS = 2
@@ -257,10 +298,11 @@ def evaluate(*, output: str | Path) -> dict:
             with tempfile.TemporaryDirectory(prefix='bf-phase8-qwen-') as directory:
                 root = Path(directory) / 'original'
                 materialize(catalog, spec, root)
+                bound_model=CandidateBoundModel(backend)
                 session = repair_owned(
-                    issue_for(spec), root, 'subject.py', backend,
+                    issue_for(spec), root, 'subject.py', bound_model,
                     expected_hashes=spec['sha256'],
-                    test_runner=lambda work, spec=spec: observe(catalog, spec, Path(work)),
+                    test_runner=candidate_bound_observer(catalog,spec,root,bound_model),
                     max_attempts=MAX_ATTEMPTS,
                 )
             row['model_calls'] = session.get('model_calls', 0)

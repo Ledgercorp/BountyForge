@@ -1,0 +1,122 @@
+{
+  "active_session_patch_generation": true,
+  "active_session_token_usage": null,
+  "additional_agent_turns_started": 0,
+  "additional_provider_requests": 0,
+  "additional_spending_usd": 0,
+  "app_server_exit": 0,
+  "calls": [
+    {
+      "response": {
+        "id": 4,
+        "result": {
+          "content": [
+            {
+              "text": "{\"approved_file\":\"subject.py\",\"case_id\":\"sparse-average\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"description\":\"Compute the arithmetic mean of all non-None numeric readings, including zero. Return None for empty or all-missing input. Preserve input.\",\"edit_units\":[{\"bindings\":[\"kept\"],\"end_line\":2,\"kind\":\"statement\",\"line\":2},{\"bindings\":[],\"end_line\":3,\"kind\":\"condition\",\"line\":3},{\"bindings\":[],\"end_line\":5,\"kind\":\"statement\",\"line\":5},{\"bindings\":[],\"end_line\":4,\"kind\":\"statement\",\"line\":4}],\"editable_lines\":[2,3,4,5],\"engine\":\"CODEX_AGENT\",\"independent_evaluation\":false,\"max_attempts\":2,\"proposal_protocol\":\"ast_statement_v1\",\"revision\":0,\"source\":\"def sparse_average(values):\\n    kept = [value for value in values if value]\\n    if not kept:\\n        return None\\n    return sum(kept) / len(kept)\\n\",\"source_sha256\":\"7f9348a7eface482f6c6410a274bdbd81e0b30da5159498086709f441f9e97f3\",\"state\":\"AWAITING_CODEX_CANDIDATE\",\"target_symbol\":\"sparse_average\",\"task_id\":\"de82241959e1425e936fb969090c7639\",\"tests_sha256\":\"a2fe98d7f9894f19f6b23cbe5a5dafd0cf88988f36581d1e7d6bbe9752234d6b\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "prepare_owned_repair"
+    },
+    {
+      "response": {
+        "id": 5,
+        "result": {
+          "content": [
+            {
+              "text": "{\"attempt\":1,\"authorship_basis\":\"session_submitted_candidate\",\"authorship_identity_attested\":false,\"candidate\":\"def sparse_average(values):\\n    kept = [value for value in values if value is not None]\\n    if not kept:\\n        return None\\n    return sum(kept) / len(kept)\\n\",\"candidate_sha256\":\"93a9123db22f4af7e434dd731d02d5b2d3283d8487c504bce74c74a8f4d19d68\",\"case_id\":\"sparse-average\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"diagnostic\":\"\",\"diff\":\"--- a/subject.py\\n+++ b/subject.py\\n@@ -1,5 +1,5 @@\\n def sparse_average(values):\\n-    kept = [value for value in values if value]\\n+    kept = [value for value in values if value is not None]\\n     if not kept:\\n         return None\\n     return sum(kept) / len(kept)\\n\",\"engine\":\"CODEX_AGENT\",\"image\":\"python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590\",\"independent\":{\"exit_code\":0,\"output_sha256\":\"e370c111a98df15085a51db84a4800db4905f4468cc42b60a06c44b78e22f3e1\",\"passed\":true,\"sandbox\":\"digest_pinned_docker_no_network_read_only_no_privileges\",\"tests_run\":6},\"independent_evaluation\":false,\"independently_verified\":true,\"kind\":\"owned_dual_engine_verification\",\"outcome\":\"VERIFIED\",\"paid_fallback\":false,\"previous_receipt_sha256\":null,\"proposal\":{\"changes\":[{\"line\":2,\"new\":\"kept = [value for value in values if value is not None]\"}]},\"proposal_sha256\":\"c00b68cf0ffa76cfc697d238908c8da33cdb9fa80b4c75944ce0d95140dabb98\",\"receipt_sha256\":\"cdcc1c7b4c17d621fa648dd5fe58f901a75c729b019e9a72b8d3d7e8a472162e\",\"revision\":1,\"runtime_admission_sha256\":\"66cce231e09049edddd12d30702d23887b50ff087a6ef4c4c28bc5e8fa7a7985\",\"schema\":1,\"signature_verified\":false,\"source_sha256\":\"7f9348a7eface482f6c6410a274bdbd81e0b30da5159498086709f441f9e97f3\",\"state\":\"AWAITING_OWNER_APPROVAL\",\"targeted\":{\"exit_code\":0,\"output_sha256\":\"e370c111a98df15085a51db84a4800db4905f4468cc42b60a06c44b78e22f3e1\",\"passed\":true,\"sandbox\":\"digest_pinned_docker_no_network_read_only_no_privileges\",\"tests_run\":6},\"task_id\":\"de82241959e1425e936fb969090c7639\",\"tests_sha256\":\"a2fe98d7f9894f19f6b23cbe5a5dafd0cf88988f36581d1e7d6bbe9752234d6b\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "submit_owned_repair"
+    },
+    {
+      "response": {
+        "id": 6,
+        "result": {
+          "content": [
+            {
+              "text": "{\"approved_file\":\"subject.py\",\"case_id\":\"label-order\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"description\":\"Deduplicate labels case-insensitively with casefold, retaining the first spelling and encounter order. Preserve input.\",\"edit_units\":[{\"bindings\":[\"seen\"],\"end_line\":2,\"kind\":\"statement\",\"line\":2},{\"bindings\":[\"result\"],\"end_line\":3,\"kind\":\"statement\",\"line\":3},{\"bindings\":[],\"end_line\":10,\"kind\":\"statement\",\"line\":10},{\"bindings\":[\"key\"],\"end_line\":5,\"kind\":\"statement\",\"line\":5},{\"bindings\":[],\"end_line\":6,\"kind\":\"condition\",\"line\":6},{\"bindings\":[],\"end_line\":8,\"kind\":\"statement\",\"line\":8},{\"bindings\":[],\"end_line\":9,\"kind\":\"statement\",\"line\":9}],\"editable_lines\":[2,3,5,6,8,9,10],\"engine\":\"CODEX_AGENT\",\"independent_evaluation\":false,\"max_attempts\":2,\"proposal_protocol\":\"ast_statement_v1\",\"revision\":0,\"source\":\"def label_order(labels):\\n    seen = set()\\n    result = []\\n    for label in labels:\\n        key = label.casefold()\\n        if key in seen:\\n            continue\\n        seen.add(key)\\n        result.append(label)\\n    return result[::-1]\\n\",\"source_sha256\":\"5dc05941fd3dc5563787921f1466a0afda5831a9843db4aa97926b31636b3f09\",\"state\":\"AWAITING_CODEX_CANDIDATE\",\"target_symbol\":\"label_order\",\"task_id\":\"eaa64c67966e4ef3bcce49508b1f9d2b\",\"tests_sha256\":\"270576ce3a57c13fdabccfa523b7c46a962a660c9b5977b8cc4509ff229fc44c\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "prepare_owned_repair"
+    },
+    {
+      "response": {
+        "id": 7,
+        "result": {
+          "content": [
+            {
+              "text": "{\"attempt\":1,\"authorship_basis\":\"session_submitted_candidate\",\"authorship_identity_attested\":false,\"candidate\":\"def label_order(labels):\\n    seen = set()\\n    result = []\\n    for label in labels:\\n        key = label.casefold()\\n        if key in seen:\\n            continue\\n        seen.add(key)\\n        result.append(label)\\n    return result\\n\",\"candidate_sha256\":\"e73f1b2ec2ea680c4df7ce61887d1ca6f9c28dbdebe745d6033e5ccb1816589d\",\"case_id\":\"label-order\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"diagnostic\":\"\",\"diff\":\"--- a/subject.py\\n+++ b/subject.py\\n@@ -7,4 +7,4 @@\\n             continue\\n         seen.add(key)\\n         result.append(label)\\n-    return result[::-1]\\n+    return result\\n\",\"engine\":\"CODEX_AGENT\",\"image\":\"python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590\",\"independent\":{\"exit_code\":0,\"output_sha256\":\"67814c44a568edff87b03d152abd396453a5482a310fd70974325c8ca7abd234\",\"passed\":true,\"sandbox\":\"digest_pinned_docker_no_network_read_only_no_privileges\",\"tests_run\":5},\"independent_evaluation\":false,\"independently_verified\":true,\"kind\":\"owned_dual_engine_verification\",\"outcome\":\"VERIFIED\",\"paid_fallback\":false,\"previous_receipt_sha256\":null,\"proposal\":{\"changes\":[{\"line\":10,\"new\":\"return result\"}]},\"proposal_sha256\":\"6735260535ac543e6fa2979a9c5cf643af36ad5af083f85f226b521132446f7d\",\"receipt_sha256\":\"d7caa707a5773a2f2b95aa366261a6a5c7034634d8cd53dfc5efe365916f4835\",\"revision\":1,\"runtime_admission_sha256\":\"b8148d327edee55f99ff106388adf9744e3d044eab15d9f4cba59abf0bcf79a8\",\"schema\":1,\"signature_verified\":false,\"source_sha256\":\"5dc05941fd3dc5563787921f1466a0afda5831a9843db4aa97926b31636b3f09\",\"state\":\"AWAITING_OWNER_APPROVAL\",\"targeted\":{\"exit_code\":0,\"output_sha256\":\"67814c44a568edff87b03d152abd396453a5482a310fd70974325c8ca7abd234\",\"passed\":true,\"sandbox\":\"digest_pinned_docker_no_network_read_only_no_privileges\",\"tests_run\":5},\"task_id\":\"eaa64c67966e4ef3bcce49508b1f9d2b\",\"tests_sha256\":\"270576ce3a57c13fdabccfa523b7c46a962a660c9b5977b8cc4509ff229fc44c\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "submit_owned_repair"
+    },
+    {
+      "response": {
+        "id": 8,
+        "result": {
+          "content": [
+            {
+              "text": "{\"approved_file\":\"subject.py\",\"case_id\":\"weighted-mix\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"description\":\"Return the weighted mean of numeric (value, nonnegative weight) pairs, dividing by total weight. Return 0.0 for empty or zero-total-weight input. Support iterators.\",\"edit_units\":[{\"bindings\":[\"pairs\"],\"end_line\":2,\"kind\":\"statement\",\"line\":2},{\"bindings\":[\"numerator\"],\"end_line\":3,\"kind\":\"statement\",\"line\":3},{\"bindings\":[\"denominator\"],\"end_line\":4,\"kind\":\"statement\",\"line\":4},{\"bindings\":[],\"end_line\":5,\"kind\":\"condition\",\"line\":5},{\"bindings\":[],\"end_line\":7,\"kind\":\"statement\",\"line\":7},{\"bindings\":[],\"end_line\":6,\"kind\":\"statement\",\"line\":6}],\"editable_lines\":[2,3,4,5,6,7],\"engine\":\"CODEX_AGENT\",\"independent_evaluation\":false,\"max_attempts\":2,\"proposal_protocol\":\"ast_statement_v1\",\"revision\":0,\"source\":\"def weighted_mix(pairs):\\n    pairs = list(pairs)\\n    numerator = sum(value * weight for value, weight in pairs)\\n    denominator = len(pairs)\\n    if not denominator:\\n        return 0.0\\n    return numerator / denominator\\n\",\"source_sha256\":\"42a1c42ac048e025d4366813d0ebb0e5ee322885e483324318200f2cab345409\",\"state\":\"AWAITING_CODEX_CANDIDATE\",\"target_symbol\":\"weighted_mix\",\"task_id\":\"3b670519bafe425f93e3fd4a250b3a61\",\"tests_sha256\":\"01500a264434f3b2bb9639c56d052127d6a6bf90ccf6ca4ce0914d998bfb9210\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "prepare_owned_repair"
+    },
+    {
+      "response": {
+        "id": 9,
+        "result": {
+          "content": [
+            {
+              "text": "{\"attempt\":1,\"authorship_basis\":\"session_submitted_candidate\",\"authorship_identity_attested\":false,\"candidate\":\"def weighted_mix(pairs):\\n    pairs = list(pairs)\\n    numerator = sum(value * weight for value, weight in pairs)\\n    denominator = sum(weight for value, weight in pairs)\\n    if not denominator:\\n        return 0.0\\n    return numerator / denominator\\n\",\"candidate_sha256\":\"003fbcb7f5d3f500d28cd9d9bed9dd254dbb02717222d015a1528a2013b65850\",\"case_id\":\"weighted-mix\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"diagnostic\":\"\",\"diff\":\"--- a/subject.py\\n+++ b/subject.py\\n@@ -1,7 +1,7 @@\\n def weighted_mix(pairs):\\n     pairs = list(pairs)\\n     numerator = sum(value * weight for value, weight in pairs)\\n-    denominator = len(pairs)\\n+    denominator = sum(weight for value, weight in pairs)\\n     if not denominator:\\n         return 0.0\\n     return numerator / denominator\\n\",\"engine\":\"CODEX_AGENT\",\"image\":\"python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590\",\"independent\":{\"exit_code\":0,\"output_sha256\":\"e370c111a98df15085a51db84a4800db4905f4468cc42b60a06c44b78e22f3e1\",\"passed\":true,\"sandbox\":\"digest_pinned_docker_no_network_read_only_no_privileges\",\"tests_run\":6},\"independent_evaluation\":false,\"independently_verified\":true,\"kind\":\"owned_dual_engine_verification\",\"outcome\":\"VERIFIED\",\"paid_fallback\":false,\"previous_receipt_sha256\":null,\"proposal\":{\"changes\":[{\"line\":4,\"new\":\"denominator = sum(weight for value, weight in pairs)\"}]},\"proposal_sha256\":\"a5aa37fd77d43f6dfda69dfc4fe6edb13561472781655b2a203510a2c4c1fded\",\"receipt_sha256\":\"c05a95f606c1d979a8c848c0fb4a7a67eb332599f966b01ef1934f5d8f5f0121\",\"revision\":1,\"runtime_admission_sha256\":\"d2eb15d383eb368055d1f17b70d241ab209c1e046ddf4fbba411865e45394746\",\"schema\":1,\"signature_verified\":false,\"source_sha256\":\"42a1c42ac048e025d4366813d0ebb0e5ee322885e483324318200f2cab345409\",\"state\":\"AWAITING_OWNER_APPROVAL\",\"targeted\":{\"exit_code\":0,\"output_sha256\":\"e370c111a98df15085a51db84a4800db4905f4468cc42b60a06c44b78e22f3e1\",\"passed\":true,\"sandbox\":\"digest_pinned_docker_no_network_read_only_no_privileges\",\"tests_run\":6},\"task_id\":\"3b670519bafe425f93e3fd4a250b3a61\",\"tests_sha256\":\"01500a264434f3b2bb9639c56d052127d6a6bf90ccf6ca4ce0914d998bfb9210\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "submit_owned_repair"
+    }
+  ],
+  "classification": "OWNED_DEVELOPMENT",
+  "client": "Codex app-server MCP client",
+  "delivery_authorized": false,
+  "discovered_tools": [
+    "bountyforge_status",
+    "inspect_owned_calibration",
+    "list_owned_calibration",
+    "list_owned_repair_tasks",
+    "list_repair_engines",
+    "prepare_owned_repair",
+    "preview_owned_review_package",
+    "run_owned_qwen",
+    "submit_owned_repair",
+    "verify_owned_reference"
+  ],
+  "elapsed_seconds": 235.899,
+  "independent_evaluation": false,
+  "kind": "phase12_active_codex_session_mcp",
+  "mcp_process_environment_names": [
+    "PATH"
+  ],
+  "usage_note": "Per-candidate active-session tokens are not exposed to the MCP client."
+}

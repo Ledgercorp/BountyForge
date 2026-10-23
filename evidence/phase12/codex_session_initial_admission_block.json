@@ -1,0 +1,47 @@
+{
+  "active_session_patch_generation": true,
+  "active_session_token_usage": null,
+  "additional_agent_turns_started": 0,
+  "additional_provider_requests": 0,
+  "additional_spending_usd": 0,
+  "app_server_exit": 0,
+  "calls": [
+    {
+      "response": {
+        "id": 4,
+        "result": {
+          "content": [
+            {
+              "text": "{\"delivery_authorized\":false,\"outcome\":\"SANDBOX_ADMISSION_OR_BASELINE_UNAVAILABLE\",\"private_execution_admitted\":false,\"state\":\"BLOCKED\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "prepare_owned_repair"
+    }
+  ],
+  "classification": "OWNED_DEVELOPMENT",
+  "client": "Codex app-server MCP client",
+  "delivery_authorized": false,
+  "discovered_tools": [
+    "bountyforge_status",
+    "inspect_owned_calibration",
+    "list_owned_calibration",
+    "list_owned_repair_tasks",
+    "list_repair_engines",
+    "prepare_owned_repair",
+    "preview_owned_review_package",
+    "run_owned_qwen",
+    "submit_owned_repair",
+    "verify_owned_reference"
+  ],
+  "elapsed_seconds": 51.019,
+  "independent_evaluation": false,
+  "kind": "phase12_active_codex_session_mcp",
+  "mcp_process_environment_names": [
+    "PATH"
+  ],
+  "usage_note": "Per-candidate active-session tokens are not exposed to the MCP client."
+}

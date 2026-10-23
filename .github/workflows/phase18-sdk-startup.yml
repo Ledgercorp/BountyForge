@@ -1,0 +1,53 @@
+name: Phase18 DeepSeek SDK startup diagnosis (offline only)
+
+# Public standard Linux PR-only. No model calls, secrets, networked SDK
+# process, paid runners, customer source, deployments or schedules.
+on:
+  pull_request:
+    branches: [engineering/phase17-isolation-20261023]
+    paths:
+      - 'phase17_sdk_bootstrap.py'
+      - 'tests/test_phase17_sdk_bootstrap.py'
+      - '.github/workflows/phase18-sdk-startup.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  sdk-startup-diagnosis:
+    if: ${{ github.repository == 'Ledgercorp/BountyForge' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'engineering/phase18-sdk-startup-20261023' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Checkout without persistent credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Focused pinned SDK admission contracts
+        run: python3 -m unittest discover -s tests -p 'test_phase17_sdk_bootstrap.py' -v
+      - name: Existing complete Python regression suite
+        run: python3 -m unittest discover -s tests -v
+      - name: Fetch fixed digest image (no model)
+        run: docker pull python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590
+      - name: Re-observe real unprivileged and no-network Docker boundaries
+        env:
+          BOUNTYFORGE_PHASE17_PROBE_ACK: '1'
+        run: python3 -m phase17_isolation --admit-model-free-probe
+      - name: Download pinned SDK distributions as inert files
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/bf-p18-wheels"
+          python3 -m pip download --only-binary=:all: --no-deps \
+            --dest "$RUNNER_TEMP/bf-p18-wheels" \
+            'deepseek-harness-sdk==0.2.1rc2' \
+            'deepseek-harness-runtime-bin==0.2.1rc2'
+      - name: Probe actual SDK startup with scrubbed failure codes
+        env:
+          BOUNTYFORGE_PHASE17_PROBE_ACK: '1'
+        run: |
+          python3 -m phase17_sdk_bootstrap \
+            --wheel-directory "$RUNNER_TEMP/bf-p18-wheels" \
+            --admit-model-free-bootstrap
+      - name: Remove disposable wheel copies
+        if: always()
+        run: rm -rf -- "$RUNNER_TEMP/bf-p18-wheels"

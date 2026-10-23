@@ -270,6 +270,66 @@ def _rpc_response(child, request_id, *, timeout=20):
         watcher.close()
 
 
+def sanitized_boot_diagnostic(raw):
+    """Only allowlisted structural failure signatures; never print runtime stderr."""
+    if type(raw) is not bytes:
+        raise IsolationUnavailable("SDK_DIAGNOSTIC_BYTES_REQUIRED")
+    source = raw[:32768].decode("utf-8", "replace").lower()
+    signatures = {
+        "EROFS": r"\berofs\b|read.only file.system",
+        "EACCES": r"\beacces\b|permission denied",
+        "ENOSPC": r"\benospc\b|no space left",
+        "ENOENT": r"\benoent\b|no such file or directory",
+        "ENOMEM": r"\benomem\b|out of memory|heap out of memory",
+        "BAD_MODULE": r"cannot find module|module not found|err_module_not_found",
+        "NATIVE_BINDING_UNAVAILABLE": r"no usable native binding found",
+        "OPAQUE_NATIVE_PRODUCT": r"native binding found for opaque",
+        "BAD_EXEC": r"exec format error|permission denied.*exec",
+        "BAD_INJECTION": r"inject(?:ion)?(?:s)? (?:not found|missing|required|unavailable)|missing(?: .{0,40})?service",
+        "STARTUP_FATAL": r"fatal|boot failed|fail to (?:start|load)|startup failed",
+        "INVALID_CONFIG": r"invalid config|schema validation|config validation",
+        "UNKNOWN_PATCH": r"patch.*(?:not found|not matched|unknown)",
+        "STDIN_EOF": r"stdin.*(?:end|eof|closed)",
+        "NODE_EXCEPTION": r"uncaught exception|unhandled rejection|exception in",
+        "RESOURCE": r"resource temporarily unavailable|process limit|pids\.max|memory\.max",
+    }
+    # Expose only published, non-secret, static upstream plugin identities.
+    known = (
+        "sdk-jsonrpc-server", "sdk-app-startup", "agent-loop", "agent",
+        "working-directory", "session-projection", "session-checkpoint-policy",
+        "sandbox-policy", "sandbox", "sessions", "llm-deepseek",
+        "terminal-bash", "tool-working-directory", "mcp-resources",
+    )
+    # No inherited credentials exist inside this child. Never disclose raw
+    # stderr anyway: scrub absolute paths, URL text, email addresses, control
+    # bytes and long opaque tokens; retain a bounded diagnostic excerpt only.
+    excerpts = []
+    for line in source.splitlines()[:24]:
+        if not line.strip():
+            continue
+        redacted = re.sub(r"https?://\S+|(?:/[^\s:'\"]+)+", "<path>", line)
+        redacted = re.sub(r"\b\S+@\S+\.\S+\b", "<email>", redacted)
+        redacted = re.sub(r"\b[A-Za-z0-9_+/=-]{40,}\b", "<opaque>", redacted)
+        redacted = re.sub(r"[^a-z0-9 _.,:;(){}\[\]?!'\"-]", " ", redacted)
+        redacted = re.sub(r"\s+", " ", redacted).strip()[:160]
+        if redacted:
+            excerpts.append(redacted)
+        if len(excerpts) >= 12:
+            break
+    return {
+        "kind": "PHASE18_SANITIZED_SDK_BOOT_DIAGNOSTIC",
+        "signature": [k for k,p in signatures.items() if re.search(p, source)],
+        "plugin_ids": [key for key in known if key in source],
+        "redacted_excerpt": excerpts,
+        "stderr_sha256": hashlib.sha256(raw[:32768]).hexdigest(),
+        "stderr_bytes_captured": len(raw),
+        "truncated": len(raw) > 32768,
+        "raw_stderr_disclosed": False,
+        "keys_supplied": False,
+        "model_calls": 0,
+    }
+
+
 def confirm_hardened_sdk_server(docker, workspace, native):
     """Initialize and shut down the real offline SDK JSON-RPC server, no agent turn."""
     name = "bf-p17-" + uuid.uuid4().hex[:16]
@@ -328,21 +388,24 @@ def confirm_hardened_sdk_server(docker, workspace, native):
     except IsolationUnavailable as failure:
         # Never echo the native runtime's stderr or host paths. Classify a
         # bounded local diagnostic from a child without provider credentials.
-        categories = {
-            "injection": "DEPENDENCY", "missing": "MISSING",
-            "permission": "PERMISSION", "api key": "AUTH",
-            "invalid": "INVALID", "unsupported": "UNSUPPORTED",
-            "oom": "MEMORY", "memory": "MEMORY", "profile": "PROFILE",
-            "patch": "PATCH",
-        }
-        category = "UNCLASSIFIED"
+        category = "PROFILE"
         try:
             os.set_blocking(child.stderr.fileno(), False)
-            detail = os.read(child.stderr.fileno(), 32768).decode("utf-8", "replace").lower()
-            for term, label in categories.items():
-                if term in detail:
-                    category = label
-                    break
+            detail = os.read(child.stderr.fileno(), 32768)
+            diagnostic = sanitized_boot_diagnostic(detail)
+            print(json.dumps(diagnostic, sort_keys=True), file=sys.stderr)
+            if "NATIVE_BINDING_UNAVAILABLE" in diagnostic["signature"]:
+                category = "NATIVE_BINDING"
+            elif "EACCES" in diagnostic["signature"]:
+                category = "PERMISSION"
+            elif "EROFS" in diagnostic["signature"]:
+                category = "READ_ONLY_FS"
+            elif "ENOSPC" in diagnostic["signature"]:
+                category = "NO_SPACE"
+            elif "BAD_INJECTION" in diagnostic["signature"]:
+                category = "DEPENDENCY"
+            elif "ENOMEM" in diagnostic["signature"]:
+                category = "MEMORY"
         except (OSError, ValueError):
             pass
         raise IsolationUnavailable(str(failure) + "_DIAGNOSTIC_" + category) from None
@@ -431,7 +494,7 @@ def run_bootstrap(wheel_dir):
             # Preserve precisely the observed, repeatable *profile startup*
             # refusal as a BLOCKER, not an admitted SDK session. Any other
             # transport, timeout, process or isolation failure remains red.
-            expected = "SDK_RPC_STREAM_CLOSED_EXIT_1_DIAGNOSTIC_PROFILE"
+            expected = "SDK_RPC_STREAM_CLOSED_EXIT_1_DIAGNOSTIC_NATIVE_BINDING"
             if str(exc) != expected:
                 raise
             sdk_session = {

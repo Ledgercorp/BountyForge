@@ -194,3 +194,32 @@ a deliberately invalid probe is tested to block queue creation. No test
 solution is contained in the grammar or probe. A subsequent live run measures
 this changed implementation only as development, with the same six-call
 repair budget and two bounded admission calls.
+
+## JSON-safe grammar measurement
+
+Commit `b99c3f8a51c4c0737488d99457b615c2fef04992` passed hosted regression
+[40001270229](https://github.com/Ledgercorp/BountyForge/actions/runs/40001270229):
+685 tests, 676 passed, nine existing skips; Node 7/7. Local checks matched.
+
+[Qwen run 40001263033](https://github.com/Ledgercorp/BountyForge/actions/runs/40001263033)
+completed with **0/3 verified repairs**, six repair calls plus two admission
+probes, 98.852 seconds experiment time. The actual full-contract grammar probe
+passed. All six repair responses were parseable JSON within the three-change
+bound, eliminating the prior structural violations in this small experiment.
+Invoice still copied existing faulty statements; cursor retained incorrect
+terminal-cursor logic; retry copied the faulty maximum clamp and altered
+related assignments without solving the tests. All three second candidates
+were rejected as repeated proposals/ASTs before repeated Docker tests. Two
+source-valid first candidates failed targeted tests. No targeted suite passed;
+no new test failure was observed relative to these defective baselines.
+This improves measured contract adherence, **not repair success**. No more
+inference tuning on these exposed cases is planned. The workflow returns to
+manual-only operation; no schedule is active.
+
+A separate one-call 7B CPU resource probe is prepared at the public official
+Apache-2.0 asset/revision/hash recorded earlier. It uses the same verified
+llama.cpp runtime, two CPU threads, 2,048 context tokens, a 10GiB process
+address-space cap, bounded startup/request/CPU/log limits and a credential-free
+child. Weights are disposable and not added to the persistent cache. The
+probe generates only an explanation on an owned neutral question; it never
+executes model output, changes the default, or measures repair accuracy.

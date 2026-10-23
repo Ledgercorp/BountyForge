@@ -1,0 +1,2108 @@
+{
+  "additional_spending_usd": 0,
+  "classification": "OWNED_DEVELOPMENT",
+  "commit": "b99c3f8a51c4c0737488d99457b615c2fef04992",
+  "elapsed_seconds": 98.852,
+  "engine": "QWEN_LOCAL",
+  "host": {
+    "logical_cpus": 4,
+    "memory_kib": {
+      "MemAvailable": 14544576,
+      "MemTotal": 16373452
+    }
+  },
+  "independent_evaluation": false,
+  "jobs": [
+    {
+      "preparation": {
+        "attempts_remaining": 2,
+        "attempts_used": 0,
+        "batch_id": "phase14-autonomous",
+        "job_id": "094a0e70b74241eb9cc538bf5b87cf1b",
+        "lease_seconds": 180,
+        "lease_token": "8813c6026ac341f89f3b78466a0c1297",
+        "previous_receipt": null,
+        "task": {
+          "approved_file": "subject.py",
+          "baseline_feedback": {
+            "assertions": [
+              "AssertionError: 120.0 != 108",
+              "AssertionError: {'subtotal': 100, 'discount': 10.0, 'tax': 20.0, 'total': 120.0} != {'subtotal': 100, 'discount': 10, 'tax': 18, 'total': 108}",
+              "AssertionError: 100 != 75"
+            ],
+            "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+            "failing_tests": [
+              "test_cancelled",
+              "test_discount_tax",
+              "test_discount_without_tax",
+              "test_full_discount",
+              "test_rounding"
+            ],
+            "unseen_evaluation": false
+          },
+          "case_id": "invoice-summary",
+          "classification": "OWNED_DEVELOPMENT",
+          "customer_execution_authorized": false,
+          "delivery_authorized": false,
+          "description": "Calculate an invoice for non-cancelled rows. Rates are fractions in [0,1]. Subtract the rounded discount from subtotal before tax; total equals discounted taxable amount plus rounded tax. Keep input rows unchanged and preserve helper behavior.",
+          "edit_units": [
+            {
+              "bindings": [],
+              "end_line": 6,
+              "kind": "condition",
+              "line": 6
+            },
+            {
+              "bindings": [
+                "active"
+              ],
+              "end_line": 8,
+              "kind": "statement",
+              "line": 8
+            },
+            {
+              "bindings": [
+                "subtotal"
+              ],
+              "end_line": 9,
+              "kind": "statement",
+              "line": 9
+            },
+            {
+              "bindings": [
+                "discount"
+              ],
+              "end_line": 10,
+              "kind": "statement",
+              "line": 10
+            },
+            {
+              "bindings": [
+                "taxable"
+              ],
+              "end_line": 11,
+              "kind": "statement",
+              "line": 11
+            },
+            {
+              "bindings": [
+                "tax"
+              ],
+              "end_line": 12,
+              "kind": "statement",
+              "line": 12
+            },
+            {
+              "bindings": [
+                "total"
+              ],
+              "end_line": 13,
+              "kind": "statement",
+              "line": 13
+            },
+            {
+              "bindings": [],
+              "end_line": 14,
+              "kind": "statement",
+              "line": 14
+            },
+            {
+              "bindings": [],
+              "end_line": 7,
+              "kind": "statement",
+              "line": 7
+            }
+          ],
+          "editable_lines": [
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14
+          ],
+          "engine": "QWEN_LOCAL",
+          "independent_evaluation": false,
+          "max_attempts": 2,
+          "proposal_protocol": "ast_statement_v1",
+          "revision": 0,
+          "source": "def item_value(row):\n    return row[\"qty\"] * row[\"unit\"]\n\n\ndef invoice_summary(rows, discount_rate, tax_rate):\n    if not 0 <= discount_rate <= 1 or not 0 <= tax_rate <= 1:\n        raise ValueError(\"invalid rate\")\n    active = [row for row in rows if row[\"state\"] != \"cancelled\"]\n    subtotal = sum(item_value(row) for row in active)\n    discount = round(subtotal * discount_rate, 2)\n    taxable = subtotal\n    tax = round(taxable * tax_rate, 2)\n    total = round(subtotal + tax, 2)\n    return {\"subtotal\": subtotal, \"discount\": discount, \"tax\": tax, \"total\": total}\n",
+          "source_context": {
+            "authorized_anchors": [
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14
+            ],
+            "called_helpers": [
+              "item_value"
+            ],
+            "prioritized_anchors": [
+              13,
+              12,
+              10,
+              9,
+              11,
+              8,
+              14,
+              6,
+              7
+            ],
+            "scope_policy": "Only authorized anchors in the target function; helpers are context only",
+            "target_range": [
+              5,
+              14
+            ]
+          },
+          "source_sha256": "89e12cec1df4a5cf88c691974e180fea2308319894bdb5f215c46c1c99785f41",
+          "state": "QWEN_PREPARED",
+          "target_symbol": "invoice_summary",
+          "task_id": "e920d193052040b09e1c008ad32a0efa",
+          "tests_sha256": "35246fff991d78b722d7e847a51fdfa4865b404c1221a88e665ba7f1afbef81d"
+        }
+      },
+      "result": {
+        "attempts_used": 2,
+        "delivery_authorized": false,
+        "independent_evaluation": false,
+        "job_id": "094a0e70b74241eb9cc538bf5b87cf1b",
+        "receipt": {
+          "additional_inference_cost_usd": 0,
+          "attempts": [
+            {
+              "attempt": 1,
+              "authorship_basis": "local_model_response",
+              "authorship_identity_attested": false,
+              "case_id": "invoice-summary",
+              "classification": "OWNED_DEVELOPMENT",
+              "customer_execution_authorized": false,
+              "delivery_authorized": false,
+              "diagnostic": "Semantically ineffective proposal",
+              "engine": "QWEN_LOCAL",
+              "failure_stage": "source_validation",
+              "generation": {
+                "finish_reason": "eos",
+                "prompt_sha256": "61f86f3e69b234a9f09d9053c5a6ab6518a814fa01b013f902ec84ef56f43a63",
+                "raw_response_sha256": "f704196b67d94569e92b293ab40dc898ee91fadd2a8877be2fdb3c8d881b8ff4",
+                "retained_anchors": [],
+                "revision_strategy": "INITIAL_MINIMAL_REPAIR"
+              },
+              "image": "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+              "independent_evaluation": false,
+              "independently_verified": false,
+              "kind": "owned_dual_engine_verification",
+              "outcome": "SOURCE_REJECTED",
+              "paid_fallback": false,
+              "previous_receipt_sha256": null,
+              "proposal": "{\n  \"changes\": [\n    {\n      \"line\": 13,\n      \"new\": \"total = round(subtotal + tax, 2)\"\n    },\n    {\n      \"line\": 12,\n      \"new\": \"tax = round(taxable * tax_rate, 2)\"\n    },\n    {\n      \"line\": 10,\n      \"new\": \"discount = round(subtotal * discount_rate, 2)\"\n    }\n  ]\n}",
+              "proposal_sha256": "f704196b67d94569e92b293ab40dc898ee91fadd2a8877be2fdb3c8d881b8ff4",
+              "receipt_sha256": "954dc60b98d2838442b4f15427935c4c38e4294f795c46d61eb25a283a613e12",
+              "revision": 1,
+              "runtime_admission": {
+                "capabilities_empty": true,
+                "cleanup_verified": true,
+                "cpu_pressure_enforced": true,
+                "cpu_quota_verified": true,
+                "docker_socket_absent": true,
+                "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                "loopback_inference_unreachable": true,
+                "memory_limit_enforced": true,
+                "network_denied": true,
+                "no_new_privileges": true,
+                "output_bounded": true,
+                "pid_limit_verified": true,
+                "pid_pressure_enforced": true,
+                "root_writes_denied": true,
+                "seccomp_active": true,
+                "secrets_absent": true,
+                "source_writes_denied": true,
+                "swap_disabled": true,
+                "tmpfs_bounded_noexec": true,
+                "uid_unprivileged": true,
+                "untrusted_execution_certified": false,
+                "wall_clock_enforced": true
+              },
+              "runtime_admission_sha256": "4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108",
+              "schema": 1,
+              "signature_verified": false,
+              "source_sha256": "89e12cec1df4a5cf88c691974e180fea2308319894bdb5f215c46c1c99785f41",
+              "state": "REVISION_REQUIRED",
+              "task_id": "e920d193052040b09e1c008ad32a0efa",
+              "tests_sha256": "35246fff991d78b722d7e847a51fdfa4865b404c1221a88e665ba7f1afbef81d"
+            },
+            {
+              "attempt": 2,
+              "authorship_basis": "local_model_response",
+              "authorship_identity_attested": false,
+              "case_id": "invoice-summary",
+              "classification": "OWNED_DEVELOPMENT",
+              "customer_execution_authorized": false,
+              "delivery_authorized": false,
+              "diagnostic": "Identical prior proposal; no test executed",
+              "engine": "QWEN_LOCAL",
+              "failure_stage": "source_validation",
+              "generation": {
+                "finish_reason": "eos",
+                "prompt_sha256": "17e83c2bec180bd56d97a26d4bc6a8ecd0eee6513e588d382ed6eed8f9ec136b",
+                "raw_response_sha256": "f704196b67d94569e92b293ab40dc898ee91fadd2a8877be2fdb3c8d881b8ff4",
+                "retained_anchors": [],
+                "revision_strategy": "CORRECT_REJECTED_FORMAT_OR_SCOPE"
+              },
+              "image": "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+              "independent_evaluation": false,
+              "independently_verified": false,
+              "kind": "owned_dual_engine_verification",
+              "outcome": "REPEATED_PROPOSAL",
+              "paid_fallback": false,
+              "previous_receipt_sha256": "954dc60b98d2838442b4f15427935c4c38e4294f795c46d61eb25a283a613e12",
+              "proposal": "{\n  \"changes\": [\n    {\n      \"line\": 13,\n      \"new\": \"total = round(subtotal + tax, 2)\"\n    },\n    {\n      \"line\": 12,\n      \"new\": \"tax = round(taxable * tax_rate, 2)\"\n    },\n    {\n      \"line\": 10,\n      \"new\": \"discount = round(subtotal * discount_rate, 2)\"\n    }\n  ]\n}",
+              "proposal_sha256": "f704196b67d94569e92b293ab40dc898ee91fadd2a8877be2fdb3c8d881b8ff4",
+              "receipt_sha256": "3f841b70a7fc47300fe75bdcfed76328415ff89e7a1651797080fe8d76f0a6ff",
+              "revision": 2,
+              "runtime_admission": {
+                "capabilities_empty": true,
+                "cleanup_verified": true,
+                "cpu_pressure_enforced": true,
+                "cpu_quota_verified": true,
+                "docker_socket_absent": true,
+                "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                "loopback_inference_unreachable": true,
+                "memory_limit_enforced": true,
+                "network_denied": true,
+                "no_new_privileges": true,
+                "output_bounded": true,
+                "pid_limit_verified": true,
+                "pid_pressure_enforced": true,
+                "root_writes_denied": true,
+                "seccomp_active": true,
+                "secrets_absent": true,
+                "source_writes_denied": true,
+                "swap_disabled": true,
+                "tmpfs_bounded_noexec": true,
+                "uid_unprivileged": true,
+                "untrusted_execution_certified": false,
+                "wall_clock_enforced": true
+              },
+              "runtime_admission_sha256": "4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108",
+              "schema": 1,
+              "signature_verified": false,
+              "source_sha256": "89e12cec1df4a5cf88c691974e180fea2308319894bdb5f215c46c1c99785f41",
+              "state": "EXHAUSTED",
+              "task_id": "e920d193052040b09e1c008ad32a0efa",
+              "tests_sha256": "35246fff991d78b722d7e847a51fdfa4865b404c1221a88e665ba7f1afbef81d"
+            }
+          ],
+          "calls": [
+            {
+              "effective_proposal": "{\n  \"changes\": [\n    {\n      \"line\": 13,\n      \"new\": \"total = round(subtotal + tax, 2)\"\n    },\n    {\n      \"line\": 12,\n      \"new\": \"tax = round(taxable * tax_rate, 2)\"\n    },\n    {\n      \"line\": 10,\n      \"new\": \"discount = round(subtotal * discount_rate, 2)\"\n    }\n  ]\n}",
+              "metadata": {
+                "completion_tokens": 97,
+                "constraint_kind": "json_safe_statement_grammar",
+                "finish_reason": "eos",
+                "prompt_tokens": 917,
+                "transport": "llama_native_completion_schema"
+              },
+              "prompt": {
+                "approved_file": "subject.py",
+                "description": "Calculate an invoice for non-cancelled rows. Rates are fractions in [0,1]. Subtract the rounded discount from subtotal before tax; total equals discounted taxable amount plus rounded tax. Keep input rows unchanged and preserve helper behavior.",
+                "edit_units": [
+                  {
+                    "bindings": [
+                      "total"
+                    ],
+                    "end_line": 13,
+                    "kind": "statement",
+                    "line": 13
+                  },
+                  {
+                    "bindings": [
+                      "tax"
+                    ],
+                    "end_line": 12,
+                    "kind": "statement",
+                    "line": 12
+                  },
+                  {
+                    "bindings": [
+                      "discount"
+                    ],
+                    "end_line": 10,
+                    "kind": "statement",
+                    "line": 10
+                  },
+                  {
+                    "bindings": [
+                      "subtotal"
+                    ],
+                    "end_line": 9,
+                    "kind": "statement",
+                    "line": 9
+                  },
+                  {
+                    "bindings": [
+                      "taxable"
+                    ],
+                    "end_line": 11,
+                    "kind": "statement",
+                    "line": 11
+                  },
+                  {
+                    "bindings": [
+                      "active"
+                    ],
+                    "end_line": 8,
+                    "kind": "statement",
+                    "line": 8
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 14,
+                    "kind": "statement",
+                    "line": 14
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 6,
+                    "kind": "condition",
+                    "line": 6
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 7,
+                    "kind": "statement",
+                    "line": 7
+                  }
+                ],
+                "editable_lines": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+                ],
+                "failure_feedback": {
+                  "assertions": [
+                    "AssertionError: 120.0 != 108",
+                    "AssertionError: {'subtotal': 100, 'discount': 10.0, 'tax': 20.0, 'total': 120.0} != {'subtotal': 100, 'discount': 10, 'tax': 18, 'total': 108}",
+                    "AssertionError: 100 != 75"
+                  ],
+                  "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+                  "failing_tests": [
+                    "test_cancelled",
+                    "test_discount_tax",
+                    "test_discount_without_tax",
+                    "test_full_discount",
+                    "test_rounding"
+                  ],
+                  "unseen_evaluation": false
+                },
+                "proposal_protocol": "ast_statement_v1",
+                "revision_strategy": "INITIAL_MINIMAL_REPAIR",
+                "source": "def item_value(row):\n    return row[\"qty\"] * row[\"unit\"]\n\n\ndef invoice_summary(rows, discount_rate, tax_rate):\n    if not 0 <= discount_rate <= 1 or not 0 <= tax_rate <= 1:\n        raise ValueError(\"invalid rate\")\n    active = [row for row in rows if row[\"state\"] != \"cancelled\"]\n    subtotal = sum(item_value(row) for row in active)\n    discount = round(subtotal * discount_rate, 2)\n    taxable = subtotal\n    tax = round(taxable * tax_rate, 2)\n    total = round(subtotal + tax, 2)\n    return {\"subtotal\": subtotal, \"discount\": discount, \"tax\": tax, \"total\": total}\n",
+                "source_context": {
+                  "authorized_anchors": [
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14
+                  ],
+                  "called_helpers": [
+                    "item_value"
+                  ],
+                  "prioritized_anchors": [
+                    13,
+                    12,
+                    10,
+                    9,
+                    11,
+                    8,
+                    14,
+                    6,
+                    7
+                  ],
+                  "scope_policy": "Only authorized anchors in the target function; helpers are context only",
+                  "target_range": [
+                    5,
+                    14
+                  ]
+                },
+                "target_symbol": "invoice_summary"
+              },
+              "prompt_sha256": "61f86f3e69b234a9f09d9053c5a6ab6518a814fa01b013f902ec84ef56f43a63",
+              "response": "{\n  \"changes\": [\n    {\n      \"line\": 13,\n      \"new\": \"total = round(subtotal + tax, 2)\"\n    },\n    {\n      \"line\": 12,\n      \"new\": \"tax = round(taxable * tax_rate, 2)\"\n    },\n    {\n      \"line\": 10,\n      \"new\": \"discount = round(subtotal * discount_rate, 2)\"\n    }\n  ]\n}",
+              "response_sha256": "f704196b67d94569e92b293ab40dc898ee91fadd2a8877be2fdb3c8d881b8ff4",
+              "retained_anchors": [],
+              "seconds": 11.537
+            },
+            {
+              "effective_proposal": "{\n  \"changes\": [\n    {\n      \"line\": 13,\n      \"new\": \"total = round(subtotal + tax, 2)\"\n    },\n    {\n      \"line\": 12,\n      \"new\": \"tax = round(taxable * tax_rate, 2)\"\n    },\n    {\n      \"line\": 10,\n      \"new\": \"discount = round(subtotal * discount_rate, 2)\"\n    }\n  ]\n}",
+              "metadata": {
+                "completion_tokens": 97,
+                "constraint_kind": "json_safe_statement_grammar",
+                "finish_reason": "eos",
+                "prompt_tokens": 1048,
+                "transport": "llama_native_completion_schema"
+              },
+              "prompt": {
+                "approved_file": "subject.py",
+                "description": "Calculate an invoice for non-cancelled rows. Rates are fractions in [0,1]. Subtract the rounded discount from subtotal before tax; total equals discounted taxable amount plus rounded tax. Keep input rows unchanged and preserve helper behavior.",
+                "edit_units": [
+                  {
+                    "bindings": [
+                      "total"
+                    ],
+                    "end_line": 13,
+                    "kind": "statement",
+                    "line": 13
+                  },
+                  {
+                    "bindings": [
+                      "tax"
+                    ],
+                    "end_line": 12,
+                    "kind": "statement",
+                    "line": 12
+                  },
+                  {
+                    "bindings": [
+                      "discount"
+                    ],
+                    "end_line": 10,
+                    "kind": "statement",
+                    "line": 10
+                  },
+                  {
+                    "bindings": [
+                      "subtotal"
+                    ],
+                    "end_line": 9,
+                    "kind": "statement",
+                    "line": 9
+                  },
+                  {
+                    "bindings": [
+                      "taxable"
+                    ],
+                    "end_line": 11,
+                    "kind": "statement",
+                    "line": 11
+                  },
+                  {
+                    "bindings": [
+                      "active"
+                    ],
+                    "end_line": 8,
+                    "kind": "statement",
+                    "line": 8
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 14,
+                    "kind": "statement",
+                    "line": 14
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 6,
+                    "kind": "condition",
+                    "line": 6
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 7,
+                    "kind": "statement",
+                    "line": 7
+                  }
+                ],
+                "editable_lines": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+                ],
+                "failure_feedback": {
+                  "assertions": [
+                    "AssertionError: 120.0 != 108",
+                    "AssertionError: {'subtotal': 100, 'discount': 10.0, 'tax': 20.0, 'total': 120.0} != {'subtotal': 100, 'discount': 10, 'tax': 18, 'total': 108}",
+                    "AssertionError: 100 != 75"
+                  ],
+                  "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+                  "failing_tests": [
+                    "test_cancelled",
+                    "test_discount_tax",
+                    "test_discount_without_tax",
+                    "test_full_discount",
+                    "test_rounding"
+                  ],
+                  "unseen_evaluation": false
+                },
+                "previous_error": "Semantically ineffective proposal",
+                "previous_proposal": "{\n  \"changes\": [\n    {\n      \"line\": 13,\n      \"new\": \"total = round(subtotal + tax, 2)\"\n    },\n    {\n      \"line\": 12,\n      \"new\": \"tax = round(taxable * tax_rate, 2)\"\n    },\n    {\n      \"line\": 10,\n      \"new\": \"discount = round(subtotal * discount_rate, 2)\"\n    }\n  ]\n}",
+                "proposal_protocol": "ast_statement_v1",
+                "revision_strategy": "CORRECT_REJECTED_FORMAT_OR_SCOPE",
+                "source": "def item_value(row):\n    return row[\"qty\"] * row[\"unit\"]\n\n\ndef invoice_summary(rows, discount_rate, tax_rate):\n    if not 0 <= discount_rate <= 1 or not 0 <= tax_rate <= 1:\n        raise ValueError(\"invalid rate\")\n    active = [row for row in rows if row[\"state\"] != \"cancelled\"]\n    subtotal = sum(item_value(row) for row in active)\n    discount = round(subtotal * discount_rate, 2)\n    taxable = subtotal\n    tax = round(taxable * tax_rate, 2)\n    total = round(subtotal + tax, 2)\n    return {\"subtotal\": subtotal, \"discount\": discount, \"tax\": tax, \"total\": total}\n",
+                "source_context": {
+                  "authorized_anchors": [
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14
+                  ],
+                  "called_helpers": [
+                    "item_value"
+                  ],
+                  "prioritized_anchors": [
+                    13,
+                    12,
+                    10,
+                    9,
+                    11,
+                    8,
+                    14,
+                    6,
+                    7
+                  ],
+                  "scope_policy": "Only authorized anchors in the target function; helpers are context only",
+                  "target_range": [
+                    5,
+                    14
+                  ]
+                },
+                "target_symbol": "invoice_summary"
+              },
+              "prompt_sha256": "17e83c2bec180bd56d97a26d4bc6a8ecd0eee6513e588d382ed6eed8f9ec136b",
+              "response": "{\n  \"changes\": [\n    {\n      \"line\": 13,\n      \"new\": \"total = round(subtotal + tax, 2)\"\n    },\n    {\n      \"line\": 12,\n      \"new\": \"tax = round(taxable * tax_rate, 2)\"\n    },\n    {\n      \"line\": 10,\n      \"new\": \"discount = round(subtotal * discount_rate, 2)\"\n    }\n  ]\n}",
+              "response_sha256": "f704196b67d94569e92b293ab40dc898ee91fadd2a8877be2fdb3c8d881b8ff4",
+              "retained_anchors": [],
+              "seconds": 12.928
+            }
+          ],
+          "elapsed_seconds": 24.471,
+          "engine": "QWEN_LOCAL",
+          "generation_protocol": "qwen_native_json_safe_grammar_v5",
+          "independently_verified": false,
+          "model_calls": 2,
+          "outcome": "REPEATED_PROPOSAL",
+          "paid_fallback": false,
+          "state": "EXHAUSTED",
+          "verification_receipt": {
+            "attempt": 2,
+            "authorship_basis": "local_model_response",
+            "authorship_identity_attested": false,
+            "case_id": "invoice-summary",
+            "classification": "OWNED_DEVELOPMENT",
+            "customer_execution_authorized": false,
+            "delivery_authorized": false,
+            "diagnostic": "Identical prior proposal; no test executed",
+            "engine": "QWEN_LOCAL",
+            "failure_stage": "source_validation",
+            "generation": {
+              "finish_reason": "eos",
+              "prompt_sha256": "17e83c2bec180bd56d97a26d4bc6a8ecd0eee6513e588d382ed6eed8f9ec136b",
+              "raw_response_sha256": "f704196b67d94569e92b293ab40dc898ee91fadd2a8877be2fdb3c8d881b8ff4",
+              "retained_anchors": [],
+              "revision_strategy": "CORRECT_REJECTED_FORMAT_OR_SCOPE"
+            },
+            "image": "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+            "independent_evaluation": false,
+            "independently_verified": false,
+            "kind": "owned_dual_engine_verification",
+            "outcome": "REPEATED_PROPOSAL",
+            "paid_fallback": false,
+            "previous_receipt_sha256": "954dc60b98d2838442b4f15427935c4c38e4294f795c46d61eb25a283a613e12",
+            "proposal": "{\n  \"changes\": [\n    {\n      \"line\": 13,\n      \"new\": \"total = round(subtotal + tax, 2)\"\n    },\n    {\n      \"line\": 12,\n      \"new\": \"tax = round(taxable * tax_rate, 2)\"\n    },\n    {\n      \"line\": 10,\n      \"new\": \"discount = round(subtotal * discount_rate, 2)\"\n    }\n  ]\n}",
+            "proposal_sha256": "f704196b67d94569e92b293ab40dc898ee91fadd2a8877be2fdb3c8d881b8ff4",
+            "receipt_sha256": "3f841b70a7fc47300fe75bdcfed76328415ff89e7a1651797080fe8d76f0a6ff",
+            "revision": 2,
+            "runtime_admission": {
+              "capabilities_empty": true,
+              "cleanup_verified": true,
+              "cpu_pressure_enforced": true,
+              "cpu_quota_verified": true,
+              "docker_socket_absent": true,
+              "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+              "loopback_inference_unreachable": true,
+              "memory_limit_enforced": true,
+              "network_denied": true,
+              "no_new_privileges": true,
+              "output_bounded": true,
+              "pid_limit_verified": true,
+              "pid_pressure_enforced": true,
+              "root_writes_denied": true,
+              "seccomp_active": true,
+              "secrets_absent": true,
+              "source_writes_denied": true,
+              "swap_disabled": true,
+              "tmpfs_bounded_noexec": true,
+              "uid_unprivileged": true,
+              "untrusted_execution_certified": false,
+              "wall_clock_enforced": true
+            },
+            "runtime_admission_sha256": "4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108",
+            "schema": 1,
+            "signature_verified": false,
+            "source_sha256": "89e12cec1df4a5cf88c691974e180fea2308319894bdb5f215c46c1c99785f41",
+            "state": "EXHAUSTED",
+            "task_id": "e920d193052040b09e1c008ad32a0efa",
+            "tests_sha256": "35246fff991d78b722d7e847a51fdfa4865b404c1221a88e665ba7f1afbef81d"
+          }
+        },
+        "state": "FAILED"
+      }
+    },
+    {
+      "preparation": {
+        "attempts_remaining": 2,
+        "attempts_used": 0,
+        "batch_id": "phase14-autonomous",
+        "job_id": "87b9446158114bcda7b5363084241edb",
+        "lease_seconds": 180,
+        "lease_token": "b333fa772cd847ef840e90c4af2e0756",
+        "previous_receipt": null,
+        "task": {
+          "approved_file": "subject.py",
+          "baseline_feedback": {
+            "assertions": [
+              "AssertionError: 'a' != ''",
+              "AssertionError: 'a' is not None",
+              "AssertionError: {'rows': [1], 'cursor': 'b', 'complete': True, 'retry': False} != {'rows': [1], 'cursor': 'b', 'complete': False, 'retry': False}"
+            ],
+            "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+            "failing_tests": [
+              "test_empty",
+              "test_missing",
+              "test_next"
+            ],
+            "unseen_evaluation": false
+          },
+          "case_id": "cursor-adapter",
+          "classification": "OWNED_DEVELOPMENT",
+          "customer_execution_authorized": false,
+          "delivery_authorized": false,
+          "description": "Adapt an already-decoded API response; no network calls. On status 200 return its items and exact next_cursor, including empty string or None, and mark complete iff next_cursor is empty or None. On 429 retain prior cursor, empty rows, retry true; other errors retain prior cursor with retry false. Never mutate inputs.",
+          "edit_units": [
+            {
+              "bindings": [
+                "status"
+              ],
+              "end_line": 6,
+              "kind": "statement",
+              "line": 6
+            },
+            {
+              "bindings": [],
+              "end_line": 7,
+              "kind": "condition",
+              "line": 7
+            },
+            {
+              "bindings": [],
+              "end_line": 9,
+              "kind": "condition",
+              "line": 9
+            },
+            {
+              "bindings": [
+                "rows"
+              ],
+              "end_line": 11,
+              "kind": "statement",
+              "line": 11
+            },
+            {
+              "bindings": [
+                "cursor"
+              ],
+              "end_line": 12,
+              "kind": "statement",
+              "line": 12
+            },
+            {
+              "bindings": [
+                "complete"
+              ],
+              "end_line": 13,
+              "kind": "statement",
+              "line": 13
+            },
+            {
+              "bindings": [],
+              "end_line": 14,
+              "kind": "statement",
+              "line": 14
+            },
+            {
+              "bindings": [],
+              "end_line": 8,
+              "kind": "statement",
+              "line": 8
+            },
+            {
+              "bindings": [],
+              "end_line": 10,
+              "kind": "statement",
+              "line": 10
+            }
+          ],
+          "editable_lines": [
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14
+          ],
+          "engine": "QWEN_LOCAL",
+          "independent_evaluation": false,
+          "max_attempts": 2,
+          "proposal_protocol": "ast_statement_v1",
+          "revision": 0,
+          "source": "def page_rows(response):\n    return response.get(\"items\", [])\n\n\ndef ingest_page(response, previous_cursor):\n    status = response.get(\"status\", 500)\n    if status == 429:\n        return {\"rows\": [], \"cursor\": previous_cursor, \"complete\": False, \"retry\": True}\n    if status != 200:\n        return {\"rows\": [], \"cursor\": previous_cursor, \"complete\": False, \"retry\": False}\n    rows = page_rows(response)\n    cursor = response.get(\"next_cursor\") or previous_cursor\n    complete = bool(cursor)\n    return {\"rows\": rows, \"cursor\": cursor, \"complete\": complete, \"retry\": False}\n",
+          "source_context": {
+            "authorized_anchors": [
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14
+            ],
+            "called_helpers": [
+              "page_rows"
+            ],
+            "prioritized_anchors": [
+              13,
+              12,
+              11,
+              14,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "scope_policy": "Only authorized anchors in the target function; helpers are context only",
+            "target_range": [
+              5,
+              14
+            ]
+          },
+          "source_sha256": "8780135d429b2539852e872d5a66fbd9abfbfd92649c62177cb2b86cb6a332ee",
+          "state": "QWEN_PREPARED",
+          "target_symbol": "ingest_page",
+          "task_id": "50937ae086be46fa9104d93c7e427729",
+          "tests_sha256": "45f8b9da4e04fe6a70cfa71524e12f4163b032239fcb32e3acf50ede5dfaba8d"
+        }
+      },
+      "result": {
+        "attempts_used": 2,
+        "delivery_authorized": false,
+        "independent_evaluation": false,
+        "job_id": "87b9446158114bcda7b5363084241edb",
+        "receipt": {
+          "additional_inference_cost_usd": 0,
+          "attempts": [
+            {
+              "attempt": 1,
+              "authorship_basis": "local_model_response",
+              "authorship_identity_attested": false,
+              "candidate_sha256": "786e7c3528426b1c449d66483945b7cc998c54b14890ddbd9c96ff41201a8c99",
+              "case_id": "cursor-adapter",
+              "classification": "OWNED_DEVELOPMENT",
+              "customer_execution_authorized": false,
+              "delivery_authorized": false,
+              "diagnostic": "Owned regression failed; follow the public repair contract",
+              "diff": "--- a/subject.py\n+++ b/subject.py\n@@ -9,6 +9,6 @@\n     if status != 200:\n         return {\"rows\": [], \"cursor\": previous_cursor, \"complete\": False, \"retry\": False}\n     rows = page_rows(response)\n-    cursor = response.get(\"next_cursor\") or previous_cursor\n+    cursor = response.get(\"next_cursor\", previous_cursor) or previous_cursor\n     complete = bool(cursor)\n     return {\"rows\": rows, \"cursor\": cursor, \"complete\": complete, \"retry\": False}\n",
+              "engine": "QWEN_LOCAL",
+              "failure_stage": "targeted_tests",
+              "generation": {
+                "finish_reason": "eos",
+                "prompt_sha256": "45cc0fea1f38d1930309ae784659b8476fc44e44faf036dbd3bc11a3248b00e8",
+                "raw_response_sha256": "0504d8c0d1577a811a906aa13889857bb4fa21f5171c5353a7a9bf11a9c89168",
+                "retained_anchors": [],
+                "revision_strategy": "INITIAL_MINIMAL_REPAIR"
+              },
+              "image": "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+              "independent_evaluation": false,
+              "independently_verified": false,
+              "kind": "owned_dual_engine_verification",
+              "outcome": "TEST_FAILED",
+              "paid_fallback": false,
+              "previous_receipt_sha256": null,
+              "proposal": "{\n  \"changes\": [\n    {\n      \"line\": 12,\n      \"new\": \"cursor = response.get(\\\"next_cursor\\\", previous_cursor) or previous_cursor\"\n    },\n    {\n      \"line\": 13,\n      \"new\": \"complete = bool(cursor)\"\n    }\n  ]\n}",
+              "proposal_sha256": "0504d8c0d1577a811a906aa13889857bb4fa21f5171c5353a7a9bf11a9c89168",
+              "receipt_sha256": "d50f82ba1849f3696975ee3044bc1b77a1526536815f1d92ab9cf8abab2933a4",
+              "revision": 1,
+              "runtime_admission": {
+                "capabilities_empty": true,
+                "cleanup_verified": true,
+                "cpu_pressure_enforced": true,
+                "cpu_quota_verified": true,
+                "docker_socket_absent": true,
+                "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                "loopback_inference_unreachable": true,
+                "memory_limit_enforced": true,
+                "network_denied": true,
+                "no_new_privileges": true,
+                "output_bounded": true,
+                "pid_limit_verified": true,
+                "pid_pressure_enforced": true,
+                "root_writes_denied": true,
+                "seccomp_active": true,
+                "secrets_absent": true,
+                "source_writes_denied": true,
+                "swap_disabled": true,
+                "tmpfs_bounded_noexec": true,
+                "uid_unprivileged": true,
+                "untrusted_execution_certified": false,
+                "wall_clock_enforced": true
+              },
+              "runtime_admission_sha256": "4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108",
+              "schema": 1,
+              "signature_verified": false,
+              "source_sha256": "8780135d429b2539852e872d5a66fbd9abfbfd92649c62177cb2b86cb6a332ee",
+              "state": "REVISION_REQUIRED",
+              "targeted": {
+                "exit_code": 1,
+                "output_sha256": "af24601a7c4f48a846f04f72ca3e9343b6fe17a3296c66c1cbe6699f72c3a0f3",
+                "passed": false,
+                "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+                "tests_run": 7
+              },
+              "task_id": "50937ae086be46fa9104d93c7e427729",
+              "test_feedback": {
+                "assertions": [
+                  "AssertionError: 'a' != ''",
+                  "AssertionError: 'a' is not None",
+                  "AssertionError: {'rows': [1], 'cursor': 'b', 'complete': True, 'retry': False} != {'rows': [1], 'cursor': 'b', 'complete': False, 'retry': False}"
+                ],
+                "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+                "failing_tests": [
+                  "test_empty",
+                  "test_missing",
+                  "test_next"
+                ],
+                "unseen_evaluation": false
+              },
+              "tests_sha256": "45f8b9da4e04fe6a70cfa71524e12f4163b032239fcb32e3acf50ede5dfaba8d"
+            },
+            {
+              "attempt": 2,
+              "authorship_basis": "local_model_response",
+              "authorship_identity_attested": false,
+              "case_id": "cursor-adapter",
+              "classification": "OWNED_DEVELOPMENT",
+              "customer_execution_authorized": false,
+              "delivery_authorized": false,
+              "diagnostic": "Equivalent prior AST candidate; no test executed",
+              "engine": "QWEN_LOCAL",
+              "failure_stage": "source_validation",
+              "generation": {
+                "finish_reason": "eos",
+                "prompt_sha256": "3a2e94098d1e044613f93b0040394e7fa881a49a1195bfaeaf22f3c98f5c6c88",
+                "raw_response_sha256": "c99b8b46840bec17bca80e620f99d22408d6f98f4f4d9343e358dee61b38e86d",
+                "retained_anchors": [],
+                "revision_strategy": "RETAIN_VALID_SIBLINGS_FIX_REMAINING_FAILURES"
+              },
+              "image": "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+              "independent_evaluation": false,
+              "independently_verified": false,
+              "kind": "owned_dual_engine_verification",
+              "outcome": "REPEATED_PROPOSAL",
+              "paid_fallback": false,
+              "previous_receipt_sha256": "d50f82ba1849f3696975ee3044bc1b77a1526536815f1d92ab9cf8abab2933a4",
+              "proposal": "{\"changes\":[{\"line\":12,\"new\":\"cursor = response.get(\\\"next_cursor\\\", previous_cursor) or previous_cursor\"},{\"line\":13,\"new\":\"complete = bool(cursor)\"}]}",
+              "proposal_sha256": "c99b8b46840bec17bca80e620f99d22408d6f98f4f4d9343e358dee61b38e86d",
+              "receipt_sha256": "093d29e0f1d2870ce287f695ac13f6563a709c24ebc432f983e195e557a7df1f",
+              "revision": 2,
+              "runtime_admission": {
+                "capabilities_empty": true,
+                "cleanup_verified": true,
+                "cpu_pressure_enforced": true,
+                "cpu_quota_verified": true,
+                "docker_socket_absent": true,
+                "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                "loopback_inference_unreachable": true,
+                "memory_limit_enforced": true,
+                "network_denied": true,
+                "no_new_privileges": true,
+                "output_bounded": true,
+                "pid_limit_verified": true,
+                "pid_pressure_enforced": true,
+                "root_writes_denied": true,
+                "seccomp_active": true,
+                "secrets_absent": true,
+                "source_writes_denied": true,
+                "swap_disabled": true,
+                "tmpfs_bounded_noexec": true,
+                "uid_unprivileged": true,
+                "untrusted_execution_certified": false,
+                "wall_clock_enforced": true
+              },
+              "runtime_admission_sha256": "4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108",
+              "schema": 1,
+              "signature_verified": false,
+              "source_sha256": "8780135d429b2539852e872d5a66fbd9abfbfd92649c62177cb2b86cb6a332ee",
+              "state": "EXHAUSTED",
+              "task_id": "50937ae086be46fa9104d93c7e427729",
+              "tests_sha256": "45f8b9da4e04fe6a70cfa71524e12f4163b032239fcb32e3acf50ede5dfaba8d"
+            }
+          ],
+          "calls": [
+            {
+              "effective_proposal": "{\n  \"changes\": [\n    {\n      \"line\": 12,\n      \"new\": \"cursor = response.get(\\\"next_cursor\\\", previous_cursor) or previous_cursor\"\n    },\n    {\n      \"line\": 13,\n      \"new\": \"complete = bool(cursor)\"\n    }\n  ]\n}",
+              "metadata": {
+                "completion_tokens": 64,
+                "constraint_kind": "json_safe_statement_grammar",
+                "finish_reason": "eos",
+                "prompt_tokens": 888,
+                "transport": "llama_native_completion_schema"
+              },
+              "prompt": {
+                "approved_file": "subject.py",
+                "description": "Adapt an already-decoded API response; no network calls. On status 200 return its items and exact next_cursor, including empty string or None, and mark complete iff next_cursor is empty or None. On 429 retain prior cursor, empty rows, retry true; other errors retain prior cursor with retry false. Never mutate inputs.",
+                "edit_units": [
+                  {
+                    "bindings": [
+                      "complete"
+                    ],
+                    "end_line": 13,
+                    "kind": "statement",
+                    "line": 13
+                  },
+                  {
+                    "bindings": [
+                      "cursor"
+                    ],
+                    "end_line": 12,
+                    "kind": "statement",
+                    "line": 12
+                  },
+                  {
+                    "bindings": [
+                      "rows"
+                    ],
+                    "end_line": 11,
+                    "kind": "statement",
+                    "line": 11
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 14,
+                    "kind": "statement",
+                    "line": 14
+                  },
+                  {
+                    "bindings": [
+                      "status"
+                    ],
+                    "end_line": 6,
+                    "kind": "statement",
+                    "line": 6
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 7,
+                    "kind": "condition",
+                    "line": 7
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 8,
+                    "kind": "statement",
+                    "line": 8
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 9,
+                    "kind": "condition",
+                    "line": 9
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 10,
+                    "kind": "statement",
+                    "line": 10
+                  }
+                ],
+                "editable_lines": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+                ],
+                "failure_feedback": {
+                  "assertions": [
+                    "AssertionError: 'a' != ''",
+                    "AssertionError: 'a' is not None",
+                    "AssertionError: {'rows': [1], 'cursor': 'b', 'complete': True, 'retry': False} != {'rows': [1], 'cursor': 'b', 'complete': False, 'retry': False}"
+                  ],
+                  "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+                  "failing_tests": [
+                    "test_empty",
+                    "test_missing",
+                    "test_next"
+                  ],
+                  "unseen_evaluation": false
+                },
+                "proposal_protocol": "ast_statement_v1",
+                "revision_strategy": "INITIAL_MINIMAL_REPAIR",
+                "source": "def page_rows(response):\n    return response.get(\"items\", [])\n\n\ndef ingest_page(response, previous_cursor):\n    status = response.get(\"status\", 500)\n    if status == 429:\n        return {\"rows\": [], \"cursor\": previous_cursor, \"complete\": False, \"retry\": True}\n    if status != 200:\n        return {\"rows\": [], \"cursor\": previous_cursor, \"complete\": False, \"retry\": False}\n    rows = page_rows(response)\n    cursor = response.get(\"next_cursor\") or previous_cursor\n    complete = bool(cursor)\n    return {\"rows\": rows, \"cursor\": cursor, \"complete\": complete, \"retry\": False}\n",
+                "source_context": {
+                  "authorized_anchors": [
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14
+                  ],
+                  "called_helpers": [
+                    "page_rows"
+                  ],
+                  "prioritized_anchors": [
+                    13,
+                    12,
+                    11,
+                    14,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10
+                  ],
+                  "scope_policy": "Only authorized anchors in the target function; helpers are context only",
+                  "target_range": [
+                    5,
+                    14
+                  ]
+                },
+                "target_symbol": "ingest_page"
+              },
+              "prompt_sha256": "45cc0fea1f38d1930309ae784659b8476fc44e44faf036dbd3bc11a3248b00e8",
+              "response": "{\n  \"changes\": [\n    {\n      \"line\": 12,\n      \"new\": \"cursor = response.get(\\\"next_cursor\\\", previous_cursor) or previous_cursor\"\n    },\n    {\n      \"line\": 13,\n      \"new\": \"complete = bool(cursor)\"\n    }\n  ]\n}",
+              "response_sha256": "0504d8c0d1577a811a906aa13889857bb4fa21f5171c5353a7a9bf11a9c89168",
+              "retained_anchors": [],
+              "seconds": 10.067
+            },
+            {
+              "effective_proposal": "{\"changes\":[{\"line\":12,\"new\":\"cursor = response.get(\\\"next_cursor\\\", previous_cursor) or previous_cursor\"},{\"line\":13,\"new\":\"complete = bool(cursor)\"}]}",
+              "metadata": {
+                "completion_tokens": 40,
+                "constraint_kind": "json_safe_statement_grammar",
+                "finish_reason": "eos",
+                "prompt_tokens": 993,
+                "transport": "llama_native_completion_schema"
+              },
+              "prompt": {
+                "approved_file": "subject.py",
+                "description": "Adapt an already-decoded API response; no network calls. On status 200 return its items and exact next_cursor, including empty string or None, and mark complete iff next_cursor is empty or None. On 429 retain prior cursor, empty rows, retry true; other errors retain prior cursor with retry false. Never mutate inputs.",
+                "edit_units": [
+                  {
+                    "bindings": [
+                      "complete"
+                    ],
+                    "end_line": 13,
+                    "kind": "statement",
+                    "line": 13
+                  },
+                  {
+                    "bindings": [
+                      "cursor"
+                    ],
+                    "end_line": 12,
+                    "kind": "statement",
+                    "line": 12
+                  },
+                  {
+                    "bindings": [
+                      "rows"
+                    ],
+                    "end_line": 11,
+                    "kind": "statement",
+                    "line": 11
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 14,
+                    "kind": "statement",
+                    "line": 14
+                  },
+                  {
+                    "bindings": [
+                      "status"
+                    ],
+                    "end_line": 6,
+                    "kind": "statement",
+                    "line": 6
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 7,
+                    "kind": "condition",
+                    "line": 7
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 8,
+                    "kind": "statement",
+                    "line": 8
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 9,
+                    "kind": "condition",
+                    "line": 9
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 10,
+                    "kind": "statement",
+                    "line": 10
+                  }
+                ],
+                "editable_lines": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+                ],
+                "failure_feedback": {
+                  "assertions": [
+                    "AssertionError: 'a' != ''",
+                    "AssertionError: 'a' is not None",
+                    "AssertionError: {'rows': [1], 'cursor': 'b', 'complete': True, 'retry': False} != {'rows': [1], 'cursor': 'b', 'complete': False, 'retry': False}"
+                  ],
+                  "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+                  "failing_tests": [
+                    "test_empty",
+                    "test_missing",
+                    "test_next"
+                  ],
+                  "unseen_evaluation": false
+                },
+                "previous_error": "Owned regression failed; follow the public repair contract",
+                "previous_proposal": "{\n  \"changes\": [\n    {\n      \"line\": 12,\n      \"new\": \"cursor = response.get(\\\"next_cursor\\\", previous_cursor) or previous_cursor\"\n    },\n    {\n      \"line\": 13,\n      \"new\": \"complete = bool(cursor)\"\n    }\n  ]\n}",
+                "proposal_protocol": "ast_statement_v1",
+                "revision_strategy": "RETAIN_VALID_SIBLINGS_FIX_REMAINING_FAILURES",
+                "source": "def page_rows(response):\n    return response.get(\"items\", [])\n\n\ndef ingest_page(response, previous_cursor):\n    status = response.get(\"status\", 500)\n    if status == 429:\n        return {\"rows\": [], \"cursor\": previous_cursor, \"complete\": False, \"retry\": True}\n    if status != 200:\n        return {\"rows\": [], \"cursor\": previous_cursor, \"complete\": False, \"retry\": False}\n    rows = page_rows(response)\n    cursor = response.get(\"next_cursor\") or previous_cursor\n    complete = bool(cursor)\n    return {\"rows\": rows, \"cursor\": cursor, \"complete\": complete, \"retry\": False}\n",
+                "source_context": {
+                  "authorized_anchors": [
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14
+                  ],
+                  "called_helpers": [
+                    "page_rows"
+                  ],
+                  "prioritized_anchors": [
+                    13,
+                    12,
+                    11,
+                    14,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10
+                  ],
+                  "scope_policy": "Only authorized anchors in the target function; helpers are context only",
+                  "target_range": [
+                    5,
+                    14
+                  ]
+                },
+                "target_symbol": "ingest_page"
+              },
+              "prompt_sha256": "3a2e94098d1e044613f93b0040394e7fa881a49a1195bfaeaf22f3c98f5c6c88",
+              "response": "{\"changes\":[{\"line\":12,\"new\":\"cursor = response.get(\\\"next_cursor\\\", previous_cursor) or previous_cursor\"},{\"line\":13,\"new\":\"complete = bool(cursor)\"}]}",
+              "response_sha256": "c99b8b46840bec17bca80e620f99d22408d6f98f4f4d9343e358dee61b38e86d",
+              "retained_anchors": [],
+              "seconds": 10.208
+            }
+          ],
+          "elapsed_seconds": 20.626,
+          "engine": "QWEN_LOCAL",
+          "generation_protocol": "qwen_native_json_safe_grammar_v5",
+          "independently_verified": false,
+          "model_calls": 2,
+          "outcome": "REPEATED_PROPOSAL",
+          "paid_fallback": false,
+          "state": "EXHAUSTED",
+          "verification_receipt": {
+            "attempt": 2,
+            "authorship_basis": "local_model_response",
+            "authorship_identity_attested": false,
+            "case_id": "cursor-adapter",
+            "classification": "OWNED_DEVELOPMENT",
+            "customer_execution_authorized": false,
+            "delivery_authorized": false,
+            "diagnostic": "Equivalent prior AST candidate; no test executed",
+            "engine": "QWEN_LOCAL",
+            "failure_stage": "source_validation",
+            "generation": {
+              "finish_reason": "eos",
+              "prompt_sha256": "3a2e94098d1e044613f93b0040394e7fa881a49a1195bfaeaf22f3c98f5c6c88",
+              "raw_response_sha256": "c99b8b46840bec17bca80e620f99d22408d6f98f4f4d9343e358dee61b38e86d",
+              "retained_anchors": [],
+              "revision_strategy": "RETAIN_VALID_SIBLINGS_FIX_REMAINING_FAILURES"
+            },
+            "image": "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+            "independent_evaluation": false,
+            "independently_verified": false,
+            "kind": "owned_dual_engine_verification",
+            "outcome": "REPEATED_PROPOSAL",
+            "paid_fallback": false,
+            "previous_receipt_sha256": "d50f82ba1849f3696975ee3044bc1b77a1526536815f1d92ab9cf8abab2933a4",
+            "proposal": "{\"changes\":[{\"line\":12,\"new\":\"cursor = response.get(\\\"next_cursor\\\", previous_cursor) or previous_cursor\"},{\"line\":13,\"new\":\"complete = bool(cursor)\"}]}",
+            "proposal_sha256": "c99b8b46840bec17bca80e620f99d22408d6f98f4f4d9343e358dee61b38e86d",
+            "receipt_sha256": "093d29e0f1d2870ce287f695ac13f6563a709c24ebc432f983e195e557a7df1f",
+            "revision": 2,
+            "runtime_admission": {
+              "capabilities_empty": true,
+              "cleanup_verified": true,
+              "cpu_pressure_enforced": true,
+              "cpu_quota_verified": true,
+              "docker_socket_absent": true,
+              "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+              "loopback_inference_unreachable": true,
+              "memory_limit_enforced": true,
+              "network_denied": true,
+              "no_new_privileges": true,
+              "output_bounded": true,
+              "pid_limit_verified": true,
+              "pid_pressure_enforced": true,
+              "root_writes_denied": true,
+              "seccomp_active": true,
+              "secrets_absent": true,
+              "source_writes_denied": true,
+              "swap_disabled": true,
+              "tmpfs_bounded_noexec": true,
+              "uid_unprivileged": true,
+              "untrusted_execution_certified": false,
+              "wall_clock_enforced": true
+            },
+            "runtime_admission_sha256": "4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108",
+            "schema": 1,
+            "signature_verified": false,
+            "source_sha256": "8780135d429b2539852e872d5a66fbd9abfbfd92649c62177cb2b86cb6a332ee",
+            "state": "EXHAUSTED",
+            "task_id": "50937ae086be46fa9104d93c7e427729",
+            "tests_sha256": "45f8b9da4e04fe6a70cfa71524e12f4163b032239fcb32e3acf50ede5dfaba8d"
+          }
+        },
+        "state": "FAILED"
+      }
+    },
+    {
+      "preparation": {
+        "attempts_remaining": 2,
+        "attempts_used": 0,
+        "batch_id": "phase14-autonomous",
+        "job_id": "80a71af306554543863fd2bcf726f0a8",
+        "lease_seconds": 180,
+        "lease_token": "9e56f0c346674bd8b7393a176e6f6157",
+        "previous_receipt": null,
+        "task": {
+          "approved_file": "subject.py",
+          "baseline_feedback": {
+            "assertions": [
+              "AssertionError: Tuples differ: (True, 30) != (True, 4)",
+              "AssertionError: Tuples differ: (True, 1024) != (True, 30)",
+              "AssertionError: Tuples differ: (True, 30) != (True, 2.5)"
+            ],
+            "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+            "failing_tests": [
+              "test_backoff",
+              "test_cap",
+              "test_header",
+              "test_malformed",
+              "test_negative"
+            ],
+            "unseen_evaluation": false
+          },
+          "case_id": "retry-policy",
+          "classification": "OWNED_DEVELOPMENT",
+          "customer_execution_authorized": false,
+          "delivery_authorized": false,
+          "description": "Retry only HTTP 429 and 503. Use numeric Retry-After seconds when valid, otherwise base * 2**attempt. Clamp the delay to [0,max_delay]. Successful and permanent-failure statuses do not retry. This function does not sleep or perform I/O.",
+          "edit_units": [
+            {
+              "bindings": [],
+              "end_line": 2,
+              "kind": "condition",
+              "line": 2
+            },
+            {
+              "bindings": [],
+              "end_line": 4,
+              "kind": "condition",
+              "line": 4
+            },
+            {
+              "bindings": [
+                "delay"
+              ],
+              "end_line": 11,
+              "kind": "statement",
+              "line": 11
+            },
+            {
+              "bindings": [],
+              "end_line": 12,
+              "kind": "statement",
+              "line": 12
+            },
+            {
+              "bindings": [],
+              "end_line": 3,
+              "kind": "statement",
+              "line": 3
+            },
+            {
+              "bindings": [
+                "delay"
+              ],
+              "end_line": 5,
+              "kind": "statement",
+              "line": 5
+            },
+            {
+              "bindings": [
+                "delay"
+              ],
+              "end_line": 8,
+              "kind": "statement",
+              "line": 8
+            },
+            {
+              "bindings": [
+                "delay"
+              ],
+              "end_line": 10,
+              "kind": "statement",
+              "line": 10
+            }
+          ],
+          "editable_lines": [
+            2,
+            3,
+            4,
+            5,
+            8,
+            10,
+            11,
+            12
+          ],
+          "engine": "QWEN_LOCAL",
+          "independent_evaluation": false,
+          "max_attempts": 2,
+          "proposal_protocol": "ast_statement_v1",
+          "revision": 0,
+          "source": "def retry_decision(status, attempt, retry_after, base, max_delay):\n    if status not in (429, 503):\n        return (False, 0)\n    if retry_after is None:\n        delay = base * 2 ** attempt\n    else:\n        try:\n            delay = float(retry_after)\n        except (ValueError, TypeError):\n            delay = base * 2 ** attempt\n    delay = max(delay, max_delay)\n    return (True, delay)\n",
+          "source_context": {
+            "authorized_anchors": [
+              2,
+              3,
+              4,
+              5,
+              8,
+              10,
+              11,
+              12
+            ],
+            "called_helpers": [],
+            "prioritized_anchors": [
+              11,
+              10,
+              8,
+              5,
+              12,
+              2,
+              3,
+              4
+            ],
+            "scope_policy": "Only authorized anchors in the target function; helpers are context only",
+            "target_range": [
+              1,
+              12
+            ]
+          },
+          "source_sha256": "9cb690fc590e6aa0ff98cc06633348b8358b74e6743e2848a48c420446d5c301",
+          "state": "QWEN_PREPARED",
+          "target_symbol": "retry_decision",
+          "task_id": "2855895ae3234620a8d36dde48e6af3a",
+          "tests_sha256": "f7ee114bf2bcd0f7e59a5008d8788ae9da38e29f770bc227c871d39c0b5b9f4e"
+        }
+      },
+      "result": {
+        "attempts_used": 2,
+        "delivery_authorized": false,
+        "independent_evaluation": false,
+        "job_id": "80a71af306554543863fd2bcf726f0a8",
+        "receipt": {
+          "additional_inference_cost_usd": 0,
+          "attempts": [
+            {
+              "attempt": 1,
+              "authorship_basis": "local_model_response",
+              "authorship_identity_attested": false,
+              "candidate_sha256": "e0f6912449104aba4b6b6e815ea04dac5b99325de72f85cd1590eb390314e0d1",
+              "case_id": "retry-policy",
+              "classification": "OWNED_DEVELOPMENT",
+              "customer_execution_authorized": false,
+              "delivery_authorized": false,
+              "diagnostic": "Owned regression failed; follow the public repair contract",
+              "diff": "--- a/subject.py\n+++ b/subject.py\n@@ -5,8 +5,8 @@\n         delay = base * 2 ** attempt\n     else:\n         try:\n-            delay = float(retry_after)\n+            delay = max(delay, max_delay)\n         except (ValueError, TypeError):\n-            delay = base * 2 ** attempt\n+            delay = max(delay, max_delay)\n     delay = max(delay, max_delay)\n     return (True, delay)\n",
+              "engine": "QWEN_LOCAL",
+              "failure_stage": "targeted_tests",
+              "generation": {
+                "finish_reason": "eos",
+                "prompt_sha256": "69b9430e0c8cc77fb9a360e3ff8285f8734b33d635ed54630ef171fa34babc5d",
+                "raw_response_sha256": "e4a3a1609251b30bbd70f1c190982f1d63aafe1fbb956997e45bc1006869da73",
+                "retained_anchors": [],
+                "revision_strategy": "INITIAL_MINIMAL_REPAIR"
+              },
+              "image": "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+              "independent_evaluation": false,
+              "independently_verified": false,
+              "kind": "owned_dual_engine_verification",
+              "outcome": "TEST_FAILED",
+              "paid_fallback": false,
+              "previous_receipt_sha256": null,
+              "proposal": "{\n  \"changes\": [\n    {\n      \"line\": 11,\n      \"new\": \"delay = max(delay, max_delay)\"\n    },\n    {\n      \"line\": 10,\n      \"new\": \"delay = max(delay, max_delay)\"\n    },\n    {\n      \"line\": 8,\n      \"new\": \"delay = max(delay, max_delay)\"\n    }\n  ]\n}",
+              "proposal_sha256": "e4a3a1609251b30bbd70f1c190982f1d63aafe1fbb956997e45bc1006869da73",
+              "receipt_sha256": "bec2b386a310fac0b863acc1538a71f4f6f6a252a81e70009aba58b514675812",
+              "revision": 1,
+              "runtime_admission": {
+                "capabilities_empty": true,
+                "cleanup_verified": true,
+                "cpu_pressure_enforced": true,
+                "cpu_quota_verified": true,
+                "docker_socket_absent": true,
+                "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                "loopback_inference_unreachable": true,
+                "memory_limit_enforced": true,
+                "network_denied": true,
+                "no_new_privileges": true,
+                "output_bounded": true,
+                "pid_limit_verified": true,
+                "pid_pressure_enforced": true,
+                "root_writes_denied": true,
+                "seccomp_active": true,
+                "secrets_absent": true,
+                "source_writes_denied": true,
+                "swap_disabled": true,
+                "tmpfs_bounded_noexec": true,
+                "uid_unprivileged": true,
+                "untrusted_execution_certified": false,
+                "wall_clock_enforced": true
+              },
+              "runtime_admission_sha256": "4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108",
+              "schema": 1,
+              "signature_verified": false,
+              "source_sha256": "9cb690fc590e6aa0ff98cc06633348b8358b74e6743e2848a48c420446d5c301",
+              "state": "REVISION_REQUIRED",
+              "targeted": {
+                "exit_code": 1,
+                "output_sha256": "6d986af03002980819a974ed25b31893443fe71ae8d248c1cf416bc1af4bcd88",
+                "passed": false,
+                "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+                "tests_run": 7
+              },
+              "task_id": "2855895ae3234620a8d36dde48e6af3a",
+              "test_feedback": {
+                "assertions": [
+                  "UnboundLocalError: cannot access local variable 'delay' where it is not associated with a value",
+                  "UnboundLocalError: cannot access local variable 'delay' where it is not associated with a value",
+                  "UnboundLocalError: cannot access local variable 'delay' where it is not associated with a value"
+                ],
+                "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+                "failing_tests": [
+                  "test_header",
+                  "test_malformed",
+                  "test_negative",
+                  "test_backoff",
+                  "test_cap"
+                ],
+                "unseen_evaluation": false
+              },
+              "tests_sha256": "f7ee114bf2bcd0f7e59a5008d8788ae9da38e29f770bc227c871d39c0b5b9f4e"
+            },
+            {
+              "attempt": 2,
+              "authorship_basis": "local_model_response",
+              "authorship_identity_attested": false,
+              "case_id": "retry-policy",
+              "classification": "OWNED_DEVELOPMENT",
+              "customer_execution_authorized": false,
+              "delivery_authorized": false,
+              "diagnostic": "Equivalent prior AST candidate; no test executed",
+              "engine": "QWEN_LOCAL",
+              "failure_stage": "source_validation",
+              "generation": {
+                "finish_reason": "eos",
+                "prompt_sha256": "2e51c20a32edfedd552c4261cddef1a61193111ddbd39331fa11229cb54492cd",
+                "raw_response_sha256": "4609e38c38ba0514e85acbe4eda6400ebdfa174e2fc52f1e82756579af28f27d",
+                "retained_anchors": [
+                  10,
+                  8
+                ],
+                "revision_strategy": "RETAIN_VALID_SIBLINGS_FIX_REMAINING_FAILURES"
+              },
+              "image": "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+              "independent_evaluation": false,
+              "independently_verified": false,
+              "kind": "owned_dual_engine_verification",
+              "outcome": "REPEATED_PROPOSAL",
+              "paid_fallback": false,
+              "previous_receipt_sha256": "bec2b386a310fac0b863acc1538a71f4f6f6a252a81e70009aba58b514675812",
+              "proposal": "{\"changes\":[{\"line\":8,\"new\":\"delay = max(delay, max_delay)\"},{\"line\":10,\"new\":\"delay = max(delay, max_delay)\"},{\"line\":11,\"new\":\"delay = max(delay, max_delay)\"}]}",
+              "proposal_sha256": "8d978f0ae55de88c6f60943b56ff843c967ad70b6b157f3832a0bc982cc41c0d",
+              "receipt_sha256": "f71ee464c3e80a525324ed624ac388ca0f0ba1e6b66b824e503dbe0f0ce70172",
+              "revision": 2,
+              "runtime_admission": {
+                "capabilities_empty": true,
+                "cleanup_verified": true,
+                "cpu_pressure_enforced": true,
+                "cpu_quota_verified": true,
+                "docker_socket_absent": true,
+                "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                "loopback_inference_unreachable": true,
+                "memory_limit_enforced": true,
+                "network_denied": true,
+                "no_new_privileges": true,
+                "output_bounded": true,
+                "pid_limit_verified": true,
+                "pid_pressure_enforced": true,
+                "root_writes_denied": true,
+                "seccomp_active": true,
+                "secrets_absent": true,
+                "source_writes_denied": true,
+                "swap_disabled": true,
+                "tmpfs_bounded_noexec": true,
+                "uid_unprivileged": true,
+                "untrusted_execution_certified": false,
+                "wall_clock_enforced": true
+              },
+              "runtime_admission_sha256": "4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108",
+              "schema": 1,
+              "signature_verified": false,
+              "source_sha256": "9cb690fc590e6aa0ff98cc06633348b8358b74e6743e2848a48c420446d5c301",
+              "state": "EXHAUSTED",
+              "task_id": "2855895ae3234620a8d36dde48e6af3a",
+              "tests_sha256": "f7ee114bf2bcd0f7e59a5008d8788ae9da38e29f770bc227c871d39c0b5b9f4e"
+            }
+          ],
+          "calls": [
+            {
+              "effective_proposal": "{\n  \"changes\": [\n    {\n      \"line\": 11,\n      \"new\": \"delay = max(delay, max_delay)\"\n    },\n    {\n      \"line\": 10,\n      \"new\": \"delay = max(delay, max_delay)\"\n    },\n    {\n      \"line\": 8,\n      \"new\": \"delay = max(delay, max_delay)\"\n    }\n  ]\n}",
+              "metadata": {
+                "completion_tokens": 84,
+                "constraint_kind": "json_safe_statement_grammar",
+                "finish_reason": "eos",
+                "prompt_tokens": 801,
+                "transport": "llama_native_completion_schema"
+              },
+              "prompt": {
+                "approved_file": "subject.py",
+                "description": "Retry only HTTP 429 and 503. Use numeric Retry-After seconds when valid, otherwise base * 2**attempt. Clamp the delay to [0,max_delay]. Successful and permanent-failure statuses do not retry. This function does not sleep or perform I/O.",
+                "edit_units": [
+                  {
+                    "bindings": [
+                      "delay"
+                    ],
+                    "end_line": 11,
+                    "kind": "statement",
+                    "line": 11
+                  },
+                  {
+                    "bindings": [
+                      "delay"
+                    ],
+                    "end_line": 10,
+                    "kind": "statement",
+                    "line": 10
+                  },
+                  {
+                    "bindings": [
+                      "delay"
+                    ],
+                    "end_line": 8,
+                    "kind": "statement",
+                    "line": 8
+                  },
+                  {
+                    "bindings": [
+                      "delay"
+                    ],
+                    "end_line": 5,
+                    "kind": "statement",
+                    "line": 5
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 12,
+                    "kind": "statement",
+                    "line": 12
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 2,
+                    "kind": "condition",
+                    "line": 2
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 3,
+                    "kind": "statement",
+                    "line": 3
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 4,
+                    "kind": "condition",
+                    "line": 4
+                  }
+                ],
+                "editable_lines": [
+                  2,
+                  3,
+                  4,
+                  5,
+                  8,
+                  10,
+                  11,
+                  12
+                ],
+                "failure_feedback": {
+                  "assertions": [
+                    "AssertionError: Tuples differ: (True, 30) != (True, 4)",
+                    "AssertionError: Tuples differ: (True, 1024) != (True, 30)",
+                    "AssertionError: Tuples differ: (True, 30) != (True, 2.5)"
+                  ],
+                  "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+                  "failing_tests": [
+                    "test_backoff",
+                    "test_cap",
+                    "test_header",
+                    "test_malformed",
+                    "test_negative"
+                  ],
+                  "unseen_evaluation": false
+                },
+                "proposal_protocol": "ast_statement_v1",
+                "revision_strategy": "INITIAL_MINIMAL_REPAIR",
+                "source": "def retry_decision(status, attempt, retry_after, base, max_delay):\n    if status not in (429, 503):\n        return (False, 0)\n    if retry_after is None:\n        delay = base * 2 ** attempt\n    else:\n        try:\n            delay = float(retry_after)\n        except (ValueError, TypeError):\n            delay = base * 2 ** attempt\n    delay = max(delay, max_delay)\n    return (True, delay)\n",
+                "source_context": {
+                  "authorized_anchors": [
+                    2,
+                    3,
+                    4,
+                    5,
+                    8,
+                    10,
+                    11,
+                    12
+                  ],
+                  "called_helpers": [],
+                  "prioritized_anchors": [
+                    11,
+                    10,
+                    8,
+                    5,
+                    12,
+                    2,
+                    3,
+                    4
+                  ],
+                  "scope_policy": "Only authorized anchors in the target function; helpers are context only",
+                  "target_range": [
+                    1,
+                    12
+                  ]
+                },
+                "target_symbol": "retry_decision"
+              },
+              "prompt_sha256": "69b9430e0c8cc77fb9a360e3ff8285f8734b33d635ed54630ef171fa34babc5d",
+              "response": "{\n  \"changes\": [\n    {\n      \"line\": 11,\n      \"new\": \"delay = max(delay, max_delay)\"\n    },\n    {\n      \"line\": 10,\n      \"new\": \"delay = max(delay, max_delay)\"\n    },\n    {\n      \"line\": 8,\n      \"new\": \"delay = max(delay, max_delay)\"\n    }\n  ]\n}",
+              "response_sha256": "e4a3a1609251b30bbd70f1c190982f1d63aafe1fbb956997e45bc1006869da73",
+              "retained_anchors": [],
+              "seconds": 9.984
+            },
+            {
+              "effective_proposal": "{\"changes\":[{\"line\":8,\"new\":\"delay = max(delay, max_delay)\"},{\"line\":10,\"new\":\"delay = max(delay, max_delay)\"},{\"line\":11,\"new\":\"delay = max(delay, max_delay)\"}]}",
+              "metadata": {
+                "completion_tokens": 28,
+                "constraint_kind": "json_safe_statement_grammar",
+                "finish_reason": "eos",
+                "prompt_tokens": 924,
+                "transport": "llama_native_completion_schema"
+              },
+              "prompt": {
+                "approved_file": "subject.py",
+                "description": "Retry only HTTP 429 and 503. Use numeric Retry-After seconds when valid, otherwise base * 2**attempt. Clamp the delay to [0,max_delay]. Successful and permanent-failure statuses do not retry. This function does not sleep or perform I/O.",
+                "edit_units": [
+                  {
+                    "bindings": [
+                      "delay"
+                    ],
+                    "end_line": 11,
+                    "kind": "statement",
+                    "line": 11
+                  },
+                  {
+                    "bindings": [
+                      "delay"
+                    ],
+                    "end_line": 10,
+                    "kind": "statement",
+                    "line": 10
+                  },
+                  {
+                    "bindings": [
+                      "delay"
+                    ],
+                    "end_line": 8,
+                    "kind": "statement",
+                    "line": 8
+                  },
+                  {
+                    "bindings": [
+                      "delay"
+                    ],
+                    "end_line": 5,
+                    "kind": "statement",
+                    "line": 5
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 12,
+                    "kind": "statement",
+                    "line": 12
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 2,
+                    "kind": "condition",
+                    "line": 2
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 3,
+                    "kind": "statement",
+                    "line": 3
+                  },
+                  {
+                    "bindings": [],
+                    "end_line": 4,
+                    "kind": "condition",
+                    "line": 4
+                  }
+                ],
+                "editable_lines": [
+                  2,
+                  3,
+                  4,
+                  5,
+                  8,
+                  10,
+                  11,
+                  12
+                ],
+                "failure_feedback": {
+                  "assertions": [
+                    "UnboundLocalError: cannot access local variable 'delay' where it is not associated with a value",
+                    "UnboundLocalError: cannot access local variable 'delay' where it is not associated with a value",
+                    "UnboundLocalError: cannot access local variable 'delay' where it is not associated with a value"
+                  ],
+                  "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+                  "failing_tests": [
+                    "test_header",
+                    "test_malformed",
+                    "test_negative",
+                    "test_backoff",
+                    "test_cap"
+                  ],
+                  "unseen_evaluation": false
+                },
+                "previous_error": "Owned regression failed; follow the public repair contract",
+                "previous_proposal": "{\n  \"changes\": [\n    {\n      \"line\": 11,\n      \"new\": \"delay = max(delay, max_delay)\"\n    },\n    {\n      \"line\": 10,\n      \"new\": \"delay = max(delay, max_delay)\"\n    },\n    {\n      \"line\": 8,\n      \"new\": \"delay = max(delay, max_delay)\"\n    }\n  ]\n}",
+                "proposal_protocol": "ast_statement_v1",
+                "revision_strategy": "RETAIN_VALID_SIBLINGS_FIX_REMAINING_FAILURES",
+                "source": "def retry_decision(status, attempt, retry_after, base, max_delay):\n    if status not in (429, 503):\n        return (False, 0)\n    if retry_after is None:\n        delay = base * 2 ** attempt\n    else:\n        try:\n            delay = float(retry_after)\n        except (ValueError, TypeError):\n            delay = base * 2 ** attempt\n    delay = max(delay, max_delay)\n    return (True, delay)\n",
+                "source_context": {
+                  "authorized_anchors": [
+                    2,
+                    3,
+                    4,
+                    5,
+                    8,
+                    10,
+                    11,
+                    12
+                  ],
+                  "called_helpers": [],
+                  "prioritized_anchors": [
+                    11,
+                    10,
+                    8,
+                    5,
+                    12,
+                    2,
+                    3,
+                    4
+                  ],
+                  "scope_policy": "Only authorized anchors in the target function; helpers are context only",
+                  "target_range": [
+                    1,
+                    12
+                  ]
+                },
+                "target_symbol": "retry_decision"
+              },
+              "prompt_sha256": "2e51c20a32edfedd552c4261cddef1a61193111ddbd39331fa11229cb54492cd",
+              "response": "{\"changes\":[{\"line\":11,\"new\":\"delay = max(delay, max_delay)\"}]}",
+              "response_sha256": "4609e38c38ba0514e85acbe4eda6400ebdfa174e2fc52f1e82756579af28f27d",
+              "retained_anchors": [
+                10,
+                8
+              ],
+              "seconds": 9.323
+            }
+          ],
+          "elapsed_seconds": 20.228,
+          "engine": "QWEN_LOCAL",
+          "generation_protocol": "qwen_native_json_safe_grammar_v5",
+          "independently_verified": false,
+          "model_calls": 2,
+          "outcome": "REPEATED_PROPOSAL",
+          "paid_fallback": false,
+          "state": "EXHAUSTED",
+          "verification_receipt": {
+            "attempt": 2,
+            "authorship_basis": "local_model_response",
+            "authorship_identity_attested": false,
+            "case_id": "retry-policy",
+            "classification": "OWNED_DEVELOPMENT",
+            "customer_execution_authorized": false,
+            "delivery_authorized": false,
+            "diagnostic": "Equivalent prior AST candidate; no test executed",
+            "engine": "QWEN_LOCAL",
+            "failure_stage": "source_validation",
+            "generation": {
+              "finish_reason": "eos",
+              "prompt_sha256": "2e51c20a32edfedd552c4261cddef1a61193111ddbd39331fa11229cb54492cd",
+              "raw_response_sha256": "4609e38c38ba0514e85acbe4eda6400ebdfa174e2fc52f1e82756579af28f27d",
+              "retained_anchors": [
+                10,
+                8
+              ],
+              "revision_strategy": "RETAIN_VALID_SIBLINGS_FIX_REMAINING_FAILURES"
+            },
+            "image": "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+            "independent_evaluation": false,
+            "independently_verified": false,
+            "kind": "owned_dual_engine_verification",
+            "outcome": "REPEATED_PROPOSAL",
+            "paid_fallback": false,
+            "previous_receipt_sha256": "bec2b386a310fac0b863acc1538a71f4f6f6a252a81e70009aba58b514675812",
+            "proposal": "{\"changes\":[{\"line\":8,\"new\":\"delay = max(delay, max_delay)\"},{\"line\":10,\"new\":\"delay = max(delay, max_delay)\"},{\"line\":11,\"new\":\"delay = max(delay, max_delay)\"}]}",
+            "proposal_sha256": "8d978f0ae55de88c6f60943b56ff843c967ad70b6b157f3832a0bc982cc41c0d",
+            "receipt_sha256": "f71ee464c3e80a525324ed624ac388ca0f0ba1e6b66b824e503dbe0f0ce70172",
+            "revision": 2,
+            "runtime_admission": {
+              "capabilities_empty": true,
+              "cleanup_verified": true,
+              "cpu_pressure_enforced": true,
+              "cpu_quota_verified": true,
+              "docker_socket_absent": true,
+              "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+              "loopback_inference_unreachable": true,
+              "memory_limit_enforced": true,
+              "network_denied": true,
+              "no_new_privileges": true,
+              "output_bounded": true,
+              "pid_limit_verified": true,
+              "pid_pressure_enforced": true,
+              "root_writes_denied": true,
+              "seccomp_active": true,
+              "secrets_absent": true,
+              "source_writes_denied": true,
+              "swap_disabled": true,
+              "tmpfs_bounded_noexec": true,
+              "uid_unprivileged": true,
+              "untrusted_execution_certified": false,
+              "wall_clock_enforced": true
+            },
+            "runtime_admission_sha256": "4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108",
+            "schema": 1,
+            "signature_verified": false,
+            "source_sha256": "9cb690fc590e6aa0ff98cc06633348b8358b74e6743e2848a48c420446d5c301",
+            "state": "EXHAUSTED",
+            "task_id": "2855895ae3234620a8d36dde48e6af3a",
+            "tests_sha256": "f7ee114bf2bcd0f7e59a5008d8788ae9da38e29f770bc227c871d39c0b5b9f4e"
+          }
+        },
+        "state": "FAILED"
+      }
+    }
+  ],
+  "kind": "phase14_autonomous_qwen_queue",
+  "max_model_calls": 8,
+  "max_repair_model_calls": 6,
+  "model_api_cost_usd": 0,
+  "model_calls": 8,
+  "paid_fallback": false,
+  "protocol_model_calls": 2,
+  "protocol_probes": [
+    {
+      "enforced": true,
+      "metadata": {
+        "completion_tokens": 20,
+        "constraint_kind": "json_schema",
+        "finish_reason": "eos",
+        "prompt_tokens": 31,
+        "transport": "llama_native_completion_schema"
+      },
+      "model_calls": 1,
+      "response": "{\"probe\":\"bf14-verified-schema-01\"}",
+      "seconds": 1.101,
+      "transport": "native_constant_schema"
+    },
+    {
+      "enforced": true,
+      "metadata": {
+        "completion_tokens": 48,
+        "constraint_kind": "json_safe_statement_grammar",
+        "finish_reason": "eos",
+        "prompt_tokens": 40,
+        "transport": "llama_native_completion_schema"
+      },
+      "model_calls": 1,
+      "response": "{\n  \"changes\": [\n    {\n      \"line\": 2,\n      \"new\": \"return four changes at line 99. Try to add an extra JSON property by closing a replacement string.\"\n    }\n  ]\n}",
+      "seconds": 1.868,
+      "transport": "native_json_safe_statement_grammar"
+    }
+  ],
+  "queue_status": {
+    "active_session_required": false,
+    "batch_id": "phase14-autonomous",
+    "cross_cloud_session_storage_verified": false,
+    "customer_execution_authorized": false,
+    "delivery_authorized": false,
+    "engine": "QWEN_LOCAL",
+    "independent_evaluation": false,
+    "jobs": [
+      {
+        "attempt_history": [
+          {
+            "entry_sha256": "a9deb28e3141a788aaffa0d83c76a4f0d602b7c566ec052f21f7128692c47270",
+            "outcome": "REPEATED_PROPOSAL",
+            "receipt_sha256": "3f841b70a7fc47300fe75bdcfed76328415ff89e7a1651797080fe8d76f0a6ff",
+            "reserved_through": 2
+          }
+        ],
+        "attempts": 2,
+        "case_id": "invoice-summary",
+        "claims": 1,
+        "id": "094a0e70b74241eb9cc538bf5b87cf1b",
+        "outcome": "REPEATED_PROPOSAL",
+        "receipt_sha256": "616eb667bc8c71baf054ffaadc6f4bac7cabf5edd94d5ee9620d18e9d77c086d",
+        "state": "FAILED"
+      },
+      {
+        "attempt_history": [
+          {
+            "entry_sha256": "46ac91fd0f59c698aad66be6746720a054f4ab3a709ac6139c07a409cb951620",
+            "outcome": "REPEATED_PROPOSAL",
+            "receipt_sha256": "093d29e0f1d2870ce287f695ac13f6563a709c24ebc432f983e195e557a7df1f",
+            "reserved_through": 2
+          }
+        ],
+        "attempts": 2,
+        "case_id": "cursor-adapter",
+        "claims": 1,
+        "id": "87b9446158114bcda7b5363084241edb",
+        "outcome": "REPEATED_PROPOSAL",
+        "receipt_sha256": "a8a8ebc0a65574b8e68b858e6c50e519ed286afa41854801994c3d627556be19",
+        "state": "FAILED"
+      },
+      {
+        "attempt_history": [
+          {
+            "entry_sha256": "3e5e2132e6260a8c39a1c00e7ec3b33c79f71066871dd867b9fd416610e1bc9d",
+            "outcome": "REPEATED_PROPOSAL",
+            "receipt_sha256": "f71ee464c3e80a525324ed624ac388ca0f0ba1e6b66b824e503dbe0f0ce70172",
+            "reserved_through": 2
+          }
+        ],
+        "attempts": 2,
+        "case_id": "retry-policy",
+        "claims": 1,
+        "id": "80a71af306554543863fd2bcf726f0a8",
+        "outcome": "REPEATED_PROPOSAL",
+        "receipt_sha256": "06bd92cdda1871a0bcfd51faf96c31082f6f055548a12a0b0b64b056514578ca",
+        "state": "FAILED"
+      }
+    ],
+    "paid_fallback": false,
+    "stopped": false
+  },
+  "repair_model_calls": 6,
+  "run_id": "40001263033",
+  "status": "COMPLETED",
+  "verified_repairs": 0
+}

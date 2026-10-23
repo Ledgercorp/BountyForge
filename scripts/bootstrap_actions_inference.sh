@@ -47,6 +47,6 @@ if [[ ! -x "$runtime_dir/llama-b11750/llama-server" ]]; then
 fi
 [[ -x "$runtime_dir/llama-b11750/llama-server" ]] || { echo 'Trusted llama-server absent' >&2; exit 2; }
 export LD_LIBRARY_PATH="$runtime_dir/llama-b11750"
-unset GITHUB_TOKEN GH_TOKEN GITLAB_TOKEN OPENAI_API_KEY ANTHROPIC_API_KEY
+unset GITHUB_TOKEN GH_TOKEN GITLAB_TOKEN OPENAI_API_KEY ANTHROPIC_API_KEY GROQ_API_KEY STRIPE_SECRET_KEY
 exec "$runtime_dir/llama-b11750/llama-server" \
   -m "$model" --host 127.0.0.1 --port "$port" -t 2 -c 2048 -np 1

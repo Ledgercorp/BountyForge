@@ -1,0 +1,76 @@
+name: BountyForge frozen 20-case local Qwen evaluation
+
+# Manual only. No credentials, remote model providers, customer input or writes.
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_zero_cost:
+        description: Confirm this uses only the public standard runner and local pinned Qwen model
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bountyforge-repair-worker
+  cancel-in-progress: false
+
+jobs:
+  frozen-qwen:
+    if: ${{ github.ref == 'refs/heads/engineering/revenue-linux-scout-20261021' && inputs.confirm_zero_cost }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 70
+    steps:
+      - name: Checkout trusted BountyForge without persistent credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Set up Python 3.11
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Regression and evaluator admission tests
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -v
+          python -m unittest discover -s benchmarks/phase4 -v
+      - name: Use the existing public Qwen model cache when available
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: ~/.cache/bountyforge/models
+          key: bountyforge-public-qwen25-coder-1p5b-cc324af0-v1
+      - name: Pull the exact previously verified owned-test image
+        run: docker pull --platform linux/amd64 python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590
+      - name: Verify pinned local model and runtime
+        run: bash scripts/bootstrap_actions_inference.sh --verify-only
+      - name: Start the pinned model on loopback only
+        shell: bash
+        run: |
+          set -euo pipefail
+          nohup bash scripts/bootstrap_actions_inference.sh --serve \
+            > "$RUNNER_TEMP/bountyforge-qwen.log" 2>&1 </dev/null &
+          echo "$!" > "$RUNNER_TEMP/bountyforge-qwen.pid"
+          ready=0
+          for i in $(seq 1 70); do
+            if curl --fail --silent http://127.0.0.1:8080/health | grep -q '"status":"ok"'; then
+              ready=1; break
+            fi
+            sleep 2
+          done
+          [[ "$ready" == 1 ]] || { echo 'Pinned local Qwen did not become healthy'; exit 2; }
+      - name: Run bounded frozen evaluation and independent Docker replay
+        run: |
+          set -euo pipefail
+          mkdir -p evidence-run
+          env -u GROQ_API_KEY -u OPENAI_API_KEY -u STRIPE_SECRET_KEY -u GITHUB_TOKEN -u GH_TOKEN \
+            python -m scripts.phase8_live_qwen --output evidence-run/phase8_qwen.json
+      - name: Upload bounded public-owned evaluation evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bountyforge-phase8-frozen-qwen-${{ github.run_id }}
+          path: evidence-run/phase8_qwen.json
+          if-no-files-found: ignore
+          retention-days: 1

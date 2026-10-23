@@ -282,6 +282,8 @@ def sanitized_boot_diagnostic(raw):
         "ENOENT": r"\benoent\b|no such file or directory",
         "ENOMEM": r"\benomem\b|out of memory|heap out of memory",
         "BAD_MODULE": r"cannot find module|module not found|err_module_not_found",
+        "NATIVE_BINDING_UNAVAILABLE": r"no usable native binding found",
+        "OPAQUE_NATIVE_PRODUCT": r"native binding found for opaque",
         "BAD_EXEC": r"exec format error|permission denied.*exec",
         "BAD_INJECTION": r"inject(?:ion)?(?:s)? (?:not found|missing|required|unavailable)|missing(?: .{0,40})?service",
         "STARTUP_FATAL": r"fatal|boot failed|fail to (?:start|load)|startup failed",
@@ -339,11 +341,6 @@ def confirm_hardened_sdk_server(docker, workspace, native):
     # SDK JSON-RPC lives on newline-delimited stdio. Docker without -i closes
     # the container's stdin before the host can deliver initialize/shutdown.
     cmd.insert(cmd.index(IMAGE), "-i")
-    # The published native addon loader normally copies a .node binding to
-    # a writable cache. Our only writable tmpfs is intentionally noexec.
-    # Ask the upstream loader to use its documented non-cache fallback,
-    # without permitting executable temporary storage or host network.
-    cmd.insert(cmd.index(IMAGE), "--env=NARB_DISABLE_NATIVE_CACHE=1")
     try:
         child = subprocess.Popen(
             cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
@@ -397,7 +394,9 @@ def confirm_hardened_sdk_server(docker, workspace, native):
             detail = os.read(child.stderr.fileno(), 32768)
             diagnostic = sanitized_boot_diagnostic(detail)
             print(json.dumps(diagnostic, sort_keys=True), file=sys.stderr)
-            if "EACCES" in diagnostic["signature"]:
+            if "NATIVE_BINDING_UNAVAILABLE" in diagnostic["signature"]:
+                category = "NATIVE_BINDING"
+            elif "EACCES" in diagnostic["signature"]:
                 category = "PERMISSION"
             elif "EROFS" in diagnostic["signature"]:
                 category = "READ_ONLY_FS"
@@ -495,7 +494,7 @@ def run_bootstrap(wheel_dir):
             # Preserve precisely the observed, repeatable *profile startup*
             # refusal as a BLOCKER, not an admitted SDK session. Any other
             # transport, timeout, process or isolation failure remains red.
-            expected = "SDK_RPC_STREAM_CLOSED_EXIT_1_DIAGNOSTIC_PROFILE"
+            expected = "SDK_RPC_STREAM_CLOSED_EXIT_1_DIAGNOSTIC_NATIVE_BINDING"
             if str(exc) != expected:
                 raise
             sdk_session = {

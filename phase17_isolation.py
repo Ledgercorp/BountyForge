@@ -68,7 +68,7 @@ except (ValueError,OSError):
     memory,pids,quota,period=-1,-1,-1,0
 print(json.dumps({
     'schema':1,
-    'owned_canary_read':p('/workspace/owned.txt').read_text()=='owned-development-only\\n',
+    'owned_canary_read':p('/workspace/owned.txt').read_text()=='owned-development-only\n',
     'workspace_write_denied':cannot_write('/workspace/owned.txt'),
     'root_write_denied':cannot_write('/probe-host-escape'),
     'docker_socket_absent':not p('/var/run/docker.sock').exists(),
@@ -122,7 +122,7 @@ def docker_command(binary, workdir, name):
     return [
         binary, "run", "--rm", "--pull=never", "--name=" + name,
         "--network=none", "--read-only", "--cap-drop=ALL",
-        "--security-opt=no-new-privileges", "--security-opt=seccomp=builtin",
+        "--security-opt=no-new-privileges",
         "--pids-limit=32", "--memory=192m", "--memory-swap=192m",
         "--cpus=1", "--user=65534:65534", "--cgroupns=private", "--ipc=none",
         "--tmpfs=/tmp:rw,nosuid,nodev,noexec,size=16m,mode=1777",

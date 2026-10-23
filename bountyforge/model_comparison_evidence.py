@@ -46,7 +46,7 @@ def load_record(raw,expected_sha):
     if type(raw) is not bytes or len(raw)>500000 or digest(raw)!=expected_sha:raise ValueError('COMPARISON_DIGEST_REJECTED')
     record=strict_json(raw)
     configs=[p.read_bytes() for p in (ROOT/'experiments/phase15/comparison.json',ROOT/'experiments/phase15/comparison-v2.json',
-                                    ROOT/'experiments/phase15/comparison-v3.json') if p.is_file()]
+                                    ROOT/'experiments/phase15/comparison-v3.json',ROOT/'experiments/phase15/comparison-v4.json') if p.is_file()]
     config_raw=next((r for r in configs if digest(r)==record.get('experiment_sha256')),None)
     if config_raw is None:raise ValueError('FROZEN_EXPERIMENT_NOT_FOUND')
     config=strict_json(config_raw)

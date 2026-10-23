@@ -39,7 +39,7 @@ jobs:
           import os,shutil
           from pathlib import Path
           available=int(next(r.split()[1] for r in Path('/proc/meminfo').read_text().splitlines() if r.startswith('MemAvailable:')))
-          assert (os.cpu_count() or 0)>=2 and available>=12*1024**2
+          assert (os.cpu_count() or 0)>=4 and available>=12*1024**2
           assert shutil.disk_usage(Path.home()).free>=8*1024**3
           print('Standard public Linux capacity gate passed; no paid runner or provider')
           PY
@@ -64,7 +64,7 @@ jobs:
             GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_SHA="$GITHUB_SHA" RUNNER_OS=Linux RUNNER_ARCH=X64 \
             BOUNTYFORGE_PHASE15_FREE_ACK=true LD_LIBRARY_PATH="$pythonLocation/lib" \
             "$pythonLocation/bin/python" -m scripts.phase15_model_comparison \
-            --experiment v3 --experiment-sha256 cb7151dcfcb139f99bfb90419b812b14162e79768c99f6c5ea6f7346f1333f3e --output evidence-run/phase15_comparison.json
+            --experiment v4 --experiment-sha256 ef65f2289ce8fa5f44188940c48b85bc21a86b4bc75f8f436621d6de393f1ae3 --output evidence-run/phase15_comparison.json
       - if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:

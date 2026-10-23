@@ -17,6 +17,7 @@ _SPECS={
 def profile_spec(profile=DEFAULT_PROFILE):
     if type(profile) is not str or profile not in PROFILES:raise ValueError('UNKNOWN_LOCAL_MODEL_PROFILE')
     return {**_SPECS[profile],'context_tokens':2048,'threads':2,'parallel_streams':1,
+            'supported_cpu_threads':[2,4],
             'max_prompt_tokens':700 if profile=='QWEN_7B' else 1898,
             'paid_fallback':False,'runtime_sha256':RUNTIME_SHA256}
 

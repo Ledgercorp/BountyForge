@@ -18,7 +18,7 @@ from bountyforge.repair_intelligence import compact_model_prompt as model_prompt
 from bountyforge.statements import statement_catalog,SYSTEM
 
 CONFIGS={'v1':ROOT/'experiments/phase15/comparison.json','v2':ROOT/'experiments/phase15/comparison-v2.json',
-         'v3':ROOT/'experiments/phase15/comparison-v3.json'}
+         'v3':ROOT/'experiments/phase15/comparison-v3.json','v4':ROOT/'experiments/phase15/comparison-v4.json'}
 CASES=('reserve-release','response-normalize','weighted-window')
 CODE_PATHS=('bountyforge/repair_engines.py','bountyforge/model_profiles.py','bountyforge/profiled_qwen.py',
     'bountyforge/local_model_runtime.py','bountyforge/native_qwen.py','bountyforge/qwen_statement_contract.py',
@@ -39,10 +39,11 @@ def verify_experiment(expected,version='v1'):
     budgets={
         'tasks_per_model':3,'attempts_per_task':2,'completion_tokens':150,'request_timeout_seconds':45,
         'context_tokens':2048,'resource_probe_calls_per_model':1,'maximum_completion_requests':14}
-    if version=='v3':budgets.update(tasks_per_model=1,resource_probe_calls_per_model=0,maximum_completion_requests=4,input_token_limit=700)
+    if version in ('v3','v4'):budgets.update(tasks_per_model=1,resource_probe_calls_per_model=0,maximum_completion_requests=4,input_token_limit=700)
+    if version=='v4':budgets['cpu_threads']=4
     if config['model_profiles']!=list(PROFILES) or config['budgets']!=budgets:
         raise ValueError('EXPERIMENT_BUDGET_CHANGED')
-    if config['case_ids']!=(['weighted-window'] if version=='v3' else list(CASES)) or set(config['code_sha256'])!=set(CODE_PATHS):raise ValueError('BOUNDED_CASES_REQUIRED')
+    if config['case_ids']!=(['weighted-window'] if version in ('v3','v4') else list(CASES)) or set(config['code_sha256'])!=set(CODE_PATHS):raise ValueError('BOUNDED_CASES_REQUIRED')
     for name,sha in config['code_sha256'].items():
         if digest((ROOT/name).read_bytes())!=sha:raise ValueError('EXPERIMENT_IMPLEMENTATION_CHANGED')
     specs={s['id']:s for s in catalog()}
@@ -86,17 +87,18 @@ def main(argv=None):
         require_credential_free_host();config=verify_experiment(args.experiment_sha256,args.experiment);report['frozen_experiment']=config
         mem={r.split(':')[0]:int(r.split()[1]) for r in Path('/proc/meminfo').read_text().splitlines() if r.startswith(('MemTotal:','MemAvailable:'))}
         report['host']={'logical_cpus':os.cpu_count(),'memory_kib':mem,'disk_free_bytes':shutil.disk_usage(ROOT).free}
-        if (os.cpu_count() or 0)<2 or mem['MemAvailable']<12*1024**2 or report['host']['disk_free_bytes']<2*1024**3:
+        threads=config['budgets'].get('cpu_threads',2)
+        if (os.cpu_count() or 0)<threads or mem['MemAvailable']<12*1024**2 or report['host']['disk_free_bytes']<2*1024**3:
             raise RuntimeError('RESOURCE_CAPACITY_UNAVAILABLE')
         queue=OwnedRepairQueue(service_factory=(lambda:RepairService(model_factory=lambda **kw:ProfiledStatementModel(prompt_token_limit=700,**kw)))
-                               if args.experiment=='v3' else RepairService)
+                               if args.experiment in ('v3','v4') else RepairService)
         prompt=resource_prompt()
         for profile in config['model_profiles']:
             begin=time.monotonic();engine={'model_profile':profile,'status':'BLOCKED','jobs':[]};report['models'].append(engine)
             report['stage']='RESOURCE_ADMISSION';probe={'prompt':strict_json(prompt),'prompt_sha256':digest(prompt.encode())}
             engine['resource_probe']=probe;checkpoint()
             try:
-                if args.experiment=='v3':
+                if args.experiment in ('v3','v4'):
                     # Reuse completed pinned resource receipts; narrow both inputs
                     # below failed probes. Every actual request is token-checked.
                     engine['resource_probe']={'completion_requests':0,'metadata':{'completion_requests':0},
@@ -104,7 +106,7 @@ def main(argv=None):
                         'prior_resource_runs':[40001954401,40007714754,40009784193]}
                     engine['resource_admitted']=True
                 else:
-                    with LocalRuntime(profile) as runtime:
+                    with LocalRuntime(profile,threads=threads) as runtime:
                         probe['runtime']=runtime.measurement
                         if not qwen_availability(profile):raise RuntimeError('SELECTED_PROCESS_NOT_ADMITTED')
                         other=next(p for p in PROFILES if p!=profile)
@@ -130,7 +132,7 @@ def main(argv=None):
                 if task is None:engine['blocking_reason']='OWNED_PREPARATION_BLOCKED';break
                 if task['case_id']!=expected or task['model_profile']!=profile:raise ValueError('QUEUE_IDENTITY_MISMATCH')
                 try:
-                    with LocalRuntime(profile) as runtime:
+                    with LocalRuntime(profile,threads=threads) as runtime:
                         entry['runtime']=runtime.measurement
                         entry['unselected_profile_available']=qwen_availability(next(p for p in PROFILES if p!=profile))
                         if entry['unselected_profile_available']:raise RuntimeError('LOCAL_MODEL_IDENTITY_AMBIGUOUS')

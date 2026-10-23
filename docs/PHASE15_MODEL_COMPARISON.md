@@ -188,3 +188,27 @@ frozen separately and remains a one-case developmental microcomparison, never
 a new generalization estimate. The experimental owner 7B profile likewise now
 rejects rendered inputs above 700 tokens; 1.5B retains its existing full context
 ceiling outside this comparable experiment. No default replacement occurs.
+
+## V3 narrow result and allocated-CPU measurement
+
+V3 [40012667306](https://github.com/Ledgercorp/BountyForge/actions/runs/40012667306)
+at `6ef293eb7fe12a6602b761b7efef3d99b87063df` ended PARTIAL_BLOCKED in
+98.673s. 1.5B generated two compact 21-token no-op candidates and completed
+the single case with zero verified repairs. 7B received the same 545-token
+initial prompt but its request was unavailable after 45.013s. No proposal
+was received or tested; no 7B accuracy score is established. Peak RSS was
+7,975,772 KiB; observed CPU time 94.05s; process exit/cleanup were normal.
+Compact wire formatting alone did not make two-thread repair inference meet
+the deadline. Source/test hashes and all eight test expectations remain fixed.
+
+The traces show two saturated inference threads while the standard free runner
+provides four logical CPUs. A final paired single-case configuration uses all
+four already allocated CPUs, with unchanged aggregate 180 CPU-second hard
+limit, 10GiB address-space cap, 180s process wall cap, 45s requests, 700 input
+tokens, 150 output tokens, two attempts, source validators and Docker tests.
+No larger runner, GPU, paid capacity or additional host is introduced. Both
+models use the same setting. CPU parallelism is constrained to 2 or 4 and must
+not exceed observed host capacity; the owner launcher accepts `--threads 4`.
+Defaults stay at two threads unless explicitly selected. V4 is frozen before
+execution, separate from all previous results. No broader completion or unseen
+accuracy is claimed from this smaller workload.

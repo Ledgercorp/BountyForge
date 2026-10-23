@@ -165,7 +165,7 @@ def qwen_availability(model_profile=DEFAULT_PROFILE):
                         # The experimental profile requires the measured resource envelope.
                         limits={kind:resource.prlimit(int(proc.name),kind) for kind in
                                 (resource.RLIMIT_AS,resource.RLIMIT_CPU,resource.RLIMIT_CORE,resource.RLIMIT_FSIZE)}
-                        found=(args[args.index('-c')+1]=='2048' and args[args.index('-t')+1]=='2'
+                        found=(args[args.index('-c')+1]=='2048' and args[args.index('-t')+1] in ('2','4')
                                and all(0<=limits[k][1]<=cap for k,cap in
                                    ((resource.RLIMIT_AS,10*1024**3),(resource.RLIMIT_CPU,180),
                                     (resource.RLIMIT_CORE,0),(resource.RLIMIT_FSIZE,1024*1024))))

@@ -37,3 +37,12 @@ class RuntimeBoundaryTests(unittest.TestCase):
         runtime.measurement={'server_stopped':True,'unexpected_exit':True,'wall_limit_reached':False}
         with patch('scripts.local_inference.LocalRuntime',factory):
             self.assertEqual(main(['--model-profile','QWEN_7B','--serve-seconds','1']),2)
+
+    def test_parallelism_is_bounded_by_explicit_values_and_available_cpu(self):
+        with self.assertRaises(ValueError):LocalRuntime('QWEN_7B',threads=8)
+        with patch('bountyforge.local_model_runtime.os.cpu_count',return_value=2):
+            with self.assertRaisesRegex(ValueError,'CPU_CAPACITY_UNAVAILABLE'):LocalRuntime('QWEN_7B',threads=4)
+        with patch('bountyforge.local_model_runtime.os.cpu_count',return_value=4):
+            runtime=LocalRuntime('QWEN_7B',threads=4)
+        self.assertEqual(runtime.measurement['threads'],4)
+        self.assertEqual(runtime.measurement['cpu_limit_seconds'],180)

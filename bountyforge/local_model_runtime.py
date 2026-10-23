@@ -27,11 +27,15 @@ def enforce_limits():
 
 
 class LocalRuntime:
-    def __init__(self,model_profile):
+    def __init__(self,model_profile,*,threads=None):
         self.spec=profile_spec(model_profile);self.child=None;self.temporary=None;self.monitor=None
+        self.threads=self.spec['threads'] if threads is None else threads
+        if type(self.threads) is not int or self.threads not in self.spec['supported_cpu_threads']:
+            raise ValueError('UNSUPPORTED_CPU_THREAD_COUNT')
+        if self.threads>(os.cpu_count() or 0):raise ValueError('CPU_CAPACITY_UNAVAILABLE')
         self.done=threading.Event();self.log=None
         self.measurement={'model_profile':self.spec['id'],'model_sha256':self.spec['sha256'],
-            'context_tokens':2048,'threads':2,'address_space_limit_bytes':10*1024**3,
+            'context_tokens':2048,'threads':self.threads,'address_space_limit_bytes':10*1024**3,
             'cpu_limit_seconds':180,'wall_limit_seconds':180,'peak_rss_kib':None,'peak_address_kib':None,
             'observed_cpu_seconds':None,'cpu_observation':'Linux process counters at last sample before shutdown',
             'server_stopped':False,'wall_limit_reached':False}
@@ -70,7 +74,7 @@ class LocalRuntime:
             self.temporary=tempfile.TemporaryDirectory(prefix='bf15-local-runtime-');self.log=open(Path(self.temporary.name)/'server.log','wb')
             self.started=time.monotonic()
             self.child=subprocess.Popen([str(binary),'-m',str(model),'--host','127.0.0.1','--port','8080',
-                    '-t','2','-c','2048','-np','1'],env={'PATH':'/usr/local/bin:/usr/bin:/bin','LD_LIBRARY_PATH':str(binary.parent)},
+                    '-t',str(self.threads),'-c','2048','-np','1'],env={'PATH':'/usr/local/bin:/usr/bin:/bin','LD_LIBRARY_PATH':str(binary.parent)},
                     stdout=self.log,stderr=self.log,preexec_fn=enforce_limits)
             self.monitor=threading.Thread(target=self._monitor,daemon=True);self.monitor.start()
             opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),_NoRedirect())

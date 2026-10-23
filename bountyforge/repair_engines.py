@@ -21,8 +21,9 @@ from bountyforge.curated_tasks import editable_scope
 from bountyforge.drafts import DraftRejected
 from bountyforge.line_scope import infer_editable_lines
 from bountyforge.model import _NoRedirect
-from bountyforge.qwen_statement_contract import AdaptiveStatementModel as LocalModel
-from bountyforge.repair_intelligence import failure_feedback, source_context, model_prompt, revision_proposal
+from bountyforge.native_qwen import NativeStatementModel as LocalModel
+from bountyforge.repair_intelligence import (failure_feedback, source_context, model_prompt,
+    revision_proposal, validate_local_dependencies)
 from bountyforge.phase8_evaluation import CONTROLS, preflight, validate_proof, verify_core
 from bountyforge.repair_session import admit, check_receipt, validate_proposal_bindings
 from bountyforge.statements import SYSTEM, stage_statements, statement_catalog
@@ -328,6 +329,7 @@ class RepairService:
                     staged=stage_statements(raw.decode(),root,'subject.py',task['scope'],public['source_sha256'])
                     candidate=staged['files'][0]
                     validate_proposal_bindings(public['source'],task['scope'],raw.decode())
+                    validate_local_dependencies(public['source'],raw.decode())
                 if staged['semantic_sha256'] in task['seen_semantics']:
                     raise _RepeatedCandidate('Equivalent prior AST candidate; no test executed')
                 task['seen_semantics'].add(staged['semantic_sha256'])

@@ -3,13 +3,47 @@ import ast
 import copy
 import json
 import re
+import textwrap
+
+
+def validate_local_dependencies(source,proposal):
+    """Reject newly introduced reads whose first local binding is later.
+
+    Conservative additional guard, not general dataflow verification. Existing
+    validators still decide syntax/scope/capabilities. Never executes source.
+    """
+    from bountyforge.drafts import DraftRejected
+    value=json.loads(proposal) if type(proposal) is str else proposal
+    tree=ast.parse(source)
+    for change in value['changes']:
+        line=change['line']
+        functions=[f for f in tree.body if isinstance(f,ast.FunctionDef) and f.lineno<line<=f.end_lineno]
+        if len(functions)!=1:raise DraftRejected('Ambiguous binding scope')
+        function=functions[0]
+        old=[n for n in ast.walk(function) if isinstance(n,ast.stmt) and n.lineno==line]
+        if len(old)!=1:raise DraftRejected('Ambiguous binding anchor')
+        fragment=ast.parse(textwrap.dedent(change['new']),mode='eval' if isinstance(old[0],(ast.If,ast.While)) else 'exec')
+        reads=lambda node:{n.id for n in ast.walk(node) if isinstance(n,ast.Name) and isinstance(n.ctx,ast.Load)}
+        old_reads=reads(old[0].test if isinstance(old[0],(ast.If,ast.While)) else old[0])
+        introduced=reads(fragment)-old_reads
+        parameters={a.arg for a in function.args.posonlyargs+function.args.args+function.args.kwonlyargs}
+        bindings={}
+        for node in ast.walk(function):
+            if isinstance(node,ast.Name) and isinstance(node.ctx,ast.Store):
+                bindings[node.id]=min(bindings.get(node.id,node.lineno),node.lineno)
+        # Comprehension iteration targets are locally defined inside that fragment.
+        local_comp={n.id for c in ast.walk(fragment) if isinstance(c,ast.comprehension)
+                    for n in ast.walk(c.target) if isinstance(n,ast.Name)}
+        for name in introduced-parameters-local_comp:
+            if name in bindings and bindings[name]>=line:
+                raise DraftRejected('Replacement reads local before its existing binding: '+name)
 
 
 def failure_feedback(output):
     # Do not include traceback paths or lines from the verifier's test source.
     names=list(dict.fromkeys(re.findall(r'(?:FAIL|ERROR):\s+(test_\w+)',output)))[:8]
     assertions=[row[:180] for row in output.splitlines()
-                if re.match(r'^(AssertionError|TypeError|ValueError|KeyError|ZeroDivisionError|NameError):',row)][:3]
+                if re.match(r'^(AssertionError|TypeError|ValueError|KeyError|ZeroDivisionError|NameError|UnboundLocalError|IndexError|AttributeError):',row)][:3]
     return {'failing_tests':names,'assertions':assertions,
             'classification':'OWNED_DEVELOPMENT_FEEDBACK','unseen_evaluation':False}
 
@@ -19,9 +53,30 @@ def source_context(source,symbol,anchors):
     functions={node.name:node for node in tree.body if isinstance(node,ast.FunctionDef)}
     target=functions[symbol]
     calls={node.func.id for node in ast.walk(target) if isinstance(node,ast.Call) and isinstance(node.func,ast.Name)}
+    terminal=[n for n in target.body if isinstance(n,ast.Return)]
+    terminal=terminal[-1:] if terminal else [n for n in ast.walk(target) if isinstance(n,ast.Return)]
+    names=lambda n:{x.id for x in ast.walk(n) if isinstance(x,ast.Name) and isinstance(x.ctx,ast.Load)}
+    distance={name:0 for n in terminal for name in names(n)}
+    assignments=[n for n in ast.walk(target) if isinstance(n,(ast.Assign,ast.AnnAssign)) and n.value is not None]
+    for depth in range(1,5):
+        for node in assignments:
+            targets=node.targets if isinstance(node,ast.Assign) else [node.target]
+            bound={x.id for t in targets for x in ast.walk(t) if isinstance(x,ast.Name)}
+            if any(distance.get(name,99)<depth for name in bound):
+                for name in names(node.value):distance.setdefault(name,depth)
+    nodes={n.lineno:n for n in ast.walk(target) if isinstance(n,ast.stmt)}
+    def priority(line):
+        node=nodes[line]
+        if node in assignments:
+            targets=node.targets if isinstance(node,ast.Assign) else [node.target]
+            ranks=[distance.get(x.id,99) for t in targets for x in ast.walk(t) if isinstance(x,ast.Name)]
+            if ranks and min(ranks)<99:return (0,min(ranks),-line)
+        if node in terminal:return (1,0,-line)
+        return (2,0,line)
     return {'target_range':[target.lineno,target.end_lineno],
             'called_helpers':sorted((calls & functions.keys())-{symbol}),
             'authorized_anchors':sorted(anchors),
+            'prioritized_anchors':sorted(anchors,key=priority),
             'scope_policy':'Only authorized anchors in the target function; helpers are context only'}
 
 
@@ -63,6 +118,8 @@ def model_prompt(public,previous):
     data={key:public[key] for key in ('approved_file','source','target_symbol','description',
                                     'editable_lines','edit_units','proposal_protocol')}
     data['source_context']=public['source_context']
+    order=public['source_context']['prioritized_anchors']
+    data['edit_units']=sorted(data['edit_units'],key=lambda unit:order.index(unit['line']))
     data['failure_feedback']=copy.deepcopy(previous.get('test_feedback',public['baseline_feedback']) if previous else public['baseline_feedback'])
     data['revision_strategy']=revision_strategy(previous)
     if previous:

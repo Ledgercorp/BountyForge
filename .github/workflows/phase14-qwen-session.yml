@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       confirm_zero_cost:
-        description: Run three owned maintenance tasks with at most six local Qwen calls
+        description: Three maintenance tasks, six repair calls and two schema-admission calls maximum
         type: boolean
         required: true
         default: false
@@ -36,7 +36,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Contract regression before inference
-        run: python -m unittest tests.test_repair_engines tests.test_mcp_stdio_blackbox tests.test_phase14_intelligence tests.test_owned_repair_queue tests.test_phase14_qwen_gate -q
+        run: python -m unittest tests.test_repair_engines tests.test_mcp_stdio_blackbox tests.test_phase14_intelligence tests.test_owned_repair_queue tests.test_phase14_qwen_gate tests.test_native_qwen -q
       - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
         with:
           path: ~/.cache/bountyforge/models

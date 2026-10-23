@@ -14,5 +14,6 @@ class QwenAdmissionTests(unittest.TestCase):
                 self.assertEqual(session.main(['--output',str(path)]),1)
                 queue.assert_not_called()
             report=json.loads(path.read_bytes())
-            self.assertEqual(report['jobs'],[]);self.assertEqual(report['max_model_calls'],6)
+            self.assertEqual(report['jobs'],[]);self.assertEqual(report['max_model_calls'],8)
+            self.assertEqual(report['max_repair_model_calls'],6)
             self.assertFalse(report['independent_evaluation'])

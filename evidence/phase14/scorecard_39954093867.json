@@ -1,0 +1,136 @@
+{
+  "additional_spending_usd": 0,
+  "classification": "OWNED_DEVELOPMENT",
+  "codex": [
+    {
+      "case_id": "invoice-summary",
+      "classification": "OWNED_DEVELOPMENT",
+      "completion_tokens": null,
+      "elapsed_seconds": null,
+      "engine": "CODEX_AGENT",
+      "failure_categories": [],
+      "fresh_replay_test_methods_passed": 8,
+      "independent_evaluation": false,
+      "model_calls": null,
+      "prompt_tokens": null,
+      "proposal_attempts": 1,
+      "targeted_suites_passed": 1,
+      "targeted_test_methods_in_passing_suites": 8,
+      "valid_patches": 1,
+      "verified_repair": true
+    },
+    {
+      "case_id": "cursor-adapter",
+      "classification": "OWNED_DEVELOPMENT",
+      "completion_tokens": null,
+      "elapsed_seconds": null,
+      "engine": "CODEX_AGENT",
+      "failure_categories": [],
+      "fresh_replay_test_methods_passed": 7,
+      "independent_evaluation": false,
+      "model_calls": null,
+      "prompt_tokens": null,
+      "proposal_attempts": 1,
+      "targeted_suites_passed": 1,
+      "targeted_test_methods_in_passing_suites": 7,
+      "valid_patches": 1,
+      "verified_repair": true
+    },
+    {
+      "case_id": "retry-policy",
+      "classification": "OWNED_DEVELOPMENT",
+      "completion_tokens": null,
+      "elapsed_seconds": null,
+      "engine": "CODEX_AGENT",
+      "failure_categories": [],
+      "fresh_replay_test_methods_passed": 7,
+      "independent_evaluation": false,
+      "model_calls": null,
+      "prompt_tokens": null,
+      "proposal_attempts": 1,
+      "targeted_suites_passed": 1,
+      "targeted_test_methods_in_passing_suites": 7,
+      "valid_patches": 1,
+      "verified_repair": true
+    }
+  ],
+  "codex_session_elapsed_seconds": 564.838,
+  "comparison_limits": [
+    "Agent authored public tasks and can inspect tests",
+    "Different hosts and generation contexts; not a blinded randomized comparison",
+    "Active-session model usage unavailable; transport starts no additional model turn",
+    "Passing replay verifies a candidate, not unseen generalization or commercial admission"
+  ],
+  "independent_accuracy": null,
+  "independent_evaluation": false,
+  "kind": "phase14_dual_engine_development_scorecard",
+  "qwen": [
+    {
+      "case_id": "invoice-summary",
+      "classification": "OWNED_DEVELOPMENT",
+      "completion_tokens": 299,
+      "elapsed_seconds": 29.619,
+      "engine": "QWEN_LOCAL",
+      "failure_categories": [
+        "SOURCE_REJECTED",
+        "SOURCE_REJECTED"
+      ],
+      "fresh_replay_test_methods_passed": 0,
+      "independent_evaluation": false,
+      "model_calls": 2,
+      "prompt_tokens": 1966,
+      "proposal_attempts": 2,
+      "queue_state": "FAILED",
+      "targeted_suites_passed": 0,
+      "targeted_test_methods_in_passing_suites": 0,
+      "terminal_outcome": "SOURCE_REJECTED",
+      "valid_patches": 0,
+      "verified_repair": false
+    },
+    {
+      "case_id": "cursor-adapter",
+      "classification": "OWNED_DEVELOPMENT",
+      "completion_tokens": 100,
+      "elapsed_seconds": 17.648,
+      "engine": "QWEN_LOCAL",
+      "failure_categories": [
+        "TEST_FAILED",
+        "TEST_FAILED"
+      ],
+      "fresh_replay_test_methods_passed": 0,
+      "independent_evaluation": false,
+      "model_calls": 2,
+      "prompt_tokens": 1814,
+      "proposal_attempts": 2,
+      "queue_state": "FAILED",
+      "targeted_suites_passed": 0,
+      "targeted_test_methods_in_passing_suites": 0,
+      "terminal_outcome": "TEST_FAILED",
+      "valid_patches": 2,
+      "verified_repair": false
+    },
+    {
+      "case_id": "retry-policy",
+      "classification": "OWNED_DEVELOPMENT",
+      "completion_tokens": 300,
+      "elapsed_seconds": 24.063,
+      "engine": "QWEN_LOCAL",
+      "failure_categories": [
+        "SOURCE_REJECTED",
+        "SOURCE_REJECTED"
+      ],
+      "fresh_replay_test_methods_passed": 0,
+      "independent_evaluation": false,
+      "model_calls": 2,
+      "prompt_tokens": 1736,
+      "proposal_attempts": 2,
+      "queue_state": "FAILED",
+      "targeted_suites_passed": 0,
+      "targeted_test_methods_in_passing_suites": 0,
+      "terminal_outcome": "SOURCE_REJECTED",
+      "valid_patches": 0,
+      "verified_repair": false
+    }
+  ],
+  "qwen_experiment_elapsed_seconds": 97.931
+}

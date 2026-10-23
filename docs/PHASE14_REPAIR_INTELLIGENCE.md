@@ -122,3 +122,40 @@ skips, zero failures; Node 7/7; historical harness 10/10 (model-free). Frozen co
 hashes and all prior fixture/evaluation files remain unchanged. The nine skips
 remain eight unprovisioned namespace/rootfs tests plus one opt-in older catalog
 replay; they are not counted as newly verified security checks.
+
+## First hosted measurement and protocol correction
+
+Commit `f6fdf1e1346f11f0a4f643ea6f6e6a61cbc9efe7` passed hosted regression
+[39954099437](https://github.com/Ledgercorp/BountyForge/actions/runs/39954099437):
+673 tests, 664 passed, nine skipped, zero failures; Node 7/7.
+
+The real autonomous [Qwen run 39954093867](https://github.com/Ledgercorp/BountyForge/actions/runs/39954093867)
+completed with **0/3 verified repairs**, six calls, 5,516 prompt tokens and
+699 completion tokens. Experiment time was 97.931 seconds; generation calls
+totaled 70.556 seconds. Four proposals were source-rejected and two source-valid
+candidates failed targeted tests. No targeted suite passed. Cursor-adapter
+introduced an UnboundLocalError by reading locals before assignment; it was
+never marked verified. Raw evidence and receipt-bound scorecard preserve every
+attempt, including retained sibling edits. These are developmental measurements.
+
+Invoice proposals exceeded the schema's three-change limit. Retry proposals
+were malformed or truncated. A new native llama.cpp schema transport is therefore
+being tested; routing through the chat endpoint is not assumed to enforce the
+schema. Two bounded diagnostic calls compare chat and native behavior using an
+adversarial constant-valued schema. The native probe must pass before any of
+the six repair calls are admitted. No provider/model fallback exists. This is a
+new implementation experiment on the same exposed developmental material, not a
+fresh independent evaluation.
+
+Other corrections order authorized AST anchors by backward dependencies from
+returned values, and reject newly introduced reads of locals before their first
+existing binding. This additional static guard is conservative, not a general
+control-flow proof. Original validators and all frozen artifacts stay intact.
+The native transport uses the pinned server's own chat template, fixed loopback
+paths, no proxies/redirects/credentials, bounded responses and the same 150-token
+limit. Its real schema enforcement remains unverified until the hosted probe.
+
+Local checks before this second experiment: 680 tests, 671 passed, nine skipped,
+zero failures, plus a subsequent 16-test focused pass including non-object
+transport rejection. Node 7/7. The subsequent extra regression scenario adds one
+test to the next full count. No larger-model download or inference occurred.

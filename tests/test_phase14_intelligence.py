@@ -88,3 +88,23 @@ class IntelligenceTests(unittest.TestCase):
         result=service.submit(task['task_id'],0,{'changes':[{'line':2,'new':'return 0'}]})
         self.assertEqual(result['outcome'],'SOURCE_REJECTED')
         self.assertNotIn('targeted',result)
+
+    def test_new_reads_of_later_bound_locals_are_rejected_without_relaxing_old_validator(self):
+        from bountyforge.repair_intelligence import validate_local_dependencies
+        from bountyforge.drafts import DraftRejected
+        source='def adapt(response):\n    if response is None:\n        return []\n    rows = response\n    return rows\n'
+        with self.assertRaises(DraftRejected):
+            validate_local_dependencies(source,{'changes':[{'line':3,'new':'return rows'}]})
+        validate_local_dependencies(source,{'changes':[{'line':5,'new':'return list(rows)'}]})
+
+    def test_comprehension_local_bindings_are_not_confused_with_later_variables(self):
+        from bountyforge.repair_intelligence import validate_local_dependencies
+        source='def total(pairs):\n    result = len(pairs)\n    return result\n'
+        validate_local_dependencies(source,{'changes':[{'line':2,'new':'result = sum(weight for value, weight in pairs)'}]})
+
+    def test_dataflow_prioritization_keeps_scope_and_puts_return_dependencies_before_guards(self):
+        from bountyforge.repair_intelligence import source_context
+        source='def total(xs):\n    if not xs:\n        return 0\n    count = len(xs)\n    value = sum(xs)\n    return value / count\n'
+        value=source_context(source,'total',[2,3,4,5,6])
+        self.assertEqual(value['prioritized_anchors'][:2],[5,4])
+        self.assertEqual(set(value['prioritized_anchors']),{2,3,4,5,6})

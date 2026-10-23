@@ -308,6 +308,8 @@ def evaluate(*, output: str | Path) -> dict:
                 'attempted': report['attempted_cases'],
             }
             report['status'] = 'completed' if report['attempted_cases'] == 20 else 'incomplete'
+            if report['status'] == 'completed':
+                report.pop('blocking_reason', None)
     except KeyboardInterrupt:
         report['status'] = 'interrupted'
         report['accuracy'] = None
@@ -318,6 +320,8 @@ def evaluate(*, output: str | Path) -> dict:
         report['blocking_reason'] = type(exc).__name__ + ': ' + str(exc)[:240]
     finally:
         report['elapsed_seconds'] = round(time.monotonic() - started, 3)
+        if report.get('run_segments'):
+            report['run_segments'][-1]['elapsed_seconds'] = report['elapsed_seconds']
         _summarize_cases(report)
         report['usage'] = {'model_requests': report['inference_calls'],
                            'max_requests': MAX_TOTAL_CALLS,

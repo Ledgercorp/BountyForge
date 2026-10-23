@@ -83,9 +83,10 @@ single plausible but incomplete proposal; the worker stopped with the generic
 `model_or_runner_unavailable` error before a candidate test receipt existed.
 The exact cause of that worker error is not available in the report, so this
 case is blocked/unverified, not a targeted-test failure. The report records
-101.609 seconds summed across model-call timers and 46.622 seconds coordinator
-wall time; these fields do not reconcile, so the inference timing accumulator
-requires correction before reporting a reliable combined runtime.
+101.609 seconds summed across all model-call timers to date and 46.622 seconds
+for this segment's coordinator wall time. These fields cover different scopes;
+the raw `elapsed_seconds` field is per segment while `inference_seconds` is
+cumulative.
 
 ## Third measurement segment
 
@@ -97,10 +98,9 @@ controls. Its report is
 with SHA-256 `b2621e12fb2118534ba7b67b9cdc1dcbca32594d0b7fd13f8bedc4f86186433c`.
 It dispatched 11 previously untouched cases, using 21 calls. The cumulative
 total is **35 calls, 34,215 prompt tokens and 2,445 completion tokens**. It
-records 218.014 seconds summed from model-call timers and 131.584 seconds for
-this segment's coordinator wall time; the timer totals exceed the wall clock,
-so the inference timing accumulator is inconsistent and should not be cited
-as a reliable total runtime.
+records 218.014 seconds cumulative across model-call timers and 131.584
+seconds for this segment's coordinator wall time. The report's model-call
+timer is cumulative while coordinator wall time is per segment.
 
 The aggregate has 19 cases attempted, zero accepted patches, zero targeted
 test executions of a model candidate, and zero independent replays. Thirteen
@@ -114,11 +114,41 @@ the full 20-case suite remains **null** because `network_word_order` has not
 yet been dispatched. It is accurate to say zero independently verified
 repairs among the 19 attempted cases; this is not a completed 0/20 score.
 
-The final continuation is pinned to this aggregate and skips all 19 exposed
-cases. It will try only `network_word_order`, counting the existing 35 calls
-against the 40-call global ceiling. This fixed set is now exposed and cannot
-support another independent accuracy claim or prompt tuning; a new unseen
-suite is required.
+## Final measurement segment
+
+At commit `11ed760dc145d09a38d333246a115d304734ebc9`, hosted run
+[39935810157](https://github.com/Ledgercorp/BountyForge/actions/runs/39935810157)
+passed regression admission, model/runtime hash verification and all 20 fresh
+Docker controls. It attempted only the final untouched case,
+`network_word_order`, making two calls. The exact final report is
+[`final_qwen_39935810157.json`](../evidence/phase11/final_qwen_39935810157.json)
+with SHA-256 `45781c9e2bf691faadbe3673e263000b37d9275220c4104ae9f75178be1a0d47`.
+
+The frozen 20-case selection is now complete: **20 cases attempted, 37 local
+Qwen calls, 36,134 prompt tokens, 2,615 completion tokens, zero accepted
+patches and zero independently replayed repairs**. Recorded model-call time
+is 234.626 seconds. The four segment coordinator times in their respective
+raw reports sum to 289.441 seconds. Inference is local, model/API cost is $0,
+and no credentials or remote fallback were available to the process.
+
+The final classification is 14 source/patch validation rejections, two
+ineffective proposals, one other patch validation rejection, and three generic
+inference/test-runner failures. No candidate patch reached an independently
+verified passing state. Thus the frozen set result is **0 independently
+verified repairs / 20 attempted**, with the three generic worker failures
+retained as unverified rather than attributed to model correctness. The
+workflow completed, but the recorded model repair performance is not suitable
+for commercial work.
+
+The raw final JSON also retains a stale `blocking_reason` from a prior partial
+segment even though its status is `completed` and all 20 cases are present.
+This is an evidence aggregation defect, not a run failure. The coordinator now
+clears inherited blockers on completion and records elapsed time per segment;
+a unit regression covers both. The preserved raw report has not been edited.
+
+This fixed catalog and all its responses are now exposed; no more model calls
+should be spent on it. Prompt or repair-engine changes require a new unseen
+evaluation set for an independent accuracy claim.
 
 Actual financial spend remains $0; local inference uses no model API. Customer
 execution, private source, payments, delivery, external submissions and

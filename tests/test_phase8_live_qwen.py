@@ -144,6 +144,8 @@ class LiveQwenAdmissionTests(unittest.TestCase):
         self.assertEqual(report['independently_replayed_successes'], 1)
         self.assertEqual(report['accuracy'], {'verified_repairs': 1, 'attempted': 20})
         self.assertEqual(report['status'], 'completed')
+        self.assertNotIn('blocking_reason', report)
+        self.assertIn('elapsed_seconds', report['run_segments'][-1])
         self.assertEqual(report['prompt_tokens'], 34225)
         self.assertEqual(report['failure_category_counts']['independently_replayed_success'], 1)
         self.assertEqual(report['proposal_and_verification_counts']['targeted_test_failures'], 0)

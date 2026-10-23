@@ -11,6 +11,11 @@ from bountyforge import phase8_evaluation as evaluation
 
 
 class EvaluationTests(unittest.TestCase):
+    def setUp(self):
+        # Coordinator mocks need no ambient credentials or process configuration.
+        self.environment = patch.dict('os.environ', {}, clear=True)
+        self.environment.start(); self.addCleanup(self.environment.stop)
+
     def proof(self):
         return {**dict.fromkeys(evaluation.CONTROLS, True),
                 'image_digest': evaluation.IMAGE.split('@')[1],
@@ -150,6 +155,19 @@ class EvaluationTests(unittest.TestCase):
             execute.assert_not_called()
             self.assertEqual(result['status'], 'blocked')
 
+    def test_prepare_refuses_known_credentials_before_preflight_without_echoing_values(self):
+        for name in ('GROQ_API_KEY', 'OPENAI_API_KEY', 'STRIPE_SECRET_KEY', 'GITHUB_TOKEN', 'GH_TOKEN'):
+            for value in ('private-owned-test-sentinel', ''):
+                with self.subTest(name=name, empty=not value), \
+                        patch.dict('os.environ', {name: value}, clear=True), \
+                        patch.object(evaluation, 'preflight') as boundary, \
+                        patch.object(evaluation, '_execute') as execute:
+                    report = evaluation.prepare()
+                    self.assertEqual(report['status'], 'blocked')
+                    self.assertEqual(report['baseline_invocations'], 0)
+                    self.assertNotIn('private-owned-test-sentinel', json.dumps(report))
+                    boundary.assert_not_called(); execute.assert_not_called()
+
     def test_neutral_record_replay_checks_binding_and_fresh_proof(self):
         # AST-only neutral transcript, never an evaluation-case reference repair.
         from bountyforge.statements import stage_statements
@@ -175,6 +193,8 @@ class EvaluationTests(unittest.TestCase):
             passed = {'passed': True, 'exit_code': 0, 'timeout': False,
                       'output': 'Ran 1 test\nOK'}
             session = {'protocol': evaluation.PROTOCOL, 'status': 'review_ready',
+                       'customer_execution_authorized': False, 'delivery_authorized': False,
+                       'paid_fallback': False,
                        'source_sha256': spec['sha256']['subject.py'],
                        'tests_sha256': spec['sha256']['tests/test_regression.py'],
                        'baseline': baseline, 'editable_lines': scope, 'model_calls': 1,
@@ -197,6 +217,29 @@ class EvaluationTests(unittest.TestCase):
                 self.assertIsNone(report['accuracy'])
                 self.assertEqual(report['inference_calls'], 0)
                 boundary.assert_called_once(); execute.assert_called_once()
+                for name in ('GROQ_API_KEY', 'OPENAI_API_KEY', 'STRIPE_SECRET_KEY', 'GITHUB_TOKEN', 'GH_TOKEN'):
+                    for value in ('private-owned-replay-sentinel', ''):
+                        with self.subTest(credential=name, empty=not value), \
+                                patch.dict('os.environ', {name: value}, clear=True):
+                            boundary.reset_mock(); execute.reset_mock()
+                            report = evaluation.replay({'case_id': 'neutral', 'session': session})
+                            self.assertEqual(report['status'], 'blocked')
+                            self.assertNotIn('private-owned-replay-sentinel', json.dumps(report))
+                            boundary.assert_not_called(); execute.assert_not_called()
+                for flag in ('customer_execution_authorized', 'delivery_authorized', 'paid_fallback'):
+                    for value in (True, 0, None, 'false', 'missing'):
+                        with self.subTest(flag=flag, value=value):
+                            if value == 'missing': session.pop(flag)
+                            else: session[flag] = value
+                            boundary.reset_mock(); execute.reset_mock()
+                            report = evaluation.replay({'case_id': 'neutral', 'session': session})
+                            self.assertEqual(report['status'], 'blocked')
+                            self.assertIs(report['customer_execution_authorized'], False)
+                            self.assertIs(report['delivery_authorized'], False)
+                            self.assertIs(report['paid_fallback'], False)
+                            self.assertEqual(report['financial_authority'], 'unverified; no live inference API enabled')
+                            boundary.assert_not_called(); execute.assert_not_called()
+                            session[flag] = False
                 session['patch'][0]['diff'] += 'forged'
                 boundary.reset_mock(); execute.reset_mock()
                 report = evaluation.replay({'case_id': 'neutral', 'session': session})

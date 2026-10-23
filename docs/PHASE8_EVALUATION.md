@@ -22,6 +22,12 @@ eight requests across one fresh model instance, and no fallback or reset of the
 provider's request counter. The existing `repair_session.repair_owned` must
 remain unchanged.
 
+Preparation and replay refuse host environments containing any of the known
+credential variables `GROQ_API_KEY`, `OPENAI_API_KEY`, `STRIPE_SECRET_KEY`,
+`GITHUB_TOKEN` or `GH_TOKEN`, including empty values. Rejection occurs before
+preflight or task execution and never echoes credential values. Docker also
+uses its existing minimal environment independently of this host check.
+
 Each preparation invocation rechecks literal frozen-core hashes and selected
 manifest/source/test pins, then runs fresh fixed controls through
 `curated_docker.verify_runtime_boundary` on its admitted owned control fixture.
@@ -99,6 +105,9 @@ worker attempts, exact patch and candidate digest. Replay validates response
 hashes and retry linkage, rebuilds provider context from pinned source and
 contracts, runs the unchanged stricter binding guard and `stage_statements`,
 and compares the exact diff. Invalid records are blocked before Docker.
+The recorded `customer_execution_authorized`, `delivery_authorized` and
+`paid_fallback` fields must each be exactly `false`; missing fields and other
+values are rejected. Recorded claims cannot promote the report's authority.
 Admission then requires a fresh twenty-control preflight and credential-free
 Docker verification of the bound candidate in a disposable copy.
 

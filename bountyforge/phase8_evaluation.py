@@ -8,6 +8,7 @@ import ast
 import copy
 import hashlib
 import json
+import os
 import re
 import shutil
 import tempfile
@@ -49,10 +50,17 @@ CONTROLS = (
     'docker_socket_absent', 'pid_pressure_enforced', 'cpu_pressure_enforced',
 )
 MAX_REPORT_BYTES = 500_000
+CREDENTIAL_NAMES = ('GROQ_API_KEY', 'OPENAI_API_KEY', 'STRIPE_SECRET_KEY', 'GITHUB_TOKEN', 'GH_TOKEN')
+SESSION_BOUNDARY_FLAGS = ('customer_execution_authorized', 'delivery_authorized', 'paid_fallback')
 
 
 class EvaluationRejected(ValueError):
     pass
+
+
+def require_credential_free_host():
+    if any(name in os.environ for name in CREDENTIAL_NAMES):
+        raise EvaluationRejected('Preparation and replay refuse inference/payment/publication credentials')
 
 
 def digest(raw):
@@ -287,6 +295,7 @@ def prepare(*, selection_file=None, selection_sha256=None, report_path=None):
         report['baseline_invocations'] += 1
         checkpoint()
     try:
+        require_credential_free_host()
         catalog = Catalog(selection_file, selection_sha256); tasks = catalog.tasks()
         report.update(novelty=catalog.novelty, selection_sha256=catalog.selection_sha256,
                       selected_cases=[task['id'] for task in tasks])
@@ -337,6 +346,7 @@ def _replay_binding(catalog, spec, root, session):
     """Validate recorded candidate provenance; never certify provider origin."""
     if (not isinstance(session, dict) or session.get('protocol') != PROTOCOL
             or session.get('status') != 'review_ready'
+            or any(session.get(flag) is not False for flag in SESSION_BOUNDARY_FLAGS)
             or session.get('source_sha256') != spec['sha256']['subject.py']
             or session.get('tests_sha256') != spec['sha256']['tests/test_regression.py']):
         raise EvaluationRejected('Recorded session lacks pinned ready provenance')
@@ -401,6 +411,7 @@ def replay(record, *, selection_file=None, selection_sha256=None):
     """
     report = _report('recorded_candidate_replay'); started = time.monotonic()
     try:
+        require_credential_free_host()
         if not isinstance(record, dict) or set(record) != {'case_id', 'session'}:
             raise EvaluationRejected('Explicit recorded case and session required')
         if len(json.dumps(record, allow_nan=False).encode()) > MAX_REPORT_BYTES:

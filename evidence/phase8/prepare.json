@@ -1,0 +1,2071 @@
+{
+  "schema": 1,
+  "mode": "prepare",
+  "status": "prepared",
+  "accuracy": null,
+  "inference_calls": 0,
+  "inference_seconds": 0,
+  "baseline_invocations": 20,
+  "baseline_receipts": 20,
+  "baseline_assertion_failures": 20,
+  "cases": [
+    {
+      "case_id": "stock_admission",
+      "status": "prepared",
+      "reason": null,
+      "source_sha256": "8f8a0a61ef0ca4a5d62be5fb85570edd2e48fa56ebd3ee6a9b4c525ae9991547",
+      "tests_sha256": "4ceafa08eb64da9d3ca51d029b17b2ac75791e505087ea61f56e12b777790068",
+      "catalog": "benchmarks/phase8/evaluation_tasks/manifest.json",
+      "catalog_sha256": "6c01abe0e35fafbb7aee4de108b512ff53c2f9b0150e3191c3c57b04ae771687",
+      "baseline": {
+        "passed": false,
+        "exit_code": 1,
+        "timeout": false,
+        "output": "======================================================================\nFAIL: test_empty_no_request (test_regression.MaintenanceContract.test_empty_no_request)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 18, in test_empty_no_request\n    self.assertTrue(can_reserve(0, 0))\nAssertionError: False is not true\n\n======================================================================\nFAIL: test_exact_stock (test_regression.MaintenanceContract.test_exact_stock)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 9, in test_exact_stock\n    self.assertTrue(can_reserve(8, 8))\nAssertionError: False is not true\n\n----------------------------------------------------------------------\nRan 7 tests in 0.000s\n\nFAILED (failures=2)\n",
+        "seconds": 1.765,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "editable_lines": [
+        2,
+        3,
+        4
+      ],
+      "prompt_sha256": "4a182a48a847e75b26a62f3f18661f6a3504d99b3df5b0821a631d3421ac2975",
+      "prompt_bytes": 1869,
+      "prompt": {
+        "edit_protocol": "owned_statement_session_v8",
+        "approved_file": "subject.py",
+        "target_symbol": "can_reserve",
+        "editable_lines": [
+          2,
+          3,
+          4
+        ],
+        "source_lines_untrusted": "1: def can_reserve(available, requested):\n2:     if available < 0 or requested < 0:\n3:         raise ValueError('quantities must be nonnegative')\n4:     return requested < available",
+        "edit_units": [
+          [
+            2,
+            2,
+            "condition",
+            []
+          ],
+          [
+            4,
+            4,
+            "statement",
+            []
+          ],
+          [
+            3,
+            3,
+            "statement",
+            []
+          ]
+        ],
+        "edit_unit_columns": [
+          "anchor",
+          "end",
+          "kind",
+          "required_bindings"
+        ],
+        "issue_untrusted": "Report whether a nonnegative request fits available stock, including exact depletion. Reject negative quantities.",
+        "test_contract_untrusted": "from subject import can_reserve\ndef test_exact_stock(self):\n    self.assertTrue(can_reserve(8, 8))\ndef test_empty_no_request(self):\n    self.assertTrue(can_reserve(0, 0))\ndef test_some_remaining(self):\n    self.assertTrue(can_reserve(8, 3))\ndef test_too_many(self):\n    self.assertFalse(can_reserve(8, 9))\ndef test_empty_request(self):\n    self.assertTrue(can_reserve(9, 0))\ndef test_negative_stock(self):\n    with self.assertRaises(ValueError):\n        can_reserve(-1, 0)\ndef test_negative_request(self):\n    with self.assertRaises(ValueError):\n        can_reserve(1, -1)",
+        "omitted_contract_units": [],
+        "test_contract_complete": true,
+        "failure_untrusted": "FAIL: test_empty_no_request (test_regression.MaintenanceContract.test_empty_no_request)\nAssertionError: False is not true\nFAIL: test_exact_stock (test_regression.MaintenanceContract.test_exact_stock)\nAssertionError: False is not true",
+        "previous_error": "",
+        "previous_proposal": "",
+        "previous_response_sha256": null,
+        "previous_proposal_metrics": null,
+        "validator_constraints": {
+          "max_changes": 3,
+          "max_physical_lines": 3,
+          "max_replacement_bytes": 400,
+          "existing_attributes": [],
+          "new_attributes_prohibited": true
+        }
+      }
+    },
+    {
+      "case_id": "booking_intersection",
+      "status": "prepared",
+      "reason": null,
+      "source_sha256": "7120fb5ab214803579967ad0e38c6d9d039af0c108433e31c6aafd3ad7d4f18c",
+      "tests_sha256": "a6e19233a0613d8569f3e5472f2ccc4dc29b3cf4e86d737834c0132cfb2b91a3",
+      "catalog": "benchmarks/phase8/evaluation_tasks/manifest.json",
+      "catalog_sha256": "6c01abe0e35fafbb7aee4de108b512ff53c2f9b0150e3191c3c57b04ae771687",
+      "baseline": {
+        "passed": false,
+        "exit_code": 1,
+        "timeout": false,
+        "output": "======================================================================\nFAIL: test_touching_left (test_regression.MaintenanceContract.test_touching_left)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 12, in test_touching_left\n    self.assertFalse(intervals_overlap(3, 5, 1, 3))\nAssertionError: True is not false\n\n======================================================================\nFAIL: test_touching_right (test_regression.MaintenanceContract.test_touching_right)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 9, in test_touching_right\n    self.assertFalse(intervals_overlap(1, 3, 3, 5))\nAssertionError: True is not false\n\n----------------------------------------------------------------------\nRan 7 tests in 0.000s\n\nFAILED (failures=2)\n",
+        "seconds": 1.479,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "editable_lines": [
+        2,
+        3,
+        4
+      ],
+      "prompt_sha256": "dea715642b450cfa0a3280b2f05c0b3d9c5eeaad499b8ae74c8dc8460227c1f8",
+      "prompt_bytes": 1973,
+      "prompt": {
+        "edit_protocol": "owned_statement_session_v8",
+        "approved_file": "subject.py",
+        "target_symbol": "intervals_overlap",
+        "editable_lines": [
+          2,
+          3,
+          4
+        ],
+        "source_lines_untrusted": "1: def intervals_overlap(left_start, left_end, right_start, right_end):\n2:     if left_start >= left_end or right_start >= right_end:\n3:         return False\n4:     return (\n5:         left_start <= right_end\n6:         and right_start <= left_end\n7:     )",
+        "edit_units": [
+          [
+            2,
+            2,
+            "condition",
+            []
+          ],
+          [
+            4,
+            7,
+            "statement",
+            []
+          ],
+          [
+            3,
+            3,
+            "statement",
+            []
+          ]
+        ],
+        "edit_unit_columns": [
+          "anchor",
+          "end",
+          "kind",
+          "required_bindings"
+        ],
+        "issue_untrusted": "Determine overlap of half-open numeric intervals. Touching endpoints do not overlap; empty or inverted intervals never overlap.",
+        "test_contract_untrusted": "from subject import intervals_overlap\ndef test_touching_right(self):\n    self.assertFalse(intervals_overlap(1, 3, 3, 5))\ndef test_touching_left(self):\n    self.assertFalse(intervals_overlap(3, 5, 1, 3))\ndef test_nested(self):\n    self.assertTrue(intervals_overlap(1, 9, 3, 5))\ndef test_partial(self):\n    self.assertTrue(intervals_overlap(-4, 2, 1, 6))\ndef test_disjoint(self):\n    self.assertFalse(intervals_overlap(1, 2, 4, 8))\ndef test_empty(self):\n    self.assertFalse(intervals_overlap(2, 2, 1, 4))\ndef test_inverted(self):\n    self.assertFalse(intervals_overlap(7, 1, 0, 8))",
+        "omitted_contract_units": [],
+        "test_contract_complete": true,
+        "failure_untrusted": "FAIL: test_touching_left (test_regression.MaintenanceContract.test_touching_left)\nAssertionError: True is not false\nFAIL: test_touching_right (test_regression.MaintenanceContract.test_touching_right)\nAssertionError: True is not false",
+        "previous_error": "",
+        "previous_proposal": "",
+        "previous_response_sha256": null,
+        "previous_proposal_metrics": null,
+        "validator_constraints": {
+          "max_changes": 3,
+          "max_physical_lines": 3,
+          "max_replacement_bytes": 400,
+          "existing_attributes": [],
+          "new_attributes_prohibited": true
+        }
+      }
+    },
+    {
+      "case_id": "literal_tail",
+      "status": "prepared",
+      "reason": null,
+      "source_sha256": "5e14f2b63de94b21d138f40ddf52cad5b078b4df9799586a644947a6a5bcc6de",
+      "tests_sha256": "00d8a0b047f7693784c7e4d63904772b0955ebf4794a6d9040d427324d412237",
+      "catalog": "benchmarks/phase8/evaluation_tasks/manifest.json",
+      "catalog_sha256": "6c01abe0e35fafbb7aee4de108b512ff53c2f9b0150e3191c3c57b04ae771687",
+      "baseline": {
+        "passed": false,
+        "exit_code": 1,
+        "timeout": false,
+        "output": "======================================================================\nFAIL: test_internal (test_regression.MaintenanceContract.test_internal)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 15, in test_internal\n    self.assertEqual(remove_suffix('abXYZcdXYZ', 'XYZ'), 'abXYZcd')\nAssertionError: 'abcd' != 'abXYZcd'\n- abcd\n+ abXYZcd\n?   +++\n\n\n======================================================================\nFAIL: test_repeated (test_regression.MaintenanceContract.test_repeated)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 9, in test_repeated\n    self.assertEqual(remove_suffix('log.log.log', '.log'), 'log.log')\nAssertionError: 'log' != 'log.log'\n- log\n+ log.log\n\n\n======================================================================\nFAIL: test_unicode (test_regression.MaintenanceContract.test_unicode)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 27, in test_unicode\n    self.assertEqual(remove_suffix('\u96ea-\u96ea', '\u96ea'), '\u96ea-')\nAssertionError: '-' != '\u96ea-'\n- -\n+ \u96ea-\n? +\n\n\n----------------------------------------------------------------------\nRan 7 tests in 0.001s\n\nFAILED (failures=3)\n",
+        "seconds": 1.12,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "editable_lines": [
+        2,
+        3,
+        4
+      ],
+      "prompt_sha256": "43b25da9ca5d2c4551fff33228670a95839e2db4d73358636156a8762a4e980a",
+      "prompt_bytes": 2065,
+      "prompt": {
+        "edit_protocol": "owned_statement_session_v8",
+        "approved_file": "subject.py",
+        "target_symbol": "remove_suffix",
+        "editable_lines": [
+          2,
+          3,
+          4
+        ],
+        "source_lines_untrusted": "1: def remove_suffix(text, suffix):\n2:     if not suffix or not text.endswith(suffix):\n3:         return text\n4:     return text.replace(suffix, '')",
+        "edit_units": [
+          [
+            2,
+            2,
+            "condition",
+            []
+          ],
+          [
+            4,
+            4,
+            "statement",
+            []
+          ],
+          [
+            3,
+            3,
+            "statement",
+            []
+          ]
+        ],
+        "edit_unit_columns": [
+          "anchor",
+          "end",
+          "kind",
+          "required_bindings"
+        ],
+        "issue_untrusted": "Remove exactly one literal suffix when present, retaining earlier occurrences and returning unchanged text for an absent or empty suffix.",
+        "test_contract_untrusted": "from subject import remove_suffix\ndef test_repeated(self):\n    self.assertEqual(remove_suffix('log.log.log', '.log'), 'log.log')\ndef test_internal(self):\n    self.assertEqual(remove_suffix('abXYZcdXYZ', 'XYZ'), 'abXYZcd')\ndef test_unicode(self):\n    self.assertEqual(remove_suffix('\u96ea-\u96ea', '\u96ea'), '\u96ea-')\ndef test_whole_string(self):\n    self.assertEqual(remove_suffix('done', 'done'), '')\ndef test_prefix_only(self):\n    self.assertEqual(remove_suffix('XYZtail', 'XYZ'), 'XYZtail')\ndef test_absent(self):\n    self.assertEqual(remove_suffix('report.txt', '.csv'), 'report.txt')\ndef test_empty(self):\n    self.assertEqual(remove_suffix('text', ''), 'text')",
+        "omitted_contract_units": [],
+        "test_contract_complete": true,
+        "failure_untrusted": "FAIL: test_internal (test_regression.MaintenanceContract.test_internal)\nAssertionError: 'abcd' != 'abXYZcd'\nFAIL: test_repeated (test_regression.MaintenanceContract.test_repeated)\nAssertionError: 'log' != 'log.log'\nFAIL: test_unicode (test_regression.MaintenanceContract.test_unicode)\nAssertionError: '-' != '\u96ea-'",
+        "previous_error": "",
+        "previous_proposal": "",
+        "previous_response_sha256": null,
+        "previous_proposal_metrics": null,
+        "validator_constraints": {
+          "max_changes": 3,
+          "max_physical_lines": 3,
+          "max_replacement_bytes": 400,
+          "existing_attributes": [
+            "endswith",
+            "replace"
+          ],
+          "new_attributes_prohibited": true
+        }
+      }
+    },
+    {
+      "case_id": "line_termination",
+      "status": "prepared",
+      "reason": null,
+      "source_sha256": "53c28c487310ec3a463ad20c28493b67954ed9fdfb465ac54bfc530874ac4491",
+      "tests_sha256": "28c469dce99346d0c2b5ff3aa208d3e6ac77dd43f30a2599dc823aa968af7eac",
+      "catalog": "benchmarks/phase8/evaluation_tasks/manifest.json",
+      "catalog_sha256": "6c01abe0e35fafbb7aee4de108b512ff53c2f9b0150e3191c3c57b04ae771687",
+      "baseline": {
+        "passed": false,
+        "exit_code": 1,
+        "timeout": false,
+        "output": "======================================================================\nFAIL: test_spaces (test_regression.MaintenanceContract.test_spaces)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 15, in test_spaces\n    self.assertEqual(terminate_line('hello  '), 'hello  \\n')\nAssertionError: 'hello\\n' != 'hello  \\n'\n- hello\n+ hello  \n?      ++\n\n\n======================================================================\nFAIL: test_tabs_before_lf (test_regression.MaintenanceContract.test_tabs_before_lf)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 18, in test_tabs_before_lf\n    self.assertEqual(terminate_line('hello\\t\\n'), 'hello\\t\\n')\nAssertionError: 'hello\\n' != 'hello\\t\\n'\n- hello\n+ hello\t\n?      +\n\n\n======================================================================\nFAIL: test_unicode (test_regression.MaintenanceContract.test_unicode)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 27, in test_unicode\n    self.assertEqual(terminate_line('\u96ea '), '\u96ea \\n')\nAssertionError: '\u96ea\\n' != '\u96ea \\n'\n- \u96ea\n+ \u96ea \n?  +\n\n\n----------------------------------------------------------------------\nRan 7 tests in 0.001s\n\nFAILED (failures=3)\n",
+        "seconds": 1.177,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "editable_lines": [
+        2
+      ],
+      "prompt_sha256": "916af5a160f6bd5fcaef927c2a6345bdac027e809847cc828a401458f80dc946",
+      "prompt_bytes": 1953,
+      "prompt": {
+        "edit_protocol": "owned_statement_session_v8",
+        "approved_file": "subject.py",
+        "target_symbol": "terminate_line",
+        "editable_lines": [
+          2
+        ],
+        "source_lines_untrusted": "1: def terminate_line(text):\n2:     return (\n3:         text.rstrip()\n4:         + '\\n'\n5:     )",
+        "edit_units": [
+          [
+            2,
+            5,
+            "statement",
+            []
+          ]
+        ],
+        "edit_unit_columns": [
+          "anchor",
+          "end",
+          "kind",
+          "required_bindings"
+        ],
+        "issue_untrusted": "Return text with exactly one trailing LF. Preserve all other characters, especially trailing spaces and tabs preceding existing LF characters.",
+        "test_contract_untrusted": "from subject import terminate_line\ndef test_spaces(self):\n    self.assertEqual(terminate_line('hello  '), 'hello  \\n')\ndef test_tabs_before_lf(self):\n    self.assertEqual(terminate_line('hello\\t\\n'), 'hello\\t\\n')\ndef test_unicode(self):\n    self.assertEqual(terminate_line('\u96ea '), '\u96ea \\n')\ndef test_plain(self):\n    self.assertEqual(terminate_line('hello'), 'hello\\n')\ndef test_multiple_lf(self):\n    self.assertEqual(terminate_line('hello\\n\\n'), 'hello\\n')\ndef test_leading_lf(self):\n    self.assertEqual(terminate_line('\\nhello'), '\\nhello\\n')\ndef test_empty(self):\n    self.assertEqual(terminate_line(''), '\\n')",
+        "omitted_contract_units": [],
+        "test_contract_complete": true,
+        "failure_untrusted": "FAIL: test_spaces (test_regression.MaintenanceContract.test_spaces)\nAssertionError: 'hello\\n' != 'hello  \\n'\nFAIL: test_tabs_before_lf (test_regression.MaintenanceContract.test_tabs_before_lf)\nAssertionError: 'hello\\n' != 'hello\\t\\n'\nFAIL: test_unicode (test_regression.MaintenanceContract.test_unicode)\nAssertionError: '\u96ea\\n' != '\u96ea \\n'",
+        "previous_error": "",
+        "previous_proposal": "",
+        "previous_response_sha256": null,
+        "previous_proposal_metrics": null,
+        "validator_constraints": {
+          "max_changes": 3,
+          "max_physical_lines": 3,
+          "max_replacement_bytes": 400,
+          "existing_attributes": [
+            "rstrip"
+          ],
+          "new_attributes_prohibited": true
+        }
+      }
+    },
+    {
+      "case_id": "duration_label",
+      "status": "prepared",
+      "reason": null,
+      "source_sha256": "acdb51af4bdbc0efd8854a61fcc227f3b07e7deb2c90a5d6822878703910fb3e",
+      "tests_sha256": "3f88584c1544c25de90549b764d18f9b838970aa54e93ac1251633defd47ef24",
+      "catalog": "benchmarks/phase8/evaluation_tasks/manifest.json",
+      "catalog_sha256": "6c01abe0e35fafbb7aee4de108b512ff53c2f9b0150e3191c3c57b04ae771687",
+      "baseline": {
+        "passed": false,
+        "exit_code": 1,
+        "timeout": false,
+        "output": "======================================================================\nFAIL: test_fraction (test_regression.MaintenanceContract.test_fraction)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 18, in test_fraction\n    self.assertEqual(describe_seconds(0.5), '0.5 seconds')\nAssertionError: '0.5 second' != '0.5 seconds'\n- 0.5 second\n+ 0.5 seconds\n?           +\n\n\n======================================================================\nFAIL: test_zero (test_regression.MaintenanceContract.test_zero)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 9, in test_zero\n    self.assertEqual(describe_seconds(0), '0 seconds')\nAssertionError: '0 second' != '0 seconds'\n- 0 second\n+ 0 seconds\n?         +\n\n\n----------------------------------------------------------------------\nRan 6 tests in 0.001s\n\nFAILED (failures=2)\n",
+        "seconds": 1.394,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "editable_lines": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "prompt_sha256": "de0e672c2102149a4f2c52eac765b3ee70c653e586ec4399cb477f32d27560a7",
+      "prompt_bytes": 1909,
+      "prompt": {
+        "edit_protocol": "owned_statement_session_v8",
+        "approved_file": "subject.py",
+        "target_symbol": "describe_seconds",
+        "editable_lines": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "source_lines_untrusted": "1: def describe_seconds(seconds):\n2:     if seconds < 0:\n3:         raise ValueError('negative duration')\n4:     unit = 'second' if seconds <= 1 else 'seconds'\n5:     return '{} {}'.format(seconds, unit)",
+        "edit_units": [
+          [
+            2,
+            2,
+            "condition",
+            []
+          ],
+          [
+            4,
+            4,
+            "statement",
+            [
+              "unit"
+            ]
+          ],
+          [
+            5,
+            5,
+            "statement",
+            []
+          ],
+          [
+            3,
+            3,
+            "statement",
+            []
+          ]
+        ],
+        "edit_unit_columns": [
+          "anchor",
+          "end",
+          "kind",
+          "required_bindings"
+        ],
+        "issue_untrusted": "Format a nonnegative number as a quantity followed by second or seconds. The singular is used only for exactly one; reject negative durations.",
+        "test_contract_untrusted": "from subject import describe_seconds\ndef test_zero(self):\n    self.assertEqual(describe_seconds(0), '0 seconds')\ndef test_fraction(self):\n    self.assertEqual(describe_seconds(0.5), '0.5 seconds')\ndef test_one(self):\n    self.assertEqual(describe_seconds(1), '1 second')\ndef test_plural(self):\n    self.assertEqual(describe_seconds(8), '8 seconds')\ndef test_float_one(self):\n    self.assertEqual(describe_seconds(1.0), '1.0 second')\ndef test_negative(self):\n    with self.assertRaises(ValueError):\n        describe_seconds(-1)",
+        "omitted_contract_units": [],
+        "test_contract_complete": true,
+        "failure_untrusted": "FAIL: test_fraction (test_regression.MaintenanceContract.test_fraction)\nAssertionError: '0.5 second' != '0.5 seconds'\nFAIL: test_zero (test_regression.MaintenanceContract.test_zero)\nAssertionError: '0 second' != '0 seconds'",
+        "previous_error": "",
+        "previous_proposal": "",
+        "previous_response_sha256": null,
+        "previous_proposal_metrics": null,
+        "validator_constraints": {
+          "max_changes": 3,
+          "max_physical_lines": 3,
+          "max_replacement_bytes": 400,
+          "existing_attributes": [
+            "format"
+          ],
+          "new_attributes_prohibited": true
+        }
+      }
+    },
+    {
+      "case_id": "shipping_cartons",
+      "status": "prepared",
+      "reason": null,
+      "source_sha256": "c96d2bda91c81eecb0089c1a535ccf7fda9e2a7bca4720dc315752e9c96bedc1",
+      "tests_sha256": "d6efc6c252623a573807dfe017c2d212c1421650396cb1e121321c44f09e1722",
+      "catalog": "benchmarks/phase8/evaluation_tasks/manifest.json",
+      "catalog_sha256": "6c01abe0e35fafbb7aee4de108b512ff53c2f9b0150e3191c3c57b04ae771687",
+      "baseline": {
+        "passed": false,
+        "exit_code": 1,
+        "timeout": false,
+        "output": "======================================================================\nFAIL: test_large (test_regression.MaintenanceContract.test_large)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 24, in test_large\n    self.assertEqual(carton_count(1000001, 1000), 1001)\nAssertionError: 1000 != 1001\n\n======================================================================\nFAIL: test_remainder (test_regression.MaintenanceContract.test_remainder)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 9, in test_remainder\n    self.assertEqual(carton_count(11, 5), 3)\nAssertionError: 2 != 3\n\n======================================================================\nFAIL: test_single (test_regression.MaintenanceContract.test_single)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 15, in test_single\n    self.assertEqual(carton_count(1, 20), 1)\nAssertionError: 0 != 1\n\n----------------------------------------------------------------------\nRan 8 tests in 0.001s\n\nFAILED (failures=3)\n",
+        "seconds": 2.414,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "editable_lines": [
+        2,
+        3,
+        4,
+        7
+      ],
+      "prompt_sha256": "8bc1d288f0e55579c9cfed6b32eff7d42d9e03e5b1642170692edc025ec148a4",
+      "prompt_bytes": 2112,
+      "prompt": {
+        "edit_protocol": "owned_statement_session_v8",
+        "approved_file": "subject.py",
+        "target_symbol": "carton_count",
+        "editable_lines": [
+          2,
+          3,
+          4,
+          7
+        ],
+        "source_lines_untrusted": "1: def carton_count(items, capacity):\n2:     if items < 0 or capacity <= 0:\n3:         raise ValueError('invalid quantity or capacity')\n4:     count = (\n5:         items // capacity\n6:     )\n7:     return count",
+        "edit_units": [
+          [
+            2,
+            2,
+            "condition",
+            []
+          ],
+          [
+            4,
+            6,
+            "statement",
+            [
+              "count"
+            ]
+          ],
+          [
+            7,
+            7,
+            "statement",
+            []
+          ],
+          [
+            3,
+            3,
+            "statement",
+            []
+          ]
+        ],
+        "edit_unit_columns": [
+          "anchor",
+          "end",
+          "kind",
+          "required_bindings"
+        ],
+        "issue_untrusted": "Return the minimum number of whole cartons that hold a nonnegative integer item count at a positive integer capacity, including zero and partial final cartons.",
+        "test_contract_untrusted": "from subject import carton_count\ndef test_remainder(self):\n    self.assertEqual(carton_count(11, 5), 3)\ndef test_single(self):\n    self.assertEqual(carton_count(1, 20), 1)\ndef test_large(self):\n    self.assertEqual(carton_count(1000001, 1000), 1001)\ndef test_exact(self):\n    self.assertEqual(carton_count(10, 5), 2)\ndef test_zero(self):\n    self.assertEqual(carton_count(0, 20), 0)\ndef test_unit_capacity(self):\n    self.assertEqual(carton_count(19, 1), 19)\ndef test_negative(self):\n    with self.assertRaises(ValueError):\n        carton_count(-1, 3)\ndef test_zero_capacity(self):\n    with self.assertRaises(ValueError):\n        carton_count(1, 0)",
+        "omitted_contract_units": [],
+        "test_contract_complete": true,
+        "failure_untrusted": "FAIL: test_large (test_regression.MaintenanceContract.test_large)\nAssertionError: 1000 != 1001\nFAIL: test_remainder (test_regression.MaintenanceContract.test_remainder)\nAssertionError: 2 != 3\nFAIL: test_single (test_regression.MaintenanceContract.test_single)\nAssertionError: 0 != 1",
+        "previous_error": "",
+        "previous_proposal": "",
+        "previous_response_sha256": null,
+        "previous_proposal_metrics": null,
+        "validator_constraints": {
+          "max_changes": 3,
+          "max_physical_lines": 3,
+          "max_replacement_bytes": 400,
+          "existing_attributes": [],
+          "new_attributes_prohibited": true
+        }
+      }
+    },
+    {
+      "case_id": "block_indentation",
+      "status": "prepared",
+      "reason": null,
+      "source_sha256": "01156851c54d5bb0f6a449298e45b771b34ad66db7e3ea1dde46e6256d13b397",
+      "tests_sha256": "ed4e4ff4cab26c3c626674e7fd1838ccce02c4492e9bc8028d85957c8d9dbec4",
+      "catalog": "benchmarks/phase8/evaluation_tasks/manifest.json",
+      "catalog_sha256": "6c01abe0e35fafbb7aee4de108b512ff53c2f9b0150e3191c3c57b04ae771687",
+      "baseline": {
+        "passed": false,
+        "exit_code": 1,
+        "timeout": false,
+        "output": "======================================================================\nFAIL: test_interior_blank (test_regression.MaintenanceContract.test_interior_blank)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 18, in test_interior_blank\n    self.assertEqual(indent_block('a\\n\\nb\\n', '>'), '>a\\n>\\n>b\\n')\nAssertionError: '>a\\n>\\n>b\\n>' != '>a\\n>\\n>b\\n'\n  >a\n  >\n  >b\n- >\n\n======================================================================\nFAIL: test_terminal_lf (test_regression.MaintenanceContract.test_terminal_lf)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 15, in test_terminal_lf\n    self.assertEqual(indent_block('a\\n', '>'), '>a\\n')\nAssertionError: '>a\\n>' != '>a\\n'\n  >a\n- >\n\n----------------------------------------------------------------------\nRan 7 tests in 0.001s\n\nFAILED (failures=2)\n",
+        "seconds": 1.333,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "editable_lines": [
+        2,
+        3,
+        4
+      ],
+      "prompt_sha256": "d0107dedcb33f89b8eca457f2fe8506097c803b035c52e5fb965c7a1c8ce5f0b",
+      "prompt_bytes": 1985,
+      "prompt": {
+        "edit_protocol": "owned_statement_session_v8",
+        "approved_file": "subject.py",
+        "target_symbol": "indent_block",
+        "editable_lines": [
+          2,
+          3,
+          4
+        ],
+        "source_lines_untrusted": "1: def indent_block(text, prefix='    '):\n2:     if not text:\n3:         return text\n4:     return (\n5:         prefix + text.replace('\\n', '\\n' + prefix)\n6:     )",
+        "edit_units": [
+          [
+            2,
+            2,
+            "condition",
+            []
+          ],
+          [
+            4,
+            6,
+            "statement",
+            []
+          ],
+          [
+            3,
+            3,
+            "statement",
+            []
+          ]
+        ],
+        "edit_unit_columns": [
+          "anchor",
+          "end",
+          "kind",
+          "required_bindings"
+        ],
+        "issue_untrusted": "Prefix every real line of text, including blank interior lines. Preserve a final LF without creating a phantom prefixed line after it. Empty input stays empty.",
+        "test_contract_untrusted": "from subject import indent_block\ndef test_terminal_lf(self):\n    self.assertEqual(indent_block('a\\n', '>'), '>a\\n')\ndef test_interior_blank(self):\n    self.assertEqual(indent_block('a\\n\\nb\\n', '>'), '>a\\n>\\n>b\\n')\ndef test_single(self):\n    self.assertEqual(indent_block('one', '> '), '> one')\ndef test_multiple(self):\n    self.assertEqual(indent_block('a\\nb', '>'), '>a\\n>b')\ndef test_empty(self):\n    self.assertEqual(indent_block('', '>'), '')\ndef test_empty_prefix(self):\n    self.assertEqual(indent_block('a\\n', ''), 'a\\n')\ndef test_default_prefix(self):\n    self.assertEqual(indent_block('\u96ea'), '    \u96ea')",
+        "omitted_contract_units": [],
+        "test_contract_complete": true,
+        "failure_untrusted": "FAIL: test_interior_blank (test_regression.MaintenanceContract.test_interior_blank)\nAssertionError: '>a\\n>\\n>b\\n>' != '>a\\n>\\n>b\\n'\nFAIL: test_terminal_lf (test_regression.MaintenanceContract.test_terminal_lf)\nAssertionError: '>a\\n>' != '>a\\n'",
+        "previous_error": "",
+        "previous_proposal": "",
+        "previous_response_sha256": null,
+        "previous_proposal_metrics": null,
+        "validator_constraints": {
+          "max_changes": 3,
+          "max_physical_lines": 3,
+          "max_replacement_bytes": 400,
+          "existing_attributes": [
+            "replace"
+          ],
+          "new_attributes_prohibited": true
+        }
+      }
+    },
+    {
+      "case_id": "running_measurements",
+      "status": "prepared",
+      "reason": null,
+      "source_sha256": "a0d86ef6308f83f33d9571b63bb929b8cb89d7bf52ab1ad49f549c83dff1e3a8",
+      "tests_sha256": "8ec3cfd8263090badcfe9fd5f13c16fe43e5ee36fc3814021a3b9802d289158c",
+      "catalog": "benchmarks/phase8/evaluation_tasks/manifest.json",
+      "catalog_sha256": "6c01abe0e35fafbb7aee4de108b512ff53c2f9b0150e3191c3c57b04ae771687",
+      "baseline": {
+        "passed": false,
+        "exit_code": 1,
+        "timeout": false,
+        "output": "======================================================================\nFAIL: test_fractional (test_regression.MaintenanceContract.test_fractional)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 29, in test_fractional\n    self.assertEqual(running_totals([0.5, 0.25, -0.5]), [0.5, 0.75, 0.25])\nAssertionError: Lists differ: [0.5, 0.25, -0.5] != [0.5, 0.75, 0.25]\n\nFirst differing element 1:\n0.25\n0.75\n\n- [0.5, 0.25, -0.5]\n+ [0.5, 0.75, 0.25]\n\n======================================================================\nFAIL: test_negative (test_regression.MaintenanceContract.test_negative)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 12, in test_negative\n    self.assertEqual(running_totals([-2, 5, -4]), [-2, 3, -1])\nAssertionError: Lists differ: [-2, 5, -4] != [-2, 3, -1]\n\nFirst differing element 1:\n5\n3\n\n- [-2, 5, -4]\n?      ^   ^\n\n+ [-2, 3, -1]\n?      ^   ^\n\n\n======================================================================\nFAIL: test_positive (test_regression.MaintenanceContract.test_positive)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 9, in test_positive\n    self.assertEqual(running_totals([2, 3, 4]), [2, 5, 9])\nAssertionError: Lists differ: [2, 3, 4] != [2, 5, 9]\n\nFirst differing element 1:\n3\n5\n\n- [2, 3, 4]\n?     ^  ^\n\n+ [2, 5, 9]\n?     ^  ^\n\n\n======================================================================\nFAIL: test_tuple (test_regression.MaintenanceContract.test_tuple)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 21, in test_tuple\n    self.assertEqual(running_totals((1, 2)), [1, 3])\nAssertionError: Lists differ: [1, 2] != [1, 3]\n\nFirst differing element 1:\n2\n3\n\n- [1, 2]\n?     ^\n\n+ [1, 3]\n?     ^\n\n\n======================================================================\nFAIL: test_zeros (test_regression.MaintenanceContract.test_zeros)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 15, in test_zeros\n    self.assertEqual(running_totals([3, 0, 0]), [3, 3, 3])\nAssertionError: Lists differ: [3, 0, 0] != [3, 3, 3]\n\nFirst differing element 1:\n0\n3\n\n- [3, 0, 0]\n?     ^  ^\n\n+ [3, 3, 3]\n?     ^  ^\n\n\n----------------------------------------------------------------------\nRan 7 tests in 0.001s\n\nFAILED (failures=5)\n",
+        "seconds": 2.111,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "editable_lines": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "prompt_sha256": "0db5bbc6e69c94238264e5cff0edcbfd8853e4e6eda41bc53874f05c91b58011",
+      "prompt_bytes": 2448,
+      "prompt": {
+        "edit_protocol": "owned_statement_session_v8",
+        "approved_file": "subject.py",
+        "target_symbol": "running_totals",
+        "editable_lines": [
+          2,
+          3,
+          5,
+          6,
+          7
+        ],
+        "source_lines_untrusted": "1: def running_totals(values):\n2:     running = 0\n3:     totals = []\n4:     for value in values:\n5:         running = value\n6:         totals.append(running)\n7:     return totals",
+        "edit_units": [
+          [
+            2,
+            2,
+            "statement",
+            [
+              "running"
+            ]
+          ],
+          [
+            3,
+            3,
+            "statement",
+            [
+              "totals"
+            ]
+          ],
+          [
+            7,
+            7,
+            "statement",
+            []
+          ],
+          [
+            5,
+            5,
+            "statement",
+            [
+              "running"
+            ]
+          ],
+          [
+            6,
+            6,
+            "statement",
+            []
+          ]
+        ],
+        "edit_unit_columns": [
+          "anchor",
+          "end",
+          "kind",
+          "required_bindings"
+        ],
+        "issue_untrusted": "Return successive prefix sums of numeric values in order. Preserve the input and support empty sequences, negative numbers and fractional measurements.",
+        "test_contract_untrusted": "from subject import running_totals\ndef test_positive(self):\n    self.assertEqual(running_totals([2, 3, 4]), [2, 5, 9])\ndef test_negative(self):\n    self.assertEqual(running_totals([-2, 5, -4]), [-2, 3, -1])\ndef test_zeros(self):\n    self.assertEqual(running_totals([3, 0, 0]), [3, 3, 3])\ndef test_tuple(self):\n    self.assertEqual(running_totals((1, 2)), [1, 3])\ndef test_fractional(self):\n    self.assertEqual(running_totals([0.5, 0.25, -0.5]), [0.5, 0.75, 0.25])\ndef test_empty(self):\n    self.assertEqual(running_totals([]), [])\ndef test_unchanged(self):\n    values = [1, 2, 3]\n    running_totals(values)\n    self.assertEqual(values, [1, 2, 3])",
+        "omitted_contract_units": [],
+        "test_contract_complete": true,
+        "failure_untrusted": "gression.MaintenanceContract.test_fractional)\nAssertionError: Lists differ: [0.5, 0.25, -0.5] != [0.5, 0.75, 0.25]\nFAIL: test_negative (test_regression.MaintenanceContract.test_negative)\nAssertionError: Lists differ: [-2, 5, -4] != [-2, 3, -1]\nFAIL: test_positive (test_regression.MaintenanceContract.test_positive)\nAssertionError: Lists differ: [2, 3, 4] != [2, 5, 9]\nFAIL: test_tuple (test_regression.MaintenanceContract.test_tuple)\nAssertionError: Lists differ: [1, 2] != [1, 3]\nFAIL: test_zeros (test_regression.MaintenanceContract.test_zeros)\nAssertionError: Lists differ: [3, 0, 0] != [3, 3, 3]",
+        "previous_error": "",
+        "previous_proposal": "",
+        "previous_response_sha256": null,
+        "previous_proposal_metrics": null,
+        "validator_constraints": {
+          "max_changes": 3,
+          "max_physical_lines": 3,
+          "max_replacement_bytes": 400,
+          "existing_attributes": [
+            "append"
+          ],
+          "new_attributes_prohibited": true
+        }
+      }
+    },
+    {
+      "case_id": "endpoint_authority",
+      "status": "prepared",
+      "reason": null,
+      "source_sha256": "09f874fcefd95c5d0f754d22953f3f6e67ce03f0e1b69e70ee479968fba136d8",
+      "tests_sha256": "aa58272e83335256ef6573479262d3c0adf259f3bb50c2c40388a8d72b45b56c",
+      "catalog": "benchmarks/phase8/evaluation_tasks/manifest.json",
+      "catalog_sha256": "6c01abe0e35fafbb7aee4de108b512ff53c2f9b0150e3191c3c57b04ae771687",
+      "baseline": {
+        "passed": false,
+        "exit_code": 1,
+        "timeout": false,
+        "output": "======================================================================\nFAIL: test_hostname (test_regression.MaintenanceContract.test_hostname)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 15, in test_hostname\n    self.assertEqual(format_authority('example.test', 8080), 'example.test:8080')\nAssertionError: '[example.test]:8080' != 'example.test:8080'\n- [example.test]:8080\n? -            -\n+ example.test:8080\n\n\n======================================================================\nFAIL: test_ipv4 (test_regression.MaintenanceContract.test_ipv4)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 12, in test_ipv4\n    self.assertEqual(format_authority('127.0.0.1', 80), '127.0.0.1:80')\nAssertionError: '[127.0.0.1]:80' != '127.0.0.1:80'\n- [127.0.0.1]:80\n? -         -\n+ 127.0.0.1:80\n\n\n======================================================================\nFAIL: test_ipv6 (test_regression.MaintenanceContract.test_ipv6)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 9, in test_ipv6\n    self.assertEqual(format_authority('2001:db8::1', 443), '[2001:db8::1]:443')\nAssertionError: '2001:db8::1:443' != '[2001:db8::1]:443'\n- 2001:db8::1:443\n+ [2001:db8::1]:443\n? +           +\n\n\n======================================================================\nFAIL: test_upper_port (test_regression.MaintenanceContract.test_upper_port)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 24, in test_upper_port\n    self.assertEqual(format_authority('host', 65535), 'host:65535')\nAssertionError: '[host]:65535' != 'host:65535'\n- [host]:65535\n? -    -\n+ host:65535\n\n\n======================================================================\nFAIL: test_whitespace (test_regression.MaintenanceContract.test_whitespace)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 21, in test_whitespace\n    self.assertEqual(format_authority(' ::1 ', 1), '[::1]:1')\nAssertionError: '::1:1' != '[::1]:1'\n- ::1:1\n+ [::1]:1\n? +   +\n\n\n----------------------------------------------------------------------\nRan 8 tests in 0.001s\n\nFAILED (failures=5)\n",
+        "seconds": 2.119,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "editable_lines": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "prompt_sha256": "6edac33ace879776485b64b89ab4d51afb8ffb499955d6cfd9c9fbcb326ffa6b",
+      "prompt_bytes": 2776,
+      "prompt": {
+        "edit_protocol": "owned_statement_session_v8",
+        "approved_file": "subject.py",
+        "target_symbol": "format_authority",
+        "editable_lines": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "source_lines_untrusted": "1: def format_authority(host, port):\n2:     host = host.strip()\n3:     if not host or not 1 <= port <= 65535:\n4:         raise ValueError('invalid endpoint')\n5:     if ':' not in host:\n6:         return '[{}]:{}'.format(host, port)\n7:     return '{}:{}'.format(host, port)",
+        "edit_units": [
+          [
+            2,
+            2,
+            "statement",
+            [
+              "host"
+            ]
+          ],
+          [
+            3,
+            3,
+            "condition",
+            []
+          ],
+          [
+            5,
+            5,
+            "condition",
+            []
+          ],
+          [
+            7,
+            7,
+            "statement",
+            []
+          ],
+          [
+            4,
+            4,
+            "statement",
+            []
+          ],
+          [
+            6,
+            6,
+            "statement",
+            []
+          ]
+        ],
+        "edit_unit_columns": [
+          "anchor",
+          "end",
+          "kind",
+          "required_bindings"
+        ],
+        "issue_untrusted": "Format a stripped nonempty host and port 1..65535 as an authority. IPv6 literals require exactly one bracket pair; IPv4 and ordinary hostnames remain unbracketed. No network operations.",
+        "test_contract_untrusted": "from subject import format_authority\ndef test_ipv6(self):\n    self.assertEqual(format_authority('2001:db8::1', 443), '[2001:db8::1]:443')\ndef test_ipv4(self):\n    self.assertEqual(format_authority('127.0.0.1', 80), '127.0.0.1:80')\ndef test_hostname(self):\n    self.assertEqual(format_authority('example.test', 8080), 'example.test:8080')\ndef test_whitespace(self):\n    self.assertEqual(format_authority(' ::1 ', 1), '[::1]:1')\ndef test_upper_port(self):\n    self.assertEqual(format_authority('host', 65535), 'host:65535')\ndef test_already_bracketed(self):\n    self.assertEqual(format_authority('[::1]', 80), '[::1]:80')\ndef test_invalid_port(self):\n    with self.assertRaises(ValueError):\n        format_authority('host', 0)\ndef test_empty_host(self):\n    with self.assertRaises(ValueError):\n        format_authority('  ', 80)",
+        "omitted_contract_units": [],
+        "test_contract_complete": true,
+        "failure_untrusted": ": test_hostname (test_regression.MaintenanceContract.test_hostname)\nAssertionError: '[example.test]:8080' != 'example.test:8080'\nFAIL: test_ipv4 (test_regression.MaintenanceContract.test_ipv4)\nAssertionError: '[127.0.0.1]:80' != '127.0.0.1:80'\nFAIL: test_ipv6 (test_regression.MaintenanceContract.test_ipv6)\nAssertionError: '2001:db8::1:443' != '[2001:db8::1]:443'\nFAIL: test_upper_port (test_regression.MaintenanceContract.test_upper_port)\nAssertionError: '[host]:65535' != 'host:65535'\nFAIL: test_whitespace (test_regression.MaintenanceContract.test_whitespace)\nAssertionError: '::1:1' != '[::1]:1'",
+        "previous_error": "",
+        "previous_proposal": "",
+        "previous_response_sha256": null,
+        "previous_proposal_metrics": null,
+        "validator_constraints": {
+          "max_changes": 3,
+          "max_physical_lines": 3,
+          "max_replacement_bytes": 400,
+          "existing_attributes": [
+            "format",
+            "strip"
+          ],
+          "new_attributes_prohibited": true
+        }
+      }
+    },
+    {
+      "case_id": "archive_classification",
+      "status": "prepared",
+      "reason": null,
+      "source_sha256": "5d4e427025c1cf49c887ff54dea50a7ce8f241fac2ec3da13c3a7e68a7b41d49",
+      "tests_sha256": "c1c1e62e7678032d74e5a50557ad206cac8c4eeebc91a2e567eb3d00dae6fc16",
+      "catalog": "benchmarks/phase8/evaluation_tasks/manifest.json",
+      "catalog_sha256": "6c01abe0e35fafbb7aee4de108b512ff53c2f9b0150e3191c3c57b04ae771687",
+      "baseline": {
+        "passed": false,
+        "exit_code": 1,
+        "timeout": false,
+        "output": "======================================================================\nFAIL: test_case (test_regression.MaintenanceContract.test_case)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 18, in test_case\n    self.assertEqual(archive_suffix('SOURCE.TAR.GZ'), '.tar.gz')\nAssertionError: '.gz' != '.tar.gz'\n- .gz\n+ .tar.gz\n\n\n======================================================================\nFAIL: test_compound (test_regression.MaintenanceContract.test_compound)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 9, in test_compound\n    self.assertEqual(archive_suffix('source.tar.gz'), '.tar.gz')\nAssertionError: '.gz' != '.tar.gz'\n- .gz\n+ .tar.gz\n\n\n----------------------------------------------------------------------\nRan 7 tests in 0.000s\n\nFAILED (failures=2)\n",
+        "seconds": 1.123,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "editable_lines": [
+        2,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "prompt_sha256": "22c22632df99c8a6df3bfbcfd81eeef51cc9c48017eef6f5449f0f641ec6561f",
+      "prompt_bytes": 2062,
+      "prompt": {
+        "edit_protocol": "owned_statement_session_v8",
+        "approved_file": "subject.py",
+        "target_symbol": "archive_suffix",
+        "editable_lines": [
+          2,
+          5,
+          7,
+          8,
+          9
+        ],
+        "source_lines_untrusted": "1: def archive_suffix(name):\n2:     suffixes = (\n3:         '.gz', '.tar.gz', '.zip'\n4:     )\n5:     lowered = name.lower()\n6:     for suffix in suffixes:\n7:         if lowered.endswith(suffix):\n8:             return suffix\n9:     return ''",
+        "edit_units": [
+          [
+            2,
+            4,
+            "statement",
+            [
+              "suffixes"
+            ]
+          ],
+          [
+            5,
+            5,
+            "statement",
+            [
+              "lowered"
+            ]
+          ],
+          [
+            9,
+            9,
+            "statement",
+            []
+          ],
+          [
+            7,
+            7,
+            "condition",
+            []
+          ],
+          [
+            8,
+            8,
+            "statement",
+            []
+          ]
+        ],
+        "edit_unit_columns": [
+          "anchor",
+          "end",
+          "kind",
+          "required_bindings"
+        ],
+        "issue_untrusted": "Identify the longest supported archive suffix, case-insensitively, or return an empty string. Suffixes must match the end of the name.",
+        "test_contract_untrusted": "from subject import archive_suffix\ndef test_compound(self):\n    self.assertEqual(archive_suffix('source.tar.gz'), '.tar.gz')\ndef test_case(self):\n    self.assertEqual(archive_suffix('SOURCE.TAR.GZ'), '.tar.gz')\ndef test_simple_gzip(self):\n    self.assertEqual(archive_suffix('source.gz'), '.gz')\ndef test_zip(self):\n    self.assertEqual(archive_suffix('source.zip'), '.zip')\ndef test_unknown(self):\n    self.assertEqual(archive_suffix('source.txt'), '')\ndef test_middle_only(self):\n    self.assertEqual(archive_suffix('source.tar.gz.backup'), '')\ndef test_empty(self):\n    self.assertEqual(archive_suffix(''), '')",
+        "omitted_contract_units": [],
+        "test_contract_complete": true,
+        "failure_untrusted": "FAIL: test_case (test_regression.MaintenanceContract.test_case)\nAssertionError: '.gz' != '.tar.gz'\nFAIL: test_compound (test_regression.MaintenanceContract.test_compound)\nAssertionError: '.gz' != '.tar.gz'",
+        "previous_error": "",
+        "previous_proposal": "",
+        "previous_response_sha256": null,
+        "previous_proposal_metrics": null,
+        "validator_constraints": {
+          "max_changes": 3,
+          "max_physical_lines": 3,
+          "max_replacement_bytes": 400,
+          "existing_attributes": [
+            "endswith",
+            "lower"
+          ],
+          "new_attributes_prohibited": true
+        }
+      }
+    },
+    {
+      "case_id": "markup_text",
+      "status": "prepared",
+      "reason": null,
+      "source_sha256": "cb9b6063232a96a4a479e456299114ea08c0aa3903fa167aec002d45e0c9cd28",
+      "tests_sha256": "61a57f540df623c1a26b6d09570d452125042e959adb21c4bbf46f3681a0e6b3",
+      "catalog": "benchmarks/phase8/evaluation_tasks/manifest.json",
+      "catalog_sha256": "6c01abe0e35fafbb7aee4de108b512ff53c2f9b0150e3191c3c57b04ae771687",
+      "baseline": {
+        "passed": false,
+        "exit_code": 1,
+        "timeout": false,
+        "output": "======================================================================\nFAIL: test_angles (test_regression.MaintenanceContract.test_angles)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 9, in test_angles\n    self.assertEqual(escape_markup('<x>'), '&lt;x&gt;')\nAssertionError: '&amp;lt;x&amp;gt;' != '&lt;x&gt;'\n- &amp;lt;x&amp;gt;\n+ &lt;x&gt;\n\n\n======================================================================\nFAIL: test_mixed (test_regression.MaintenanceContract.test_mixed)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 15, in test_mixed\n    self.assertEqual(escape_markup('<&>'), '&lt;&amp;&gt;')\nAssertionError: '&amp;lt;&amp;&amp;gt;' != '&lt;&amp;&gt;'\n- &amp;lt;&amp;&amp;gt;\n?  ----         ----\n+ &lt;&amp;&gt;\n\n\n======================================================================\nFAIL: test_unicode (test_regression.MaintenanceContract.test_unicode)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 27, in test_unicode\n    self.assertEqual(escape_markup('\u96ea<'), '\u96ea&lt;')\nAssertionError: '\u96ea&amp;lt;' != '\u96ea&lt;'\n- \u96ea&amp;lt;\n?   ----\n+ \u96ea&lt;\n\n\n----------------------------------------------------------------------\nRan 7 tests in 0.001s\n\nFAILED (failures=3)\n",
+        "seconds": 1.275,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "editable_lines": [
+        2
+      ],
+      "prompt_sha256": "11791318af053d029bbed00b53514855350c719f486cc146968f105c6ec467e3",
+      "prompt_bytes": 2032,
+      "prompt": {
+        "edit_protocol": "owned_statement_session_v8",
+        "approved_file": "subject.py",
+        "target_symbol": "escape_markup",
+        "editable_lines": [
+          2
+        ],
+        "source_lines_untrusted": "1: def escape_markup(text):\n2:     return (\n3:         text.replace('<', '&lt;')\n4:         .replace('>', '&gt;')\n5:         .replace('&', '&amp;')\n6:     )",
+        "edit_units": [
+          [
+            2,
+            6,
+            "statement",
+            []
+          ]
+        ],
+        "edit_unit_columns": [
+          "anchor",
+          "end",
+          "kind",
+          "required_bindings"
+        ],
+        "issue_untrusted": "Escape ampersands and angle brackets in plain text for markup insertion. Preserve quotes and all other characters. Existing entity-looking text is still plain input.",
+        "test_contract_untrusted": "from subject import escape_markup\ndef test_angles(self):\n    self.assertEqual(escape_markup('<x>'), '&lt;x&gt;')\ndef test_mixed(self):\n    self.assertEqual(escape_markup('<&>'), '&lt;&amp;&gt;')\ndef test_unicode(self):\n    self.assertEqual(escape_markup('\u96ea<'), '\u96ea&lt;')\ndef test_ampersand(self):\n    self.assertEqual(escape_markup('A & B'), 'A &amp; B')\ndef test_entity_text(self):\n    self.assertEqual(escape_markup('&lt;'), '&amp;lt;')\ndef test_quotes(self):\n    self.assertEqual(escape_markup('\\'quoted\\' \"text\"'), '\\'quoted\\' \"text\"')\ndef test_empty(self):\n    self.assertEqual(escape_markup(''), '')",
+        "omitted_contract_units": [],
+        "test_contract_complete": true,
+        "failure_untrusted": "FAIL: test_angles (test_regression.MaintenanceContract.test_angles)\nAssertionError: '&amp;lt;x&amp;gt;' != '&lt;x&gt;'\nFAIL: test_mixed (test_regression.MaintenanceContract.test_mixed)\nAssertionError: '&amp;lt;&amp;&amp;gt;' != '&lt;&amp;&gt;'\nFAIL: test_unicode (test_regression.MaintenanceContract.test_unicode)\nAssertionError: '\u96ea&amp;lt;' != '\u96ea&lt;'",
+        "previous_error": "",
+        "previous_proposal": "",
+        "previous_response_sha256": null,
+        "previous_proposal_metrics": null,
+        "validator_constraints": {
+          "max_changes": 3,
+          "max_physical_lines": 3,
+          "max_replacement_bytes": 400,
+          "existing_attributes": [
+            "replace"
+          ],
+          "new_attributes_prohibited": true
+        }
+      }
+    },
+    {
+      "case_id": "csv_field_encoding",
+      "status": "prepared",
+      "reason": null,
+      "source_sha256": "53c310bfda6cf5aaaa9ec4219135100ce0ffe1bbea6b9a0488462dbc4002be31",
+      "tests_sha256": "a8ce2a07cd8b1513b4335862c13ff2ef79fa829eb218a2b940ee7803fa67d186",
+      "catalog": "benchmarks/phase8/evaluation_tasks/manifest.json",
+      "catalog_sha256": "6c01abe0e35fafbb7aee4de108b512ff53c2f9b0150e3191c3c57b04ae771687",
+      "baseline": {
+        "passed": false,
+        "exit_code": 1,
+        "timeout": false,
+        "output": "======================================================================\nFAIL: test_carriage_return (test_regression.MaintenanceContract.test_carriage_return)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 15, in test_carriage_return\n    self.assertEqual(quote_csv_field('a\\rb'), '\"a\\rb\"')\nAssertionError: 'a\\rb' != '\"a\\rb\"'\n- a\r+ \"a\r? +\n- b+ b\"\n\n======================================================================\nFAIL: test_embedded_quote (test_regression.MaintenanceContract.test_embedded_quote)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 18, in test_embedded_quote\n    self.assertEqual(quote_csv_field('a\"b'), '\"a\"\"b\"')\nAssertionError: 'a\"b' != '\"a\"\"b\"'\n- a\"b\n+ \"a\"\"b\"\n\n\n----------------------------------------------------------------------\nRan 7 tests in 0.001s\n\nFAILED (failures=2)\n",
+        "seconds": 1.631,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "editable_lines": [
+        2,
+        3,
+        4
+      ],
+      "prompt_sha256": "82525e6388bbdbf33da0852b44898b69f8b7c760691107aed7c15a7e1ec344d8",
+      "prompt_bytes": 1970,
+      "prompt": {
+        "edit_protocol": "owned_statement_session_v8",
+        "approved_file": "subject.py",
+        "target_symbol": "quote_csv_field",
+        "editable_lines": [
+          2,
+          3,
+          4
+        ],
+        "source_lines_untrusted": "1: def quote_csv_field(field):\n2:     if ',' in field or '\\n' in field:\n3:         return '\"' + field.replace('\"', '\"\"') + '\"'\n4:     return field",
+        "edit_units": [
+          [
+            2,
+            2,
+            "condition",
+            []
+          ],
+          [
+            4,
+            4,
+            "statement",
+            []
+          ],
+          [
+            3,
+            3,
+            "statement",
+            []
+          ]
+        ],
+        "edit_unit_columns": [
+          "anchor",
+          "end",
+          "kind",
+          "required_bindings"
+        ],
+        "issue_untrusted": "Encode a single text field with CSV double-quote rules: quote fields containing comma, CR, LF or double quote and double embedded quotes. Leave other fields unchanged.",
+        "test_contract_untrusted": "from subject import quote_csv_field\ndef test_carriage_return(self):\n    self.assertEqual(quote_csv_field('a\\rb'), '\"a\\rb\"')\ndef test_embedded_quote(self):\n    self.assertEqual(quote_csv_field('a\"b'), '\"a\"\"b\"')\ndef test_comma(self):\n    self.assertEqual(quote_csv_field('a,b'), '\"a,b\"')\ndef test_line_feed(self):\n    self.assertEqual(quote_csv_field('a\\nb'), '\"a\\nb\"')\ndef test_plain(self):\n    self.assertEqual(quote_csv_field('word'), 'word')\ndef test_empty(self):\n    self.assertEqual(quote_csv_field(''), '')\ndef test_whitespace_unicode(self):\n    self.assertEqual(quote_csv_field(' \u96ea '), ' \u96ea ')",
+        "omitted_contract_units": [],
+        "test_contract_complete": true,
+        "failure_untrusted": "FAIL: test_carriage_return (test_regression.MaintenanceContract.test_carriage_return)\nAssertionError: 'a\\rb' != '\"a\\rb\"'\nFAIL: test_embedded_quote (test_regression.MaintenanceContract.test_embedded_quote)\nAssertionError: 'a\"b' != '\"a\"\"b\"'",
+        "previous_error": "",
+        "previous_proposal": "",
+        "previous_response_sha256": null,
+        "previous_proposal_metrics": null,
+        "validator_constraints": {
+          "max_changes": 3,
+          "max_physical_lines": 3,
+          "max_replacement_bytes": 400,
+          "existing_attributes": [
+            "replace"
+          ],
+          "new_attributes_prohibited": true
+        }
+      }
+    },
+    {
+      "case_id": "cyclic_sequence",
+      "status": "prepared",
+      "reason": null,
+      "source_sha256": "29196a9c31129e2199d3476866da0c093c1a3c4493559effbced644f9641c184",
+      "tests_sha256": "1db8f38dbf6c0df0219e5dbc780d5d691d807aa9aa1d65a4e9a0755b56cc67f3",
+      "catalog": "benchmarks/phase8/evaluation_tasks/manifest.json",
+      "catalog_sha256": "6c01abe0e35fafbb7aee4de108b512ff53c2f9b0150e3191c3c57b04ae771687",
+      "baseline": {
+        "passed": false,
+        "exit_code": 1,
+        "timeout": false,
+        "output": "======================================================================\nFAIL: test_negative_large (test_regression.MaintenanceContract.test_negative_large)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 18, in test_negative_large\n    self.assertEqual(rotate_left([1, 2, 3], -4), [3, 1, 2])\nAssertionError: Lists differ: [1, 2, 3] != [3, 1, 2]\n\nFirst differing element 0:\n1\n3\n\n- [1, 2, 3]\n+ [3, 1, 2]\n\n======================================================================\nFAIL: test_over_length (test_regression.MaintenanceContract.test_over_length)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 15, in test_over_length\n    self.assertEqual(rotate_left([1, 2, 3], 4), [2, 3, 1])\nAssertionError: Lists differ: [1, 2, 3] != [2, 3, 1]\n\nFirst differing element 0:\n1\n2\n\n- [1, 2, 3]\n+ [2, 3, 1]\n\n======================================================================\nFAIL: test_tuple (test_regression.MaintenanceContract.test_tuple)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 27, in test_tuple\n    self.assertEqual(rotate_left((1, 2, 3), 5), (3, 1, 2))\nAssertionError: Tuples differ: (1, 2, 3) != (3, 1, 2)\n\nFirst differing element 0:\n1\n3\n\n- (1, 2, 3)\n+ (3, 1, 2)\n\n----------------------------------------------------------------------\nRan 8 tests in 0.001s\n\nFAILED (failures=3)\n",
+        "seconds": 1.266,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "editable_lines": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "prompt_sha256": "2c68e04db63212c1b91c89a8c9cf7c1a7f4bcec1df8b8686485be62c9fd214f9",
+      "prompt_bytes": 2220,
+      "prompt": {
+        "edit_protocol": "owned_statement_session_v8",
+        "approved_file": "subject.py",
+        "target_symbol": "rotate_left",
+        "editable_lines": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "source_lines_untrusted": "1: def rotate_left(items, count):\n2:     if not items:\n3:         return items[:]\n4:     count = min(count, len(items))\n5:     return items[count:] + items[:count]",
+        "edit_units": [
+          [
+            2,
+            2,
+            "condition",
+            []
+          ],
+          [
+            4,
+            4,
+            "statement",
+            [
+              "count"
+            ]
+          ],
+          [
+            5,
+            5,
+            "statement",
+            []
+          ],
+          [
+            3,
+            3,
+            "statement",
+            []
+          ]
+        ],
+        "edit_unit_columns": [
+          "anchor",
+          "end",
+          "kind",
+          "required_bindings"
+        ],
+        "issue_untrusted": "Rotate a sequence left by a signed integer count with cyclic wraparound. Preserve sequence type and original contents; empty input returns an empty copy.",
+        "test_contract_untrusted": "from subject import rotate_left\ndef test_over_length(self):\n    self.assertEqual(rotate_left([1, 2, 3], 4), [2, 3, 1])\ndef test_negative_large(self):\n    self.assertEqual(rotate_left([1, 2, 3], -4), [3, 1, 2])\ndef test_tuple(self):\n    self.assertEqual(rotate_left((1, 2, 3), 5), (3, 1, 2))\ndef test_within(self):\n    self.assertEqual(rotate_left([1, 2, 3, 4], 1), [2, 3, 4, 1])\ndef test_zero(self):\n    self.assertEqual(rotate_left([1, 2], 0), [1, 2])\ndef test_empty(self):\n    self.assertEqual(rotate_left([], 8), [])\ndef test_singleton(self):\n    self.assertEqual(rotate_left([7], 101), [7])\ndef test_unchanged(self):\n    items = [1, 2, 3]\n    rotate_left(items, 1)\n    self.assertEqual(items, [1, 2, 3])",
+        "omitted_contract_units": [],
+        "test_contract_complete": true,
+        "failure_untrusted": "FAIL: test_negative_large (test_regression.MaintenanceContract.test_negative_large)\nAssertionError: Lists differ: [1, 2, 3] != [3, 1, 2]\nFAIL: test_over_length (test_regression.MaintenanceContract.test_over_length)\nAssertionError: Lists differ: [1, 2, 3] != [2, 3, 1]\nFAIL: test_tuple (test_regression.MaintenanceContract.test_tuple)\nAssertionError: Tuples differ: (1, 2, 3) != (3, 1, 2)",
+        "previous_error": "",
+        "previous_proposal": "",
+        "previous_response_sha256": null,
+        "previous_proposal_metrics": null,
+        "validator_constraints": {
+          "max_changes": 3,
+          "max_physical_lines": 3,
+          "max_replacement_bytes": 400,
+          "existing_attributes": [],
+          "new_attributes_prohibited": true
+        }
+      }
+    },
+    {
+      "case_id": "configuration_switch",
+      "status": "prepared",
+      "reason": null,
+      "source_sha256": "db54999c89f785ef772907505e54a8bca2684ec96c53dec0a6f36e164ee42ec3",
+      "tests_sha256": "5f3d14a5b069a425be7b4240a06aa2a4f053a94041a59d290cbb4e2cb15dfe23",
+      "catalog": "benchmarks/phase8/evaluation_tasks/manifest.json",
+      "catalog_sha256": "6c01abe0e35fafbb7aee4de108b512ff53c2f9b0150e3191c3c57b04ae771687",
+      "baseline": {
+        "passed": false,
+        "exit_code": 1,
+        "timeout": false,
+        "output": "======================================================================\nFAIL: test_case_space (test_regression.MaintenanceContract.test_case_space)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 19, in test_case_space\n    self.assertIs(parse_switch(' OFF '), False)\nAssertionError: True is not False\n\n======================================================================\nFAIL: test_empty (test_regression.MaintenanceContract.test_empty)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 22, in test_empty\n    self.assertIs(parse_switch(''), False)\nAssertionError: True is not False\n\n======================================================================\nFAIL: test_false_forms (test_regression.MaintenanceContract.test_false_forms)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 9, in test_false_forms\n    self.assertEqual([parse_switch(value) for value in ('false', 'no', 'off', '0')], [False] * 4)\nAssertionError: Lists differ: [True, True, True, True] != [False, False, False, False]\n\nFirst differing element 0:\nTrue\nFalse\n\n- [True, True, True, True]\n+ [False, False, False, False]\n\n----------------------------------------------------------------------\nRan 7 tests in 0.001s\n\nFAILED (failures=3)\n",
+        "seconds": 1.672,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "editable_lines": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "prompt_sha256": "f5fef2605f37253d3c3e1a414ad129cd420886ac3d4e0c8e5887a50129dabb51",
+      "prompt_bytes": 2669,
+      "prompt": {
+        "edit_protocol": "owned_statement_session_v8",
+        "approved_file": "subject.py",
+        "target_symbol": "parse_switch",
+        "editable_lines": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "source_lines_untrusted": "1: def parse_switch(value):\n2:     if isinstance(value, bool):\n3:         return value\n4:     if not isinstance(value, str):\n5:         raise ValueError('unsupported switch type')\n6:     text = value.strip().lower()\n7:     if text in ('true', 'yes', 'on', '1'):\n8:         return True\n9:     if text in ('false', 'no', 'off', '0', ''):\n10:         return True\n11:     raise ValueError('unknown switch')",
+        "edit_units": [
+          [
+            2,
+            2,
+            "condition",
+            []
+          ],
+          [
+            4,
+            4,
+            "condition",
+            []
+          ],
+          [
+            6,
+            6,
+            "statement",
+            [
+              "text"
+            ]
+          ],
+          [
+            7,
+            7,
+            "condition",
+            []
+          ],
+          [
+            9,
+            9,
+            "condition",
+            []
+          ],
+          [
+            11,
+            11,
+            "statement",
+            []
+          ],
+          [
+            3,
+            3,
+            "statement",
+            []
+          ],
+          [
+            5,
+            5,
+            "statement",
+            []
+          ],
+          [
+            8,
+            8,
+            "statement",
+            []
+          ],
+          [
+            10,
+            10,
+            "statement",
+            []
+          ]
+        ],
+        "edit_unit_columns": [
+          "anchor",
+          "end",
+          "kind",
+          "required_bindings"
+        ],
+        "issue_untrusted": "Parse booleans and stripped case-insensitive textual switches. Accept true/yes/on/1 and false/no/off/0/empty; reject unsupported strings and non-boolean non-string inputs.",
+        "test_contract_untrusted": "from subject import parse_switch\ndef test_false_forms(self):\n    self.assertEqual([parse_switch(value) for value in ('false', 'no', 'off', '0')], [False] * 4)\ndef test_case_space(self):\n    self.assertIs(parse_switch(' OFF '), False)\ndef test_empty(self):\n    self.assertIs(parse_switch(''), False)\ndef test_true_forms(self):\n    self.assertEqual([parse_switch(value) for value in ('true', 'yes', 'on', '1')], [True] * 4)\ndef test_booleans(self):\n    self.assertIs(parse_switch(False), False)\n    self.assertIs(parse_switch(True), True)\ndef test_unknown(self):\n    with self.assertRaises(ValueError):\n        parse_switch('maybe')\ndef test_number(self):\n    with self.assertRaises(ValueError):\n        parse_switch(1)",
+        "omitted_contract_units": [],
+        "test_contract_complete": true,
+        "failure_untrusted": "FAIL: test_case_space (test_regression.MaintenanceContract.test_case_space)\nAssertionError: True is not False\nFAIL: test_empty (test_regression.MaintenanceContract.test_empty)\nAssertionError: True is not False\nFAIL: test_false_forms (test_regression.MaintenanceContract.test_false_forms)\nAssertionError: Lists differ: [True, True, True, True] != [False, False, False, False]",
+        "previous_error": "",
+        "previous_proposal": "",
+        "previous_response_sha256": null,
+        "previous_proposal_metrics": null,
+        "validator_constraints": {
+          "max_changes": 3,
+          "max_physical_lines": 3,
+          "max_replacement_bytes": 400,
+          "existing_attributes": [
+            "lower",
+            "strip"
+          ],
+          "new_attributes_prohibited": true
+        }
+      }
+    },
+    {
+      "case_id": "terminal_run_summary",
+      "status": "prepared",
+      "reason": null,
+      "source_sha256": "abca929e2c7b49c371ac7e463e5ed2135f8617a36f154b2e02beb07c3bdb6f64",
+      "tests_sha256": "c61758dcf202022b7a5215fde4df2cfe150fb7563eadbcf47b6c0734b223b2ca",
+      "catalog": "benchmarks/phase8/supplemental_tasks/manifest.json",
+      "catalog_sha256": "f34b48d3f1d310188e4efc3b5e35a48d1ed53a883b3e27cfbe8f2aae62a7a851",
+      "baseline": {
+        "passed": false,
+        "exit_code": 1,
+        "timeout": false,
+        "output": "======================================================================\nFAIL: test_falsy_labels (test_regression.MaintenanceContract.test_falsy_labels)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 24, in test_falsy_labels\n    self.assertEqual(summarize_runs([None, None, 0, '', '']), [(None, 2), (0, 1), ('', 2)])\nAssertionError: Lists differ: [(None, 2), (0, 1)] != [(None, 2), (0, 1), ('', 2)]\n\nSecond list contains 1 additional elements.\nFirst extra element 2:\n('', 2)\n\n- [(None, 2), (0, 1)]\n+ [(None, 2), (0, 1), ('', 2)]\n?                   +++++++++\n\n\n======================================================================\nFAIL: test_last_run (test_regression.MaintenanceContract.test_last_run)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 15, in test_last_run\n    self.assertEqual(summarize_runs(['x', 'x', 'y']), [('x', 2), ('y', 1)])\nAssertionError: Lists differ: [('x', 2)] != [('x', 2), ('y', 1)]\n\nSecond list contains 1 additional elements.\nFirst extra element 1:\n('y', 1)\n\n- [('x', 2)]\n+ [('x', 2), ('y', 1)]\n\n======================================================================\nFAIL: test_one_run (test_regression.MaintenanceContract.test_one_run)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 12, in test_one_run\n    self.assertEqual(summarize_runs(['x', 'x', 'x']), [('x', 3)])\nAssertionError: Lists differ: [] != [('x', 3)]\n\nSecond list contains 1 additional elements.\nFirst extra element 0:\n('x', 3)\n\n- []\n+ [('x', 3)]\n\n======================================================================\nFAIL: test_separated_runs (test_regression.MaintenanceContract.test_separated_runs)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 18, in test_separated_runs\n    self.assertEqual(summarize_runs(['x', 'y', 'x']), [('x', 1), ('y', 1), ('x', 1)])\nAssertionError: Lists differ: [('x', 1), ('y', 1)] != [('x', 1), ('y', 1), ('x', 1)]\n\nSecond list contains 1 additional elements.\nFirst extra element 2:\n('x', 1)\n\n- [('x', 1), ('y', 1)]\n+ [('x', 1), ('y', 1), ('x', 1)]\n?                  ++++++++++\n\n\n======================================================================\nFAIL: test_single (test_regression.MaintenanceContract.test_single)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 9, in test_single\n    self.assertEqual(summarize_runs(['ready']), [('ready', 1)])\nAssertionError: Lists differ: [] != [('ready', 1)]\n\nSecond list contains 1 additional elements.\nFirst extra element 0:\n('ready', 1)\n\n- []\n+ [('ready', 1)]\n\n======================================================================\nFAIL: test_tuple_input (test_regression.MaintenanceContract.test_tuple_input)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 27, in test_tuple_input\n    self.assertEqual(summarize_runs(('\u96ea', '\u96ea', '\u96e8')), [('\u96ea', 2), ('\u96e8', 1)])\nAssertionError: Lists differ: [('\u96ea', 2)] != [('\u96ea', 2), ('\u96e8', 1)]\n\nSecond list contains 1 additional elements.\nFirst extra element 1:\n('\u96e8', 1)\n\n- [('\u96ea', 2)]\n+ [('\u96ea', 2), ('\u96e8', 1)]\n\n----------------------------------------------------------------------\nRan 8 tests in 0.001s\n\nFAILED (failures=6)\n",
+        "seconds": 1.3,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "editable_lines": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        12,
+        13,
+        14
+      ],
+      "prompt_sha256": "6503628045d97ca6d6ee843982f95d2c977c0e15136625cf5fe26559b8ff06c0",
+      "prompt_bytes": 3068,
+      "prompt": {
+        "edit_protocol": "owned_statement_session_v8",
+        "approved_file": "subject.py",
+        "target_symbol": "summarize_runs",
+        "editable_lines": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          8,
+          9,
+          11,
+          12,
+          13,
+          14
+        ],
+        "source_lines_untrusted": "1: def summarize_runs(events):\n2:     runs = []\n3:     if not events:\n4:         return runs\n5:     current = events[0]\n6:     count = 0\n7:     for event in events:\n8:         if event == current:\n9:             count += 1\n10:         else:\n11:             runs.append((current, count))\n12:             current = event\n13:             count = 1\n14:     return runs",
+        "edit_units": [
+          [
+            2,
+            2,
+            "statement",
+            [
+              "runs"
+            ]
+          ],
+          [
+            3,
+            3,
+            "condition",
+            []
+          ],
+          [
+            5,
+            5,
+            "statement",
+            [
+              "current"
+            ]
+          ],
+          [
+            6,
+            6,
+            "statement",
+            [
+              "count"
+            ]
+          ],
+          [
+            14,
+            14,
+            "statement",
+            []
+          ],
+          [
+            4,
+            4,
+            "statement",
+            []
+          ],
+          [
+            8,
+            8,
+            "condition",
+            []
+          ],
+          [
+            9,
+            9,
+            "statement",
+            [
+              "count"
+            ]
+          ],
+          [
+            11,
+            11,
+            "statement",
+            []
+          ],
+          [
+            12,
+            12,
+            "statement",
+            [
+              "current"
+            ]
+          ],
+          [
+            13,
+            13,
+            "statement",
+            [
+              "count"
+            ]
+          ]
+        ],
+        "edit_unit_columns": [
+          "anchor",
+          "end",
+          "kind",
+          "required_bindings"
+        ],
+        "issue_untrusted": "Summarize consecutive equal event labels as (label, count) tuples, including the final run. Preserve input and keep separated runs distinct.",
+        "test_contract_untrusted": "from subject import summarize_runs\ndef test_single(self):\n    self.assertEqual(summarize_runs(['ready']), [('ready', 1)])\ndef test_one_run(self):\n    self.assertEqual(summarize_runs(['x', 'x', 'x']), [('x', 3)])\ndef test_last_run(self):\n    self.assertEqual(summarize_runs(['x', 'x', 'y']), [('x', 2), ('y', 1)])\ndef test_separated_runs(self):\n    self.assertEqual(summarize_runs(['x', 'y', 'x']), [('x', 1), ('y', 1), ('x', 1)])\ndef test_falsy_labels(self):\n    self.assertEqual(summarize_runs([None, None, 0, '', '']), [(None, 2), (0, 1), ('', 2)])\ndef test_tuple_input(self):\n    self.assertEqual(summarize_runs(('\u96ea', '\u96ea', '\u96e8')), [('\u96ea', 2), ('\u96e8', 1)])\ndef test_empty(self):\n    self.assertEqual(summarize_runs([]), [])\ndef test_input_preserved(self):\n    events = ['x', 'y']\n    summarize_runs(events)\n    self.assertEqual(events, ['x', 'y'])",
+        "omitted_contract_units": [],
+        "test_contract_complete": true,
+        "failure_untrusted": "or: Lists differ: [('x', 2)] != [('x', 2), ('y', 1)]\nFAIL: test_one_run (test_regression.MaintenanceContract.test_one_run)\nAssertionError: Lists differ: [] != [('x', 3)]\nFAIL: test_separated_runs (test_regression.MaintenanceContract.test_separated_runs)\nAssertionError: Lists differ: [('x', 1), ('y', 1)] != [('x', 1), ('y', 1), ('x', 1)]\nFAIL: test_single (test_regression.MaintenanceContract.test_single)\nAssertionError: Lists differ: [] != [('ready', 1)]\nFAIL: test_tuple_input (test_regression.MaintenanceContract.test_tuple_input)\nAssertionError: Lists differ: [('\u96ea', 2)] != [('\u96ea', 2), ('\u96e8', 1)]",
+        "previous_error": "",
+        "previous_proposal": "",
+        "previous_response_sha256": null,
+        "previous_proposal_metrics": null,
+        "validator_constraints": {
+          "max_changes": 3,
+          "max_physical_lines": 3,
+          "max_replacement_bytes": 400,
+          "existing_attributes": [
+            "append"
+          ],
+          "new_attributes_prohibited": true
+        }
+      }
+    },
+    {
+      "case_id": "rectangular_columns",
+      "status": "prepared",
+      "reason": null,
+      "source_sha256": "184864ad249bf202fef426d310770bc2e75f15b20baec832259c4574835e3797",
+      "tests_sha256": "28c5e58587cb4af8c13212c266bc8d94c9d1e649b910cfda10d4d2efe424112f",
+      "catalog": "benchmarks/phase8/supplemental_tasks/manifest.json",
+      "catalog_sha256": "f34b48d3f1d310188e4efc3b5e35a48d1ed53a883b3e27cfbe8f2aae62a7a851",
+      "baseline": {
+        "passed": false,
+        "exit_code": 1,
+        "timeout": false,
+        "output": "======================================================================\nFAIL: test_empty_later_row (test_regression.MaintenanceContract.test_empty_later_row)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 17, in test_empty_later_row\n    with self.assertRaises(ValueError):\nAssertionError: ValueError not raised\n\n======================================================================\nFAIL: test_shorter_later_row (test_regression.MaintenanceContract.test_shorter_later_row)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 9, in test_shorter_later_row\n    with self.assertRaises(ValueError):\nAssertionError: ValueError not raised\n\n----------------------------------------------------------------------\nRan 8 tests in 0.000s\n\nFAILED (failures=2)\n",
+        "seconds": 2.0,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "editable_lines": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "prompt_sha256": "1c666d0b3cffd6991639d2915b825b94954384fe5806fe4c05b2f0c0f9f02157",
+      "prompt_bytes": 2444,
+      "prompt": {
+        "edit_protocol": "owned_statement_session_v8",
+        "approved_file": "subject.py",
+        "target_symbol": "transpose_cells",
+        "editable_lines": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "source_lines_untrusted": "1: def transpose_cells(rows):\n2:     if not rows:\n3:         return []\n4:     width = len(rows[0])\n5:     if any(len(row) > width for row in rows):\n6:         raise ValueError('ragged rows')\n7:     return [list(column) for column in zip(*rows)]",
+        "edit_units": [
+          [
+            2,
+            2,
+            "condition",
+            []
+          ],
+          [
+            4,
+            4,
+            "statement",
+            [
+              "width"
+            ]
+          ],
+          [
+            5,
+            5,
+            "condition",
+            []
+          ],
+          [
+            7,
+            7,
+            "statement",
+            []
+          ],
+          [
+            3,
+            3,
+            "statement",
+            []
+          ],
+          [
+            6,
+            6,
+            "statement",
+            []
+          ]
+        ],
+        "edit_unit_columns": [
+          "anchor",
+          "end",
+          "kind",
+          "required_bindings"
+        ],
+        "issue_untrusted": "Transpose a rectangular sequence of rows into lists of columns. Empty and zero-width matrices yield an empty list; all unequal row widths raise ValueError instead of silently truncating cells.",
+        "test_contract_untrusted": "from subject import transpose_cells\ndef test_shorter_later_row(self):\n    with self.assertRaises(ValueError):\n        transpose_cells([[1, 2], [3]])\ndef test_empty_later_row(self):\n    with self.assertRaises(ValueError):\n        transpose_cells([[1], []])\ndef test_longer_later_row(self):\n    with self.assertRaises(ValueError):\n        transpose_cells([[1], [2, 3]])\ndef test_rectangular(self):\n    self.assertEqual(transpose_cells([[1, 2, 3], [4, 5, 6]]), [[1, 4], [2, 5], [3, 6]])\ndef test_empty(self):\n    self.assertEqual(transpose_cells([]), [])\ndef test_zero_width(self):\n    self.assertEqual(transpose_cells([[], []]), [])\ndef test_tuple_rows(self):\n    self.assertEqual(transpose_cells(((None, 'x'), (False, 'y'))), [[None, False], ['x', 'y']])\ndef test_input_preserved(self):\n    rows = [[1, 2], [3, 4]]\n    transpose_cells(rows)\n    self.assertEqual(rows, [[1, 2], [3, 4]])",
+        "omitted_contract_units": [],
+        "test_contract_complete": true,
+        "failure_untrusted": "FAIL: test_empty_later_row (test_regression.MaintenanceContract.test_empty_later_row)\nAssertionError: ValueError not raised\nFAIL: test_shorter_later_row (test_regression.MaintenanceContract.test_shorter_later_row)\nAssertionError: ValueError not raised",
+        "previous_error": "",
+        "previous_proposal": "",
+        "previous_response_sha256": null,
+        "previous_proposal_metrics": null,
+        "validator_constraints": {
+          "max_changes": 3,
+          "max_physical_lines": 3,
+          "max_replacement_bytes": 400,
+          "existing_attributes": [],
+          "new_attributes_prohibited": true
+        }
+      }
+    },
+    {
+      "case_id": "rooted_segments",
+      "status": "prepared",
+      "reason": null,
+      "source_sha256": "e6952ac0d0d9937d962de076bd63bb858a1f40b30d601dbe12b5ba949683f5a6",
+      "tests_sha256": "5e9c598e8633da54ed15a2693652e92aba2bb0fa5bc9d9985fc22f8efd10909a",
+      "catalog": "benchmarks/phase8/supplemental_tasks/manifest.json",
+      "catalog_sha256": "f34b48d3f1d310188e4efc3b5e35a48d1ed53a883b3e27cfbe8f2aae62a7a851",
+      "baseline": {
+        "passed": false,
+        "exit_code": 1,
+        "timeout": false,
+        "output": "======================================================================\nFAIL: test_root_parent (test_regression.MaintenanceContract.test_root_parent)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 12, in test_root_parent\n    self.assertEqual(normalize_rooted_path('/..'), '/')\nAssertionError: '/..' != '/'\n- /..\n+ /\n\n\n----------------------------------------------------------------------\nRan 8 tests in 0.001s\n\nFAILED (failures=1)\n",
+        "seconds": 2.331,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "editable_lines": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        12
+      ],
+      "prompt_sha256": "28ad87565cd0ad9800a6cf0824fbc7c3c5d09c53a7a78159ebafafa630f6927e",
+      "prompt_bytes": 2544,
+      "prompt": {
+        "edit_protocol": "owned_statement_session_v8",
+        "approved_file": "subject.py",
+        "target_symbol": "normalize_rooted_path",
+        "editable_lines": [
+          2,
+          3,
+          4,
+          6,
+          8,
+          9,
+          11,
+          12
+        ],
+        "source_lines_untrusted": "1: def normalize_rooted_path(path):\n2:     if not path.startswith('/'):\n3:         raise ValueError('absolute path required')\n4:     segments = []\n5:     for piece in path.split('/'):\n6:         if piece in ('', '.'):\n7:             continue\n8:         if piece == '..' and segments:\n9:             segments.pop()\n10:         else:\n11:             segments.append(piece)\n12:     return '/' + '/'.join(segments)",
+        "edit_units": [
+          [
+            2,
+            2,
+            "condition",
+            []
+          ],
+          [
+            4,
+            4,
+            "statement",
+            [
+              "segments"
+            ]
+          ],
+          [
+            12,
+            12,
+            "statement",
+            []
+          ],
+          [
+            3,
+            3,
+            "statement",
+            []
+          ],
+          [
+            6,
+            6,
+            "condition",
+            []
+          ],
+          [
+            8,
+            8,
+            "condition",
+            []
+          ],
+          [
+            9,
+            9,
+            "statement",
+            []
+          ],
+          [
+            11,
+            11,
+            "statement",
+            []
+          ]
+        ],
+        "edit_unit_columns": [
+          "anchor",
+          "end",
+          "kind",
+          "required_bindings"
+        ],
+        "issue_untrusted": "Lexically normalize an absolute slash-separated path: discard empty and dot components, resolve parent components, clamp parents at root, and remove trailing separators. No filesystem access, decoding or symlink resolution.",
+        "test_contract_untrusted": "from subject import normalize_rooted_path\ndef test_root_parent(self):\n    self.assertEqual(normalize_rooted_path('/..'), '/')\ndef test_above_root(self):\n    self.assertEqual(normalize_rooted_path('/../../docs'), '/docs')\ndef test_normal_parent(self):\n    self.assertEqual(normalize_rooted_path('/a/b/../c'), '/a/c')\ndef test_repeated_separators(self):\n    self.assertEqual(normalize_rooted_path('//a///b/'), '/a/b')\ndef test_dot_components(self):\n    self.assertEqual(normalize_rooted_path('/./a/./b/.'), '/a/b')\ndef test_root(self):\n    self.assertEqual(normalize_rooted_path('/'), '/')\ndef test_literal_names(self):\n    self.assertEqual(normalize_rooted_path('/.../%2e%2e/\u96ea'), '/.../%2e%2e/\u96ea')\ndef test_relative_rejected(self):\n    with self.assertRaises(ValueError):\n        normalize_rooted_path('a/b')",
+        "omitted_contract_units": [],
+        "test_contract_complete": true,
+        "failure_untrusted": "FAIL: test_root_parent (test_regression.MaintenanceContract.test_root_parent)\nAssertionError: '/..' != '/'",
+        "previous_error": "",
+        "previous_proposal": "",
+        "previous_response_sha256": null,
+        "previous_proposal_metrics": null,
+        "validator_constraints": {
+          "max_changes": 3,
+          "max_physical_lines": 3,
+          "max_replacement_bytes": 400,
+          "existing_attributes": [
+            "append",
+            "join",
+            "pop",
+            "split",
+            "startswith"
+          ],
+          "new_attributes_prohibited": true
+        }
+      }
+    },
+    {
+      "case_id": "utf8_prefix_budget",
+      "status": "prepared",
+      "reason": null,
+      "source_sha256": "9ce2f477934eb5d37926444b8972f4155a69d83f217e6b99e4411934679139cb",
+      "tests_sha256": "958e615672d769991ed249875ef793b1794da3022dfef5012911651a4f69a7ac",
+      "catalog": "benchmarks/phase8/supplemental_tasks/manifest.json",
+      "catalog_sha256": "f34b48d3f1d310188e4efc3b5e35a48d1ed53a883b3e27cfbe8f2aae62a7a851",
+      "baseline": {
+        "passed": false,
+        "exit_code": 1,
+        "timeout": false,
+        "output": "======================================================================\nFAIL: test_combining_code_points (test_regression.MaintenanceContract.test_combining_code_points)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 28, in test_combining_code_points\n    self.assertEqual(fit_utf8_prefix('e\u0301x', 2), 'e')\nAssertionError: 'e\u0301' != 'e'\n- e\u0301\n?  -\n+ e\n\n\n======================================================================\nFAIL: test_emoji (test_regression.MaintenanceContract.test_emoji)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 18, in test_emoji\n    self.assertEqual(fit_utf8_prefix('\ud83d\ude42x', 4), '\ud83d\ude42')\nAssertionError: '\ud83d\ude42x' != '\ud83d\ude42'\n- \ud83d\ude42x\n?  -\n+ \ud83d\ude42\n\n\n======================================================================\nFAIL: test_exact_multibyte (test_regression.MaintenanceContract.test_exact_multibyte)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 15, in test_exact_multibyte\n    self.assertEqual(fit_utf8_prefix('a\u96eab', 4), 'a\u96ea')\nAssertionError: 'a\u96eab' != 'a\u96ea'\n- a\u96eab\n?   -\n+ a\u96ea\n\n\n======================================================================\nFAIL: test_multibyte (test_regression.MaintenanceContract.test_multibyte)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 12, in test_multibyte\n    self.assertEqual(fit_utf8_prefix('a\u96eab', 3), 'a')\nAssertionError: 'a\u96eab' != 'a'\n- a\u96eab\n+ a\n\n\n======================================================================\nFAIL: test_no_skipping (test_regression.MaintenanceContract.test_no_skipping)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 21, in test_no_skipping\n    self.assertEqual(fit_utf8_prefix('\u96eaab', 2), '')\nAssertionError: '\u96eaa' != ''\n- \u96eaa\n+ \n\n\n----------------------------------------------------------------------\nRan 8 tests in 0.001s\n\nFAILED (failures=5)\n",
+        "seconds": 1.252,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "editable_lines": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "prompt_sha256": "9e22aa6103256095e6a4cc73a81217e5fbaedc486428e750d5de1e8fb9b2b68e",
+      "prompt_bytes": 3098,
+      "prompt": {
+        "edit_protocol": "owned_statement_session_v8",
+        "approved_file": "subject.py",
+        "target_symbol": "fit_utf8_prefix",
+        "editable_lines": [
+          2,
+          3,
+          4,
+          5,
+          7,
+          8,
+          9,
+          11,
+          12,
+          13
+        ],
+        "source_lines_untrusted": "1: def fit_utf8_prefix(text, byte_budget):\n2:     if byte_budget < 0:\n3:         raise ValueError('negative byte budget')\n4:     accepted = []\n5:     used = 0\n6:     for character in text:\n7:         encoded = character.encode('utf-8')\n8:         next_used = used + len(character)\n9:         if next_used > byte_budget:\n10:             break\n11:         accepted.append(character)\n12:         used = next_used\n13:     return ''.join(accepted)",
+        "edit_units": [
+          [
+            2,
+            2,
+            "condition",
+            []
+          ],
+          [
+            4,
+            4,
+            "statement",
+            [
+              "accepted"
+            ]
+          ],
+          [
+            5,
+            5,
+            "statement",
+            [
+              "used"
+            ]
+          ],
+          [
+            13,
+            13,
+            "statement",
+            []
+          ],
+          [
+            3,
+            3,
+            "statement",
+            []
+          ],
+          [
+            7,
+            7,
+            "statement",
+            [
+              "encoded"
+            ]
+          ],
+          [
+            8,
+            8,
+            "statement",
+            [
+              "next_used"
+            ]
+          ],
+          [
+            9,
+            9,
+            "condition",
+            []
+          ],
+          [
+            11,
+            11,
+            "statement",
+            []
+          ],
+          [
+            12,
+            12,
+            "statement",
+            [
+              "used"
+            ]
+          ]
+        ],
+        "edit_unit_columns": [
+          "anchor",
+          "end",
+          "kind",
+          "required_bindings"
+        ],
+        "issue_untrusted": "Return the longest contiguous text prefix whose UTF-8 representation fits a nonnegative byte budget, without splitting code points or skipping an oversized leading character. Negative budgets raise ValueError.",
+        "test_contract_untrusted": "from subject import fit_utf8_prefix\ndef test_multibyte(self):\n    self.assertEqual(fit_utf8_prefix('a\u96eab', 3), 'a')\ndef test_exact_multibyte(self):\n    self.assertEqual(fit_utf8_prefix('a\u96eab', 4), 'a\u96ea')\ndef test_emoji(self):\n    self.assertEqual(fit_utf8_prefix('\ud83d\ude42x', 4), '\ud83d\ude42')\ndef test_no_skipping(self):\n    self.assertEqual(fit_utf8_prefix('\u96eaab', 2), '')\ndef test_combining_code_points(self):\n    self.assertEqual(fit_utf8_prefix('e\u0301x', 2), 'e')\ndef test_ascii(self):\n    self.assertEqual(fit_utf8_prefix('abcd', 2), 'ab')\ndef test_zero_empty(self):\n    self.assertEqual(fit_utf8_prefix('x', 0), '')\n    self.assertEqual(fit_utf8_prefix('', 5), '')\ndef test_negative(self):\n    with self.assertRaises(ValueError):\n        fit_utf8_prefix('x', -1)",
+        "omitted_contract_units": [],
+        "test_contract_complete": true,
+        "failure_untrusted": "FAIL: test_combining_code_points (test_regression.MaintenanceContract.test_combining_code_points)\nAssertionError: 'e\u0301' != 'e'\nFAIL: test_emoji (test_regression.MaintenanceContract.test_emoji)\nAssertionError: '\ud83d\ude42x' != '\ud83d\ude42'\nFAIL: test_exact_multibyte (test_regression.MaintenanceContract.test_exact_multibyte)\nAssertionError: 'a\u96eab' != 'a\u96ea'\nFAIL: test_multibyte (test_regression.MaintenanceContract.test_multibyte)\nAssertionError: 'a\u96eab' != 'a'\nFAIL: test_no_skipping (test_regression.MaintenanceContract.test_no_skipping)\nAssertionError: '\u96eaa' != ''",
+        "previous_error": "",
+        "previous_proposal": "",
+        "previous_response_sha256": null,
+        "previous_proposal_metrics": null,
+        "validator_constraints": {
+          "max_changes": 3,
+          "max_physical_lines": 3,
+          "max_replacement_bytes": 400,
+          "existing_attributes": [
+            "append",
+            "encode",
+            "join"
+          ],
+          "new_attributes_prohibited": true
+        }
+      }
+    },
+    {
+      "case_id": "wildcard_empty_prefix",
+      "status": "prepared",
+      "reason": null,
+      "source_sha256": "81816b6efcf4758849b13f824704966c1103fd9fb4459693d538658625a98590",
+      "tests_sha256": "54cde6a6b51ff6c0dba4d4710543b57dccc9af0314e18a42792bad79b5fdd72b",
+      "catalog": "benchmarks/phase8/supplemental_tasks/manifest.json",
+      "catalog_sha256": "f34b48d3f1d310188e4efc3b5e35a48d1ed53a883b3e27cfbe8f2aae62a7a851",
+      "baseline": {
+        "passed": false,
+        "exit_code": 1,
+        "timeout": false,
+        "output": "======================================================================\nFAIL: test_empty_star (test_regression.MaintenanceContract.test_empty_star)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 9, in test_empty_star\n    self.assertTrue(matches_pattern('', '*'))\nAssertionError: False is not true\n\n======================================================================\nFAIL: test_repeated_stars (test_regression.MaintenanceContract.test_repeated_stars)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 15, in test_repeated_stars\n    self.assertTrue(matches_pattern('a', '**a**'))\nAssertionError: False is not true\n\n======================================================================\nFAIL: test_zero_width_star (test_regression.MaintenanceContract.test_zero_width_star)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 12, in test_zero_width_star\n    self.assertTrue(matches_pattern('report', '*report'))\nAssertionError: False is not true\n\n----------------------------------------------------------------------\nRan 8 tests in 0.001s\n\nFAILED (failures=3)\n",
+        "seconds": 1.726,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "editable_lines": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "prompt_sha256": "2bf3812603ee541625c463cf2db51822a2e755d78fa1b9c63b6a8f7373b0a5bc",
+      "prompt_bytes": 3034,
+      "prompt": {
+        "edit_protocol": "owned_statement_session_v8",
+        "approved_file": "subject.py",
+        "target_symbol": "matches_pattern",
+        "editable_lines": [
+          2,
+          3,
+          5,
+          6,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ],
+        "source_lines_untrusted": "1: def matches_pattern(text, pattern):\n2:     previous = [False] * (len(text) + 1)\n3:     previous[0] = True\n4:     for token in pattern:\n5:         current = [False] * (len(text) + 1)\n6:         current[0] = False\n7:         for index, character in enumerate(text, 1):\n8:             if token == '*':\n9:                 current[index] = previous[index] or current[index - 1]\n10:             elif token == '?' or token == character:\n11:                 current[index] = previous[index - 1]\n12:         previous = current\n13:     return previous[-1]",
+        "edit_units": [
+          [
+            2,
+            2,
+            "statement",
+            [
+              "previous"
+            ]
+          ],
+          [
+            3,
+            3,
+            "statement",
+            []
+          ],
+          [
+            13,
+            13,
+            "statement",
+            []
+          ],
+          [
+            5,
+            5,
+            "statement",
+            [
+              "current"
+            ]
+          ],
+          [
+            6,
+            6,
+            "statement",
+            []
+          ],
+          [
+            12,
+            12,
+            "statement",
+            [
+              "previous"
+            ]
+          ],
+          [
+            8,
+            8,
+            "condition",
+            []
+          ],
+          [
+            9,
+            9,
+            "statement",
+            []
+          ],
+          [
+            10,
+            10,
+            "condition",
+            []
+          ],
+          [
+            11,
+            11,
+            "statement",
+            []
+          ]
+        ],
+        "edit_unit_columns": [
+          "anchor",
+          "end",
+          "kind",
+          "required_bindings"
+        ],
+        "issue_untrusted": "Match an entire text against a case-sensitive pattern where question mark matches one character and star matches zero or more. All other characters are literal, including slash and brackets. No escape syntax.",
+        "test_contract_untrusted": "from subject import matches_pattern\ndef test_empty_star(self):\n    self.assertTrue(matches_pattern('', '*'))\ndef test_zero_width_star(self):\n    self.assertTrue(matches_pattern('report', '*report'))\ndef test_repeated_stars(self):\n    self.assertTrue(matches_pattern('a', '**a**'))\ndef test_star_consumption(self):\n    self.assertTrue(matches_pattern('dir/file.txt', 'dir/*.txt'))\ndef test_question_mark(self):\n    self.assertTrue(matches_pattern('ax', 'a?'))\n    self.assertFalse(matches_pattern('a', 'a?'))\ndef test_whole_match(self):\n    self.assertFalse(matches_pattern('prefix', 'pre'))\n    self.assertFalse(matches_pattern('Prefix', 'prefix'))\ndef test_empty_literals(self):\n    self.assertTrue(matches_pattern('', ''))\n    self.assertFalse(matches_pattern('x', ''))\ndef test_literal_brackets(self):\n    self.assertTrue(matches_pattern('[x]', '[x]'))\n    self.assertFalse(matches_pattern('x', '[x]'))",
+        "omitted_contract_units": [],
+        "test_contract_complete": true,
+        "failure_untrusted": "FAIL: test_empty_star (test_regression.MaintenanceContract.test_empty_star)\nAssertionError: False is not true\nFAIL: test_repeated_stars (test_regression.MaintenanceContract.test_repeated_stars)\nAssertionError: False is not true\nFAIL: test_zero_width_star (test_regression.MaintenanceContract.test_zero_width_star)\nAssertionError: False is not true",
+        "previous_error": "",
+        "previous_proposal": "",
+        "previous_response_sha256": null,
+        "previous_proposal_metrics": null,
+        "validator_constraints": {
+          "max_changes": 3,
+          "max_physical_lines": 3,
+          "max_replacement_bytes": 400,
+          "existing_attributes": [],
+          "new_attributes_prohibited": true
+        }
+      }
+    },
+    {
+      "case_id": "network_word_order",
+      "status": "prepared",
+      "reason": null,
+      "source_sha256": "08fb79936e13e17d2a4687576d70b6bd6de14f8f114f31f15cffe00dd98e17c2",
+      "tests_sha256": "1f29a6a3c55bacc687c94a1cd1163c94c265aa07a757da5df4c253bbab0a79ae",
+      "catalog": "benchmarks/phase8/supplemental_tasks/manifest.json",
+      "catalog_sha256": "f34b48d3f1d310188e4efc3b5e35a48d1ed53a883b3e27cfbe8f2aae62a7a851",
+      "baseline": {
+        "passed": false,
+        "exit_code": 1,
+        "timeout": false,
+        "output": "======================================================================\nFAIL: test_asymmetric (test_regression.MaintenanceContract.test_asymmetric)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 9, in test_asymmetric\n    self.assertEqual(decode_network_word(b'\\x12\\x34'), 4660)\nAssertionError: 13330 != 4660\n\n======================================================================\nFAIL: test_high_byte (test_regression.MaintenanceContract.test_high_byte)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 12, in test_high_byte\n    self.assertEqual(decode_network_word(b'\\x80\\x00'), 32768)\nAssertionError: 128 != 32768\n\n======================================================================\nFAIL: test_low_byte (test_regression.MaintenanceContract.test_low_byte)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 15, in test_low_byte\n    self.assertEqual(decode_network_word(b'\\x00\\xff'), 255)\nAssertionError: 65280 != 255\n\n----------------------------------------------------------------------\nRan 8 tests in 0.001s\n\nFAILED (failures=3)\n",
+        "seconds": 1.425,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "editable_lines": [
+        2,
+        3,
+        4
+      ],
+      "prompt_sha256": "0b27ca47863160fdafdaf83bc58192c0e4473d2313de768f2db3afeb422155b0",
+      "prompt_bytes": 2193,
+      "prompt": {
+        "edit_protocol": "owned_statement_session_v8",
+        "approved_file": "subject.py",
+        "target_symbol": "decode_network_word",
+        "editable_lines": [
+          2,
+          3,
+          4
+        ],
+        "source_lines_untrusted": "1: def decode_network_word(data):\n2:     if not isinstance(data, bytes) or len(data) != 2:\n3:         raise ValueError('two bytes required')\n4:     return data[0] | (data[1] << 8)",
+        "edit_units": [
+          [
+            2,
+            2,
+            "condition",
+            []
+          ],
+          [
+            4,
+            4,
+            "statement",
+            []
+          ],
+          [
+            3,
+            3,
+            "statement",
+            []
+          ]
+        ],
+        "edit_unit_columns": [
+          "anchor",
+          "end",
+          "kind",
+          "required_bindings"
+        ],
+        "issue_untrusted": "Decode exactly two bytes as an unsigned network-order 16-bit integer. Reject non-bytes input and incorrect lengths. This decoder performs no I/O.",
+        "test_contract_untrusted": "from subject import decode_network_word\ndef test_asymmetric(self):\n    self.assertEqual(decode_network_word(b'\\x124'), 4660)\ndef test_high_byte(self):\n    self.assertEqual(decode_network_word(b'\\x80\\x00'), 32768)\ndef test_low_byte(self):\n    self.assertEqual(decode_network_word(b'\\x00\\xff'), 255)\ndef test_zero(self):\n    self.assertEqual(decode_network_word(b'\\x00\\x00'), 0)\ndef test_maximum(self):\n    self.assertEqual(decode_network_word(b'\\xff\\xff'), 65535)\ndef test_short(self):\n    with self.assertRaises(ValueError):\n        decode_network_word(b'\\x01')\ndef test_long(self):\n    with self.assertRaises(ValueError):\n        decode_network_word(b'\\x00\\x01\\x02')\ndef test_type(self):\n    with self.assertRaises(ValueError):\n        decode_network_word([1, 2])",
+        "omitted_contract_units": [],
+        "test_contract_complete": true,
+        "failure_untrusted": "FAIL: test_asymmetric (test_regression.MaintenanceContract.test_asymmetric)\nAssertionError: 13330 != 4660\nFAIL: test_high_byte (test_regression.MaintenanceContract.test_high_byte)\nAssertionError: 128 != 32768\nFAIL: test_low_byte (test_regression.MaintenanceContract.test_low_byte)\nAssertionError: 65280 != 255",
+        "previous_error": "",
+        "previous_proposal": "",
+        "previous_response_sha256": null,
+        "previous_proposal_metrics": null,
+        "validator_constraints": {
+          "max_changes": 3,
+          "max_physical_lines": 3,
+          "max_replacement_bytes": 400,
+          "existing_attributes": [],
+          "new_attributes_prohibited": true
+        }
+      }
+    }
+  ],
+  "core_revision": "48ce3f15a134ba06846d7eda8fe4ac2e594e7563",
+  "core_sha256": {
+    "bountyforge/curated_docker.py": "0beb01183867f514029f466274e641f5e9e2860de7a56d34fe725a12b61dfa2f",
+    "bountyforge/curated_tasks.py": "048bf0efe8e44278d4fb5a34ebc951b1d27c7034fb28a77da94f6990b965d48f",
+    "bountyforge/drafts.py": "e5336eb40548b72fae901d6b281ffd0d45de5d2cbf04f0189f2721f700b29af5",
+    "bountyforge/line_scope.py": "df2d83ccc9f290b387df299625c63fe16729a63029cc481c9a05d00adc0f6128",
+    "bountyforge/lineedit.py": "cfafdde8490cd3f7f84e7f3ef3a10aa0bc43973baa3468ec431e7ee4d2205e14",
+    "bountyforge/repair_context.py": "fb0aac6f25e7ad23e7fbedba20d6638c523c5304508bedfcd5b892d419f7b70f",
+    "bountyforge/repair_session.py": "b011ce262e9cba989afb02c69fbd2fd325345d9aaff76349378e7b674c65e8b3",
+    "bountyforge/statements.py": "7ee92b1a794ce221042196ac7e5fedd97792691184f3d2709d182787ecfeb460",
+    "bountyforge/worker.py": "564678b2c00c750ee580a4bb802d9f5236258b2d7cf24b30da03ebfdf4d655fb",
+    "fixtures/controlled/addition/.bountyforge-controlled-fixture": "df396aaf621fce629c25e37ec29905fc91e4d233fee31a3c65df644e3cbfa74a",
+    "fixtures/controlled/addition/README.md": "09a167e797a54c67171424141cdc605f3ff1046fc55ac82a9468ddf91208cea7",
+    "fixtures/controlled/addition/calc.py": "e1a894022d1a082987b87adecb623438c9e386d86b2b621cff4a5fe7fdf7edc8",
+    "fixtures/controlled/addition/tests/test_calc.py": "5fa33bfe90c2cd4c3da0fe31421138fc75f718b9341c3a3eb732b078ddc53f48"
+  },
+  "image": "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+  "financial_authority": "unverified; no live inference API enabled",
+  "customer_execution_authorized": false,
+  "delivery_authorized": false,
+  "paid_fallback": false,
+  "novelty": "Twenty reviewed distinct repair problems: excludes two semantic duplicates and four additional thematic neighbors from the frozen primary catalog; see supplemental novelty_review.json for the per-case audit.",
+  "selection_sha256": "55e7de2b2c59eaaea75a494315df5b95cea5eeabcaeb835309a517f43abb891e",
+  "selected_cases": [
+    "stock_admission",
+    "booking_intersection",
+    "literal_tail",
+    "line_termination",
+    "duration_label",
+    "shipping_cartons",
+    "block_indentation",
+    "running_measurements",
+    "endpoint_authority",
+    "archive_classification",
+    "markup_text",
+    "csv_field_encoding",
+    "cyclic_sequence",
+    "configuration_switch",
+    "terminal_run_summary",
+    "rectangular_columns",
+    "rooted_segments",
+    "utf8_prefix_budget",
+    "wildcard_empty_prefix",
+    "network_word_order"
+  ],
+  "preflight": {
+    "network_denied": true,
+    "loopback_inference_unreachable": true,
+    "source_writes_denied": true,
+    "root_writes_denied": true,
+    "secrets_absent": true,
+    "uid_unprivileged": true,
+    "capabilities_empty": true,
+    "no_new_privileges": true,
+    "seccomp_active": true,
+    "memory_limit_enforced": true,
+    "swap_disabled": true,
+    "cpu_quota_verified": true,
+    "pid_limit_verified": true,
+    "tmpfs_bounded_noexec": true,
+    "wall_clock_enforced": true,
+    "cleanup_verified": true,
+    "output_bounded": true,
+    "docker_socket_absent": true,
+    "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+    "untrusted_execution_certified": false,
+    "pid_pressure_enforced": true,
+    "pid_current_at_denial": 64,
+    "pid_denial_events": 1,
+    "probe_threads": 63,
+    "cpu_pressure_enforced": true,
+    "cpu_pressure_wall_seconds": 3.007,
+    "cpu_pressure_used_seconds": 3.027,
+    "cpu_throttled_periods": 30
+  },
+  "elapsed_seconds": 47.015,
+  "prepared_cases": 20
+}

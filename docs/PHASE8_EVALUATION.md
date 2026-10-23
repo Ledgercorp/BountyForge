@@ -2,15 +2,19 @@
 
 The repair core is frozen at `48ce3f15a134ba06846d7eda8fe4ac2e594e7563`.
 The default selection pins the original twenty-case primary manifest from
-`f55ad34`. Its novelty audit remains pending: prior-task overlap can limit any
-future generalization claim. Preparation measures Docker baseline reproduction
+`f55ad34`. Its completed novelty audit excludes two repeated repair problems. Use the
+conservative 20-problem supplemental selection for future independent claims;
+the default primary catalog is preserved for provenance, not a fresh score. Preparation measures Docker baseline reproduction
 and whether the frozen session can construct bounded context. It does not
 measure repair accuracy.
 
 Run from the repository root:
 
 ```sh
-python -m scripts.phase8_evaluate --prepare --output /tmp/phase8-prepare.json
+python -m scripts.phase8_evaluate --prepare \
+  --selection benchmarks/phase8/supplemental_tasks/selection.json \
+  --selection-sha256 55e7de2b2c59eaaea75a494315df5b95cea5eeabcaeb835309a517f43abb891e \
+  --output /tmp/phase8-prepare.json
 ```
 
 The coordinator never constructs or invokes a provider. Live inference remains

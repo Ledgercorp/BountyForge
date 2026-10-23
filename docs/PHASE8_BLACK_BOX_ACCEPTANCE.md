@@ -101,3 +101,51 @@ duplicate did not rewrite reviewed state or rerun the independent repair. An
 owner coherently rewriting the whole database/artifact set, malicious concurrent
 filesystem replacement and real power-loss durability remain outside the tested
 rehearsal boundary.
+
+## Additional repair-component TEST-DRIVER acceptance
+
+A separate bounded follow-up adds **5 passing process tests** under
+`tests/test_phase8_repair_process.py` and a **test-only adapter** under
+`tests/support/phase8_repair_driver.py`. This adds coverage for the repair-session
+component; it does not change the unsupported commercial-CLI rows above. The
+original 28-case product/process acceptance count is unchanged; the additional
+test-driver process count is five.
+
+The driver accepts only `healthy`, `invalidproposal`, `wrongcandidate` or
+`providerfailure` and empty stdin. It creates one temporary fixed neutral owned
+source/test fixture with literal SHA-256 pins, calls the existing `repair_owned`
+component with the existing trusted owned `_run_tests` runner, and removes the
+fixture afterwards. The tests drive the adapter through a real separate Python
+process. Each simulated backend response crosses another real Python process's
+stdin/stdout/status boundary using a constant owned program; no real model or
+network service is configured. Unlike the original product acceptance tests,
+this adapter intentionally supplies the public repair component with its trusted
+runner. The adapter is not a supported product entrypoint or customer intake.
+
+| Fixed scenario | Observed result |
+| --- | --- |
+| `healthy` | Exit 0; `review_ready`; one simulated response; three actual fixed unittest processes: failing baseline, passing candidate, passing fresh independent copy. Returned patch and candidate hash match the fixed manual response. |
+| `invalidproposal` | Exit 2; `failed`; two simulated responses; only baseline tests execute. Exact response hash and parse-rejection metrics reach the second prompt; no patch is ready. |
+| `wrongcandidate` | Exit 2; `failed`; two simulated responses; baseline and wrong candidate execute and fail. The actual `16 != 12` regression reaches the next prompt. The semantic duplicate is not executed again; no patch is ready. |
+| `providerfailure` | Exit 2; `blocked`; one simulated backend process fails; only baseline tests execute; no retry or ready patch. Fixed provider error detail is absent from stdout/stderr. |
+| Invalid driver input | Missing/unknown enum, source/path flags, nonempty or oversized stdin return exit 2 with a fixed error and no receipt. No input chooses source, command, path, credentials or provider. |
+
+All receipts explicitly retain `test_driver_only=true`, `provider_simulator=true`,
+`live_model_calls=0`, top-level `model_calls=0`, zero revenue, false customer
+execution/delivery/production flags and unchanged original fixture bytes.
+`simulated_model_calls` separately labels the component's one/two logical calls;
+the nested session metric is explicitly marked as simulated. A fixed manual
+response passing owned tests is not measured AI effectiveness or held-out accuracy.
+
+The five acceptance tests were first run against a missing driver and failed;
+after adding only the test utility they passed in **1.245 seconds** using
+`python -m unittest tests.test_phase8_repair_process -v`. This is planned test
+infrastructure coverage, not another product defect. These cases do not prove
+real provider transport, live model outage handling, arbitrary customer-code
+isolation, Docker acceptance, or customer/commercial readiness.
+
+The adjacent component check also passed: the existing 17 repair-session unit
+tests plus the five new process tests ran **22 tests in 2.960 seconds**, all
+passing. These 17 unit tests are not relabeled as process acceptance. Backend
+receipts bind each actual child exit code and prompt SHA-256 to the session's
+recorded calls without exposing provider failure details.

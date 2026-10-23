@@ -35,8 +35,8 @@ RUNTIME_NAME = "deepseek_harness_runtime_bin-0.2.1rc2-py3-none-manylinux_2_28_x8
 RUNTIME_SHA = "0a0a4eb85a22cd9339972e6a5ced77a27ec791353a5b220e3e10b8cdbbdeca39"
 RUNTIME_BIN = "deepseek_harness_runtime/runtime/deepseek-harness-sdk-runtime-linux-x64"
 MAX_WHEEL_BYTES = 125_000_000
-MAX_UNCOMPRESSED = 450_000_000
-MAX_MEMBER_BYTES = 300_000_000
+MAX_UNCOMPRESSED = 1_000_000_000
+MAX_MEMBER_BYTES = 850_000_000
 MAX_MEMBERS = 5_000
 
 

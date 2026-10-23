@@ -29,9 +29,13 @@ def statement_grammar(schema,*,compact=False):
         seen.add(line);pattern=props['new']['pattern']
         prefix=pattern[1:pattern.index('[^')]
         if not re.fullmatch(r'(?:[A-Za-z_]\w* = |return )?',prefix):raise ValueError('Trusted statement prefix required')
+        condition=alternative.get('x-owned-unit-kind')=='condition'
+        if condition and prefix:raise ValueError('Condition schema must have no statement prefix')
+        if condition:prefix='('
+        suffix=')"' if condition else '"'
         name='edit'+str(index);names.append(name)
         rules.append(name+' ::= "{" ws '+literal('"line"')+' ws ":" ws '+literal(str(line))+
                      ' ws "," ws '+literal('"new"')+' ws ":" ws '+literal('"'+prefix)+
-                     ' atom{1,160} continuation{0,2} '+literal('"')+' ws "}"')
+                     ' atom{1,160} continuation{0,2} '+literal(suffix)+' ws "}"')
     rules.append('edit ::= '+' | '.join(names))
     return '\n'.join(rules)+'\n'

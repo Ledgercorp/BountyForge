@@ -162,6 +162,7 @@
       "tasks_with_completion_request": 3,
       "tasks_with_model_response": 3,
       "total_execution_seconds": 120.753,
+      "unexpected_server_exits": [],
       "valid_patches": 1,
       "verified_repairs": 0
     },
@@ -224,11 +225,12 @@
       "tasks_with_completion_request": 1,
       "tasks_with_model_response": 0,
       "total_execution_seconds": 120.258,
+      "unexpected_server_exits": [],
       "valid_patches": 0,
       "verified_repairs": 0
     }
   ],
-  "receipt_sha256": "140cb576b4536944d80f408a1e026ebe8f7036d1b8b866ea826a0a68b17ee08a",
+  "receipt_sha256": "9ae4d26b3f3dfda82c65f525fd68713ff398779331fc0f3498f10dbae68747cd",
   "record_receipt_sha256": "fe4533227196dd6ab5c60553a7bdd3749f73987317ec90515eaaedbe8ae62d00",
   "run_id": "40007714754"
 }

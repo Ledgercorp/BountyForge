@@ -35,3 +35,16 @@ class ProfiledContextTests(unittest.TestCase):
             with self.assertRaisesRegex(ProfiledInferenceError,'CONTEXT_LIMIT_EXCEEDED'):
                 model._complete_bounded_schema('s','u',150,{},'probe')
             self.assertEqual(post.call_count,2);self.assertEqual(model.last_call['completion_requests'],0)
+
+    def test_condition_schema_is_derived_from_authorized_units_and_stale_usage_is_not_reused(self):
+        import json
+        model=ProfiledStatementModel()
+        payload=json.dumps({'source':'def check(ready):\n    if ready:\n        return 1\n    return 0\n',
+                            'edit_units':[{'line':2,'kind':'condition'}]})
+        with patch.object(model,'_complete_bounded_schema',return_value='{}') as complete:
+            model.complete_line('system',payload)
+        entry=complete.call_args.args[3]['properties']['changes']['items']['anyOf'][0]
+        self.assertEqual(entry['x-owned-unit-kind'],'condition')
+        model.last_call={'completion_requests':1,'completion_tokens':90}
+        with self.assertRaises(ValueError):model.complete_line('system','{invalid}')
+        self.assertEqual(model.last_call['completion_requests'],0)

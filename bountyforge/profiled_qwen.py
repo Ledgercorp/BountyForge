@@ -15,7 +15,7 @@ class ProfiledInferenceError(RuntimeError):
 
 
 class ProfiledStatementModel(NativeStatementModel):
-    protocol='qwen_json_safe_grammar_v8_compact_wire'
+    protocol='qwen_json_safe_grammar_v9_condition_expression'
     compact_wire=True
 
     def __init__(self,*,prompt_token_limit=1898,**kwargs):
@@ -23,9 +23,13 @@ class ProfiledStatementModel(NativeStatementModel):
         super().__init__(**kwargs);self.prompt_token_limit=prompt_token_limit
 
     def complete_line(self,system,user,max_tokens=150):
+        self.last_call={'completion_requests':0,'tokenized_prompt_tokens':None,'input_token_limit':self.prompt_token_limit}
         if (type(user) is not str or len(user.encode())>3600 or type(max_tokens) is not int or not 1<=max_tokens<=150):
             raise ValueError('Bounded statement request required')
         task=json.loads(user);schema=statement_schema(task['source'],task['edit_units'])
+        kinds={u['line']:u['kind'] for u in task['edit_units']}
+        for entry in schema['properties']['changes']['items']['anyOf']:
+            entry['x-owned-unit-kind']=kinds[entry['properties']['line']['const']]
         return self._complete_bounded_schema(COMPACT_SYSTEM,user,max_tokens,schema,self.protocol)
 
     def _post_native(self,path,body):

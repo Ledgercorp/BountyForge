@@ -78,3 +78,18 @@ Phase14 resource-profile evidence proves only a short 7B CPU load/inference
 probe. It does not admit 7B as the repair engine or replace pinned 1.5B assets.
 Both Phase14 experiments are manual-only after measured runs. Do not reuse
 the public development tasks to claim new independent accuracy.
+
+Phase15 adds explicit QWEN_LOCAL profiles: QWEN_1_5B stays default; QWEN_7B is
+experimental and rejects rendered prompts above 700 input tokens. Never fall
+back across profiles. Existing model/runtime checks now bind endpoint props;
+7B requires hard resource caps. The bounded launcher supports explicit 2 or 4
+threads only within observed capacity; aggregate CPU cap stays 180 seconds.
+Model selection persists in SQLite batches without resetting budgets. Optional
+MCP profile arguments are strict enums; CODEX_AGENT has no Qwen model profile.
+
+Four Phase15 measured comparisons produced zero verified repairs. 7B's returned
+proposal was source-rejected; its retry hit the CPU cap. Broader comparisons were
+resource-blocked, not 0/3 model scores. V9 condition-expression generation was
+unit-tested afterward but is unmeasured live. The prepared V5 workflow is manual
+only and not scheduled. Preserve every frozen V1–V4 configuration and original
+artifact. All cases remain developmental; see docs/PHASE15_MODEL_COMPARISON.md.

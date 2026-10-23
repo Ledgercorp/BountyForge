@@ -18,7 +18,8 @@ from bountyforge.repair_intelligence import compact_model_prompt as model_prompt
 from bountyforge.statements import statement_catalog,SYSTEM
 
 CONFIGS={'v1':ROOT/'experiments/phase15/comparison.json','v2':ROOT/'experiments/phase15/comparison-v2.json',
-         'v3':ROOT/'experiments/phase15/comparison-v3.json','v4':ROOT/'experiments/phase15/comparison-v4.json'}
+         'v3':ROOT/'experiments/phase15/comparison-v3.json','v4':ROOT/'experiments/phase15/comparison-v4.json',
+         'v5':ROOT/'experiments/phase15/comparison-v5-unmeasured.json'}
 CASES=('reserve-release','response-normalize','weighted-window')
 CODE_PATHS=('bountyforge/repair_engines.py','bountyforge/model_profiles.py','bountyforge/profiled_qwen.py',
     'bountyforge/local_model_runtime.py','bountyforge/native_qwen.py','bountyforge/qwen_statement_contract.py',
@@ -39,11 +40,11 @@ def verify_experiment(expected,version='v1'):
     budgets={
         'tasks_per_model':3,'attempts_per_task':2,'completion_tokens':150,'request_timeout_seconds':45,
         'context_tokens':2048,'resource_probe_calls_per_model':1,'maximum_completion_requests':14}
-    if version in ('v3','v4'):budgets.update(tasks_per_model=1,resource_probe_calls_per_model=0,maximum_completion_requests=4,input_token_limit=700)
-    if version=='v4':budgets['cpu_threads']=4
+    if version in ('v3','v4','v5'):budgets.update(tasks_per_model=1,resource_probe_calls_per_model=0,maximum_completion_requests=4,input_token_limit=700)
+    if version in ('v4','v5'):budgets['cpu_threads']=4
     if config['model_profiles']!=list(PROFILES) or config['budgets']!=budgets:
         raise ValueError('EXPERIMENT_BUDGET_CHANGED')
-    if config['case_ids']!=(['weighted-window'] if version in ('v3','v4') else list(CASES)) or set(config['code_sha256'])!=set(CODE_PATHS):raise ValueError('BOUNDED_CASES_REQUIRED')
+    if config['case_ids']!=(['weighted-window'] if version in ('v3','v4','v5') else list(CASES)) or set(config['code_sha256'])!=set(CODE_PATHS):raise ValueError('BOUNDED_CASES_REQUIRED')
     for name,sha in config['code_sha256'].items():
         if digest((ROOT/name).read_bytes())!=sha:raise ValueError('EXPERIMENT_IMPLEMENTATION_CHANGED')
     specs={s['id']:s for s in catalog()}
@@ -91,14 +92,14 @@ def main(argv=None):
         if (os.cpu_count() or 0)<threads or mem['MemAvailable']<12*1024**2 or report['host']['disk_free_bytes']<2*1024**3:
             raise RuntimeError('RESOURCE_CAPACITY_UNAVAILABLE')
         queue=OwnedRepairQueue(service_factory=(lambda:RepairService(model_factory=lambda **kw:ProfiledStatementModel(prompt_token_limit=700,**kw)))
-                               if args.experiment in ('v3','v4') else RepairService)
+                               if args.experiment in ('v3','v4','v5') else RepairService)
         prompt=resource_prompt()
         for profile in config['model_profiles']:
             begin=time.monotonic();engine={'model_profile':profile,'status':'BLOCKED','jobs':[]};report['models'].append(engine)
             report['stage']='RESOURCE_ADMISSION';probe={'prompt':strict_json(prompt),'prompt_sha256':digest(prompt.encode())}
             engine['resource_probe']=probe;checkpoint()
             try:
-                if args.experiment in ('v3','v4'):
+                if args.experiment in ('v3','v4','v5'):
                     # Reuse completed pinned resource receipts; narrow both inputs
                     # below failed probes. Every actual request is token-checked.
                     engine['resource_probe']={'completion_requests':0,'metadata':{'completion_requests':0},

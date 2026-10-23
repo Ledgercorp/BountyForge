@@ -28,3 +28,9 @@ class EvidenceAccountingTests(unittest.TestCase):
         attempt=record['models'][0]['jobs'][0]['result']['receipt']['attempts'][0]
         attempt['generation']['raw_response_sha256']='0'*64;attempt['receipt_sha256']=receipt_hash(attempt)
         with self.assertRaisesRegex(ValueError,'AUTONOMOUS_GENERATION_BINDING_REJECTED'):summarize(record)
+
+    def test_actual_cpu_exhaustion_preserves_both_source_rejection_and_failed_retry(self):
+        record=json.loads((Path(__file__).resolve().parents[1]/'evidence/phase15/comparison_40014549114.json').read_bytes())
+        larger=summarize(record)['models'][1]
+        self.assertEqual(larger['failure_categories']['SOURCE_REJECTED'],1)
+        self.assertEqual(larger['failure_categories']['INFERENCE_UNAVAILABLE'],1)

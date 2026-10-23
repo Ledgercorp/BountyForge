@@ -1,8 +1,5 @@
 name: BountyForge Phase15 sequential local model comparison
 on:
-  push:
-    branches: [engineering/revenue-linux-scout-20261021]
-    paths: ['.github/workflows/phase15-model-comparison.yml']
   workflow_dispatch:
     inputs:
       confirm_zero_cost:
@@ -20,8 +17,7 @@ jobs:
     if: >-
       github.repository == 'Ledgercorp/BountyForge' && github.event.repository.private == false &&
       github.ref == 'refs/heads/engineering/revenue-linux-scout-20261021' &&
-      ((github.event_name == 'workflow_dispatch' && inputs.confirm_zero_cost) ||
-       (github.event_name == 'push' && contains(github.event.head_commit.message, '[phase15-qwen-comparison]')))
+      github.event_name == 'workflow_dispatch' && inputs.confirm_zero_cost
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -64,7 +60,7 @@ jobs:
             GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_SHA="$GITHUB_SHA" RUNNER_OS=Linux RUNNER_ARCH=X64 \
             BOUNTYFORGE_PHASE15_FREE_ACK=true LD_LIBRARY_PATH="$pythonLocation/lib" \
             "$pythonLocation/bin/python" -m scripts.phase15_model_comparison \
-            --experiment v4 --experiment-sha256 ef65f2289ce8fa5f44188940c48b85bc21a86b4bc75f8f436621d6de393f1ae3 --output evidence-run/phase15_comparison.json
+            --experiment v5 --experiment-sha256 55a68dc47d3e4125653cf57723b8c3383fd4cfc5f4c44bf86348332188a2e117 --output evidence-run/phase15_comparison.json
       - if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:

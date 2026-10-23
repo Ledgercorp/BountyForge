@@ -1,0 +1,184 @@
+{
+  "additional_spending_usd": 0,
+  "classification": "OWNED_DEVELOPMENT",
+  "commit": "f07aef63522534d08bde3dc193950f6f2ec65791",
+  "completion_requests_total": 4,
+  "default_model_profile": "QWEN_1_5B",
+  "default_replaced": false,
+  "experiment_sha256": "ef65f2289ce8fa5f44188940c48b85bc21a86b4bc75f8f436621d6de393f1ae3",
+  "independent_accuracy": null,
+  "independent_evaluation": false,
+  "inference_spending_usd": 0,
+  "initial_prompt_comparison": {
+    "weighted-window": {
+      "identical_hashes": true,
+      "models_observed": 2
+    }
+  },
+  "input_sha256": "305757a01c7a568ff64e26bcdc5caf5d75fa77cb2ebe6c10081636ef7d144567",
+  "kind": "phase15_verified_development_model_summary",
+  "maximum_completion_requests": 4,
+  "models": [
+    {
+      "admission_usage": {
+        "completion_requests": 0,
+        "completion_tokens": 0,
+        "prompt_tokens": 0
+      },
+      "all_recorded_servers_stopped": true,
+      "blocking_reason": null,
+      "cases": [
+        {
+          "attempts": [
+            {
+              "diagnostic": "Condition requires one Python expression",
+              "failure_kind": "INVALID_PYTHON_FRAGMENT",
+              "new_failing_test_ids": [],
+              "outcome": "SOURCE_REJECTED",
+              "receipt_sha256": "c536f4f59c885e913bbda19b22cdda7c798d86ac7f833af88c6a29a8673ef9c0"
+            },
+            {
+              "diagnostic": "Condition requires one Python expression",
+              "failure_kind": "INVALID_PYTHON_FRAGMENT",
+              "new_failing_test_ids": [],
+              "outcome": "SOURCE_REJECTED",
+              "receipt_sha256": "fedd2cbcf1530f6eeba111fdc5734a9b3d91892411615167506d0f4790b819bb"
+            }
+          ],
+          "case_id": "weighted-window",
+          "client_attempts": 2,
+          "elapsed_seconds": 34.733,
+          "inference_failure": null,
+          "queue_state": "FAILED",
+          "terminal_outcome": "SOURCE_REJECTED",
+          "valid_patches": 0,
+          "verified_repair": false
+        }
+      ],
+      "client_attempts": 2,
+      "configured_tasks": 1,
+      "cpu_measurement_note": "Process CPU counters at last pre-shutdown sample; not host-wide utilization. V1 did not collect CPU time.",
+      "failure_categories": {
+        "SOURCE_REJECTED": 2
+      },
+      "fresh_replay_methods_passed": 0,
+      "inference_seconds": 19.86,
+      "model_profile": "QWEN_1_5B",
+      "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+      "observed_process_cpu_seconds": 80.06,
+      "peak_rss_kib_observed": 1987400,
+      "repair_tokenized_prompt_tokens": [
+        545,
+        623
+      ],
+      "repair_usage": {
+        "completion_requests": 2,
+        "completion_tokens": 115,
+        "prompt_tokens": 1168
+      },
+      "repeated_proposals": 0,
+      "resource_admitted": true,
+      "resource_probe_inference_seconds": null,
+      "resource_probe_tokenized_prompt_tokens": null,
+      "server_load_seconds": [
+        2.027
+      ],
+      "source_rejected": 2,
+      "status": "COMPLETED",
+      "targeted_suites_passed": 0,
+      "tasks_blocked": 0,
+      "tasks_completed": 1,
+      "tasks_not_prepared": 0,
+      "tasks_prepared": 1,
+      "tasks_with_completion_request": 1,
+      "tasks_with_model_response": 1,
+      "total_execution_seconds": 34.739,
+      "unexpected_server_exits": [],
+      "valid_patches": 0,
+      "verified_repairs": 0
+    },
+    {
+      "admission_usage": {
+        "completion_requests": 0,
+        "completion_tokens": 0,
+        "prompt_tokens": 0
+      },
+      "all_recorded_servers_stopped": true,
+      "blocking_reason": "WORKER_BLOCKED",
+      "cases": [
+        {
+          "attempts": [
+            {
+              "diagnostic": "Condition requires one Python expression",
+              "failure_kind": "INVALID_PYTHON_FRAGMENT",
+              "new_failing_test_ids": [],
+              "outcome": "SOURCE_REJECTED",
+              "receipt_sha256": "d49104cc3d12bb2b5e4055b21b672761b46d337b3e95eef1d3d05388db917123"
+            }
+          ],
+          "case_id": "weighted-window",
+          "client_attempts": 2,
+          "elapsed_seconds": 63.576,
+          "inference_failure": "LOCAL_COMPLETION_UNAVAILABLE",
+          "queue_state": "BLOCKED",
+          "terminal_outcome": "INFERENCE_UNAVAILABLE",
+          "valid_patches": 0,
+          "verified_repair": false
+        }
+      ],
+      "client_attempts": 2,
+      "configured_tasks": 1,
+      "cpu_measurement_note": "Process CPU counters at last pre-shutdown sample; not host-wide utilization. V1 did not collect CPU time.",
+      "failure_categories": {
+        "INFERENCE_UNAVAILABLE": 1,
+        "SOURCE_REJECTED": 1
+      },
+      "fresh_replay_methods_passed": 0,
+      "inference_seconds": 44.376,
+      "model_profile": "QWEN_7B",
+      "model_sha256": "509287f78cb4d4cf6b3843734733b914b2c158e43e22a7f4bf5e963800894d3c",
+      "observed_process_cpu_seconds": 179.8,
+      "peak_rss_kib_observed": 8010916,
+      "repair_tokenized_prompt_tokens": [
+        545,
+        622
+      ],
+      "repair_usage": {
+        "completion_requests": 2,
+        "completion_tokens": null,
+        "prompt_tokens": null
+      },
+      "repeated_proposals": 0,
+      "resource_admitted": true,
+      "resource_probe_inference_seconds": null,
+      "resource_probe_tokenized_prompt_tokens": null,
+      "server_load_seconds": [
+        4.01
+      ],
+      "source_rejected": 1,
+      "status": "BLOCKED",
+      "targeted_suites_passed": 0,
+      "tasks_blocked": 1,
+      "tasks_completed": 0,
+      "tasks_not_prepared": 0,
+      "tasks_prepared": 1,
+      "tasks_with_completion_request": 1,
+      "tasks_with_model_response": 1,
+      "total_execution_seconds": 63.586,
+      "unexpected_server_exits": [
+        {
+          "cpu_limit_seconds": 180,
+          "observed_cpu_seconds": 179.8,
+          "peak_rss_kib": 8010916,
+          "server_exit_code": -9,
+          "wall_limit_reached": false
+        }
+      ],
+      "valid_patches": 0,
+      "verified_repairs": 0
+    }
+  ],
+  "receipt_sha256": "cfab8d9233a062f439f1df91bd6756060be43154ac1a3be3c11676d540b416fa",
+  "record_receipt_sha256": "424029966f45f5b14188dcc78aaa4de6218bde8284a4c88cc83dc7c6a7d01988",
+  "run_id": "40014549114"
+}

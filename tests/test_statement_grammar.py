@@ -32,3 +32,13 @@ class StatementGrammarTests(unittest.TestCase):
         original=statement_grammar(self.schema());compact=statement_grammar(self.schema(),compact=True)
         self.assertEqual(original.replace('ws ::= [ \\t\\n\\r]{0,8}','ws ::= ""'),compact)
         self.assertIn('atom{1,160}',compact);self.assertIn('continuation{0,2}',compact)
+
+    def test_condition_units_have_expression_delimiters_without_changing_other_statements(self):
+        schema=self.schema();entry=schema['properties']['changes']['items']['anyOf'][0]
+        entry['properties']['new']['pattern']=r'^[^\r\n]{1,400}$'
+        entry['x-owned-unit-kind']='condition'
+        grammar=statement_grammar(schema,compact=True)
+        condition=next(r for r in grammar.splitlines() if r.startswith('edit0 ::='))
+        self.assertIn('"\\\"("',condition);self.assertIn('")\\\""',condition)
+        returned=next(r for r in grammar.splitlines() if r.startswith('edit1 ::='))
+        self.assertIn('return ',returned)

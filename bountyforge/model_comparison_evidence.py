@@ -46,7 +46,8 @@ def load_record(raw,expected_sha):
     if type(raw) is not bytes or len(raw)>500000 or digest(raw)!=expected_sha:raise ValueError('COMPARISON_DIGEST_REJECTED')
     record=strict_json(raw)
     configs=[p.read_bytes() for p in (ROOT/'experiments/phase15/comparison.json',ROOT/'experiments/phase15/comparison-v2.json',
-                                    ROOT/'experiments/phase15/comparison-v3.json',ROOT/'experiments/phase15/comparison-v4.json') if p.is_file()]
+                                    ROOT/'experiments/phase15/comparison-v3.json',ROOT/'experiments/phase15/comparison-v4.json',
+                                    ROOT/'experiments/phase15/comparison-v5-unmeasured.json') if p.is_file()]
     config_raw=next((r for r in configs if digest(r)==record.get('experiment_sha256')),None)
     if config_raw is None:raise ValueError('FROZEN_EXPERIMENT_NOT_FOUND')
     config=strict_json(config_raw)
@@ -135,7 +136,8 @@ def summarize(record):
                     'receipt_sha256':attempt['receipt_sha256'],'new_failing_test_ids':sorted(
                         set(attempt.get('test_feedback',{}).get('failing_tests',[]))-set(task['baseline_feedback']['failing_tests']))})
             if (result.get('state')=='VERIFIED')!=metrics['verified_repair']:raise ValueError('QUEUE_SUCCESS_CONTRADICTION')
-            if wrapper.get('outcome') and not attempts:categories[wrapper['outcome']]+=1
+            if wrapper.get('outcome') and wrapper['outcome'] not in {a['outcome'] for a in attempts}:
+                categories[wrapper['outcome']]+=1
             if any(type(c.get('response')) is str for c in calls):row['tasks_with_model_response']+=1
             if any(type(c.get('metadata')) is dict and c['metadata'].get('completion_requests')==1 for c in calls):row['tasks_with_completion_request']+=1
             row['tasks_completed']+=result.get('state') in ('FAILED','VERIFIED')
@@ -154,6 +156,8 @@ def summarize(record):
         row['peak_rss_kib_observed']=max((r['peak_rss_kib'] for r in runtimes if r.get('peak_rss_kib') is not None),default=None)
         row['server_load_seconds']=[r.get('load_seconds') for r in runtimes]
         row['all_recorded_servers_stopped']=all(r.get('server_stopped') is True for r in runtimes)
+        row['unexpected_server_exits']=[{k:r.get(k) for k in ('server_exit_code','observed_cpu_seconds','cpu_limit_seconds',
+                                                            'wall_limit_reached','peak_rss_kib')} for r in runtimes if r.get('unexpected_exit')]
         times=[r.get('observed_cpu_seconds') for r in runtimes]
         row['observed_process_cpu_seconds']=round(sum(times),3) if times and all(type(n) in (int,float) for n in times) else None
         row['cpu_measurement_note']='Process CPU counters at last pre-shutdown sample; not host-wide utilization. V1 did not collect CPU time.'

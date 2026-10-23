@@ -1,9 +1,21 @@
 import importlib
 import importlib.util
+import json
 from pathlib import Path
 import unittest
 
 class QwenCanaryTests(unittest.TestCase):
+    def test_actual_local_model_artifact_has_shared_receipt_and_truthful_zero_success(self):
+        from scripts.phase12_qwen_canary import validate_result
+        from bountyforge.repair_engines import receipt_hash
+        path=Path(__file__).resolve().parents[1]/'evidence/phase12/qwen_canary_39943137925.json'
+        data=json.loads(path.read_bytes());validate_result(data['result'])
+        self.assertEqual(data['model_calls'],2)
+        self.assertEqual(data['verified_repairs'],0)
+        self.assertEqual(data['result']['outcome'],'REPEATED_PROPOSAL')
+        receipt=data['result']['verification_receipt']
+        self.assertEqual(receipt['receipt_sha256'],receipt_hash(receipt))
+        self.assertFalse(receipt['independently_verified'])
     def test_canary_budget_admission_and_actual_usage_are_required(self):
         self.assertIsNotNone(importlib.util.find_spec('scripts.phase12_qwen_canary'))
         api=importlib.import_module('scripts.phase12_qwen_canary')

@@ -158,10 +158,11 @@ The original five tool calls, five authorization refusals, controlled process
 termination, reconnection and clean shutdown also passed native Codex client
 acceptance with all ten tools discovered and zero model turns started.
 
-The first full regression caught one stale bootstrap tool-count assertion;
+The first full regression ran 635 tests and caught one stale bootstrap
+tool-count assertion (`test_registered_child_has_isolated_environment_and_actual_mcp_response`);
 it was changed to require the exact ten-tool inventory including the original
-five. No security check was disabled. Current verification/commits and the
-hosted Qwen canary outcome will be appended after CI finishes.
+five. No security check was disabled. The next full suite ran 636 tests with
+nine existing skips and no failures.
 
 No private execution or commercial authority is established. Remaining gates
 include actual unseen evaluation isolation, separately authorized unattended
@@ -192,3 +193,43 @@ tests 6/6. Actual legacy native Codex-client acceptance retained all five valid
 tool calls and five refusals, with controlled termination/reconnection and a
 PATH-only child. Current controlled Docker admission still passes all 20 checks;
 the existing skipped namespace/rootfs suite remains separately unverified.
+
+## Hosted dual-engine evidence
+
+Implementation commit: `9103069bddad81c25dbc0c04c6a71e9d818cd2a8`.
+[Routine PR regression 39943143951](https://github.com/Ledgercorp/BountyForge/actions/runs/39943143951)
+passed 636 Python tests (627 passed, nine existing skips) and all six then-current
+Node dashboard/console checks. The single routine PR workflow remains in use.
+
+[Qwen integration canary 39943137925](https://github.com/Ledgercorp/BountyForge/actions/runs/39943137925)
+completed one owned development task through the new QWEN_LOCAL pathway on
+standard public Ubuntu. The pinned assets and executable identity were verified,
+fresh Docker admission passed, and no inference credentials or paid API were
+available. Real result: **0 verified repairs / 1 task, two calls, 888 prompt
+tokens, 146 completion tokens, 6.736 seconds in model calls and 19.219 seconds
+in the bounded cycle**. The whole hosted job took 45 seconds including setup.
+
+Qwen returned the full function as a replacement for one authorized statement,
+exceeding the statement protocol's physical-line bounds and adding a function
+declaration. Existing validation rejected it as `Unsafe replacement text`.
+The retry returned identical bytes and was classified `REPEATED_PROPOSAL` without
+test execution. Final state is `EXHAUSTED`, never review-ready. A green canary
+means the integration recorded a bounded, truthful result; it does not mean the
+model repaired the defect.
+
+Exact report: `evidence/phase12/qwen_canary_39943137925.json`, SHA-256
+`42d764d7d51a27f1097d5909329b26d0ed02d764fb1b74cd95cea0f6f641d7c4`.
+The owner console and Python receipt validator also consume this actual failed
+Qwen receipt and the actual successful Codex receipts through the same contract.
+The added artifact checks bring the local regression to 637 tests (628 passed,
+nine existing skips) and the Node checks to seven.
+
+The Codex client session took 235.899 seconds end to end, including this active
+agent's reasoning intervals and tool round trips. That is not a measurement of
+model inference time. Active-session token usage remains unavailable. Its three
+generated candidates and the Qwen two-call canary are distinct measurements;
+the fixtures are developmental and this is not an unseen head-to-head study.
+
+No historical frozen evaluation was rerun. Both PRs stay draft; main remains
+`22250921eb50b7a72e0f474b0f3ff329f81b55a8`. No dashboard deployment, production
+activation, recurring repair, customer execution or financial action occurred.

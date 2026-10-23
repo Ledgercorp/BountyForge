@@ -41,3 +41,13 @@ test('owner console verifies hash-bound real receipts and rejects tampered outco
   await assert.rejects(ui.verifyReceipt({...receipt,delivery_authorized:true}));
   await assert.rejects(ui.verifyReceipt({...receipt,state:'DELIVERED'}));
 });
+
+test('the same owner interface verifies the actual failed Qwen receipt without promoting it',async()=>{
+  const ui=require(path.join(root,'dashboard/repair-console.js'));
+  const recording=JSON.parse(fs.readFileSync(path.join(root,'evidence/phase12/qwen_canary_39943137925.json')));
+  const result=await ui.verifyReceipt(recording);
+  assert.equal(result.engine,'QWEN_LOCAL');
+  assert.equal(result.state,'EXHAUSTED');
+  assert.equal(result.independently_verified,false);
+  assert.equal(result.outcome,'REPEATED_PROPOSAL');
+});

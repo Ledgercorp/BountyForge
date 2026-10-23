@@ -1,0 +1,67 @@
+"""Non-executing SDK wheel provenance, extraction and Docker argv tests."""
+import hashlib
+import json
+from pathlib import Path
+import tempfile
+import unittest
+from unittest.mock import patch
+
+from phase17_isolation import IMAGE, IsolationUnavailable
+from phase17_sdk_bootstrap import (
+    RUNTIME_BIN, RUNTIME_NAME, RUNTIME_SHA, SDK_NAME, SDK_SHA,
+    extract_offline_runtime, main, sdk_bootstrap_command,
+)
+
+
+class Phase17NativeSDKTests(unittest.TestCase):
+    def test_release_is_exactly_pinned(self):
+        self.assertRegex(SDK_SHA, r"^[0-9a-f]{64}$")
+        self.assertRegex(RUNTIME_SHA, r"^[0-9a-f]{64}$")
+        self.assertEqual(SDK_NAME, "deepseek_harness_sdk-0.2.1rc2-py3-none-any.whl")
+        self.assertEqual(RUNTIME_NAME, "deepseek_harness_runtime_bin-0.2.1rc2-py3-none-manylinux_2_28_x86_64.whl")
+
+    def test_requires_explicit_opt_in(self):
+        self.assertEqual(main(["--wheel-directory", "/tmp/nonexistent"]), 2)
+
+    def test_rejects_missing_and_wrong_release(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)
+            with self.assertRaisesRegex(IsolationUnavailable, "EXACT_RELEASE_WHEELS"):
+                extract_offline_runtime(path, path / "out")
+            (path / SDK_NAME).write_bytes(b"wrong")
+            (path / RUNTIME_NAME).write_bytes(b"wrong")
+            with self.assertRaisesRegex(IsolationUnavailable, "SHA256_MISMATCH"):
+                extract_offline_runtime(path, path / "out")
+
+    def test_rejects_relative_wheel_dir(self):
+        with self.assertRaisesRegex(IsolationUnavailable, "SDK_WHEEL_DIR_REJECTED"):
+            extract_offline_runtime(Path("relative"), Path("/tmp/new"))
+
+    def test_no_native_sdk_execution_ever_on_host(self):
+        with tempfile.TemporaryDirectory() as directory:
+            p = Path(directory)
+            (p / RUNTIME_BIN).parent.mkdir(parents=True)
+            (p / RUNTIME_BIN).write_bytes(b"not executed")
+            args = sdk_bootstrap_command("/usr/bin/docker", p, "bf-p17-" + "a"*16, p)
+        self.assertEqual(args[-5:], [
+            IMAGE, "/opt/harness/" + RUNTIME_BIN, "--profile", "sdk-minimal",
+            "--dump-default-config",
+        ])
+        self.assertIn("--network=none", args)
+        self.assertIn("--read-only", args)
+        self.assertIn("--cap-drop=ALL", args)
+        self.assertIn("--pull=never", args)
+        self.assertIn("--env=DSH_HOME=/tmp/dsh-home", args)
+        self.assertFalse(any("api_key" in item.lower() for item in args))
+        self.assertEqual(len([x for x in args if x.startswith("--mount=")]), 2)
+        self.assertTrue(all("readonly" in x for x in args if x.startswith("--mount=")))
+
+    def test_sdk_root_must_be_known(self):
+        with tempfile.TemporaryDirectory() as directory:
+            p = Path(directory)
+            with self.assertRaisesRegex(IsolationUnavailable, "SDK_NATIVE_ROOT_REJECTED"):
+                sdk_bootstrap_command("/usr/bin/docker", p, "bf-p17-"+"a"*16, p)
+
+
+if __name__ == "__main__":
+    unittest.main()

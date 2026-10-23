@@ -1,0 +1,20 @@
+# Model-free Phase17 profile inspection only. Upstream SDK release 0.2.1rc2.
+# This is a second-layer capability restriction, NOT a sandbox.
+# Whole-process confinement remains mandatory for every future agent launch.
+- id: persistent-bash
+  disabled: true
+- id: persistent-pwsh
+  disabled: true
+- id: terminal-bash
+  disabled: true
+- id: terminal-pwsh
+  disabled: true
+- id: tool-fs
+  disabled: true
+- id: tool-working-directory
+  disabled: true
+- id: session-log-deepseek
+  config:
+    enabled: false
+- id: mcp-resources
+  disabled: true

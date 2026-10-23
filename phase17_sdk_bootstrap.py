@@ -298,10 +298,27 @@ def sanitized_boot_diagnostic(raw):
         "sandbox-policy", "sandbox", "sessions", "llm-deepseek",
         "terminal-bash", "tool-working-directory", "mcp-resources",
     )
+    # No inherited credentials exist inside this child. Never disclose raw
+    # stderr anyway: scrub absolute paths, URL text, email addresses, control
+    # bytes and long opaque tokens; retain a bounded diagnostic excerpt only.
+    excerpts = []
+    for line in source.splitlines()[:24]:
+        if not line.strip():
+            continue
+        redacted = re.sub(r"https?://\S+|(?:/[^\s:'\"]+)+", "<path>", line)
+        redacted = re.sub(r"\b\S+@\S+\.\S+\b", "<email>", redacted)
+        redacted = re.sub(r"\b[A-Za-z0-9_+/=-]{40,}\b", "<opaque>", redacted)
+        redacted = re.sub(r"[^a-z0-9 _.,:;(){}\[\]?!'\"-]", " ", redacted)
+        redacted = re.sub(r"\s+", " ", redacted).strip()[:160]
+        if redacted:
+            excerpts.append(redacted)
+        if len(excerpts) >= 12:
+            break
     return {
         "kind": "PHASE18_SANITIZED_SDK_BOOT_DIAGNOSTIC",
         "signature": [k for k,p in signatures.items() if re.search(p, source)],
         "plugin_ids": [key for key in known if key in source],
+        "redacted_excerpt": excerpts,
         "stderr_sha256": hashlib.sha256(raw[:32768]).hexdigest(),
         "stderr_bytes_captured": len(raw),
         "truncated": len(raw) > 32768,

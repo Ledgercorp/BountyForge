@@ -278,6 +278,9 @@ def confirm_hardened_sdk_server(docker, workspace, native):
         IMAGE, "/opt/harness/" + RUNTIME_BIN, "--profile", "sdk-minimal",
         "--patch", "/workspace/hardened.patch.yml",
     ]
+    # SDK JSON-RPC lives on newline-delimited stdio. Docker without -i closes
+    # the container's stdin before the host can deliver initialize/shutdown.
+    cmd.insert(cmd.index(IMAGE), "-i")
     try:
         child = subprocess.Popen(
             cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,

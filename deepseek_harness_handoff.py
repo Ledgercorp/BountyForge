@@ -48,6 +48,23 @@ def _check_prepared_task(task):
     for name in ("source_sha256", "tests_sha256"):
         if type(task.get(name)) is not str or not _HEX64.fullmatch(task[name]):
             raise HarnessHandoffRejected("MISSING_OWNED_HASH_BINDING")
+    if (task.get("classification") != "OWNED_DEVELOPMENT"
+            or task.get("independent_evaluation") is not False
+            or task.get("customer_execution_authorized") is not False
+            or task.get("delivery_authorized") is not False
+            or task.get("state") not in ("AWAITING_CODEX_CANDIDATE", "REVISION_REQUIRED")
+            or task.get("max_attempts") != 2):
+        raise HarnessHandoffRejected("OWNED_DEVELOPMENT_BOUNDARY_REQUIRED")
+    source = task.get("source")
+    if type(source) is not str:
+        raise HarnessHandoffRejected("MISSING_OWNED_SOURCE")
+    try:
+        source_raw = source.encode("utf-8", "strict")
+    except UnicodeError:
+        raise HarnessHandoffRejected("INVALID_OWNED_SOURCE") from None
+    if (len(source_raw) > 12_000
+            or hashlib.sha256(source_raw).hexdigest() != task["source_sha256"]):
+        raise HarnessHandoffRejected("OWNED_SOURCE_HASH_MISMATCH")
     lines = task.get("editable_lines")
     if (type(lines) is not list or not lines or len(lines) > 200
             or any(type(line) is not int or line <= 0 for line in lines)

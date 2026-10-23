@@ -69,6 +69,9 @@ class OwnedRepairQueue:
                            'attempts INTEGER NOT NULL DEFAULT 0, token TEXT, expires REAL, '
                            'deadline REAL, proposals TEXT NOT NULL DEFAULT \'[]\', receipt TEXT, '
                            'outcome TEXT)')
+                db.execute('CREATE TABLE IF NOT EXISTS owned_attempt_receipts (job_id TEXT, '
+                           'reserved_through INTEGER, result TEXT, previous_sha256 TEXT, '
+                           'entry_sha256 TEXT, PRIMARY KEY(job_id,reserved_through))')
         except (OSError,sqlite3.Error):raise RepairRejected('OWNED_QUEUE_UNAVAILABLE') from None
 
     @contextmanager
@@ -77,7 +80,7 @@ class OwnedRepairQueue:
             info=path.lstat()
             if (info.st_uid!=os.getuid() or info.st_mode & 0o077
                     or not (stat.S_ISDIR(info.st_mode) if directory else stat.S_ISREG(info.st_mode))
-                    or (not directory and (info.st_nlink!=1 or info.st_size>2_000_000))):
+                    or (not directory and (info.st_nlink!=1 or info.st_size>8_000_000))):
                 raise RepairRejected('OWNED_QUEUE_PRIVACY_OR_SIZE_REJECTED')
         db=sqlite3.connect(self.path,timeout=2,isolation_level=None)
         db.row_factory=sqlite3.Row
@@ -216,12 +219,37 @@ class OwnedRepairQueue:
                    else 'FAILED' if row['attempts']>=MAX_ATTEMPTS or receipt.get('state')=='EXHAUSTED' else 'LEASED')
             raw=encoded(result).decode()
             if len(raw.encode())>100000:raise RepairRejected('QUEUE_RESULT_BUDGET_EXCEEDED')
+            history=self._history(db,job_id)
+            previous=history[-1]['entry_sha256'] if history else None
+            entry={'job_id':job_id,'reserved_through':row['attempts'],'result_sha256':digest(raw.encode()),
+                   'previous_sha256':previous}
+            db.execute('INSERT INTO owned_attempt_receipts VALUES(?,?,?,?,?)',
+                       (job_id,row['attempts'],raw,previous,digest(encoded(entry))))
             db.execute('UPDATE owned_jobs SET state=?,receipt=?,outcome=?,token=?,expires=? WHERE id=?',
                        (state,raw,result.get('outcome'),lease_token if state=='LEASED' else None,
                         row['expires'] if state=='LEASED' else None,job_id))
         if state!='LEASED':self.sessions.pop(job_id,None)
         return {'job_id':job_id,'state':state,'attempts_used':row['attempts'],'receipt':result,
                 'independent_evaluation':False,'delivery_authorized':False}
+
+    def _history(self,db,job_id):
+        rows=db.execute('SELECT * FROM owned_attempt_receipts WHERE job_id=? ORDER BY reserved_through',
+                        (job_id,)).fetchall()
+        if len(rows)>MAX_ATTEMPTS:raise RepairRejected('QUEUE_HISTORY_CORRUPT')
+        previous=None;history=[]
+        for row in rows:
+            raw=row['result']
+            if type(raw) is not str or len(raw.encode())>100000:raise RepairRejected('QUEUE_HISTORY_CORRUPT')
+            entry={'job_id':job_id,'reserved_through':row['reserved_through'],
+                   'result_sha256':digest(raw.encode()),'previous_sha256':previous}
+            if row['previous_sha256']!=previous or row['entry_sha256']!=digest(encoded(entry)):
+                raise RepairRejected('QUEUE_HISTORY_CORRUPT')
+            result=strict_json(raw);receipt=result.get('verification_receipt',result)
+            history.append({'reserved_through':row['reserved_through'],'outcome':result.get('outcome'),
+                            'receipt_sha256':receipt.get('receipt_sha256'),
+                            'entry_sha256':row['entry_sha256']})
+            previous=row['entry_sha256']
+        return history
 
     def submit(self,batch_id,job_id,lease_token,revision,proposal):
         # Validate session revision before reserving durable execution budget.
@@ -260,6 +288,7 @@ class OwnedRepairQueue:
         with self._db() as db:
             batch=self._batch(db,batch_id);self._expire(db)
             jobs=[dict(row) for row in db.execute('SELECT id,case_id,state,claims,attempts,outcome,receipt FROM owned_jobs WHERE batch=? ORDER BY rowid',(batch_id,))]
+            for job in jobs:job['attempt_history']=self._history(db,job['id'])
         for job in jobs:
             raw=job.pop('receipt')
             if job['state']=='VERIFIED':

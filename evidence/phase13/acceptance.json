@@ -19,6 +19,11 @@
   "codex_requires_active_session": true,
   "commercial_launch_authorized": false,
   "cross_cloud_session_storage_verified": false,
+  "durable_history_docker_replay": {
+    "checks": 4,
+    "new_model_generations": 0,
+    "passed": 4
+  },
   "external_operations": [
     "Read-only GitHub metadata and official documentation",
     "Draft branch evidence publication"
@@ -27,7 +32,10 @@
     "blackbox_acceptance.json": "b9bb47a50794ef68509d30f71981fa4092dd15c443c6c5a8f10248aaca4c931a",
     "codex_queue_session.json": "42a7be644b2f566276f1205959aa25600f5a26bc23e69f440ba3210d68f5b488",
     "environment_admission.json": "685c51f74c72ffd4230518ebcc2b3b7f7a1fbca426170c2cfc6b833cde901cc2",
+    "history_replay.json": "2f2d0e3b7ab639c91f90af788263de1817c53697efb625eaf00dcceabf4243d8",
     "independent_replay.json": "a3c68f7060588773865f15f4a75e1a334d9e13c0f4c5412497c0398af97bac33",
+    "legacy_mcp_compatibility.json": "58228364d1669dcac9f2ce65e8263568b9a3a1758315dcaa500bc7be3c58395b",
+    "qwen_contract_39947581082.json": "73eaeabbfc8de3777e594aa1e661be448ddb3a799da7fae8f219459422f960df",
     "restart_status.json": "375c3e6f05beb45d07cb324181db7caaed71a919afb271131c8f3272c2fadbd4"
   },
   "frozen_core_unchanged": true,
@@ -36,12 +44,28 @@
     "failed": 0,
     "passed": 10
   },
-  "independent_unseen_accuracy": null,
-  "kind": "phase13_engineering_acceptance",
-  "local_regression": {
+  "hosted_implementation_regression": {
+    "commit": "2b0272df2975994eddff59d788a93b32c7fbadbd",
     "executed": 659,
     "failed": 0,
+    "node_passed": 7,
     "passed": 650,
+    "run_id": 39947588324,
+    "skipped": 9
+  },
+  "implementation_commit": "2b0272df2975994eddff59d788a93b32c7fbadbd",
+  "independent_unseen_accuracy": null,
+  "kind": "phase13_engineering_acceptance",
+  "legacy_native_mcp_compatibility": {
+    "model_turns": 0,
+    "reconnected": true,
+    "refusals": 5,
+    "valid_calls": 5
+  },
+  "local_regression": {
+    "executed": 662,
+    "failed": 0,
+    "passed": 653,
     "skipped": 9
   },
   "native_mcp_blackbox": {
@@ -56,7 +80,24 @@
   },
   "private_execution_admitted": false,
   "production_deployed": false,
-  "qwen_comparison_status": "Prepared, live evidence pending",
+  "qwen_comparison_status": "COMPLETED",
+  "qwen_development_comparison": {
+    "completion_tokens": 82,
+    "distinct_tasks": 1,
+    "experiment_seconds": 33.686,
+    "hosted_job_seconds": 55,
+    "improvement_demonstrated": false,
+    "inference_seconds": 13.715,
+    "max_allowed_calls": 4,
+    "model_api_cost_usd": 0,
+    "model_calls": 2,
+    "prompt_tokens": 692,
+    "protocols": 2,
+    "rejected_proposals": 0,
+    "run_id": 39947581082,
+    "unauthorized_file_changes": 0,
+    "verified_repairs_per_protocol": "1/1"
+  },
   "revenue_usd": 0,
   "scheduling_active": false,
   "unattended_codex_admitted": false

@@ -117,6 +117,20 @@ class QueueTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'QUEUE_RECEIPT_CORRUPT'):
             self.q.status('trial')
 
+    def test_failed_attempt_receipts_survive_later_attempts_and_restart(self):
+        first=self.claim();one=self.submit(first)
+        two=self.submit(first,1,{'changes':[{'line':4,'new':'denominator = 124'}]})
+        history=self.factory().status('trial')['jobs'][0]['attempt_history']
+        self.assertEqual([entry['receipt_sha256'] for entry in history],
+                         [one['receipt']['receipt_sha256'],two['receipt']['receipt_sha256']])
+        self.assertEqual([entry['outcome'] for entry in history],['TEST_FAILED','TEST_FAILED'])
+
+    def test_corrupted_attempt_history_is_refused(self):
+        first=self.claim();self.submit(first)
+        with self.q._db() as db:
+            db.execute('UPDATE owned_attempt_receipts SET result=? WHERE job_id=?',('{}',first['job_id']))
+        with self.assertRaisesRegex(ValueError,'QUEUE_HISTORY_CORRUPT'):self.factory().status('trial')
+
     def test_restart_requires_new_preparation_not_caller_supplied_completion(self):
         first=self.claim();restarted=self.factory()
         with self.assertRaisesRegex(ValueError,'SESSION_CAPABILITY_LOST'):

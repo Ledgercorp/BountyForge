@@ -105,6 +105,37 @@ paid fallback or automatic historical benchmark rerun. Live measurement is
 reported separately when evidence is available; an offline schema test alone
 does not establish improved model repair accuracy.
 
+Actual hosted result at implementation commit
+`2b0272df2975994eddff59d788a93b32c7fbadbd`:
+[Qwen comparison 39947581082](https://github.com/Ledgercorp/BountyForge/actions/runs/39947581082).
+Both protocols repaired `optional-setting` on their first call with the same
+model-generated patch. Each passed six targeted tests and six fresh replay
+tests; neither produced a rejected proposal or unauthorized change. This is one
+development case measured twice, **1/1 per protocol**, not two independent tasks
+or evidence of an accuracy improvement.
+
+| Protocol | Calls | Prompt tokens | Completion tokens | Model seconds | Cycle seconds |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| legacy_line_schema | 1 | 322 | 41 | 6.518 | 7.299 |
+| qwen_statement_schema_v2 | 1 | 370 | 41 | 7.197 | 7.977 |
+
+Total: two calls (four allowed), 692 prompt and 82 completion tokens, 13.715
+seconds in inference, 33.686 seconds including both admission/preparation cycles,
+55 seconds for the whole standard public Ubuntu job. No paid provider or model
+credentials were used. Model/runtime/image pins are the existing Phase12 pins.
+Exact artifact: `evidence/phase13/qwen_contract_39947581082.json`, SHA-256
+`73eaeabbfc8de3777e594aa1e661be448ddb3a799da7fae8f219459422f960df`.
+The real Qwen receipts also pass the same queue integrity checker as Codex's.
+Successful available-runtime Qwen inference was measured through RepairService;
+native Qwen queue acceptance measured the unavailable-runtime refusal. A live
+successful Qwen queue job has not separately been measured.
+
+The v2 generation adapter deliberately offers a one-physical-line subset of the
+existing statement protocol. Codex's multiline interface and the original Qwen
+client remain intact. The small comparison provides no evidence of improved
+repair accuracy or lower inference cost; v2 used 48 more prompt tokens here.
+Phase11's exposed 0/20 and Phase12's failed canary remain unchanged.
+
 ## Acceptance and unseen evaluation
 
 The native Codex MCP Black Box run passed 22 checks: exact tool discovery,
@@ -153,3 +184,30 @@ passed 10/10 model-free tests; the owner-console/dashboard Node suite passed
 7/7. Frozen core pins and evaluation files remain unchanged. The skipped
 namespace/rootfs checks were not completed by Docker admission. Structured
 counts and artifact hashes are in `evidence/phase13/acceptance.json`.
+
+[Hosted implementation regression 39947588324](https://github.com/Ledgercorp/BountyForge/actions/runs/39947588324)
+confirmed the same 659 tests (650 passed, nine skipped), zero failures, and all
+seven Node checks at `2b0272df2975994eddff59d788a93b32c7fbadbd`.
+The original five MCP operations and five authorization refusals additionally
+passed through a fresh real Codex client, including process termination and
+reconnection; `legacy_mcp_compatibility.json` preserves that result. No original
+evidence was overwritten.
+
+Final review reproduced one durable-evidence defect in the initial queue:
+completing a later proposal overwrote the previous receipt in its status row.
+The public MCP transcript retained both, but local database history did not.
+The corrected adapter appends complete results in a separate per-job receipt
+history, with reservation ordinals and a hash chain, while retaining the latest
+status view. Restarted status validates that history and exposes bounded receipt
+summaries; corrupted entries fail closed. Existing pre-history records are
+preserved as legacy records, without invented earlier history. The backing file
+is bounded to 8 MB and remains private and gitignored.
+
+A separate credential-free Docker acceptance replayed one deliberately wrong
+proposal followed by the already-recorded Codex candidate. It passed all four
+checks: failure remained failed, the recorded candidate required fresh passing
+verification, both receipts survived restart, and corrupted history was refused.
+`history_replay.json` contains the receipts. This generated no new repair and
+starts no model calls. The final local suite executed **662 tests: 653 passed,
+nine existing skips, zero failures**; Node checks remain 7/7. The increment from
+659 includes a real-Qwen-artifact contract check and two history regressions.

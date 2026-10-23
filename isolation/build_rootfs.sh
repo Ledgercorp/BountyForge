@@ -16,5 +16,5 @@ for library in libm.so.6 libz.so.1 libexpat.so.1 libc.so.6; do
 done
 cp -L /lib64/ld-linux-x86-64.so.2 "$root/lib64/ld-linux-x86-64.so.2"
 cc -O2 -Wall -Wextra "$(dirname "$0")/capdrop.c" -o "$root/usr/bin/bf-safe-python"
-chmod -R a-w "$root/usr"
+chmod -R a-w "$root/usr" "$root/lib" "$root/lib64"
 echo 'Built offline Python 3.13 Linux namespace rootfs. Validate with separate probes before use.'

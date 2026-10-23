@@ -1,0 +1,3 @@
+Run39882300128; head a382a74a3e5b85285ddbe2caba2b9e0375262e10
+research-only	Full Python regression plus revenue, Groq and Stripe gates	2026-10-23T01:09:11.7338864Z Ran 589 tests in 26.836s
+research-only	Full Python regression plus revenue, Groq and Stripe gates	2026-10-23T01:09:11.7339315Z OK (skipped=9)

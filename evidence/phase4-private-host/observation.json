@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "kind": "private_linux_host_observation_review",
+  "date_utc": "2026-10-22",
+  "source_commit": "f83e6eb880ed79b2f8be3abbcc857e6ed588af77",
+  "run_url": "https://github.com/Ledgercorp/BountyForge/actions/runs/39711726776",
+  "run_id": 39711726776,
+  "artifact_id": 12397507301,
+  "test_results": {
+    "total": 425,
+    "passed": 417,
+    "existing_skips": 8,
+    "failed": 0
+  },
+  "report": {
+    "observed_host_prerequisites_passed": false,
+    "failed_observations": [
+      "cpu_quota_usec",
+      "memory_max_bytes",
+      "memory_swap_max_bytes",
+      "no_new_privileges",
+      "owned_namespace_probe_passed",
+      "pids_max",
+      "seccomp_filter"
+    ],
+    "private_execution_admitted": false,
+    "customer_code_authorized": false,
+    "rootfs_provenance_attested": false,
+    "source_custody_authorized": false,
+    "production_host_admitted": false
+  },
+  "important_qualifiers": {
+    "namespace_probe_attempted": false,
+    "proof_of_new_namespace_denial": false,
+    "effective_cgroup_ancestry_measured": false,
+    "per_job_docker_limits_measured": false,
+    "fresh_payment_verified": false,
+    "third_party_execution_permitted": false
+  },
+  "workflow": {
+    "automated_trigger": "pull_request_only",
+    "duplicate_push_ci_removed": true
+  },
+  "resource_changes": {
+    "model_calls": 0,
+    "customer_source_bytes": 0,
+    "confirmed_payable_prospects": 0,
+    "additional_spending_usd": 0,
+    "external_submissions": 0,
+    "production_changes": 0
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "kind": "single_owned_staging_fix_validation",
+  "case_id": "stock_admission",
+  "root_mode": "0o755",
+  "tests_mode": "0o755",
+  "baseline": {
+    "passed": false,
+    "exit_code": 1,
+    "timeout": false,
+    "output": "======================================================================\nFAIL: test_empty_no_request (test_regression.MaintenanceContract.test_empty_no_request)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 18, in test_empty_no_request\n    self.assertTrue(can_reserve(0, 0))\nAssertionError: False is not true\n\n======================================================================\nFAIL: test_exact_stock (test_regression.MaintenanceContract.test_exact_stock)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 9, in test_exact_stock\n    self.assertTrue(can_reserve(8, 8))\nAssertionError: False is not true\n\n----------------------------------------------------------------------\nRan 7 tests in 0.000s\n\nFAILED (failures=2)\n",
+    "seconds": 3.787,
+    "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+  },
+  "scope": [
+    2,
+    3,
+    4
+  ],
+  "prompt_bytes": 1869,
+  "inference_calls": 0,
+  "accuracy": null
+}

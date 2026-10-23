@@ -85,6 +85,57 @@ def normalize_source_indentation(content: str, original_line: str) -> str:
     return "\n".join(out) + ("\n" if original_line.endswith("\n") else "")
 
 
+def validate_source_change(original: str, revised: str, path: str) -> None:
+    """Shared syntax/capability/declaration checks; never executes source."""
+    if len(revised.encode("utf-8")) > 12000:
+        raise DraftRejected("Result exceeds review size limit")
+    try:
+        revised_tree = ast.parse(revised, filename=path)
+        original_tree = ast.parse(original, filename=path)
+        # Compile without execution: ast.parse alone accepts context-invalid
+        # return/break/await statements outside their enclosing constructs.
+        compile(revised, path, 'exec', dont_inherit=True)
+    except SyntaxError as exc:
+        raise DraftRejected("Proposed Python source does not parse") from exc
+    # Syntax and location alone cannot admit a new execution capability. This
+    # narrow profile may correct numeric/text expressions, but must not add
+    # imports, dynamic lookup, file/process APIs or fresh callable objects.
+    from collections import Counter
+    before_nodes=list(ast.walk(original_tree))
+    after_nodes=list(ast.walk(revised_tree))
+    for kind in (ast.Import, ast.ImportFrom, ast.Lambda, ast.Global, ast.Nonlocal):
+        before_count=Counter(ast.dump(n,include_attributes=False) for n in before_nodes if isinstance(n,kind))
+        after_count=Counter(ast.dump(n,include_attributes=False) for n in after_nodes if isinstance(n,kind))
+        if after_count-before_count:
+            raise DraftRejected('New execution capability outside bounded profile')
+    safe_builtins={'abs','float','int','len','list','tuple','dict','set','sorted',
+                   'reversed','range','enumerate','zip','round','max','min','sum',
+                   'str','bool','isinstance','all','any'}
+    existing_calls={n.func.id for n in before_nodes if isinstance(n,ast.Call) and isinstance(n.func,ast.Name)}
+    existing_attributes={n.attr for n in before_nodes if isinstance(n,ast.Attribute)}
+    forbidden={'__import__','eval','exec','compile','open','globals','locals','vars',
+               'getattr','setattr','delattr','input','breakpoint','help'}
+    for node in after_nodes:
+        if isinstance(node,ast.Name) and (node.id in forbidden or node.id.startswith('__')):
+            raise DraftRejected('Dynamic or filesystem capability prohibited')
+        if isinstance(node,ast.Attribute) and (node.attr.startswith('__') or node.attr not in existing_attributes):
+            raise DraftRejected('New attribute capability outside approved source')
+        if isinstance(node,ast.Call):
+            if isinstance(node.func,ast.Name):
+                if node.func.id not in safe_builtins|existing_calls:
+                    raise DraftRejected('New callable outside approved source')
+            elif not isinstance(node.func,ast.Attribute):
+                raise DraftRejected('Dynamic call target prohibited')
+    # Reject syntactically valid edits that insert misplaced definitions.
+    declarations = (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
+    before = [(type(n).__name__, n.name) for n in ast.walk(original_tree)
+              if isinstance(n, declarations)]
+    after = [(type(n).__name__, n.name) for n in ast.walk(revised_tree)
+             if isinstance(n, declarations)]
+    if before != after:
+        raise DraftRejected("Line edit changed function or class declarations")
+
+
 def stage_lines(raw: str, workspace: Path, approved_path: str,
                 editable_lines: list[int], source_sha256: str) -> dict:
     """Verify model changes without writing or executing any source file."""
@@ -127,50 +178,7 @@ def stage_lines(raw: str, workspace: Path, approved_path: str,
             raise DraftRejected("No-op replacement")
         lines[number - 1] = replacement
     revised = "".join(lines)
-    if len(revised.encode("utf-8")) > 12000:
-        raise DraftRejected("Result exceeds review size limit")
-    try:
-        revised_tree = ast.parse(revised, filename=path)
-        original_tree = ast.parse(original, filename=path)
-    except SyntaxError as exc:
-        raise DraftRejected("Proposed Python source does not parse") from exc
-    # Syntax and location alone cannot admit a new execution capability. This
-    # narrow profile may correct numeric/text expressions, but must not add
-    # imports, dynamic lookup, file/process APIs or fresh callable objects.
-    from collections import Counter
-    before_nodes=list(ast.walk(original_tree))
-    after_nodes=list(ast.walk(revised_tree))
-    for kind in (ast.Import, ast.ImportFrom, ast.Lambda, ast.Global, ast.Nonlocal):
-        before_count=Counter(ast.dump(n,include_attributes=False) for n in before_nodes if isinstance(n,kind))
-        after_count=Counter(ast.dump(n,include_attributes=False) for n in after_nodes if isinstance(n,kind))
-        if after_count-before_count:
-            raise DraftRejected('New execution capability outside bounded profile')
-    safe_builtins={'abs','float','int','len','list','tuple','dict','set','sorted',
-                   'reversed','range','enumerate','zip','round','max','min','sum',
-                   'str','bool','isinstance','all','any'}
-    existing_calls={n.func.id for n in before_nodes if isinstance(n,ast.Call) and isinstance(n.func,ast.Name)}
-    existing_attributes={n.attr for n in before_nodes if isinstance(n,ast.Attribute)}
-    forbidden={'__import__','eval','exec','compile','open','globals','locals','vars',
-               'getattr','setattr','delattr','input','breakpoint','help'}
-    for node in after_nodes:
-        if isinstance(node,ast.Name) and (node.id in forbidden or node.id.startswith('__')):
-            raise DraftRejected('Dynamic or filesystem capability prohibited')
-        if isinstance(node,ast.Attribute) and (node.attr.startswith('__') or node.attr not in existing_attributes):
-            raise DraftRejected('New attribute capability outside approved source')
-        if isinstance(node,ast.Call):
-            if isinstance(node.func,ast.Name):
-                if node.func.id not in safe_builtins|existing_calls:
-                    raise DraftRejected('New callable outside approved source')
-            elif not isinstance(node.func,ast.Attribute):
-                raise DraftRejected('Dynamic call target prohibited')
-    # Reject syntactically valid edits that insert misplaced definitions.
-    declarations = (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
-    before = [(type(n).__name__, n.name) for n in ast.walk(original_tree)
-              if isinstance(n, declarations)]
-    after = [(type(n).__name__, n.name) for n in ast.walk(revised_tree)
-             if isinstance(n, declarations)]
-    if before != after:
-        raise DraftRejected("Line edit changed function or class declarations")
+    validate_source_change(original, revised, path)
     diff = "".join(difflib.unified_diff(
         physical_lines(original, keepends=True), physical_lines(revised, keepends=True),
         fromfile="a/" + path, tofile="b/" + path,
@@ -195,7 +203,7 @@ def propose_lines(issue: dict, workspace: Path, approved_path: str,
     original = _verify_existing(Path(workspace), path)
     approved = _approved_lines(original, editable_lines)
     digest = hashlib.sha256(original.encode('utf-8')).hexdigest()
-    if issue.get('repair_protocol') in {'ast_contract_v5', 'ast_contract_v6'}:
+    if issue.get('repair_protocol') in {'ast_contract_v5', 'ast_contract_v6', 'ast_contract_v7'}:
         from bountyforge.repair_context import build_prompt, DIAGNOSIS_SYSTEM
         diagnose = issue.get('repair_protocol') == 'ast_contract_v6'
         system, prompt = build_prompt(original, path, approved, issue, budget=3000 if diagnose else 3600)
@@ -220,6 +228,14 @@ def propose_lines(issue: dict, workspace: Path, approved_path: str,
             if len(prompt.encode()) > 3600:
                 raise DraftRejected('Diagnosis context exceeds inference budget')
         response = model.complete_line(system, prompt, max_tokens=150)
+        if (issue.get('repair_protocol') == 'ast_contract_v7' and issue.get('previous_proposal')
+                and issue.get('previous_proposal_rejected', True) is True):
+            try:
+                repeated = json.loads(response) == json.loads(issue['previous_proposal'])
+            except (ValueError, TypeError):
+                repeated = response == issue['previous_proposal']
+            if repeated:
+                raise DraftRejected('Repeated rejected proposal; no candidate execution')
         result = stage_lines(response, workspace, path, narrowed, digest)
         return {**result, 'source_issue': str(issue.get('url', ''))[:300],
                 'model': 'local-only', 'review_required': True}

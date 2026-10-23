@@ -1,0 +1,236 @@
+{
+  "additional_spending_usd": 0,
+  "classification": "OWNED_DEVELOPMENT",
+  "commit": "e3b359e6d1adbe16c6eb35674ae22e1ae662c5e1",
+  "completion_requests_total": 9,
+  "default_model_profile": "QWEN_1_5B",
+  "default_replaced": false,
+  "experiment_sha256": "02969e646c0a5fc5df1c34e2d4c484d38c1e02d2c4e095366d205224ac3b36b1",
+  "independent_accuracy": null,
+  "independent_evaluation": false,
+  "inference_spending_usd": 0,
+  "initial_prompt_comparison": {
+    "reserve-release": {
+      "identical_hashes": true,
+      "models_observed": 2
+    },
+    "response-normalize": {
+      "identical_hashes": true,
+      "models_observed": 1
+    },
+    "weighted-window": {
+      "identical_hashes": true,
+      "models_observed": 1
+    }
+  },
+  "input_sha256": "6d6711e76326378c1f6e8122d65f2d9cefa405ca3a2b9762aff8016b785a3829",
+  "kind": "phase15_verified_development_model_summary",
+  "maximum_completion_requests": 14,
+  "models": [
+    {
+      "admission_usage": {
+        "completion_requests": 1,
+        "completion_tokens": 30,
+        "prompt_tokens": 929
+      },
+      "all_recorded_servers_stopped": true,
+      "blocking_reason": null,
+      "cases": [
+        {
+          "attempts": [
+            {
+              "diagnostic": "Replacement reads local before its existing binding: event",
+              "failure_kind": "INVALID_LOCAL_BINDING",
+              "new_failing_test_ids": [],
+              "outcome": "SOURCE_REJECTED",
+              "receipt_sha256": "30cd13f53927fea8324bb7f531ccacd70c41e285f6e6ddc5d6c54dafdb022c76"
+            },
+            {
+              "diagnostic": "Identical prior proposal; no test executed",
+              "failure_kind": "REPEATED_PROPOSAL",
+              "new_failing_test_ids": [],
+              "outcome": "REPEATED_PROPOSAL",
+              "receipt_sha256": "8044053ba58e6b5d95082eb2130b8e7d7bb5cda69ab1c09bef86966bcd90f163"
+            }
+          ],
+          "case_id": "reserve-release",
+          "client_attempts": 2,
+          "elapsed_seconds": 36.757,
+          "inference_failure": null,
+          "queue_state": "FAILED",
+          "terminal_outcome": "REPEATED_PROPOSAL",
+          "valid_patches": 0,
+          "verified_repair": false
+        },
+        {
+          "attempts": [
+            {
+              "diagnostic": "Owned regression failed; follow the public repair contract",
+              "failure_kind": "TEST_FAILED",
+              "new_failing_test_ids": [],
+              "outcome": "TEST_FAILED",
+              "receipt_sha256": "dc3307077a8cae1be649f78687710bda3365446ac5c0deb12bdb318ec6f473b5"
+            },
+            {
+              "diagnostic": "Equivalent prior AST candidate; no test executed",
+              "failure_kind": "REPEATED_PROPOSAL",
+              "new_failing_test_ids": [],
+              "outcome": "REPEATED_PROPOSAL",
+              "receipt_sha256": "c5195f7ab28058921334cc1ab8c0cdd4c38f4e9f327b80d5d7a6b8fc459d681c"
+            }
+          ],
+          "case_id": "response-normalize",
+          "client_attempts": 2,
+          "elapsed_seconds": 39.679,
+          "inference_failure": null,
+          "queue_state": "FAILED",
+          "terminal_outcome": "REPEATED_PROPOSAL",
+          "valid_patches": 1,
+          "verified_repair": false
+        },
+        {
+          "attempts": [
+            {
+              "diagnostic": "Replacement reads local before its existing binding: weight",
+              "failure_kind": "INVALID_LOCAL_BINDING",
+              "new_failing_test_ids": [],
+              "outcome": "SOURCE_REJECTED",
+              "receipt_sha256": "1b5c98225f3b7d2ebfa2e1e42952115c33ddb3a364753c3e35817cb9621278f4"
+            },
+            {
+              "diagnostic": "Replacement reads local before its existing binding: weight",
+              "failure_kind": "INVALID_LOCAL_BINDING",
+              "new_failing_test_ids": [],
+              "outcome": "SOURCE_REJECTED",
+              "receipt_sha256": "3e470d4530ffd2e673c1dc10e5cb2aa14bee6722c9cc8e127175b202718a7ad5"
+            }
+          ],
+          "case_id": "weighted-window",
+          "client_attempts": 2,
+          "elapsed_seconds": 27.456,
+          "inference_failure": null,
+          "queue_state": "FAILED",
+          "terminal_outcome": "SOURCE_REJECTED",
+          "valid_patches": 0,
+          "verified_repair": false
+        }
+      ],
+      "client_attempts": 6,
+      "configured_tasks": 3,
+      "cpu_measurement_note": "Process CPU counters at last pre-shutdown sample; not host-wide utilization. V1 did not collect CPU time.",
+      "failure_categories": {
+        "REPEATED_PROPOSAL": 2,
+        "SOURCE_REJECTED": 3,
+        "TEST_FAILED": 1
+      },
+      "fresh_replay_methods_passed": 0,
+      "inference_seconds": 70.536,
+      "model_profile": "QWEN_1_5B",
+      "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+      "observed_process_cpu_seconds": null,
+      "peak_rss_kib_observed": 1933456,
+      "repair_tokenized_prompt_tokens": [
+        989,
+        1114,
+        1057,
+        1213,
+        827,
+        895
+      ],
+      "repair_usage": {
+        "completion_requests": 6,
+        "completion_tokens": 436,
+        "prompt_tokens": 6095
+      },
+      "repeated_proposals": 2,
+      "resource_admitted": true,
+      "resource_probe_inference_seconds": 9.429,
+      "resource_probe_tokenized_prompt_tokens": 929,
+      "server_load_seconds": [
+        2.107,
+        1.004,
+        1.004,
+        1.004
+      ],
+      "source_rejected": 3,
+      "status": "COMPLETED",
+      "targeted_suites_passed": 0,
+      "tasks_blocked": 0,
+      "tasks_completed": 3,
+      "tasks_not_prepared": 0,
+      "tasks_prepared": 3,
+      "tasks_with_completion_request": 3,
+      "tasks_with_model_response": 3,
+      "total_execution_seconds": 120.753,
+      "unexpected_server_exits": [],
+      "valid_patches": 1,
+      "verified_repairs": 0
+    },
+    {
+      "admission_usage": {
+        "completion_requests": 1,
+        "completion_tokens": 41,
+        "prompt_tokens": 929
+      },
+      "all_recorded_servers_stopped": true,
+      "blocking_reason": "WORKER_BLOCKED",
+      "cases": [
+        {
+          "attempts": [],
+          "case_id": "reserve-release",
+          "client_attempts": 1,
+          "elapsed_seconds": 65.435,
+          "inference_failure": "LOCAL_COMPLETION_UNAVAILABLE",
+          "queue_state": "BLOCKED",
+          "terminal_outcome": "INFERENCE_UNAVAILABLE",
+          "valid_patches": 0,
+          "verified_repair": false
+        }
+      ],
+      "client_attempts": 1,
+      "configured_tasks": 3,
+      "cpu_measurement_note": "Process CPU counters at last pre-shutdown sample; not host-wide utilization. V1 did not collect CPU time.",
+      "failure_categories": {
+        "INFERENCE_UNAVAILABLE": 1
+      },
+      "fresh_replay_methods_passed": 0,
+      "inference_seconds": 45.049,
+      "model_profile": "QWEN_7B",
+      "model_sha256": "509287f78cb4d4cf6b3843734733b914b2c158e43e22a7f4bf5e963800894d3c",
+      "observed_process_cpu_seconds": null,
+      "peak_rss_kib_observed": 8042632,
+      "repair_tokenized_prompt_tokens": [
+        989
+      ],
+      "repair_usage": {
+        "completion_requests": 1,
+        "completion_tokens": null,
+        "prompt_tokens": null
+      },
+      "repeated_proposals": 0,
+      "resource_admitted": true,
+      "resource_probe_inference_seconds": 44.117,
+      "resource_probe_tokenized_prompt_tokens": 929,
+      "server_load_seconds": [
+        3.005,
+        4.007
+      ],
+      "source_rejected": 0,
+      "status": "BLOCKED",
+      "targeted_suites_passed": 0,
+      "tasks_blocked": 1,
+      "tasks_completed": 0,
+      "tasks_not_prepared": 2,
+      "tasks_prepared": 1,
+      "tasks_with_completion_request": 1,
+      "tasks_with_model_response": 0,
+      "total_execution_seconds": 120.258,
+      "unexpected_server_exits": [],
+      "valid_patches": 0,
+      "verified_repairs": 0
+    }
+  ],
+  "receipt_sha256": "9ae4d26b3f3dfda82c65f525fd68713ff398779331fc0f3498f10dbae68747cd",
+  "record_receipt_sha256": "fe4533227196dd6ab5c60553a7bdd3749f73987317ec90515eaaedbe8ae62d00",
+  "run_id": "40007714754"
+}

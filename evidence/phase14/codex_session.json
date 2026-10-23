@@ -1,0 +1,175 @@
+{
+  "active_session_patch_generation": true,
+  "active_session_token_usage": null,
+  "additional_agent_turns_started": 0,
+  "additional_provider_requests": 0,
+  "additional_spending_usd": 0,
+  "app_server_exit": 0,
+  "calls": [
+    {
+      "response": {
+        "id": 4,
+        "result": {
+          "content": [
+            {
+              "text": "{\"approved_file\":\"subject.py\",\"baseline_feedback\":{\"assertions\":[\"AssertionError: 120.0 != 108\",\"AssertionError: {'subtotal': 100, 'discount': 10.0, 'tax': 20.0, 'total': 120.0} != {'subtotal': 100, 'discount': 10, 'tax': 18, 'total': 108}\",\"AssertionError: 100 != 75\"],\"classification\":\"OWNED_DEVELOPMENT_FEEDBACK\",\"failing_tests\":[\"test_cancelled\",\"test_discount_tax\",\"test_discount_without_tax\",\"test_full_discount\",\"test_rounding\"],\"unseen_evaluation\":false},\"case_id\":\"invoice-summary\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"description\":\"Calculate an invoice for non-cancelled rows. Rates are fractions in [0,1]. Subtract the rounded discount from subtotal before tax; total equals discounted taxable amount plus rounded tax. Keep input rows unchanged and preserve helper behavior.\",\"edit_units\":[{\"bindings\":[],\"end_line\":6,\"kind\":\"condition\",\"line\":6},{\"bindings\":[\"active\"],\"end_line\":8,\"kind\":\"statement\",\"line\":8},{\"bindings\":[\"subtotal\"],\"end_line\":9,\"kind\":\"statement\",\"line\":9},{\"bindings\":[\"discount\"],\"end_line\":10,\"kind\":\"statement\",\"line\":10},{\"bindings\":[\"taxable\"],\"end_line\":11,\"kind\":\"statement\",\"line\":11},{\"bindings\":[\"tax\"],\"end_line\":12,\"kind\":\"statement\",\"line\":12},{\"bindings\":[\"total\"],\"end_line\":13,\"kind\":\"statement\",\"line\":13},{\"bindings\":[],\"end_line\":14,\"kind\":\"statement\",\"line\":14},{\"bindings\":[],\"end_line\":7,\"kind\":\"statement\",\"line\":7}],\"editable_lines\":[6,7,8,9,10,11,12,13,14],\"engine\":\"CODEX_AGENT\",\"independent_evaluation\":false,\"max_attempts\":2,\"proposal_protocol\":\"ast_statement_v1\",\"revision\":0,\"source\":\"def item_value(row):\\n    return row[\\\"qty\\\"] * row[\\\"unit\\\"]\\n\\n\\ndef invoice_summary(rows, discount_rate, tax_rate):\\n    if not 0 <= discount_rate <= 1 or not 0 <= tax_rate <= 1:\\n        raise ValueError(\\\"invalid rate\\\")\\n    active = [row for row in rows if row[\\\"state\\\"] != \\\"cancelled\\\"]\\n    subtotal = sum(item_value(row) for row in active)\\n    discount = round(subtotal * discount_rate, 2)\\n    taxable = subtotal\\n    tax = round(taxable * tax_rate, 2)\\n    total = round(subtotal + tax, 2)\\n    return {\\\"subtotal\\\": subtotal, \\\"discount\\\": discount, \\\"tax\\\": tax, \\\"total\\\": total}\\n\",\"source_context\":{\"authorized_anchors\":[6,7,8,9,10,11,12,13,14],\"called_helpers\":[\"item_value\"],\"scope_policy\":\"Only authorized anchors in the target function; helpers are context only\",\"target_range\":[5,14]},\"source_sha256\":\"89e12cec1df4a5cf88c691974e180fea2308319894bdb5f215c46c1c99785f41\",\"state\":\"AWAITING_CODEX_CANDIDATE\",\"target_symbol\":\"invoice_summary\",\"task_id\":\"d8502c5b19394dfba49ce333399a4ae2\",\"tests_sha256\":\"35246fff991d78b722d7e847a51fdfa4865b404c1221a88e665ba7f1afbef81d\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "prepare_owned_repair"
+    },
+    {
+      "response": {
+        "id": 5,
+        "result": {
+          "content": [
+            {
+              "text": "{\"attempt\":1,\"authorship_basis\":\"session_submitted_candidate\",\"authorship_identity_attested\":false,\"candidate\":\"def item_value(row):\\n    return row[\\\"qty\\\"] * row[\\\"unit\\\"]\\n\\n\\ndef invoice_summary(rows, discount_rate, tax_rate):\\n    if not 0 <= discount_rate <= 1 or not 0 <= tax_rate <= 1:\\n        raise ValueError(\\\"invalid rate\\\")\\n    active = [row for row in rows if row[\\\"state\\\"] != \\\"cancelled\\\"]\\n    subtotal = sum(item_value(row) for row in active)\\n    discount = round(subtotal * discount_rate, 2)\\n    taxable = subtotal - discount\\n    tax = round(taxable * tax_rate, 2)\\n    total = round(taxable + tax, 2)\\n    return {\\\"subtotal\\\": subtotal, \\\"discount\\\": discount, \\\"tax\\\": tax, \\\"total\\\": total}\\n\",\"candidate_sha256\":\"ca22020f2bc0994073793786dd3fe7463ef8bfc78b0ee8a52f8332f946a06117\",\"case_id\":\"invoice-summary\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"diagnostic\":\"\",\"diff\":\"--- a/subject.py\\n+++ b/subject.py\\n@@ -8,7 +8,7 @@\\n     active = [row for row in rows if row[\\\"state\\\"] != \\\"cancelled\\\"]\\n     subtotal = sum(item_value(row) for row in active)\\n     discount = round(subtotal * discount_rate, 2)\\n-    taxable = subtotal\\n+    taxable = subtotal - discount\\n     tax = round(taxable * tax_rate, 2)\\n-    total = round(subtotal + tax, 2)\\n+    total = round(taxable + tax, 2)\\n     return {\\\"subtotal\\\": subtotal, \\\"discount\\\": discount, \\\"tax\\\": tax, \\\"total\\\": total}\\n\",\"engine\":\"CODEX_AGENT\",\"failure_stage\":null,\"image\":\"python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590\",\"independent\":{\"exit_code\":0,\"output_sha256\":\"090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894\",\"passed\":true,\"sandbox\":\"digest_pinned_docker_no_network_read_only_no_privileges\",\"tests_run\":8},\"independent_evaluation\":false,\"independently_verified\":true,\"kind\":\"owned_dual_engine_verification\",\"outcome\":\"VERIFIED\",\"paid_fallback\":false,\"previous_receipt_sha256\":null,\"proposal\":{\"changes\":[{\"line\":11,\"new\":\"taxable = subtotal - discount\"},{\"line\":13,\"new\":\"total = round(taxable + tax, 2)\"}]},\"proposal_sha256\":\"0cf460950d7bba4e64e5b1a1566fb15ec326478ce6b780a49b1ffc097bb07081\",\"receipt_sha256\":\"efdedce2330facbbaff3083c3d35ac6bd83c430fc7765e7e9bbf780544b52eb2\",\"revision\":1,\"runtime_admission\":{\"capabilities_empty\":true,\"cleanup_verified\":true,\"cpu_pressure_enforced\":true,\"cpu_quota_verified\":true,\"docker_socket_absent\":true,\"image_digest\":\"sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590\",\"loopback_inference_unreachable\":true,\"memory_limit_enforced\":true,\"network_denied\":true,\"no_new_privileges\":true,\"output_bounded\":true,\"pid_limit_verified\":true,\"pid_pressure_enforced\":true,\"root_writes_denied\":true,\"seccomp_active\":true,\"secrets_absent\":true,\"source_writes_denied\":true,\"swap_disabled\":true,\"tmpfs_bounded_noexec\":true,\"uid_unprivileged\":true,\"untrusted_execution_certified\":false,\"wall_clock_enforced\":true},\"runtime_admission_sha256\":\"4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108\",\"schema\":1,\"signature_verified\":false,\"source_sha256\":\"89e12cec1df4a5cf88c691974e180fea2308319894bdb5f215c46c1c99785f41\",\"state\":\"AWAITING_OWNER_APPROVAL\",\"targeted\":{\"exit_code\":0,\"output_sha256\":\"090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894\",\"passed\":true,\"sandbox\":\"digest_pinned_docker_no_network_read_only_no_privileges\",\"tests_run\":8},\"task_id\":\"d8502c5b19394dfba49ce333399a4ae2\",\"tests_sha256\":\"35246fff991d78b722d7e847a51fdfa4865b404c1221a88e665ba7f1afbef81d\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "submit_owned_repair"
+    },
+    {
+      "response": {
+        "id": 6,
+        "result": {
+          "content": [
+            {
+              "text": "{\"approved_file\":\"subject.py\",\"baseline_feedback\":{\"assertions\":[\"AssertionError: 'a' != ''\",\"AssertionError: 'a' is not None\",\"AssertionError: {'rows': [1], 'cursor': 'b', 'complete': True, 'retry': False} != {'rows': [1], 'cursor': 'b', 'complete': False, 'retry': False}\"],\"classification\":\"OWNED_DEVELOPMENT_FEEDBACK\",\"failing_tests\":[\"test_empty\",\"test_missing\",\"test_next\"],\"unseen_evaluation\":false},\"case_id\":\"cursor-adapter\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"description\":\"Adapt an already-decoded API response; no network calls. On status 200 return its items and exact next_cursor, including empty string or None, and mark complete iff next_cursor is empty or None. On 429 retain prior cursor, empty rows, retry true; other errors retain prior cursor with retry false. Never mutate inputs.\",\"edit_units\":[{\"bindings\":[\"status\"],\"end_line\":6,\"kind\":\"statement\",\"line\":6},{\"bindings\":[],\"end_line\":7,\"kind\":\"condition\",\"line\":7},{\"bindings\":[],\"end_line\":9,\"kind\":\"condition\",\"line\":9},{\"bindings\":[\"rows\"],\"end_line\":11,\"kind\":\"statement\",\"line\":11},{\"bindings\":[\"cursor\"],\"end_line\":12,\"kind\":\"statement\",\"line\":12},{\"bindings\":[\"complete\"],\"end_line\":13,\"kind\":\"statement\",\"line\":13},{\"bindings\":[],\"end_line\":14,\"kind\":\"statement\",\"line\":14},{\"bindings\":[],\"end_line\":8,\"kind\":\"statement\",\"line\":8},{\"bindings\":[],\"end_line\":10,\"kind\":\"statement\",\"line\":10}],\"editable_lines\":[6,7,8,9,10,11,12,13,14],\"engine\":\"CODEX_AGENT\",\"independent_evaluation\":false,\"max_attempts\":2,\"proposal_protocol\":\"ast_statement_v1\",\"revision\":0,\"source\":\"def page_rows(response):\\n    return response.get(\\\"items\\\", [])\\n\\n\\ndef ingest_page(response, previous_cursor):\\n    status = response.get(\\\"status\\\", 500)\\n    if status == 429:\\n        return {\\\"rows\\\": [], \\\"cursor\\\": previous_cursor, \\\"complete\\\": False, \\\"retry\\\": True}\\n    if status != 200:\\n        return {\\\"rows\\\": [], \\\"cursor\\\": previous_cursor, \\\"complete\\\": False, \\\"retry\\\": False}\\n    rows = page_rows(response)\\n    cursor = response.get(\\\"next_cursor\\\") or previous_cursor\\n    complete = bool(cursor)\\n    return {\\\"rows\\\": rows, \\\"cursor\\\": cursor, \\\"complete\\\": complete, \\\"retry\\\": False}\\n\",\"source_context\":{\"authorized_anchors\":[6,7,8,9,10,11,12,13,14],\"called_helpers\":[\"page_rows\"],\"scope_policy\":\"Only authorized anchors in the target function; helpers are context only\",\"target_range\":[5,14]},\"source_sha256\":\"8780135d429b2539852e872d5a66fbd9abfbfd92649c62177cb2b86cb6a332ee\",\"state\":\"AWAITING_CODEX_CANDIDATE\",\"target_symbol\":\"ingest_page\",\"task_id\":\"5e194907bb0948069be35bb229c71292\",\"tests_sha256\":\"45f8b9da4e04fe6a70cfa71524e12f4163b032239fcb32e3acf50ede5dfaba8d\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "prepare_owned_repair"
+    },
+    {
+      "response": {
+        "id": 7,
+        "result": {
+          "content": [
+            {
+              "text": "{\"attempt\":1,\"authorship_basis\":\"session_submitted_candidate\",\"authorship_identity_attested\":false,\"candidate\":\"def page_rows(response):\\n    return response.get(\\\"items\\\", [])\\n\\n\\ndef ingest_page(response, previous_cursor):\\n    status = response.get(\\\"status\\\", 500)\\n    if status == 429:\\n        return {\\\"rows\\\": [], \\\"cursor\\\": previous_cursor, \\\"complete\\\": False, \\\"retry\\\": True}\\n    if status != 200:\\n        return {\\\"rows\\\": [], \\\"cursor\\\": previous_cursor, \\\"complete\\\": False, \\\"retry\\\": False}\\n    rows = page_rows(response)\\n    cursor = response.get(\\\"next_cursor\\\")\\n    complete = cursor in (None, \\\"\\\")\\n    return {\\\"rows\\\": rows, \\\"cursor\\\": cursor, \\\"complete\\\": complete, \\\"retry\\\": False}\\n\",\"candidate_sha256\":\"fc3ac7292f21af8316da0a01b14efdd8bcf1d1a74cb0615f4d7c999656b38eeb\",\"case_id\":\"cursor-adapter\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"diagnostic\":\"\",\"diff\":\"--- a/subject.py\\n+++ b/subject.py\\n@@ -9,6 +9,6 @@\\n     if status != 200:\\n         return {\\\"rows\\\": [], \\\"cursor\\\": previous_cursor, \\\"complete\\\": False, \\\"retry\\\": False}\\n     rows = page_rows(response)\\n-    cursor = response.get(\\\"next_cursor\\\") or previous_cursor\\n-    complete = bool(cursor)\\n+    cursor = response.get(\\\"next_cursor\\\")\\n+    complete = cursor in (None, \\\"\\\")\\n     return {\\\"rows\\\": rows, \\\"cursor\\\": cursor, \\\"complete\\\": complete, \\\"retry\\\": False}\\n\",\"engine\":\"CODEX_AGENT\",\"failure_stage\":null,\"image\":\"python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590\",\"independent\":{\"exit_code\":0,\"output_sha256\":\"54ff4552b695f882276f4ff4ae0ca8c54b6ddd0138c674a0961ce3d3742f4054\",\"passed\":true,\"sandbox\":\"digest_pinned_docker_no_network_read_only_no_privileges\",\"tests_run\":7},\"independent_evaluation\":false,\"independently_verified\":true,\"kind\":\"owned_dual_engine_verification\",\"outcome\":\"VERIFIED\",\"paid_fallback\":false,\"previous_receipt_sha256\":null,\"proposal\":{\"changes\":[{\"line\":12,\"new\":\"cursor = response.get(\\\"next_cursor\\\")\"},{\"line\":13,\"new\":\"complete = cursor in (None, \\\"\\\")\"}]},\"proposal_sha256\":\"fedbac9590b973190d9d9ab888d46aca249689965cc75ea9d284613b73acf747\",\"receipt_sha256\":\"f67e7e8d5cb94713acc692863cefeb75a48bd8b51c68232165e1aeab79bce833\",\"revision\":1,\"runtime_admission\":{\"capabilities_empty\":true,\"cleanup_verified\":true,\"cpu_pressure_enforced\":true,\"cpu_quota_verified\":true,\"docker_socket_absent\":true,\"image_digest\":\"sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590\",\"loopback_inference_unreachable\":true,\"memory_limit_enforced\":true,\"network_denied\":true,\"no_new_privileges\":true,\"output_bounded\":true,\"pid_limit_verified\":true,\"pid_pressure_enforced\":true,\"root_writes_denied\":true,\"seccomp_active\":true,\"secrets_absent\":true,\"source_writes_denied\":true,\"swap_disabled\":true,\"tmpfs_bounded_noexec\":true,\"uid_unprivileged\":true,\"untrusted_execution_certified\":false,\"wall_clock_enforced\":true},\"runtime_admission_sha256\":\"4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108\",\"schema\":1,\"signature_verified\":false,\"source_sha256\":\"8780135d429b2539852e872d5a66fbd9abfbfd92649c62177cb2b86cb6a332ee\",\"state\":\"AWAITING_OWNER_APPROVAL\",\"targeted\":{\"exit_code\":0,\"output_sha256\":\"54ff4552b695f882276f4ff4ae0ca8c54b6ddd0138c674a0961ce3d3742f4054\",\"passed\":true,\"sandbox\":\"digest_pinned_docker_no_network_read_only_no_privileges\",\"tests_run\":7},\"task_id\":\"5e194907bb0948069be35bb229c71292\",\"tests_sha256\":\"45f8b9da4e04fe6a70cfa71524e12f4163b032239fcb32e3acf50ede5dfaba8d\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "submit_owned_repair"
+    },
+    {
+      "response": {
+        "id": 8,
+        "result": {
+          "content": [
+            {
+              "text": "{\"approved_file\":\"subject.py\",\"baseline_feedback\":{\"assertions\":[\"AssertionError: Tuples differ: (True, 30) != (True, 4)\",\"AssertionError: Tuples differ: (True, 1024) != (True, 30)\",\"AssertionError: Tuples differ: (True, 30) != (True, 2.5)\"],\"classification\":\"OWNED_DEVELOPMENT_FEEDBACK\",\"failing_tests\":[\"test_backoff\",\"test_cap\",\"test_header\",\"test_malformed\",\"test_negative\"],\"unseen_evaluation\":false},\"case_id\":\"retry-policy\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"description\":\"Retry only HTTP 429 and 503. Use numeric Retry-After seconds when valid, otherwise base * 2**attempt. Clamp the delay to [0,max_delay]. Successful and permanent-failure statuses do not retry. This function does not sleep or perform I/O.\",\"edit_units\":[{\"bindings\":[],\"end_line\":2,\"kind\":\"condition\",\"line\":2},{\"bindings\":[],\"end_line\":4,\"kind\":\"condition\",\"line\":4},{\"bindings\":[\"delay\"],\"end_line\":11,\"kind\":\"statement\",\"line\":11},{\"bindings\":[],\"end_line\":12,\"kind\":\"statement\",\"line\":12},{\"bindings\":[],\"end_line\":3,\"kind\":\"statement\",\"line\":3},{\"bindings\":[\"delay\"],\"end_line\":5,\"kind\":\"statement\",\"line\":5},{\"bindings\":[\"delay\"],\"end_line\":8,\"kind\":\"statement\",\"line\":8},{\"bindings\":[\"delay\"],\"end_line\":10,\"kind\":\"statement\",\"line\":10}],\"editable_lines\":[2,3,4,5,8,10,11,12],\"engine\":\"CODEX_AGENT\",\"independent_evaluation\":false,\"max_attempts\":2,\"proposal_protocol\":\"ast_statement_v1\",\"revision\":0,\"source\":\"def retry_decision(status, attempt, retry_after, base, max_delay):\\n    if status not in (429, 503):\\n        return (False, 0)\\n    if retry_after is None:\\n        delay = base * 2 ** attempt\\n    else:\\n        try:\\n            delay = float(retry_after)\\n        except (ValueError, TypeError):\\n            delay = base * 2 ** attempt\\n    delay = max(delay, max_delay)\\n    return (True, delay)\\n\",\"source_context\":{\"authorized_anchors\":[2,3,4,5,8,10,11,12],\"called_helpers\":[],\"scope_policy\":\"Only authorized anchors in the target function; helpers are context only\",\"target_range\":[1,12]},\"source_sha256\":\"9cb690fc590e6aa0ff98cc06633348b8358b74e6743e2848a48c420446d5c301\",\"state\":\"AWAITING_CODEX_CANDIDATE\",\"target_symbol\":\"retry_decision\",\"task_id\":\"3273d4eb3e8c47f6b04124f29d5687da\",\"tests_sha256\":\"f7ee114bf2bcd0f7e59a5008d8788ae9da38e29f770bc227c871d39c0b5b9f4e\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "prepare_owned_repair"
+    },
+    {
+      "response": {
+        "id": 9,
+        "result": {
+          "content": [
+            {
+              "text": "{\"attempt\":1,\"authorship_basis\":\"session_submitted_candidate\",\"authorship_identity_attested\":false,\"candidate\":\"def retry_decision(status, attempt, retry_after, base, max_delay):\\n    if status not in (429, 503):\\n        return (False, 0)\\n    if retry_after is None:\\n        delay = base * 2 ** attempt\\n    else:\\n        try:\\n            delay = float(retry_after)\\n        except (ValueError, TypeError):\\n            delay = base * 2 ** attempt\\n    delay = min(max(delay, 0), max_delay)\\n    return (True, delay)\\n\",\"candidate_sha256\":\"220c0e7039a1c7896c1e170c0d2859894da12cb25efe83f3e48ff5f00baec240\",\"case_id\":\"retry-policy\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"diagnostic\":\"\",\"diff\":\"--- a/subject.py\\n+++ b/subject.py\\n@@ -8,5 +8,5 @@\\n             delay = float(retry_after)\\n         except (ValueError, TypeError):\\n             delay = base * 2 ** attempt\\n-    delay = max(delay, max_delay)\\n+    delay = min(max(delay, 0), max_delay)\\n     return (True, delay)\\n\",\"engine\":\"CODEX_AGENT\",\"failure_stage\":null,\"image\":\"python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590\",\"independent\":{\"exit_code\":0,\"output_sha256\":\"54ff4552b695f882276f4ff4ae0ca8c54b6ddd0138c674a0961ce3d3742f4054\",\"passed\":true,\"sandbox\":\"digest_pinned_docker_no_network_read_only_no_privileges\",\"tests_run\":7},\"independent_evaluation\":false,\"independently_verified\":true,\"kind\":\"owned_dual_engine_verification\",\"outcome\":\"VERIFIED\",\"paid_fallback\":false,\"previous_receipt_sha256\":null,\"proposal\":{\"changes\":[{\"line\":11,\"new\":\"delay = min(max(delay, 0), max_delay)\"}]},\"proposal_sha256\":\"fb920075fc0eaa8384e6756fbc10d7c089e41dcb539b5e6014cf91f2305f0514\",\"receipt_sha256\":\"5232386d2e34e9e9aa7fcfa958c30bac9788e43b324c6e21faaded4ff6a50f99\",\"revision\":1,\"runtime_admission\":{\"capabilities_empty\":true,\"cleanup_verified\":true,\"cpu_pressure_enforced\":true,\"cpu_quota_verified\":true,\"docker_socket_absent\":true,\"image_digest\":\"sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590\",\"loopback_inference_unreachable\":true,\"memory_limit_enforced\":true,\"network_denied\":true,\"no_new_privileges\":true,\"output_bounded\":true,\"pid_limit_verified\":true,\"pid_pressure_enforced\":true,\"root_writes_denied\":true,\"seccomp_active\":true,\"secrets_absent\":true,\"source_writes_denied\":true,\"swap_disabled\":true,\"tmpfs_bounded_noexec\":true,\"uid_unprivileged\":true,\"untrusted_execution_certified\":false,\"wall_clock_enforced\":true},\"runtime_admission_sha256\":\"4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108\",\"schema\":1,\"signature_verified\":false,\"source_sha256\":\"9cb690fc590e6aa0ff98cc06633348b8358b74e6743e2848a48c420446d5c301\",\"state\":\"AWAITING_OWNER_APPROVAL\",\"targeted\":{\"exit_code\":0,\"output_sha256\":\"54ff4552b695f882276f4ff4ae0ca8c54b6ddd0138c674a0961ce3d3742f4054\",\"passed\":true,\"sandbox\":\"digest_pinned_docker_no_network_read_only_no_privileges\",\"tests_run\":7},\"task_id\":\"3273d4eb3e8c47f6b04124f29d5687da\",\"tests_sha256\":\"f7ee114bf2bcd0f7e59a5008d8788ae9da38e29f770bc227c871d39c0b5b9f4e\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "submit_owned_repair"
+    },
+    {
+      "response": {
+        "id": 10,
+        "result": {
+          "content": [
+            {
+              "text": "{\"approved_file\":\"subject.py\",\"baseline_feedback\":{\"assertions\":[\"AssertionError: -5 != 115\",\"AssertionError: 3 != 13\",\"AssertionError: 20 != 120\"],\"classification\":\"OWNED_DEVELOPMENT_FEEDBACK\",\"failing_tests\":[\"test_accumulate\",\"test_duplicate\",\"test_opening\"],\"unseen_evaluation\":false},\"case_id\":\"event-reducer\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"description\":\"Apply credits and debits to an opening balance, once per event ID. Ignore unsupported kinds without marking them seen. Return sorted seen IDs and a new state, leaving caller state/events unchanged. Multiple accepted events accumulate, including repeated calls.\",\"edit_units\":[{\"bindings\":[\"balance\"],\"end_line\":6,\"kind\":\"statement\",\"line\":6},{\"bindings\":[\"seen\"],\"end_line\":7,\"kind\":\"statement\",\"line\":7},{\"bindings\":[],\"end_line\":15,\"kind\":\"statement\",\"line\":15},{\"bindings\":[],\"end_line\":9,\"kind\":\"condition\",\"line\":9},{\"bindings\":[],\"end_line\":11,\"kind\":\"condition\",\"line\":11},{\"bindings\":[\"balance\"],\"end_line\":13,\"kind\":\"statement\",\"line\":13},{\"bindings\":[],\"end_line\":14,\"kind\":\"statement\",\"line\":14}],\"editable_lines\":[6,7,9,11,13,14,15],\"engine\":\"CODEX_AGENT\",\"independent_evaluation\":false,\"max_attempts\":2,\"proposal_protocol\":\"ast_statement_v1\",\"revision\":0,\"source\":\"def signed_delta(event):\\n    return -event[\\\"amount\\\"] if event[\\\"kind\\\"] == \\\"debit\\\" else event[\\\"amount\\\"]\\n\\n\\ndef apply_events(state, events):\\n    balance = state[\\\"balance\\\"]\\n    seen = set(state[\\\"seen\\\"])\\n    for event in events:\\n        if event[\\\"id\\\"] in seen:\\n            continue\\n        if event[\\\"kind\\\"] not in (\\\"credit\\\", \\\"debit\\\"):\\n            continue\\n        balance = signed_delta(event)\\n        seen.add(event[\\\"id\\\"])\\n    return {\\\"balance\\\": balance, \\\"seen\\\": tuple(sorted(seen))}\\n\",\"source_context\":{\"authorized_anchors\":[6,7,9,11,13,14,15],\"called_helpers\":[\"signed_delta\"],\"scope_policy\":\"Only authorized anchors in the target function; helpers are context only\",\"target_range\":[5,15]},\"source_sha256\":\"eafc2c262f2957fc64629969d400f181347bf62943bfa65694416ac40e190ba4\",\"state\":\"AWAITING_CODEX_CANDIDATE\",\"target_symbol\":\"apply_events\",\"task_id\":\"ce8c271c075d431999d350c80bde90a1\",\"tests_sha256\":\"77d64f48944c874267f57be8fd3033602f9497c05a1e201c060ffc121f45b4d3\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "prepare_owned_repair"
+    },
+    {
+      "response": {
+        "id": 11,
+        "result": {
+          "content": [
+            {
+              "text": "{\"attempt\":1,\"authorship_basis\":\"session_submitted_candidate\",\"authorship_identity_attested\":false,\"case_id\":\"event-reducer\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"diagnostic\":\"Unapproved or duplicate AST anchor\",\"engine\":\"CODEX_AGENT\",\"failure_stage\":\"source_validation\",\"image\":\"python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590\",\"independent_evaluation\":false,\"independently_verified\":false,\"kind\":\"owned_dual_engine_verification\",\"outcome\":\"SOURCE_REJECTED\",\"paid_fallback\":false,\"previous_receipt_sha256\":null,\"proposal\":{\"changes\":[{\"line\":2,\"new\":\"return event[\\\"amount\\\"]\"}]},\"proposal_sha256\":\"3ad0374526b821aae259c044bb6c8b7a4d31ba789bae70e4120476358884f826\",\"receipt_sha256\":\"a9d8a079215c445ba21cb138f21897291861938a9626bb12d9bb8336ce30fb36\",\"revision\":1,\"runtime_admission\":{\"capabilities_empty\":true,\"cleanup_verified\":true,\"cpu_pressure_enforced\":true,\"cpu_quota_verified\":true,\"docker_socket_absent\":true,\"image_digest\":\"sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590\",\"loopback_inference_unreachable\":true,\"memory_limit_enforced\":true,\"network_denied\":true,\"no_new_privileges\":true,\"output_bounded\":true,\"pid_limit_verified\":true,\"pid_pressure_enforced\":true,\"root_writes_denied\":true,\"seccomp_active\":true,\"secrets_absent\":true,\"source_writes_denied\":true,\"swap_disabled\":true,\"tmpfs_bounded_noexec\":true,\"uid_unprivileged\":true,\"untrusted_execution_certified\":false,\"wall_clock_enforced\":true},\"runtime_admission_sha256\":\"4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108\",\"schema\":1,\"signature_verified\":false,\"source_sha256\":\"eafc2c262f2957fc64629969d400f181347bf62943bfa65694416ac40e190ba4\",\"state\":\"REVISION_REQUIRED\",\"task_id\":\"ce8c271c075d431999d350c80bde90a1\",\"tests_sha256\":\"77d64f48944c874267f57be8fd3033602f9497c05a1e201c060ffc121f45b4d3\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "submit_owned_repair"
+    },
+    {
+      "response": {
+        "id": 12,
+        "result": {
+          "content": [
+            {
+              "text": "{\"attempt\":2,\"authorship_basis\":\"session_submitted_candidate\",\"authorship_identity_attested\":false,\"case_id\":\"event-reducer\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"diagnostic\":\"New callable outside approved source\",\"engine\":\"CODEX_AGENT\",\"failure_stage\":\"source_validation\",\"image\":\"python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590\",\"independent_evaluation\":false,\"independently_verified\":false,\"kind\":\"owned_dual_engine_verification\",\"outcome\":\"SOURCE_REJECTED\",\"paid_fallback\":false,\"previous_receipt_sha256\":\"a9d8a079215c445ba21cb138f21897291861938a9626bb12d9bb8336ce30fb36\",\"proposal\":{\"changes\":[{\"line\":6,\"new\":\"balance = open(\\\"forbidden\\\")\"}]},\"proposal_sha256\":\"b91e528aef8da3e470c4fe4c5b54067d034c84ff05a75fa30204a21a79169672\",\"receipt_sha256\":\"0f88ce6908fddc6153a9b5e9eff25b7647a10d7ff54fc40984907c8fb906537f\",\"revision\":2,\"runtime_admission\":{\"capabilities_empty\":true,\"cleanup_verified\":true,\"cpu_pressure_enforced\":true,\"cpu_quota_verified\":true,\"docker_socket_absent\":true,\"image_digest\":\"sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590\",\"loopback_inference_unreachable\":true,\"memory_limit_enforced\":true,\"network_denied\":true,\"no_new_privileges\":true,\"output_bounded\":true,\"pid_limit_verified\":true,\"pid_pressure_enforced\":true,\"root_writes_denied\":true,\"seccomp_active\":true,\"secrets_absent\":true,\"source_writes_denied\":true,\"swap_disabled\":true,\"tmpfs_bounded_noexec\":true,\"uid_unprivileged\":true,\"untrusted_execution_certified\":false,\"wall_clock_enforced\":true},\"runtime_admission_sha256\":\"4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108\",\"schema\":1,\"signature_verified\":false,\"source_sha256\":\"eafc2c262f2957fc64629969d400f181347bf62943bfa65694416ac40e190ba4\",\"state\":\"EXHAUSTED\",\"task_id\":\"ce8c271c075d431999d350c80bde90a1\",\"tests_sha256\":\"77d64f48944c874267f57be8fd3033602f9497c05a1e201c060ffc121f45b4d3\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "submit_owned_repair"
+    }
+  ],
+  "classification": "OWNED_DEVELOPMENT",
+  "client": "Codex app-server MCP client",
+  "delivery_authorized": false,
+  "discovered_tools": [
+    "bountyforge_status",
+    "claim_owned_queue",
+    "create_owned_queue",
+    "heartbeat_owned_queue",
+    "inspect_owned_calibration",
+    "list_owned_calibration",
+    "list_owned_repair_tasks",
+    "list_repair_engines",
+    "owned_queue_status",
+    "prepare_owned_repair",
+    "preview_owned_review_package",
+    "release_owned_queue",
+    "run_owned_queue_qwen",
+    "run_owned_qwen",
+    "stop_owned_queue",
+    "submit_owned_queue",
+    "submit_owned_repair",
+    "verify_owned_reference"
+  ],
+  "elapsed_seconds": 564.838,
+  "independent_evaluation": false,
+  "kind": "phase14_active_codex_maintenance_mcp",
+  "mcp_process_environment_names": [
+    "PATH"
+  ],
+  "usage_note": "Per-candidate active-session tokens are not exposed to the MCP client."
+}

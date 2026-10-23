@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "kind": "owned_container_enforcement_review",
+  "at_utc": "2026-10-22",
+  "source_commit": "cd1722a8a894c15674dfc223f2393c48699a9f67",
+  "hosted_run": 39713017968,
+  "hosted_url": "https://github.com/Ledgercorp/BountyForge/actions/runs/39713017968",
+  "artifact_id": 12398010786,
+  "artifact_zip_sha256": "1aecc6b5af231512f7ee286fe95bdb7ff1060127cd577ea0045b2f9dc1da645d",
+  "tests": {
+    "ran": 435,
+    "passed": 427,
+    "existing_skips": 8,
+    "failed": 0
+  },
+  "owned_proof": {
+    "status": "observed",
+    "reason": "none",
+    "controls_verified": 20,
+    "docker_image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+    "customer_source_executed": false,
+    "rootfs_origin_attested": false,
+    "private_custody_bound_to_runtime": false,
+    "private_execution_admitted": false,
+    "fresh_payment_verified": false,
+    "model_called": false
+  },
+  "ordinary_github_host_admitted": false,
+  "additional_spending_usd": 0,
+  "commercial_revenue_usd": 0,
+  "one_time_probe_removed_from_ci": true,
+  "custody_bridge": {
+    "revision": "1d8db11cb2ff81575d7aca442caea24742ef6857",
+    "github_actions_run": 39713490313,
+    "tests": {
+      "total": 436,
+      "passed": 428,
+      "existing_skips": 8,
+      "failed": 0
+    },
+    "invokes_current_signed_snapshot_verification": true,
+    "actual_customer_source_processed": false,
+    "snapshot_executed_inside_docker": false,
+    "raw_docker_proof_is_authentic_signed_attestation": false,
+    "private_execution_admitted": false,
+    "production_deployment": false
+  }
+}

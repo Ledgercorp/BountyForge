@@ -1,0 +1,12 @@
+{
+  "cases": [],
+  "classification": "OWNED_DEVELOPMENT",
+  "failure_reproduction_matched": null,
+  "independent_evaluation": false,
+  "kind": "phase15_separate_credential_free_replay",
+  "model_generation_calls": 0,
+  "receipt_sha256": "a1d18f1921fab244c8a6209b17f9ae5031571c6ca09ec702701a2f22e0cd7260",
+  "record_receipt_sha256": "361328e033f5e2bb3a4b473f860038356f1736a6e5d8d26470407477450cf008",
+  "replay_passed": null,
+  "verified_successes_replayed": 0
+}

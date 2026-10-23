@@ -1,0 +1,83 @@
+{
+  "authorship_identity_attested": false,
+  "cases": [
+    {
+      "candidate_sha256": "93a9123db22f4af7e434dd731d02d5b2d3283d8487c504bce74c74a8f4d19d68",
+      "case_id": "sparse-average",
+      "engine": "CODEX_AGENT",
+      "original_receipt_sha256": "cdcc1c7b4c17d621fa648dd5fe58f901a75c729b019e9a72b8d3d7e8a472162e",
+      "verification": {
+        "exit_code": 0,
+        "output_sha256": "e370c111a98df15085a51db84a4800db4905f4468cc42b60a06c44b78e22f3e1",
+        "passed": true,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+        "tests_run": 6
+      }
+    },
+    {
+      "candidate_sha256": "e73f1b2ec2ea680c4df7ce61887d1ca6f9c28dbdebe745d6033e5ccb1816589d",
+      "case_id": "label-order",
+      "engine": "CODEX_AGENT",
+      "original_receipt_sha256": "d7caa707a5773a2f2b95aa366261a6a5c7034634d8cd53dfc5efe365916f4835",
+      "verification": {
+        "exit_code": 0,
+        "output_sha256": "67814c44a568edff87b03d152abd396453a5482a310fd70974325c8ca7abd234",
+        "passed": true,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+        "tests_run": 5
+      }
+    },
+    {
+      "candidate_sha256": "003fbcb7f5d3f500d28cd9d9bed9dd254dbb02717222d015a1528a2013b65850",
+      "case_id": "weighted-mix",
+      "engine": "CODEX_AGENT",
+      "original_receipt_sha256": "c05a95f606c1d979a8c848c0fb4a7a67eb332599f966b01ef1934f5d8f5f0121",
+      "verification": {
+        "exit_code": 0,
+        "output_sha256": "e370c111a98df15085a51db84a4800db4905f4468cc42b60a06c44b78e22f3e1",
+        "passed": true,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+        "tests_run": 6
+      }
+    }
+  ],
+  "classification": "OWNED_DEVELOPMENT",
+  "delivery_authorized": false,
+  "independent_evaluation": false,
+  "kind": "phase12_recorded_candidate_independent_replay",
+  "model_generation_calls": 0,
+  "private_execution_admitted": false,
+  "receipt_sha256": "c99ade2a8bbf1eeba06b2c1467fe857d8c3971f101356c68defaf78c8d9dd2d2",
+  "recording_sha256": "806e8762f130277ffdcb10e31c9f3a7a984fc85ea34cb9e95f77304f4b5a4aca",
+  "replay_passed": true,
+  "runtime_admission": {
+    "capabilities_empty": true,
+    "cleanup_verified": true,
+    "cpu_pressure_enforced": true,
+    "cpu_pressure_used_seconds": 3.045,
+    "cpu_pressure_wall_seconds": 3.017,
+    "cpu_quota_verified": true,
+    "cpu_throttled_periods": 31,
+    "docker_socket_absent": true,
+    "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+    "loopback_inference_unreachable": true,
+    "memory_limit_enforced": true,
+    "network_denied": true,
+    "no_new_privileges": true,
+    "output_bounded": true,
+    "pid_current_at_denial": 64,
+    "pid_denial_events": 1,
+    "pid_limit_verified": true,
+    "pid_pressure_enforced": true,
+    "probe_threads": 63,
+    "root_writes_denied": true,
+    "seccomp_active": true,
+    "secrets_absent": true,
+    "source_writes_denied": true,
+    "swap_disabled": true,
+    "tmpfs_bounded_noexec": true,
+    "uid_unprivileged": true,
+    "untrusted_execution_certified": false,
+    "wall_clock_enforced": true
+  }
+}

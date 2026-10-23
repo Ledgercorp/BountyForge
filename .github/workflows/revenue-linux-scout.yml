@@ -1,0 +1,84 @@
+name: BountyForge revenue scout on standard Linux
+
+# Research only. No recurring schedule. Live research requires manual dispatch.
+# No model calls, paid services, external claims, source execution or submissions.
+on:
+  # PR checks only: avoid duplicate push + PR jobs and failure emails.
+  pull_request:
+    branches: [engineering/bounded-autonomy-20261020]
+    paths:
+      - '.github/workflows/revenue-linux-scout.yml'
+      - 'bountyforge/**'
+      - 'tests/**'
+      - 'scripts/**'
+      - 'benchmarks/**'
+      - 'fixtures/phase12/**'
+      - 'fixtures/phase13/**'
+      - 'fixtures/phase14/**'
+      - 'dashboard/**'
+  workflow_dispatch:
+    inputs:
+      scan_mode:
+        description: Read-only live research or offline smoke test
+        type: choice
+        options: [offline, live]
+        default: offline
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bountyforge-revenue-scout
+  cancel-in-progress: false
+
+jobs:
+  research-only:
+    if: ${{ github.repository == 'Ledgercorp/BountyForge' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    steps:
+      - name: Checkout trusted repository without stored credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Standard Python on public hosted Ubuntu
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Full Python regression plus revenue, Groq and Stripe gates
+        run: python -m unittest discover -s tests -v
+      - name: Owner console configuration and receipt verification
+        run: node --test tests/dashboard_state.mjs tests/repair_console.cjs
+      - name: Observe Linux host without namespace launch or untrusted execution
+        run: |
+          set -euo pipefail
+          mkdir -p revenue-evidence
+          python -m scripts.observe_private_host > revenue-evidence/host-observation.json
+          {
+            printf '### Linux host observation (not execution admission)\n\n'
+            printf 'Namespace launch not attempted. No customer code, model or payment credentials used.\n\n'
+            cat revenue-evidence/host-observation.json
+            printf '\n'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Perform only read-only prospect research
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          SCAN_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.scan_mode || 'offline' }}
+          BOUNTYFORGE_SUBMIT_ENABLED: '0'
+        run: |
+          set -euo pipefail
+          mkdir -p revenue-evidence
+          python -m bountyforge.revenue_scout \
+            --mode "$SCAN_MODE" \
+            --output revenue-evidence/prospects.json \
+            --summary revenue-evidence/summary.md
+          cat revenue-evidence/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Retain sanitized prospect list for 2 days
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bountyforge-revenue-research-${{ github.run_id }}
+          path: |
+            revenue-evidence/prospects.json
+            revenue-evidence/host-observation.json
+          retention-days: 2

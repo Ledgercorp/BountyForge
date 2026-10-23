@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "kind": "bountyforge_phase10_repeatable_codex_and_chatgpt_infrastructure_review",
+  "started_from": "0aa62b33b978dee6f3452ee066c1ec889e6a776d",
+  "implementation_commit": "ce6c961d385cf04ace1b67b153c5b355c638a9ef",
+  "hosted_run": {
+    "url": "https://github.com/Ledgercorp/BountyForge/actions/runs/39893513956",
+    "run_id": 39893513956,
+    "status": "success",
+    "tests": 605,
+    "passed": 596,
+    "skipped": 9,
+    "failed": 0,
+    "bootstrap_tests": 8
+  },
+  "new_files": [
+    "scripts/bootstrap_codex_mcp.py",
+    "tests/test_codex_mcp_bootstrap.py",
+    "AGENTS.md",
+    "docs/PHASE10_CODEX_BOOTSTRAP_AND_CHATGPT.md"
+  ],
+  "codex_bootstrap": {
+    "supports_idempotent_registration": true,
+    "registers_through_codex_cli": true,
+    "exact_mcp_child_env": [
+      "PATH"
+    ],
+    "refuses_foreign_entry": true,
+    "can_run_previous_real_appserver_acceptance": true,
+    "repeated_cloud_session_bootstrap_verified": false,
+    "persists_across_sessions": false
+  },
+  "chatgpt": {
+    "custom_mcp_connected": false,
+    "tunnel_id_verified": false,
+    "persistent_tunnel_host_verified": false,
+    "installed_private_bountyforge_plugin": false,
+    "existing_hatchable_project_inspected": "LeftSock BountyForge",
+    "existing_hatchable_project_modified": false,
+    "existing_project_endpoint_authenticated_for_mcp": false,
+    "platform_tunnel_settings": "https://platform.openai.com/settings/organization/tunnels"
+  },
+  "customer_source_used": false,
+  "live_model_calls": 0,
+  "real_payment_actions": 0,
+  "production_deployment": false,
+  "mac_accessed": false,
+  "new_infrastructure_spending_usd": 0,
+  "verified_revenue_usd": 0,
+  "private_execution_admitted": false,
+  "acceptance": "CODEX_REPEATABLE_BOOTSTRAP_TESTED_CHATGPT_CONNECTION_BLOCKED"
+}

@@ -1,0 +1,29 @@
+[
+  {
+    "url": "https://edu.chainguard.dev/chainguard/chainguard-images/verification/verify-images/",
+    "status": "unavailable"
+  },
+  {
+    "url": "https://docs.docker.com/build/metadata/attestations/",
+    "http_status": 200,
+    "truncated": true,
+    "sha256_of_read_bytes": "7e914a056c5686d9d3dac8fac152c6d211ebb77418d35cb5ffdea6d68f19f98d",
+    "terms_found": {
+      "cosign": false,
+      "SBOM": true,
+      "provenance": true,
+      "signature": false,
+      "free": false
+    }
+  },
+  {
+    "url": "https://raw.githubusercontent.com/sigstore/cosign/main/README.md",
+    "http_status": 200,
+    "read_bytes": 34472,
+    "truncated": false,
+    "sha256": "ff167bbc67a9ad2a043bc0581c5f5cfd9701cf826bc8ea15c18d01b496920983",
+    "mentions_cosign_verify": true,
+    "runtime_signature_verified": false,
+    "image_downloaded": false
+  }
+]

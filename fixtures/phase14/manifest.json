@@ -1,0 +1,93 @@
+{
+  "cases": [
+    {
+      "categories": [
+        "business_logic",
+        "multi_function",
+        "multi_statement"
+      ],
+      "description": "Calculate an invoice for non-cancelled rows. Rates are fractions in [0,1]. Subtract the rounded discount from subtotal before tax; total equals discounted taxable amount plus rounded tax. Keep input rows unchanged and preserve helper behavior.",
+      "id": "invoice-summary",
+      "sha256": {
+        "subject.py": "89e12cec1df4a5cf88c691974e180fea2308319894bdb5f215c46c1c99785f41",
+        "tests/test_regression.py": "35246fff991d78b722d7e847a51fdfa4865b404c1221a88e665ba7f1afbef81d"
+      },
+      "symbol": "invoice_summary"
+    },
+    {
+      "categories": [
+        "state_management",
+        "multi_function",
+        "complex_control_flow"
+      ],
+      "description": "Apply credits and debits to an opening balance, once per event ID. Ignore unsupported kinds without marking them seen. Return sorted seen IDs and a new state, leaving caller state/events unchanged. Multiple accepted events accumulate, including repeated calls.",
+      "id": "event-reducer",
+      "sha256": {
+        "subject.py": "eafc2c262f2957fc64629969d400f181347bf62943bfa65694416ac40e190ba4",
+        "tests/test_regression.py": "77d64f48944c874267f57be8fd3033602f9497c05a1e201c060ffc121f45b4d3"
+      },
+      "symbol": "apply_events"
+    },
+    {
+      "categories": [
+        "api_integration",
+        "error_handling",
+        "multi_statement",
+        "regression"
+      ],
+      "description": "Adapt an already-decoded API response; no network calls. On status 200 return its items and exact next_cursor, including empty string or None, and mark complete iff next_cursor is empty or None. On 429 retain prior cursor, empty rows, retry true; other errors retain prior cursor with retry false. Never mutate inputs.",
+      "id": "cursor-adapter",
+      "sha256": {
+        "subject.py": "8780135d429b2539852e872d5a66fbd9abfbfd92649c62177cb2b86cb6a332ee",
+        "tests/test_regression.py": "45f8b9da4e04fe6a70cfa71524e12f4163b032239fcb32e3acf50ede5dfaba8d"
+      },
+      "symbol": "ingest_page"
+    },
+    {
+      "categories": [
+        "data_processing",
+        "multi_statement",
+        "multi_function"
+      ],
+      "description": "Group readings by stripped case-insensitive sensor name. Ignore None readings but preserve numeric zero. Return each group mean from its valid readings only; groups with no valid readings map to None. Keep caller records unchanged.",
+      "id": "reading-groups",
+      "sha256": {
+        "subject.py": "d258f010611b36528ebd6daf0decc7e03c6f9cb71f65fd269747aa82906a8363",
+        "tests/test_regression.py": "bcc52b82badd51b517240a6f01a2285635e1dec679acb2bf643038455cb1da73"
+      },
+      "symbol": "group_readings"
+    },
+    {
+      "categories": [
+        "error_handling",
+        "api_integration",
+        "complex_control_flow"
+      ],
+      "description": "Retry only HTTP 429 and 503. Use numeric Retry-After seconds when valid, otherwise base * 2**attempt. Clamp the delay to [0,max_delay]. Successful and permanent-failure statuses do not retry. This function does not sleep or perform I/O.",
+      "id": "retry-policy",
+      "sha256": {
+        "subject.py": "9cb690fc590e6aa0ff98cc06633348b8358b74e6743e2848a48c420446d5c301",
+        "tests/test_regression.py": "f7ee114bf2bcd0f7e59a5008d8788ae9da38e29f770bc227c871d39c0b5b9f4e"
+      },
+      "symbol": "retry_decision"
+    },
+    {
+      "categories": [
+        "state_management",
+        "regression",
+        "multi_function",
+        "complex_control_flow"
+      ],
+      "description": "Allocate stock to requests in order without overselling or using reserved stock. Nonpositive requests receive zero. Each allocation reduces remaining available units. Preserve input requests and the nonnegative available_units helper.",
+      "id": "stock-allocation",
+      "sha256": {
+        "subject.py": "9f597f93e43959597b46483d18a5a65fd82f3b769a90682935fd66870b8a0277",
+        "tests/test_regression.py": "fcd0363808dd7c4059defdad782ade1ba496ce5e4eb458cc2f6d4ac3e7d3f144"
+      },
+      "symbol": "allocate_orders"
+    }
+  ],
+  "classification": "OWNED_DEVELOPMENT",
+  "provenance": "LeftSock authored Phase14; no reference patches; exposed development tests",
+  "schema": 1
+}

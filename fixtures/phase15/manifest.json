@@ -1,0 +1,52 @@
+{
+  "cases": [
+    {
+      "categories": [
+        "state_transitions",
+        "multi_statement",
+        "helper_dependencies",
+        "error_recovery"
+      ],
+      "description": "Release reserved units only for settled events, once per event ID. Pending, cancelled and missing statuses are ignored without recording the ID. Clamp each accepted release to held units. Accumulate released units from the existing state; invalid amounts contribute zero. Return sorted seen IDs without mutating inputs.",
+      "id": "reserve-release",
+      "sha256": {
+        "subject.py": "6680558010929ddbd5ddbc21280a10b2b4406fecc103b6520d8d9fdb4a35d766",
+        "tests/test_regression.py": "e833bb513b5ebdb2cf5a1f699c2c135a83cb9c34466ef71a429b3d9541474921"
+      },
+      "symbol": "apply_release"
+    },
+    {
+      "categories": [
+        "api_responses",
+        "error_recovery",
+        "data_transformation",
+        "boundary"
+      ],
+      "description": "Normalize decoded 200 and 206 responses as successes with retry false. Trim and filter record IDs; preserve an explicit cursor including empty string or None, and use None when missing. Only 429/503 retry using the unchanged retry_seconds helper and previous cursor. Other errors retain the previous cursor without retry; do not mutate inputs.",
+      "id": "response-normalize",
+      "sha256": {
+        "subject.py": "16e9d683814425970670d886d9fdacbcbde0cc977a33b9371fd048bd6743bc7f",
+        "tests/test_regression.py": "459d30875f9e441425784062b97846d7e86507f1b27aa7a523c5cff0942d6d15"
+      },
+      "symbol": "normalize_response"
+    },
+    {
+      "categories": [
+        "data_transformation",
+        "multi_statement",
+        "boundary",
+        "helper_dependencies"
+      ],
+      "description": "Return a weighted mean from rows in the half-open interval [start,end). Ignore None values and invalid/nonpositive weights as defined by row_weight; include numeric zero and fractional weights. Return None if no valid weight remains. Preserve input rows and helper behavior.",
+      "id": "weighted-window",
+      "sha256": {
+        "subject.py": "532f6cf0a63013d4ccf1d36761f7e59ed5e08bfe5d7dbbe824ec7f3ca913b616",
+        "tests/test_regression.py": "9659c296d0aa671b7af65730d47c769dd6fbfd7a7afa900f8a00ddab91078c35"
+      },
+      "symbol": "summarize_window"
+    }
+  ],
+  "classification": "OWNED_DEVELOPMENT",
+  "kind": "phase15_owned_maintenance",
+  "reference_patches_present": false
+}

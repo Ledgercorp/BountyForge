@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "role": "owned_development",
+  "not_heldout": true,
+  "reference_model_generated": false,
+  "reference_policy": "DEV_ONLY_NEVER_MODEL_SUCCESS",
+  "tasks": [
+    {
+      "id": "configuration_values",
+      "file": "subject.py",
+      "symbol": "parse_configuration",
+      "description": "Read colon-delimited settings while preserving colons inside values, whitespace handling, comments, empty values and later overrides.",
+      "sha256": {
+        "subject.py": "cdf37afc19bb3d783176102408902946fb014a894ba4af6315fd9db149f2a585",
+        "tests/test_regression.py": "1b1c58284bb2ef5d05cf554e52666e99fc7c6e923501402eb9a0ccf0be1ba470"
+      },
+      "reference_changes": [
+        {
+          "line": 8,
+          "new": "parts = raw.split(':', 1)"
+        }
+      ]
+    },
+    {
+      "id": "stable_partition",
+      "file": "subject.py",
+      "symbol": "stable_partition",
+      "description": "Split values by selected membership, preserving relative order and every duplicate in both output lists without mutating inputs.",
+      "sha256": {
+        "subject.py": "f1910ae01408cd0681e8894f6718060f33afe06207f80fc19e7c2c68a5399d12",
+        "tests/test_regression.py": "c1fb1757e627e8cabec8dc382b26a1ff56a2f31b8779697a4fdeaf21eb5b9366"
+      },
+      "reference_changes": [
+        {
+          "line": 9,
+          "new": "rejected.append(value)"
+        }
+      ]
+    },
+    {
+      "id": "weighted_samples",
+      "file": "subject.py",
+      "symbol": "weighted_mean",
+      "description": "Compute a weighted mean using each nonnegative weight; return None when total weight is zero and reject negative weights.",
+      "sha256": {
+        "subject.py": "cf630e7af0ad30edc3274262975ca3eebdab5b18813a45f6fa1aceb99dbcc46c",
+        "tests/test_regression.py": "e755fd71c9dfc1f29be6e131bf11624a947135028c42fc5da0f5d952ce37abf3"
+      },
+      "reference_changes": [
+        {
+          "line": 8,
+          "new": "total += value * weight"
+        },
+        {
+          "line": 9,
+          "new": "weight_total += weight"
+        }
+      ]
+    },
+    {
+      "id": "discount_continuation",
+      "file": "subject.py",
+      "symbol": "discounted_total",
+      "description": "Compute the remaining total after the supplied percentage discount, preserving empty input, input lists, two-decimal output and discount-range validation.",
+      "sha256": {
+        "subject.py": "a8cad8a33207a09a8691182ed420b20727dde178f787e7a8aaea5017b2d15ba2",
+        "tests/test_regression.py": "69c2ddf1493e3112656468731be011ddd3982846d8b0cf4f298f4ef85c8702a8"
+      },
+      "reference_changes": [
+        {
+          "line": 6,
+          "new": "total = subtotal * (1 - percent / 100.0)"
+        }
+      ]
+    },
+    {
+      "id": "canonical_headers",
+      "file": "subject.py",
+      "symbol": "canonical_header",
+      "description": "Normalize ASCII header text by trimming outer whitespace, lowercasing components and collapsing empty dash-separated components before joining with underscores.",
+      "sha256": {
+        "subject.py": "411876359b6055336e0c318d8c5a33c50ac06a88cd2f63c9f04fd38a9bc0a444",
+        "tests/test_regression.py": "0d8271afa337e4aabc9cdf9593efad5e36b7b5ce844ab37dbf78bc5347f43786"
+      },
+      "reference_changes": [
+        {
+          "line": 5,
+          "new": "return '_'.join(piece.lower() for piece in pieces if piece)"
+        }
+      ]
+    },
+    {
+      "id": "status_priority",
+      "file": "subject.py",
+      "symbol": "classify_status",
+      "description": "Successful statuses complete; transient statuses may retry until their allowance is exhausted; all unknown statuses are rejected regardless of attempt count.",
+      "sha256": {
+        "subject.py": "1ac7c6c81f51d20987222843e0bdeec89e9f199213a25712016f63b8da8e4bc1",
+        "tests/test_regression.py": "45146d29d097ebab9ac07cb0e290ddd61b48960830471292510b8ef0d09a6b1c"
+      },
+      "reference_changes": [
+        {
+          "line": 7,
+          "new": "status in ('busy', 'transient') and attempts >= retry_limit"
+        }
+      ]
+    }
+  ]
+}

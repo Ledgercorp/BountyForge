@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "kind": "owned_canary_independent_replay",
+  "source_report_sha256": "b05277936cf15ef4413afb1ff8abc9538cbfa36ff5e007892391e46bd25d94a2",
+  "revision": "2d7d389f86d52e75554466be1df020b567eddb6c",
+  "suite": "structural",
+  "protocol": "ast_contract_v5",
+  "model_calls": 0,
+  "inference_performed": false,
+  "commercial_bounty": false,
+  "external_submission": false,
+  "untrusted_execution_certified": false,
+  "reported_success_ids": [
+    "optional_banner",
+    "setting_precedence"
+  ],
+  "verified_success_ids": [
+    "optional_banner",
+    "setting_precedence"
+  ],
+  "verified_success_count": 2,
+  "target_test_attempts": 2,
+  "status": "completed",
+  "tasks": [
+    {
+      "id": "optional_banner",
+      "source_sha256": "41471697d28f6da283ac5a57e76c44e3aa372f9856c95075ab158e7a61c54dd0",
+      "tests_sha256": "40ca7a1d601092fbcae3bdee341dec20ca2ab321c440c15bca7752adf42d26f8",
+      "candidate_sha256": "328116aec62d7ca9baef32c5f9a9b38093acace1930e36cb802cc7dd70249ecd",
+      "patch_sha256": "38d66624471985e10ae782258707cd3aca9b5978744db26b23a159af2606f93c",
+      "verified": true,
+      "test": {
+        "passed": true,
+        "returncode": 0,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 0.362,
+        "output": "----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nOK\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      }
+    },
+    {
+      "id": "setting_precedence",
+      "source_sha256": "86cf3c794cd578cdd021d9aa198e160117940a9b7576a127a6b391df988570eb",
+      "tests_sha256": "df23764edec1853114cf4c972f521a076f5dfc8fb5f7105a4ae78fc6add20e0a",
+      "candidate_sha256": "249a7b291407ca288284f51222606d80754232c2bd560894abee6241d37c5304",
+      "patch_sha256": "545aa607e485f06cb1027021fa5e56a0e4c67b1a9c72ad4a1985f413c623f1d5",
+      "verified": true,
+      "test": {
+        "passed": true,
+        "returncode": 0,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 0.362,
+        "output": "----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      }
+    }
+  ],
+  "sandbox_preflight": {
+    "network_denied": true,
+    "loopback_inference_unreachable": true,
+    "source_writes_denied": true,
+    "root_writes_denied": true,
+    "secrets_absent": true,
+    "uid_unprivileged": true,
+    "capabilities_empty": true,
+    "no_new_privileges": true,
+    "seccomp_active": true,
+    "memory_limit_enforced": true,
+    "swap_disabled": true,
+    "cpu_quota_verified": true,
+    "pid_limit_verified": true,
+    "tmpfs_bounded_noexec": true,
+    "wall_clock_enforced": true,
+    "cleanup_verified": true,
+    "output_bounded": true,
+    "docker_socket_absent": true,
+    "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+    "untrusted_execution_certified": false,
+    "pid_pressure_enforced": true,
+    "pid_current_at_denial": 64,
+    "pid_denial_events": 1,
+    "probe_threads": 63,
+    "cpu_pressure_enforced": true,
+    "cpu_pressure_wall_seconds": 3.014,
+    "cpu_pressure_used_seconds": 3.022,
+    "cpu_throttled_periods": 31
+  }
+}

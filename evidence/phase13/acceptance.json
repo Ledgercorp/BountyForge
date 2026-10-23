@@ -1,0 +1,133 @@
+{
+  "additional_spending_usd": 0,
+  "checkpoint_commit": "dd7b3e4bf7878b280a76d7928e6a33ebd72c1ce2",
+  "classification": "OWNED_DEVELOPMENT",
+  "codex_development": {
+    "active_session_tokens": null,
+    "additional_model_provider_requests_started": 0,
+    "additional_model_turns_started": 0,
+    "attempted_tasks": 3,
+    "elapsed_seconds": 225.99,
+    "fresh_replay_test_methods": 18,
+    "further_separate_process_test_methods": 18,
+    "generated_proposals": 3,
+    "regressions": 0,
+    "targeted_test_methods": 18,
+    "unauthorized_file_changes": 0,
+    "verified_repairs": 3
+  },
+  "codex_requires_active_session": true,
+  "commercial_launch_authorized": false,
+  "cross_cloud_session_storage_verified": false,
+  "durable_history_docker_replay": {
+    "checks": 4,
+    "new_model_generations": 0,
+    "passed": 4
+  },
+  "external_operations": [
+    "Read-only GitHub metadata and official documentation",
+    "Draft branch evidence publication"
+  ],
+  "file_sha256": {
+    "blackbox_acceptance.json": "b9bb47a50794ef68509d30f71981fa4092dd15c443c6c5a8f10248aaca4c931a",
+    "codex_queue_session.json": "42a7be644b2f566276f1205959aa25600f5a26bc23e69f440ba3210d68f5b488",
+    "environment_admission.json": "685c51f74c72ffd4230518ebcc2b3b7f7a1fbca426170c2cfc6b833cde901cc2",
+    "history_replay.json": "2f2d0e3b7ab639c91f90af788263de1817c53697efb625eaf00dcceabf4243d8",
+    "independent_replay.json": "a3c68f7060588773865f15f4a75e1a334d9e13c0f4c5412497c0398af97bac33",
+    "legacy_mcp_compatibility.json": "58228364d1669dcac9f2ce65e8263568b9a3a1758315dcaa500bc7be3c58395b",
+    "qwen_contract_39947581082.json": "73eaeabbfc8de3777e594aa1e661be448ddb3a799da7fae8f219459422f960df",
+    "restart_status.json": "375c3e6f05beb45d07cb324181db7caaed71a919afb271131c8f3272c2fadbd4",
+    "sqlite_mcp_acceptance.json": "392993c524579b113837044dddf6974fe39e6648e290a26f98579cee93fc0ab1"
+  },
+  "frozen_core_unchanged": true,
+  "historical_harness": {
+    "executed": 10,
+    "failed": 0,
+    "passed": 10
+  },
+  "hosted_final_regression": {
+    "commit": "58284f3bdef7942fdd060759833944a97dda584d",
+    "executed": 663,
+    "failed": 0,
+    "node_passed": 7,
+    "passed": 654,
+    "run_id": 39948860581,
+    "skipped": 9
+  },
+  "hosted_history_regression": {
+    "commit": "6ab6672f7218c5dc39d0a2c93334ca46c083000d",
+    "executed": 662,
+    "failed": 0,
+    "node_passed": 7,
+    "passed": 653,
+    "run_id": 39948492272,
+    "skipped": 9
+  },
+  "hosted_implementation_regression": {
+    "commit": "2b0272df2975994eddff59d788a93b32c7fbadbd",
+    "executed": 659,
+    "failed": 0,
+    "node_passed": 7,
+    "passed": 650,
+    "run_id": 39947588324,
+    "skipped": 9
+  },
+  "implementation_commit": "2b0272df2975994eddff59d788a93b32c7fbadbd",
+  "independent_unseen_accuracy": null,
+  "kind": "phase13_engineering_acceptance",
+  "legacy_native_mcp_compatibility": {
+    "model_turns": 0,
+    "reconnected": true,
+    "refusals": 5,
+    "valid_calls": 5
+  },
+  "local_regression": {
+    "executed": 663,
+    "failed": 0,
+    "passed": 654,
+    "skipped": 9
+  },
+  "native_mcp_blackbox": {
+    "checks": 22,
+    "new_model_generations": 0,
+    "passed": 22
+  },
+  "native_sqlite_contention_acceptance": {
+    "checks": 3,
+    "new_model_generations": 0,
+    "passed": 3
+  },
+  "owner_console_node": {
+    "executed": 7,
+    "failed": 0,
+    "passed": 7
+  },
+  "private_execution_admitted": false,
+  "production_deployed": false,
+  "qwen_comparison_status": "COMPLETED",
+  "qwen_development_comparison": {
+    "completion_tokens": 82,
+    "distinct_tasks": 1,
+    "experiment_seconds": 33.686,
+    "hosted_job_seconds": 55,
+    "improvement_demonstrated": false,
+    "inference_seconds": 13.715,
+    "max_allowed_calls": 4,
+    "model_api_cost_usd": 0,
+    "model_calls": 2,
+    "prompt_tokens": 692,
+    "protocols": 2,
+    "rejected_proposals": 0,
+    "run_id": 39947581082,
+    "unauthorized_file_changes": 0,
+    "verified_repairs_per_protocol": "1/1"
+  },
+  "revenue_usd": 0,
+  "scheduling_active": false,
+  "skipped_checks": {
+    "namespace_rootfs_not_provisioned": 8,
+    "older_development_catalog_opt_in_replay": 1
+  },
+  "unattended_codex_admitted": false,
+  "verified_code_commit": "58284f3bdef7942fdd060759833944a97dda584d"
+}

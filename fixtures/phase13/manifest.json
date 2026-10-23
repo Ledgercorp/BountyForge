@@ -1,0 +1,34 @@
+{
+  "cases": [
+    {
+      "description": "Return the number of nonempty chunks needed for count items at a positive chunk size, including any partial final chunk. Zero items require zero chunks.",
+      "id": "chunk-count",
+      "sha256": {
+        "subject.py": "c3c646c84eb283dad12c1dbe142ab29a80a5b492a82357f3f152ef32525be1af",
+        "tests/test_regression.py": "d009d0d85f0ee63cbe82f9e479b043d451488323eb48468030944c6f72f47b96"
+      },
+      "symbol": "chunk_count"
+    },
+    {
+      "description": "Use the provided setting whenever it is not None, preserving explicit False, zero and empty strings; use the fallback only when the setting is None.",
+      "id": "optional-setting",
+      "sha256": {
+        "subject.py": "da0c303cb3e23bf5c9f4b9e011a8e9d64c983cc114b45e9c3ae6b45bcc6c544c",
+        "tests/test_regression.py": "d224e154be27910dc19463b0e138181a68dff0d5c37dc7cfd740263210a292a0"
+      },
+      "symbol": "optional_setting"
+    },
+    {
+      "description": "Select values between lower and upper inclusive, preserving input order and duplicates. An inverted interval selects nothing.",
+      "id": "inclusive-window",
+      "sha256": {
+        "subject.py": "62f9c047228278f00094707c816e1c3ca30c09d610a43eda9ac0bc432385c1d4",
+        "tests/test_regression.py": "0d210655c6e53e8de0b820fccb75a5b4a15715586a5f3451f25acbc6f312b040"
+      },
+      "symbol": "inclusive_window"
+    }
+  ],
+  "classification": "OWNED_DEVELOPMENT",
+  "provenance": "LeftSock authored Phase13, no reference implementations",
+  "schema": 1
+}

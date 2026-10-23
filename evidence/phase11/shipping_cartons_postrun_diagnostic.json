@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "kind": "postrun_owned_candidate_diagnostic_not_autonomous_success",
+  "source_run_id": 39896337388,
+  "source_commit": "777004ca60f0b3252c97112e851f22c89944f273",
+  "case_id": "shipping_cartons",
+  "model_calls_reused": 0,
+  "proposal_response_sha256": "e2428271b149552faecb8002cc941d1123f03a6daf6f23d7a204bdd869d7d4e2",
+  "candidate_sha256": "7d72fe1ea4796e6a39e2a10503b13fa9e823e54a006ffc78496d9dd7e744b06d",
+  "verification": "passed_sandbox_admission_but_candidate_failed_targeted_tests",
+  "docker_controls_passed": 20,
+  "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+  "test_receipt": {
+    "passed": false,
+    "exit_code": 1,
+    "timeout": false,
+    "seconds": 1.062,
+    "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+    "failures": {
+      "test_exact": "carton_count(10, 5): expected 2, got 1",
+      "test_large": "carton_count(1000001, 1000): expected 1001, got 1",
+      "test_remainder": "carton_count(11, 5): expected 3, got 1",
+      "test_single": "carton_count(1, 20): expected 1, got 0",
+      "test_unit_capacity": "carton_count(19, 1): expected 19, got 1"
+    },
+    "tests_run": 8,
+    "failures_count": 5
+  },
+  "autonomous_repair_success": false,
+  "included_in_phase11_success_count": false,
+  "note": "This was an additional diagnostic replay of the exact recorded model response after the workflow had stopped. It is not the original worker receipt and is not counted as an autonomous success."
+}

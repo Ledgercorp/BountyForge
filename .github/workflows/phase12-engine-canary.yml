@@ -1,0 +1,85 @@
+name: BountyForge Phase12 owned local Qwen engine canary
+
+on:
+  push:
+    branches: [engineering/revenue-linux-scout-20261021]
+    paths: ['.github/workflows/phase12-engine-canary.yml']
+  workflow_dispatch:
+    inputs:
+      confirm_zero_cost:
+        description: Run one owned development task with at most two pinned local Qwen calls
+        type: boolean
+        required: true
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bountyforge-repair-worker
+  cancel-in-progress: false
+
+jobs:
+  qwen-engine:
+    if: >-
+      github.repository == 'Ledgercorp/BountyForge' && github.event.repository.private == false &&
+      github.ref == 'refs/heads/engineering/revenue-linux-scout-20261021' &&
+      ((github.event_name == 'workflow_dispatch' && inputs.confirm_zero_cost) ||
+       (github.event_name == 'push' && contains(github.event.head_commit.message, '[phase12-qwen-canary]')))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Contract regression before inference
+        run: python -m unittest tests.test_repair_engines tests.test_mcp_stdio_blackbox tests.test_phase12_qwen_canary -q
+      - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: ~/.cache/bountyforge/models
+          key: bountyforge-public-qwen25-coder-1p5b-cc324af0-v1
+      - name: Pull existing exact owned-test image
+        run: docker pull --platform linux/amd64 python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590
+      - name: Verify existing pinned model and runtime
+        run: bash scripts/bootstrap_actions_inference.sh --verify-only
+      - name: Start one local inference stream without inherited credentials
+        run: |
+          set -euo pipefail
+          nohup env -i PATH=/usr/local/bin:/usr/bin:/bin HOME="$HOME" \
+            bash scripts/bootstrap_actions_inference.sh --serve \
+            > "$RUNNER_TEMP/bountyforge-phase12-qwen.log" 2>&1 </dev/null &
+          echo "$!" > "$RUNNER_TEMP/bountyforge-phase12-qwen.pid"
+          ready=0
+          for i in $(seq 1 70); do
+            if curl --fail --silent http://127.0.0.1:8080/health | grep -q '"status":"ok"'; then
+              ready=1; break
+            fi
+            sleep 2
+          done
+          [[ "$ready" == 1 ]]
+      - name: Measure one task through the shared verification contract
+        run: |
+          env -i PATH=/usr/local/bin:/usr/bin:/bin HOME="$HOME" \
+            GITHUB_ACTIONS=true GITHUB_REPOSITORY=Ledgercorp/BountyForge \
+            GITHUB_REF=refs/heads/engineering/revenue-linux-scout-20261021 \
+            GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_SHA="$GITHUB_SHA" RUNNER_OS=Linux RUNNER_ARCH=X64 \
+            BOUNTYFORGE_PHASE12_QWEN_ACK=true LD_LIBRARY_PATH="$pythonLocation/lib" \
+            "$pythonLocation/bin/python" -m scripts.phase12_qwen_canary --output evidence-run/phase12_qwen.json
+      - name: Retain small public-owned evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bountyforge-phase12-qwen-${{ github.run_id }}
+          path: evidence-run/phase12_qwen.json
+          if-no-files-found: ignore
+          retention-days: 1
+      - name: Stop only the inference process started by this job
+        if: always()
+        run: |
+          if [[ -f "$RUNNER_TEMP/bountyforge-phase12-qwen.pid" ]]; then
+            read -r model_pid < "$RUNNER_TEMP/bountyforge-phase12-qwen.pid"
+            if [[ "$model_pid" =~ ^[0-9]+$ ]]; then kill "$model_pid" 2>/dev/null || true; fi
+          fi

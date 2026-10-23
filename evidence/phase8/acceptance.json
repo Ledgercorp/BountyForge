@@ -1,0 +1,458 @@
+{
+  "schema": 1,
+  "kind": "phase8_engineering_acceptance",
+  "base_revision": "7bcbf5e3d7998bad965c2f00ff5756d0076ba0dc",
+  "verified_source_revision": "64dfd566d2c8c9346890fb5d850eb4f5f6660fd1",
+  "core_freeze_revision": "48ce3f15a134ba06846d7eda8fe4ac2e594e7563",
+  "commits": [
+    {
+      "sha": "b5846b3cd17de2921ec70e1ce84d7e4146c8717b",
+      "subject": "Add six original owned development fixtures with bounded statement references",
+      "files_changed": [
+        "benchmarks/phase8/development_tasks/README.md",
+        "benchmarks/phase8/development_tasks/canonical_headers/subject.py",
+        "benchmarks/phase8/development_tasks/canonical_headers/tests/test_regression.py",
+        "benchmarks/phase8/development_tasks/configuration_values/subject.py",
+        "benchmarks/phase8/development_tasks/configuration_values/tests/test_regression.py",
+        "benchmarks/phase8/development_tasks/discount_continuation/subject.py",
+        "benchmarks/phase8/development_tasks/discount_continuation/tests/test_regression.py",
+        "benchmarks/phase8/development_tasks/manifest.json",
+        "benchmarks/phase8/development_tasks/stable_partition/subject.py",
+        "benchmarks/phase8/development_tasks/stable_partition/tests/test_regression.py",
+        "benchmarks/phase8/development_tasks/status_priority/subject.py",
+        "benchmarks/phase8/development_tasks/status_priority/tests/test_regression.py",
+        "benchmarks/phase8/development_tasks/weighted_samples/subject.py",
+        "benchmarks/phase8/development_tasks/weighted_samples/tests/test_regression.py",
+        "tests/test_phase8_development.py"
+      ],
+      "verified_by": "Final integrated regression; focused red/green evidence and qualifications in PHASE8_ENGINEERING_LEDGER.md",
+      "deployed": false,
+      "repair_scheduling_active": false,
+      "additional_infrastructure_spending_usd": 0,
+      "external_customer_or_upstream_actions": 0
+    },
+    {
+      "sha": "48ce3f15a134ba06846d7eda8fe4ac2e594e7563",
+      "subject": "Freeze owned repair sessions with grounded context and fail-closed provider boundaries",
+      "files_changed": [
+        "bountyforge/repair_session.py",
+        "tests/test_phase8_repair_session.py"
+      ],
+      "verified_by": "Final integrated regression; focused red/green evidence and qualifications in PHASE8_ENGINEERING_LEDGER.md",
+      "deployed": false,
+      "repair_scheduling_active": false,
+      "additional_infrastructure_spending_usd": 0,
+      "external_customer_or_upstream_actions": 0
+    },
+    {
+      "sha": "f55ad3410f923f272e5091f6c9d46363d28ef9c1",
+      "subject": "Add sealed Phase8 owned maintenance evaluation catalog",
+      "files_changed": [
+        "benchmarks/phase8/evaluation_tasks/README.md",
+        "benchmarks/phase8/evaluation_tasks/archive_classification/subject.py",
+        "benchmarks/phase8/evaluation_tasks/archive_classification/tests/test_regression.py",
+        "benchmarks/phase8/evaluation_tasks/block_indentation/subject.py",
+        "benchmarks/phase8/evaluation_tasks/block_indentation/tests/test_regression.py",
+        "benchmarks/phase8/evaluation_tasks/booking_intersection/subject.py",
+        "benchmarks/phase8/evaluation_tasks/booking_intersection/tests/test_regression.py",
+        "benchmarks/phase8/evaluation_tasks/clock_normalization/subject.py",
+        "benchmarks/phase8/evaluation_tasks/clock_normalization/tests/test_regression.py",
+        "benchmarks/phase8/evaluation_tasks/configuration_switch/subject.py",
+        "benchmarks/phase8/evaluation_tasks/configuration_switch/tests/test_regression.py",
+        "benchmarks/phase8/evaluation_tasks/csv_field_encoding/subject.py",
+        "benchmarks/phase8/evaluation_tasks/csv_field_encoding/tests/test_regression.py",
+        "benchmarks/phase8/evaluation_tasks/cyclic_sequence/subject.py",
+        "benchmarks/phase8/evaluation_tasks/cyclic_sequence/tests/test_regression.py",
+        "benchmarks/phase8/evaluation_tasks/duration_label/subject.py",
+        "benchmarks/phase8/evaluation_tasks/duration_label/tests/test_regression.py",
+        "benchmarks/phase8/evaluation_tasks/encounter_unique/subject.py",
+        "benchmarks/phase8/evaluation_tasks/encounter_unique/tests/test_regression.py",
+        "benchmarks/phase8/evaluation_tasks/endpoint_authority/subject.py",
+        "benchmarks/phase8/evaluation_tasks/endpoint_authority/tests/test_regression.py",
+        "benchmarks/phase8/evaluation_tasks/line_termination/subject.py",
+        "benchmarks/phase8/evaluation_tasks/line_termination/tests/test_regression.py",
+        "benchmarks/phase8/evaluation_tasks/literal_tail/subject.py",
+        "benchmarks/phase8/evaluation_tasks/literal_tail/tests/test_regression.py",
+        "benchmarks/phase8/evaluation_tasks/manifest.json",
+        "benchmarks/phase8/evaluation_tasks/markup_text/subject.py",
+        "benchmarks/phase8/evaluation_tasks/markup_text/tests/test_regression.py",
+        "benchmarks/phase8/evaluation_tasks/middle_observation/subject.py",
+        "benchmarks/phase8/evaluation_tasks/middle_observation/tests/test_regression.py",
+        "benchmarks/phase8/evaluation_tasks/query_accumulation/subject.py",
+        "benchmarks/phase8/evaluation_tasks/query_accumulation/tests/test_regression.py",
+        "benchmarks/phase8/evaluation_tasks/redacted_mapping/subject.py",
+        "benchmarks/phase8/evaluation_tasks/redacted_mapping/tests/test_regression.py",
+        "benchmarks/phase8/evaluation_tasks/running_measurements/subject.py",
+        "benchmarks/phase8/evaluation_tasks/running_measurements/tests/test_regression.py",
+        "benchmarks/phase8/evaluation_tasks/shipping_cartons/subject.py",
+        "benchmarks/phase8/evaluation_tasks/shipping_cartons/tests/test_regression.py",
+        "benchmarks/phase8/evaluation_tasks/stock_admission/subject.py",
+        "benchmarks/phase8/evaluation_tasks/stock_admission/tests/test_regression.py",
+        "benchmarks/phase8/evaluation_tasks/weighted_measurement/subject.py",
+        "benchmarks/phase8/evaluation_tasks/weighted_measurement/tests/test_regression.py",
+        "tests/test_phase8_catalog.py"
+      ],
+      "verified_by": "Final integrated regression; focused red/green evidence and qualifications in PHASE8_ENGINEERING_LEDGER.md",
+      "deployed": false,
+      "repair_scheduling_active": false,
+      "additional_infrastructure_spending_usd": 0,
+      "external_customer_or_upstream_actions": 0
+    },
+    {
+      "sha": "552255accc806478b9ca14b82918aa1972d325b1",
+      "subject": "Add inactive owned-only Python patch review package and policy",
+      "files_changed": [
+        "bountyforge/patch_review_service.py",
+        "docs/VERIFIED_PYTHON_PATCH_REVIEW.md",
+        "scripts/patch_review_service.py",
+        "tests/test_patch_review_service.py"
+      ],
+      "verified_by": "Final integrated regression; focused red/green evidence and qualifications in PHASE8_ENGINEERING_LEDGER.md",
+      "deployed": false,
+      "repair_scheduling_active": false,
+      "additional_infrastructure_spending_usd": 0,
+      "external_customer_or_upstream_actions": 0
+    },
+    {
+      "sha": "52b2b93654c54a6da38c00f16d850c6562797e75",
+      "subject": "Add isolated owned synthetic order rehearsal with durable review evidence",
+      "files_changed": [
+        "bountyforge/phase8_synthetic_order.py",
+        "docs/PHASE8_SYNTHETIC_ORDERS.md",
+        "scripts/phase8_synthetic_order.py",
+        "tests/support/phase8_provider.py",
+        "tests/test_phase8_synthetic_order_integrity.py",
+        "tests/test_phase8_synthetic_order_process.py"
+      ],
+      "verified_by": "Final integrated regression; focused red/green evidence and qualifications in PHASE8_ENGINEERING_LEDGER.md",
+      "deployed": false,
+      "repair_scheduling_active": false,
+      "additional_infrastructure_spending_usd": 0,
+      "external_customer_or_upstream_actions": 0
+    },
+    {
+      "sha": "40889b47846782eb69a8a522c2cb3162d3076ec3",
+      "subject": "Reproduce Phase8 unsafe rollback journal acceptance through real CLI",
+      "files_changed": [
+        "tests/test_phase8_blackbox.py"
+      ],
+      "verified_by": "Final integrated regression; focused red/green evidence and qualifications in PHASE8_ENGINEERING_LEDGER.md",
+      "deployed": false,
+      "repair_scheduling_active": false,
+      "additional_infrastructure_spending_usd": 0,
+      "external_customer_or_upstream_actions": 0
+    },
+    {
+      "sha": "60c070a2dba8f03cbfbabdaabe6e01bb01699cfd",
+      "subject": "Reject unsafe simulation workspace files before SQLite access",
+      "files_changed": [
+        "bountyforge/phase8_synthetic_order.py"
+      ],
+      "verified_by": "Final integrated regression; focused red/green evidence and qualifications in PHASE8_ENGINEERING_LEDGER.md",
+      "deployed": false,
+      "repair_scheduling_active": false,
+      "additional_infrastructure_spending_usd": 0,
+      "external_customer_or_upstream_actions": 0
+    },
+    {
+      "sha": "8260fafca706e5977f225149783d2dcafc596df9",
+      "subject": "Add independent Phase8 HTTP and retained-state black-box acceptance",
+      "files_changed": [
+        "tests/support/phase8_recording_provider.py",
+        "tests/test_phase8_blackbox.py"
+      ],
+      "verified_by": "Final integrated regression; focused red/green evidence and qualifications in PHASE8_ENGINEERING_LEDGER.md",
+      "deployed": false,
+      "repair_scheduling_active": false,
+      "additional_infrastructure_spending_usd": 0,
+      "external_customer_or_upstream_actions": 0
+    },
+    {
+      "sha": "dfce02c98d232b18f826b1a479d7a4899e248e34",
+      "subject": "Qualify Phase8 novelty and freeze six supplemental evaluation cases",
+      "files_changed": [
+        "benchmarks/phase8/supplemental_tasks/README.md",
+        "benchmarks/phase8/supplemental_tasks/manifest.json",
+        "benchmarks/phase8/supplemental_tasks/network_word_order/subject.py",
+        "benchmarks/phase8/supplemental_tasks/network_word_order/tests/test_regression.py",
+        "benchmarks/phase8/supplemental_tasks/novelty_review.json",
+        "benchmarks/phase8/supplemental_tasks/rectangular_columns/subject.py",
+        "benchmarks/phase8/supplemental_tasks/rectangular_columns/tests/test_regression.py",
+        "benchmarks/phase8/supplemental_tasks/rooted_segments/subject.py",
+        "benchmarks/phase8/supplemental_tasks/rooted_segments/tests/test_regression.py",
+        "benchmarks/phase8/supplemental_tasks/selection.json",
+        "benchmarks/phase8/supplemental_tasks/terminal_run_summary/subject.py",
+        "benchmarks/phase8/supplemental_tasks/terminal_run_summary/tests/test_regression.py",
+        "benchmarks/phase8/supplemental_tasks/utf8_prefix_budget/subject.py",
+        "benchmarks/phase8/supplemental_tasks/utf8_prefix_budget/tests/test_regression.py",
+        "benchmarks/phase8/supplemental_tasks/wildcard_empty_prefix/subject.py",
+        "benchmarks/phase8/supplemental_tasks/wildcard_empty_prefix/tests/test_regression.py",
+        "tests/test_phase8_supplemental_catalog.py"
+      ],
+      "verified_by": "Final integrated regression; focused red/green evidence and qualifications in PHASE8_ENGINEERING_LEDGER.md",
+      "deployed": false,
+      "repair_scheduling_active": false,
+      "additional_infrastructure_spending_usd": 0,
+      "external_customer_or_upstream_actions": 0
+    },
+    {
+      "sha": "ae74b37afed402a6db05789156e0cdbe443468a5",
+      "subject": "Record independent Phase8 black-box acceptance and repaired journal defect",
+      "files_changed": [
+        "docs/PHASE8_BLACK_BOX_ACCEPTANCE.md"
+      ],
+      "verified_by": "Final integrated regression; focused red/green evidence and qualifications in PHASE8_ENGINEERING_LEDGER.md",
+      "deployed": false,
+      "repair_scheduling_active": false,
+      "additional_infrastructure_spending_usd": 0,
+      "external_customer_or_upstream_actions": 0
+    },
+    {
+      "sha": "d30080d183ce7840ba739b6153f3fc6e51f914b9",
+      "subject": "Add pinned Phase8 preparation and recorded-candidate replay harness",
+      "files_changed": [
+        "bountyforge/phase8_evaluation.py",
+        "docs/PHASE8_EVALUATION.md",
+        "scripts/phase8_evaluate.py",
+        "tests/test_phase8_evaluation.py"
+      ],
+      "verified_by": "Final integrated regression; focused red/green evidence and qualifications in PHASE8_ENGINEERING_LEDGER.md",
+      "deployed": false,
+      "repair_scheduling_active": false,
+      "additional_infrastructure_spending_usd": 0,
+      "external_customer_or_upstream_actions": 0
+    },
+    {
+      "sha": "251d56a46da2dc7aa8d5ebffec9d687790ee4e04",
+      "subject": "Reject credential-bearing Phase8 hosts and promoted session authority",
+      "files_changed": [
+        "bountyforge/phase8_evaluation.py",
+        "docs/PHASE8_EVALUATION.md",
+        "tests/test_phase8_evaluation.py"
+      ],
+      "verified_by": "Final integrated regression; focused red/green evidence and qualifications in PHASE8_ENGINEERING_LEDGER.md",
+      "deployed": false,
+      "repair_scheduling_active": false,
+      "additional_infrastructure_spending_usd": 0,
+      "external_customer_or_upstream_actions": 0
+    },
+    {
+      "sha": "2f4e9ee88ac9b1acdb54de1d31379ae4db3250a8",
+      "subject": "Add fixed owned repair-component test-driver process acceptance",
+      "files_changed": [
+        "docs/PHASE8_BLACK_BOX_ACCEPTANCE.md",
+        "tests/support/phase8_repair_driver.py",
+        "tests/test_phase8_repair_process.py"
+      ],
+      "verified_by": "Final integrated regression; focused red/green evidence and qualifications in PHASE8_ENGINEERING_LEDGER.md",
+      "deployed": false,
+      "repair_scheduling_active": false,
+      "additional_infrastructure_spending_usd": 0,
+      "external_customer_or_upstream_actions": 0
+    },
+    {
+      "sha": "64dfd566d2c8c9346890fb5d850eb4f5f6660fd1",
+      "subject": "Normalize admitted owned staging modes and stop after runner failure",
+      "files_changed": [
+        "bountyforge/phase8_evaluation.py",
+        "docs/PHASE8_EVALUATION.md",
+        "tests/test_phase8_evaluation.py"
+      ],
+      "verified_by": "Final integrated regression; focused red/green evidence and qualifications in PHASE8_ENGINEERING_LEDGER.md",
+      "deployed": false,
+      "repair_scheduling_active": false,
+      "additional_infrastructure_spending_usd": 0,
+      "external_customer_or_upstream_actions": 0
+    }
+  ],
+  "milestones": {
+    "repair_engine": "ENGINEERING_READY_FOR_REVIEW for deterministic owned repair sessions; model reliability unmeasured",
+    "commercial_workflow": "ENGINEERING_READY_FOR_REVIEW for provider simulator only; actual Stripe TEST integration blocked",
+    "black_box": "Owned product/process and fixed component-driver acceptance passed"
+  },
+  "verification": {
+    "full_python": {
+      "command": "python -m unittest discover -s tests",
+      "total": 589,
+      "passed": 580,
+      "failed": 0,
+      "skipped": 9,
+      "seconds": 22.504
+    },
+    "skips": {
+      "existing_namespace_rootfs": 8,
+      "opt_in_development_Docker_reference_check": 1,
+      "development_Docker_check_separately_executed": true
+    },
+    "historical_harness": {
+      "command": "python -m unittest discover -s benchmarks/phase4 -p 'test*.py'",
+      "passed": 10,
+      "failed": 0,
+      "seconds": 0.058,
+      "is_live_model_repair_score": false
+    },
+    "dashboard": {
+      "command": "node --test tests/dashboard_state.mjs",
+      "passed": 4,
+      "failed": 0
+    },
+    "process_acceptance": {
+      "independent_product_tests": 8,
+      "commercial_process_tests": 14,
+      "service_CLI_tests": 6,
+      "fixed_owned_component_driver_tests": 5,
+      "all_passed": true,
+      "component_driver_is_product_interface": false,
+      "component_driver_is_live_model_evaluation": false
+    },
+    "docker_prepare": {
+      "command": "env -u GH_TOKEN python -m scripts.phase8_evaluate --prepare --selection benchmarks/phase8/supplemental_tasks/selection.json --selection-sha256 55e7de2b2c59eaaea75a494315df5b95cea5eeabcaeb835309a517f43abb891e --output evidence/phase8/prepare.json",
+      "status": "prepared",
+      "baseline_invocations": 20,
+      "valid_receipts": 20,
+      "assertion_failure_baselines": 20,
+      "test_methods_executed": 148,
+      "prepared_contexts": 20,
+      "frozen_worker_contexts_separately_probed": 20,
+      "elapsed_seconds": 47.015,
+      "prompt_bytes_min": 1869,
+      "prompt_bytes_max": 3098,
+      "controls_passed": 20,
+      "image": "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+      "report_sha256": "0c8fb3c30d9d93b5274de56ecbe82cebdf6a2ea7877cc3b6ac2a324b12cb5b63",
+      "selection_sha256": "55e7de2b2c59eaaea75a494315df5b95cea5eeabcaeb835309a517f43abb891e",
+      "prior_blocked_prepare_dispatches": 20,
+      "single_case_diagnostic_dispatches": 1,
+      "single_case_staging_fix_dispatches": 1,
+      "prior_block_is_model_failure": false
+    },
+    "hosted_PR": {
+      "run_id": 39882300128,
+      "url": "https://github.com/Ledgercorp/BountyForge/actions/runs/39882300128",
+      "head_sha": "a382a74a3e5b85285ddbe2caba2b9e0375262e10",
+      "conclusion": "success",
+      "total": 589,
+      "passed": 580,
+      "failed": 0,
+      "skipped": 9,
+      "seconds": 26.836,
+      "routine_PR_workflows_for_pushed_head": 1
+    }
+  },
+  "model_evaluation": {
+    "new_problems_attempted_by_model": 0,
+    "new_valid_model_patches": null,
+    "new_verified_model_repairs": null,
+    "model_regressions_introduced": null,
+    "model_invalid_proposals_rejected": null,
+    "live_inference_calls": 0,
+    "live_inference_seconds": 0,
+    "live_inference_cost_usd": 0,
+    "new_accuracy": null,
+    "pilot_16_of_20_target": "unmeasured",
+    "existing_scores_unchanged": {
+      "historical": {
+        "verified": 1,
+        "total": 5
+      },
+      "owned_structural": {
+        "verified": 2,
+        "total": 4
+      },
+      "frozen_line": {
+        "verified": 2,
+        "total": 4
+      },
+      "frozen_statement": {
+        "verified": 3,
+        "total": 4
+      }
+    },
+    "reason": "Current account Free Plan/billing protection and remaining quota cannot be verified; attestation metadata403; no provider counter resets or paid fallback."
+  },
+  "stripe": {
+    "available_connector_account_name": "BountyForge",
+    "available_connector_livemode": true,
+    "test_identity_available": false,
+    "real_test_transactions_retrieved": 0,
+    "real_payment_API_requests": 0,
+    "payment_or_refund_writes": 0,
+    "provider_simulator_used": true,
+    "simulator_is_Stripe_sandbox": false,
+    "production_paid_ledger_modified": false
+  },
+  "safety_and_readiness": {
+    "engineering_ready_for_review_owned_components": true,
+    "private_execution_admitted": false,
+    "commercially_authorized": false,
+    "customer_source_accepted": false,
+    "production_deployed": false,
+    "main_merged": false,
+    "public_offer_active": false,
+    "repair_schedule_active": false,
+    "owner_delivery_enabled": false
+  },
+  "continuity": {
+    "main": "22250921eb50b7a72e0f474b0f3ff329f81b55a8",
+    "base_engineering": "e242e611983fee17f1709a465d23353677f7f634",
+    "synthetic_ledger_blob": "803ba112e7d3568180e1e2038763eba8f528ad13",
+    "both_PRs_draft": true,
+    "dashboard_deployment_changed": false,
+    "read_only_discovery_changed": false
+  },
+  "financial": {
+    "additional_infrastructure_spending_usd": 0,
+    "new_model_inference_cost_usd": 0,
+    "real_payments_or_refunds": 0,
+    "confirmed_received_revenue_usd": 0,
+    "prior_provider_invoices_independently_audited": false
+  },
+  "infrastructure": [
+    "Existing Codex Cloud Linux",
+    "Existing Docker28.4.0/vfs and unchanged pinned Python image",
+    "Standard public GitHub-hosted Ubuntu PR CI (verified run39882300128)",
+    "Loopback simulated provider and owned Python subprocesses",
+    "Private temporary SQLite/workspaces; not production persistent deployment"
+  ],
+  "external_actions": [
+    "Read-only GitHub/source/Actions metadata",
+    "Stripe connector account-mode metadata only",
+    "Bounded read-only public Docker/Sigstore documentation",
+    "Internal engineering branch pushes and draft PR2 metadata update"
+  ],
+  "forbidden_actions_performed": {
+    "Mac_access": false,
+    "paid_service_enabled": false,
+    "new_server_or_GPU": false,
+    "customer_contact": false,
+    "upstream_submission": false,
+    "bounty_claim": false,
+    "contract": false,
+    "financial_commitment": false
+  },
+  "remaining_blockers": [
+    "Current verified Free Plan/no-paid-billing protection and organization quota for live evaluation",
+    "Independent model-generated success against frozen20 (16/20 target unmeasured)",
+    "Authorized Stripe TEST-mode identity/integration; current connector live-only",
+    "Approved source rights, model-sharing/privacy/retention, commercial terms and launch/delivery authorization",
+    "Private source execution remains NOT_ADMITTED: publisher signatures/build provenance/SBOM, vulnerability and per-jobIO/kernel review, secure persistent deployment/recovery",
+    "No real customer order or owner-approved delivery"
+  ],
+  "raw_evidence_sha256": {
+    "development-reference-validation.json": "267b8e4cee4c52580cc6b769338cc02638a8b5584ea8a79fecf76b790b7a604b",
+    "worker-context-readiness.json": "f12bfd8d7a855103f1af2a90479fd553d0e1f77110f4a0dbd8d378cf822ef23f",
+    "single-case-staging-green.json": "d8b7f8f05620bf2715da10e92b65b64647a5e254d3514f4870196d8bfe7c11e5",
+    "credential-host-denial.json": "9ec043b57b0121cd9e450a4cee4f5e1f4b32fd60e7bca749fbc688369ef6ed58",
+    "runtime-documentation-review.json": "ec94e00473ec195a0649f5bd145d389dba09cbc0ea1bee9b848e5be7b7ce1f73",
+    "integrated-regression.log": "75f7b6f3497c84c54bfb3a7a18cfe73d9a5c033edd1cf65109938df7cad2f11d",
+    "prepare.json": "0c8fb3c30d9d93b5274de56ecbe82cebdf6a2ea7877cc3b6ac2a324b12cb5b63",
+    "staging-permission-failure.json": "9f0a83430bc7af99d8134d8dbac8a832f3a7025b37a84b9a36cc92215f6eaf83",
+    "prepare-blocked-permissions.json": "4848d202a53fdc6d82c968ffcc4a16fdfc77be9d71e2804cc6d1fcf28891b519",
+    "hosted-regression.log": "6bdf5d5f1c2a88ce928022de9017850851f7ae479cfdf84cca7f68a806179233"
+  },
+  "owner_action_required": [
+    "Current nonsecret Groq Free Plan/no-paid-billing and remaining quota confirmation before new inference",
+    "Appropriately authorized Stripe TEST-mode connection before real sandbox payment retrieval",
+    "Explicit launch/delivery approval and finalized source/privacy/model-sharing/commercial terms before any customer operation"
+  ]
+}

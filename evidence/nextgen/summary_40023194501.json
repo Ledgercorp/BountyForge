@@ -1,0 +1,164 @@
+{
+  "additional_spending_usd": 0,
+  "architecture_effect_independently_measured": false,
+  "classification": "OWNED_DEVELOPMENT",
+  "commit": "e578de96cff642a53d4b676bf8aed87955519876",
+  "completion_requests_total": 4,
+  "default_model_profile": "QWEN_1_5B",
+  "default_replaced": false,
+  "experiment_sha256": "77709bd5ee7b858dc5c1fbc5af2599d617086209ef5551aedf8734c5ba400f11",
+  "independent_accuracy": null,
+  "independent_evaluation": false,
+  "inference_spending_usd": 0,
+  "initial_prompt_comparison": {
+    "interval-compaction": {
+      "identical_hashes": true,
+      "models_observed": 1
+    },
+    "retry-decision": {
+      "identical_hashes": true,
+      "models_observed": 1
+    }
+  },
+  "input_sha256": "9216b38f480da65c2790509d877daa43890c536de4e8b285859a5e9e50077381",
+  "kind": "nextgen_verified_development_model_summary",
+  "maximum_completion_requests": 4,
+  "models": [
+    {
+      "admission_usage": {
+        "completion_requests": 0,
+        "completion_tokens": 0,
+        "prompt_tokens": 0
+      },
+      "all_recorded_servers_stopped": true,
+      "blocking_reason": null,
+      "cases": [
+        {
+          "attempts": [
+            {
+              "diagnostic": "Unsafe replacement text",
+              "failure_kind": "SOURCE_VALIDATION_REJECTION",
+              "new_failing_test_ids": [],
+              "outcome": "SOURCE_REJECTED",
+              "receipt_sha256": "ec2c2b3c30814de64cdc5bd06a122fd63c8093cfe6128a4ced93f467d765488b"
+            },
+            {
+              "diagnostic": "Identical prior proposal; no test executed",
+              "failure_kind": "REPEATED_PROPOSAL",
+              "new_failing_test_ids": [],
+              "outcome": "REPEATED_PROPOSAL",
+              "receipt_sha256": "48b1791022c249526d2f572cad5af5754f875ad18cfd53f893117e4d8b8dcf9d"
+            }
+          ],
+          "case_id": "interval-compaction",
+          "client_attempts": 2,
+          "elapsed_seconds": 89.241,
+          "inference_failure": null,
+          "queue_state": "FAILED",
+          "terminal_outcome": "REPEATED_PROPOSAL",
+          "valid_patches": 0,
+          "verified_repair": false
+        },
+        {
+          "attempts": [
+            {
+              "diagnostic": "Owned regression failed; follow the public repair contract",
+              "failure_kind": "TEST_FAILED",
+              "new_failing_test_ids": [
+                "test_initial_delay"
+              ],
+              "outcome": "TEST_FAILED",
+              "receipt_sha256": "2939ab383faac311c0f05b06845329f0d9cb5a45062372b4fc1c584ad97b92b6"
+            },
+            {
+              "diagnostic": "Identical prior proposal; no test executed",
+              "failure_kind": "REPEATED_PROPOSAL",
+              "new_failing_test_ids": [],
+              "outcome": "REPEATED_PROPOSAL",
+              "receipt_sha256": "81a2157e8d4ef5c294e30e344a6f41ecb2403d62cb85e49c0ac1a87952818634"
+            }
+          ],
+          "case_id": "retry-decision",
+          "client_attempts": 2,
+          "elapsed_seconds": 67.539,
+          "inference_failure": null,
+          "queue_state": "FAILED",
+          "terminal_outcome": "REPEATED_PROPOSAL",
+          "valid_patches": 1,
+          "verified_repair": false
+        }
+      ],
+      "client_attempts": 4,
+      "configured_tasks": 2,
+      "cpu_measurement_note": "Process CPU counters at last pre-shutdown sample; not host-wide utilization. V1 did not collect CPU time.",
+      "failure_categories": {
+        "REPEATED_PROPOSAL": 2,
+        "SOURCE_REJECTED": 1,
+        "TEST_FAILED": 1
+      },
+      "fresh_replay_methods_passed": 0,
+      "inference_seconds": 130.046,
+      "model_profile": "GRANITE42_3B",
+      "model_sha256": "e0406663965846ae22a403456eb826ccce5f450840491f71952f18a7cb78e7d5",
+      "new_failure_ids_by_attempt": [
+        [],
+        [],
+        [
+          "test_initial_delay"
+        ],
+        []
+      ],
+      "observed_process_cpu_seconds": 522.47,
+      "peak_rss_kib_observed": 4044764,
+      "repair_tokenized_prompt_tokens": [
+        577,
+        790,
+        580,
+        694
+      ],
+      "repair_usage": {
+        "completion_requests": 4,
+        "completion_tokens": 509,
+        "prompt_tokens": 2641
+      },
+      "repeated_proposals": 2,
+      "resource_admitted": false,
+      "resource_probe_inference_seconds": null,
+      "resource_probe_tokenized_prompt_tokens": null,
+      "returned_completion_limit_hits": 0,
+      "returned_completions_above_legacy_150_tokens": 2,
+      "server_load_seconds": [
+        2.01,
+        2.007
+      ],
+      "source_rejected": 1,
+      "status": "COMPLETED",
+      "targeted_suites_passed": 0,
+      "tasks_blocked": 0,
+      "tasks_completed": 2,
+      "tasks_not_prepared": 0,
+      "tasks_prepared": 2,
+      "tasks_with_completion_request": 2,
+      "tasks_with_model_response": 2,
+      "total_execution_seconds": 156.789,
+      "unexpected_server_exits": [],
+      "valid_patches": 1,
+      "verified_repairs": 0
+    }
+  ],
+  "receipt_sha256": "c005363c8c762f66ea273f0ed1aa1b1a983828a691261cd75150020bcd199c62",
+  "record_receipt_sha256": "be38c472c54833f71df0c509f7d26684ca6bf16d18de61623abb3494f5c6fcc3",
+  "resource_envelope": {
+    "address_space_bytes": 10737418240,
+    "completion_tokens": 256,
+    "context_tokens": 2048,
+    "cpu_seconds": 600,
+    "id": "NEXTGEN_TRIAL",
+    "log_bytes": 1048576,
+    "maximum_threads": 4,
+    "parallel_streams": 1,
+    "request_seconds": 75,
+    "wall_seconds": 240
+  },
+  "run_id": "40023194501"
+}

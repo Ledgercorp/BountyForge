@@ -1,0 +1,431 @@
+{
+  "schema_version": 1,
+  "kind": "public_model_provider_admission_review",
+  "retrieved_at": "2026-10-21T16:53:17.355Z",
+  "engineering_baseline_revision": "1f2833581ca6f9d96a0406c7c0a40dc9320cb3ba",
+  "scope": "Groq GPT-OSS120B plus two hosted alternatives only; official public documents and unauthenticated public catalog GETs; no inference",
+  "sources": [
+    {
+      "id": "groq_model",
+      "url": "https://console.groq.com/docs/model/openai/gpt-oss-120b",
+      "retrieved_at": "2026-10-21T16:53:17.355Z",
+      "method": "official public web retrieval",
+      "snippet": "JSON Schema Mode, Reasoning",
+      "finding": "Fixed GPT-OSS120B model ID; published model capability is not measured coding quality or a guarantee of free account access."
+    },
+    {
+      "id": "groq_schema",
+      "url": "https://console.groq.com/docs/structured-outputs",
+      "retrieved_at": "2026-10-21T16:53:17.355Z",
+      "method": "official public web retrieval",
+      "snippet": "openai/gpt-oss-120b",
+      "finding": "Strict JSON-schema constrained decoding is documented for this model. Local length, line scope, syntax and behavior validation remain mandatory."
+    },
+    {
+      "id": "groq_api",
+      "url": "https://console.groq.com/docs/api-reference",
+      "retrieved_at": "2026-10-21T16:53:17.355Z",
+      "method": "official public web retrieval",
+      "snippet": "'medium' is the default value.",
+      "finding": "GPT-OSS allows low/medium/high reasoning effort; none is not listed for it. include_reasoning=false hides reasoning. Chat completion cap describes generated tokens; Responses max_output_tokens explicitly includes reasoning. Exact Chat usage split is not measured here."
+    },
+    {
+      "id": "groq_reasoning",
+      "url": "https://console.groq.com/docs/reasoning",
+      "retrieved_at": "2026-10-21T16:53:17.355Z",
+      "method": "official public web retrieval",
+      "snippet": "reasoning chains that are part of the token output",
+      "finding": "Treat 125-150 max_completion_tokens as a constrained total generation budget, not guaranteed final-JSON capacity. Documentation recommends larger budgets for complex reasoning."
+    },
+    {
+      "id": "groq_rate",
+      "url": "https://console.groq.com/docs/rate-limits",
+      "retrieved_at": "2026-10-21T16:53:17.355Z",
+      "method": "official public web retrieval",
+      "snippet": "openai/gpt-oss-120b | 30 | 1K | 8K | 200K",
+      "finding": "Public Free Plan table:30RPM,1000RPD,8000TPM,200000TPD. Organization/account exceptions apply; limit errors return429."
+    },
+    {
+      "id": "groq_billing",
+      "url": "https://console.groq.com/docs/billing-faqs",
+      "retrieved_at": "2026-10-21T16:53:17.355Z",
+      "method": "official public web retrieval",
+      "snippet": "you'll need to provide a valid payment method",
+      "finding": "Paid Developer upgrade bills usage; owner must independently confirm current Free Plan/no paid activation. Attestation variable is not a provider billing lock."
+    },
+    {
+      "id": "groq_data",
+      "url": "https://console.groq.com/docs/your-data",
+      "retrieved_at": "2026-10-21T16:53:17.355Z",
+      "method": "official public web retrieval",
+      "snippet": "By default, Groq does not retain customer data for inference requests.",
+      "finding": "Usage metadata retained; reliability/abuse exceptions can retain customer data up to30days. Account-specific data controls and ZDR not verified."
+    },
+    {
+      "id": "gemini_model",
+      "url": "https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash",
+      "retrieved_at": "2026-10-21T16:53:17.355Z",
+      "method": "official public web retrieval",
+      "snippet": "Stable: gemini-3.8-flash",
+      "finding": "Current official stable model lists structured outputs and low/medium/high thinking, input1048576/output65536. Model card updatedSeptember2026. Minimal thinking rejected."
+    },
+    {
+      "id": "gemini_pricing",
+      "url": "https://ai.google.dev/gemini-api/docs/pricing",
+      "retrieved_at": "2026-10-21T16:53:17.355Z",
+      "method": "official public web retrieval",
+      "snippet": "Input price | Free of charge",
+      "finding": "Gemini3.8Flash Standard free tier lists free input/output including thinking and product-improvement data use. Public pricing is not account quota admission. Gemini4Argon is not available Free tier."
+    },
+    {
+      "id": "gemini_schema",
+      "url": "https://ai.google.dev/gemini-api/docs/structured-output",
+      "retrieved_at": "2026-10-21T16:53:17.355Z",
+      "method": "official public web retrieval",
+      "snippet": "supports a subset of the JSON Schema specification",
+      "finding": "Structured output supported; current docs say string length/property-count constraints ignored server-side. Local validator must enforce all existing constraints."
+    },
+    {
+      "id": "gemini_thinking",
+      "url": "https://ai.google.dev/gemini-api/docs/thinking",
+      "retrieved_at": "2026-10-21T16:53:17.355Z",
+      "method": "official public web retrieval",
+      "snippet": "including thought tokens",
+      "finding": "max_output_tokens includes thoughts; gemini3.8Flash defaults medium, low/medium/high supported. Low reduces effort, not reasoning-off. No live token split measured."
+    },
+    {
+      "id": "gemini_rates",
+      "url": "https://ai.google.dev/gemini-api/docs/rate-limits",
+      "retrieved_at": "2026-10-21T16:53:17.355Z",
+      "method": "official public web retrieval",
+      "snippet": "Rate limits are applied per project, not per API key.",
+      "finding": "Exact active quotas depend on project/model/tier and must be viewed in AI Studio. No universal currently guaranteed free numeric allowance inferred."
+    },
+    {
+      "id": "gemini_terms",
+      "url": "https://ai.google.dev/gemini-api/terms",
+      "retrieved_at": "2026-10-21T16:53:17.355Z",
+      "method": "official public web retrieval",
+      "snippet": "Do not submit sensitive, confidential, or personal information to the Unpaid Services.",
+      "finding": "Unpaid API inputs/outputs can improve products and be reviewed by humans. Public owned fixtures only; customer/private code and payment/customer information excluded."
+    },
+    {
+      "id": "openrouter_prices",
+      "url": "https://openrouter.ai/pricing",
+      "retrieved_at": "2026-10-21T16:53:17.355Z",
+      "method": "official public web retrieval",
+      "snippet": "Free models are capped at 20 requests per minute and 50 per day",
+      "finding": "Official public pricing describes50RPD/20RPM without purchasing credits; higher allowance requires purchases, which are not authorized. Account quota not verified."
+    },
+    {
+      "id": "openrouter_rates",
+      "url": "https://openrouter.ai/docs/api_reference/limits",
+      "retrieved_at": "2026-10-21T16:53:17.355Z",
+      "method": "official public web retrieval",
+      "snippet": "GET /api/v1/key",
+      "finding": "Authenticated key metadata exposes account-specific free counters/ceiling; not accessed. Provider fallback may happen automatically unless disabled."
+    },
+    {
+      "id": "openrouter_router",
+      "url": "https://openrouter.ai/docs/guides/routing/routers/free-router",
+      "retrieved_at": "2026-10-21T16:53:17.355Z",
+      "method": "official public web retrieval",
+      "snippet": "selects a free model at random",
+      "finding": "openrouter/free changes selected model and is unsuitable for a fixed-model controlled comparison."
+    },
+    {
+      "id": "openrouter_schema",
+      "url": "https://openrouter.ai/docs/guides/features/structured-outputs",
+      "retrieved_at": "2026-10-21T16:53:17.355Z",
+      "method": "official public web retrieval",
+      "snippet": "Set require_parameters: true",
+      "finding": "JSON-schema support depends on model/endpoints. Require supported parameters; local validation remains independent."
+    },
+    {
+      "id": "openrouter_routing",
+      "url": "https://openrouter.ai/docs/guides/routing/provider-selection",
+      "retrieved_at": "2026-10-21T16:53:17.355Z",
+      "method": "official public web retrieval",
+      "snippet": "allow_fallbacks | boolean | true",
+      "finding": "For any future test pin a verified zero-price model and exact approved provider endpoint; set allow_fallbacks=false, require_parameters=true, and provider only. No paid or model fallback."
+    },
+    {
+      "id": "openrouter_data",
+      "url": "https://openrouter.ai/docs/guides/privacy/provider-logging",
+      "retrieved_at": "2026-10-21T16:53:17.355Z",
+      "method": "official public web retrieval",
+      "snippet": "Each AI provider on OpenRouter has its own data handling policies",
+      "finding": "Training settings differ for free/paid routes; actual provider retention policy must be checked independently. No blanket confidentiality/ZDR assumed."
+    }
+  ],
+  "public_catalog_observation": {
+    "source_url": "https://openrouter.ai/api/v1/models",
+    "retrieved_at": "2026-10-21T16:51:05.810606+00:00",
+    "response_sha256": "988f659f60d3876ea1e36a580e8733441d89cb306df805bff1b8194cc607d0ef",
+    "catalog_count": 468,
+    "free_count": 20,
+    "fixed_free_sample": [
+      {
+        "id": "minimax/minimax-m3.1-flash:free",
+        "supported_parameters": [
+          "include_reasoning",
+          "max_tokens",
+          "reasoning",
+          "reasoning_effort",
+          "response_format",
+          "temperature",
+          "tool_choice",
+          "tools",
+          "top_p"
+        ],
+        "pricing": {
+          "prompt": "0",
+          "completion": "0"
+        }
+      },
+      {
+        "id": "xingchen-agi/xing4.0-29b-a4b:free",
+        "supported_parameters": [
+          "frequency_penalty",
+          "include_reasoning",
+          "max_tokens",
+          "min_p",
+          "presence_penalty",
+          "reasoning",
+          "repetition_penalty",
+          "response_format",
+          "seed",
+          "stop",
+          "structured_outputs",
+          "temperature",
+          "tool_choice",
+          "tools",
+          "top_k",
+          "top_p"
+        ],
+        "pricing": {
+          "prompt": "0",
+          "completion": "0"
+        }
+      },
+      {
+        "id": "nvidia/nemotron-3.5-super-vl:free",
+        "supported_parameters": [
+          "include_reasoning",
+          "max_tokens",
+          "reasoning",
+          "response_format",
+          "seed",
+          "structured_outputs",
+          "temperature",
+          "tool_choice",
+          "tools",
+          "top_p"
+        ],
+        "pricing": {
+          "prompt": "0",
+          "completion": "0"
+        }
+      },
+      {
+        "id": "dots-studio/dots-3-note-preview:free",
+        "supported_parameters": [
+          "include_reasoning",
+          "max_tokens",
+          "reasoning",
+          "response_format",
+          "structured_outputs",
+          "temperature",
+          "tool_choice",
+          "tools",
+          "top_p"
+        ],
+        "pricing": {
+          "prompt": "0",
+          "completion": "0"
+        }
+      },
+      {
+        "id": "liquid/lfm-2.5-2.6b:free",
+        "supported_parameters": [
+          "frequency_penalty",
+          "include_reasoning",
+          "logprobs",
+          "max_completion_tokens",
+          "max_tokens",
+          "min_p",
+          "presence_penalty",
+          "reasoning",
+          "repetition_penalty",
+          "response_format",
+          "seed",
+          "stop",
+          "structured_outputs",
+          "temperature",
+          "tool_choice",
+          "tools",
+          "top_k",
+          "top_logprobs"
+        ],
+        "pricing": {
+          "prompt": "0",
+          "completion": "0"
+        }
+      },
+      {
+        "id": "nvidia/nemotron-3.5-lightning:free",
+        "supported_parameters": [
+          "include_reasoning",
+          "max_tokens",
+          "reasoning",
+          "seed",
+          "temperature",
+          "tool_choice",
+          "tools",
+          "top_p"
+        ],
+        "pricing": {
+          "prompt": "0",
+          "completion": "0"
+        }
+      },
+      {
+        "id": "thinkingmachines/inkling-small:free",
+        "supported_parameters": [
+          "frequency_penalty",
+          "include_reasoning",
+          "max_tokens",
+          "presence_penalty",
+          "reasoning",
+          "reasoning_effort",
+          "seed",
+          "stop",
+          "temperature",
+          "tools",
+          "top_p"
+        ],
+        "pricing": {
+          "prompt": "0",
+          "completion": "0"
+        }
+      },
+      {
+        "id": "poolside/laguna-s-2.1:free",
+        "supported_parameters": [
+          "include_reasoning",
+          "max_tokens",
+          "reasoning",
+          "temperature",
+          "tool_choice",
+          "tools"
+        ],
+        "pricing": {
+          "prompt": "0",
+          "completion": "0"
+        }
+      }
+    ],
+    "gpt_oss_matches": [
+      "openai/gpt-oss-safeguard-20b",
+      "openai/gpt-oss-120b",
+      "openai/gpt-oss-120b:batch",
+      "openai/gpt-oss-20b",
+      "openai/gpt-oss-20b:batch"
+    ],
+    "method": "unauthenticated stdlib HTTPS GET;5MB cap;15second timeout; JSON parsed as data only",
+    "gpt_oss_120b_free_present": false,
+    "gpt_oss_20b_free_present": false,
+    "absence_interpretation": "Not listed in this complete returned public catalog; older indexed free-model pages do not establish current availability."
+  },
+  "providers": [
+    {
+      "provider": "Groq",
+      "model": "openai/gpt-oss-120b",
+      "public_free_offer_documented": true,
+      "account_free_plan_verified": false,
+      "account_remaining_quota_verified": false,
+      "structured_json_documented": true,
+      "live_request_admitted": false,
+      "quality_measured": false,
+      "admission": "blocked_pending_owner_free_plan_and_secret_verification",
+      "practical_next": "Existing integration minimizes engineering changes; review reasoning/total-token budget before a separate bounded public-owned-fixture canary."
+    },
+    {
+      "provider": "Google Gemini Developer API",
+      "model": "gemini-3.8-flash",
+      "public_free_offer_documented": true,
+      "account_free_plan_verified": false,
+      "account_remaining_quota_verified": false,
+      "structured_json_documented": true,
+      "live_request_admitted": false,
+      "quality_measured": false,
+      "admission": "plausible_alternative_not_implemented_or_admitted",
+      "practical_next": "If Groq access unavailable, verify existing project free tier/no active paid billing and model quota; separate adapter/transport review required. Unpaid input/output data use precludes private customer source."
+    },
+    {
+      "provider": "OpenRouter",
+      "model": "nvidia/nemotron-3.5-super-vl:free",
+      "public_free_offer_documented": true,
+      "account_free_plan_verified": false,
+      "account_remaining_quota_verified": false,
+      "structured_json_documented": true,
+      "live_request_admitted": false,
+      "quality_measured": false,
+      "admission": "catalog_example_only_provider_endpoint_and_account_admission_unverified",
+      "practical_next": "Catalog lists exact zero prompt/completion pricing and structured_outputs. Need exact provider support/privacy/availability before implementation; never use random free router or a paid fallback."
+    }
+  ],
+  "current_groq_adapter_observation": {
+    "max_calls": 8,
+    "max_completion_tokens_default": 125,
+    "max_completion_tokens_cap": 150,
+    "reasoning_effort": "omitted; documentedGPTOSSdefaultmedium",
+    "include_reasoning": "omitted; documenteddefaulttrue",
+    "reasoning_token_split_measured": false,
+    "budget_risk": "Very small output allowance can truncate reasoning/finalJSON; hidden reasoning is not disabled reasoning. Do not classify unexecuted/tokens-exhausted canary as model coding failure."
+  },
+  "recommended_reviewed_canary_configuration": {
+    "status": "proposal_only_not_activated_not_implemented",
+    "provider": "Groq",
+    "endpoint": "https://api.groq.com/openai/v1/chat/completions",
+    "model": "openai/gpt-oss-120b",
+    "reasoning_effort": "low",
+    "include_reasoning": false,
+    "max_completion_tokens": 1024,
+    "max_attempted_requests": 8,
+    "maximum_requested_generation_tokens": 8192,
+    "concurrency": 1,
+    "pace": "At most1request/minute; failclosed on429/insufficientquota, no automaticretry. Check actual account TPM before approval.",
+    "temperature": 0,
+    "stream": false,
+    "response_format": "json_schema strict true; exact trusted line enums; unchanged independent validators",
+    "tools": [],
+    "retry_count": 0,
+    "fallbacks": [],
+    "http_timeout_seconds": 30,
+    "response_bytes_cap": 65536,
+    "final_json_bytes_cap": 3000,
+    "inputs": "Existing SHA-pinned public owned fixtures only; no customer code/PII, payment metadata or secrets",
+    "needed_code_review": "Separate total reasoning+visible budget from retained finalJSON/source-change constraints; test cap, diagnostics, truncation, usage and secrets. Current150cap must not be silently bypassed.",
+    "evidence": "Record attempt count, model ID/backend fingerprint if supplied, finish reason, prompt/totalcompletion/reasoning usage if supplied (unknown if absent), wall time, schema/stage rejection and Docker test result; no raw reasoning/credential logging."
+  },
+  "not_verified": [
+    "Owner accounts, plans, billing state, credit balances, geography/eligibility, model access, remaining quota, private retention settings and key scope.",
+    "No endpoint/model response, schema-subset compatibility with the exact existing diagnosis schema, throughput, rate headers, reasoning split or repair score measured.",
+    "Provider aliases are not immutable weight/runtime hashes; record identity and date and do not equate them to pinned local Qwen provenance.",
+    "Current Groq Chat token-accounting inference from generated-token/reasoning docs is not a measured provider response. ResponsesAPI docs explicitly include reasoning; do not conflate endpoints."
+  ],
+  "actions": {
+    "public_docs_read": true,
+    "unauthenticated_catalog_gets": 2,
+    "inference_requests": 0,
+    "credentials_read_or_created": false,
+    "accounts_created": false,
+    "terms_accepted": false,
+    "settings_activated": false,
+    "new_services": false,
+    "spending_usd": 0,
+    "external_submissions": 0,
+    "revenue_received_usd": 0
+  }
+}

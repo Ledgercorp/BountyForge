@@ -1,0 +1,56 @@
+{
+  "verification": "independent_docker_replay",
+  "inference_calls": 0,
+  "commercial_bounty": false,
+  "full_upstream_suite": false,
+  "revision": "c2d8f24d2a3e1e5871ac5b654e4ce8db90978d71",
+  "passed": 1,
+  "billing_independently_verified": false,
+  "cases": [
+    {
+      "id": "460",
+      "test": {
+        "passed": true,
+        "returncode": 0,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 0.303,
+        "output": "----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "patch_sha256": "2daf3d20e158c2f05b7843da400550127bca876d3d804d8b80c016d9cb680ed7",
+      "sandbox_preflight": {
+        "network_denied": true,
+        "loopback_inference_unreachable": true,
+        "source_writes_denied": true,
+        "root_writes_denied": true,
+        "secrets_absent": true,
+        "uid_unprivileged": true,
+        "capabilities_empty": true,
+        "no_new_privileges": true,
+        "seccomp_active": true,
+        "memory_limit_enforced": true,
+        "swap_disabled": true,
+        "cpu_quota_verified": true,
+        "pid_limit_verified": true,
+        "tmpfs_bounded_noexec": true,
+        "wall_clock_enforced": true,
+        "cleanup_verified": true,
+        "output_bounded": true,
+        "docker_socket_absent": true,
+        "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+        "untrusted_execution_certified": false,
+        "pid_pressure_enforced": true,
+        "pid_current_at_denial": 64,
+        "pid_denial_events": 1,
+        "probe_threads": 63,
+        "cpu_pressure_enforced": true,
+        "cpu_pressure_wall_seconds": 3.006,
+        "cpu_pressure_used_seconds": 3.023,
+        "cpu_throttled_periods": 30
+      }
+    }
+  ],
+  "report_sha256": "15499add549f3bb23494d103fc2be756d31dadc2189cda52c242662c7149d589"
+}

@@ -1,0 +1,125 @@
+{
+  "branch": "engineering/revenue-linux-scout-20261021",
+  "engines": {
+    "CODEX_AGENT": {
+      "active_session_tokens": null,
+      "additional_agent_turns": 0,
+      "additional_provider_requests": 0,
+      "cases": [
+        {
+          "candidate_sha256": "93a9123db22f4af7e434dd731d02d5b2d3283d8487c504bce74c74a8f4d19d68",
+          "case_id": "sparse-average",
+          "independent_tests": 6,
+          "receipt_sha256": "cdcc1c7b4c17d621fa648dd5fe58f901a75c729b019e9a72b8d3d7e8a472162e",
+          "targeted_tests": 6
+        },
+        {
+          "candidate_sha256": "e73f1b2ec2ea680c4df7ce61887d1ca6f9c28dbdebe745d6033e5ccb1816589d",
+          "case_id": "label-order",
+          "independent_tests": 5,
+          "receipt_sha256": "d7caa707a5773a2f2b95aa366261a6a5c7034634d8cd53dfc5efe365916f4835",
+          "targeted_tests": 5
+        },
+        {
+          "candidate_sha256": "003fbcb7f5d3f500d28cd9d9bed9dd254dbb02717222d015a1528a2013b65850",
+          "case_id": "weighted-mix",
+          "independent_tests": 6,
+          "receipt_sha256": "c05a95f606c1d979a8c848c0fb4a7a67eb332599f966b01ef1934f5d8f5f0121",
+          "targeted_tests": 6
+        }
+      ],
+      "cryptographic_authorship_attestation": false,
+      "execution": "active_authenticated_Codex_session_MCP_handoff",
+      "generated_candidates": 3,
+      "independently_verified_candidates": 3,
+      "session_transport_cycle_seconds": 235.899,
+      "tasks_attempted": 3,
+      "unattended_provider_available": false
+    },
+    "QWEN_LOCAL": {
+      "calls": 2,
+      "completion_tokens": 146,
+      "cycle_seconds": 19.219,
+      "execution": "autonomous_pinned_local_model_on_public_standard_GitHub_runner",
+      "inference_seconds": 6.736,
+      "model": {
+        "id": "Qwen2.5-Coder-1.5B-Instruct Q4_K_M",
+        "runtime": "llama.cpp b11750",
+        "runtime_archive_sha256": "152e33221c9c9d37816a8ee9943f8d87339199197c80cb692559c9756b2027d8",
+        "sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046"
+      },
+      "outcome": "REPEATED_PROPOSAL",
+      "paid_fallback": false,
+      "prompt_tokens": 888,
+      "run_id": "39943137925",
+      "state": "EXHAUSTED",
+      "tasks_attempted": 1,
+      "verified_repairs": 0
+    }
+  },
+  "evaluation": {
+    "agent_can_read_repository_tests": true,
+    "classification": "OWNED_DEVELOPMENT",
+    "heldout_answers_in_MCP_handoff": false,
+    "independent_unseen_accuracy": null,
+    "reference_fixes_authored_before_live_candidates": false
+  },
+  "evidence_sha256": {
+    "blackbox_acceptance.json": "ef4da37508a8f96d8ecaf5b453fb0ac214088aa0dd468f3f0726285ea2f0a6ed",
+    "codex_live_repairs.json": "806e8762f130277ffdcb10e31c9f3a7a984fc85ea34cb9e95f77304f4b5a4aca",
+    "codex_session_initial_admission_block.json": "acd06e297133bb85bcc50cb9494cb5ab2dccd24400149e21d996390640aa3053",
+    "independent_replay.json": "d130c4b5683f2c01ee49e104191469248481671ea5e2302071fd8c26dcb1cfaa",
+    "phase11_worker_error_diagnostic.json": "eda0e29b071f67c0bed141ae4d8a6406eec70efab8ceb4db05b1604c81727940",
+    "qwen_canary_39943137925.json": "42d764d7d51a27f1097d5909329b26d0ed02d764fb1b74cd95cea0f6f641d7c4"
+  },
+  "implementation_commit": "9103069bddad81c25dbc0c04c6a71e9d818cd2a8",
+  "kind": "phase12_dual_engine_engineering_acceptance",
+  "operational": {
+    "commercially_authorized": false,
+    "confirmed_additional_spending_usd": 0,
+    "confirmed_revenue_usd": 0,
+    "customer_source_executed": false,
+    "private_execution_admitted": false,
+    "production_deployed": false,
+    "recurring_repair_activated": false,
+    "upstream_submission_performed": false
+  },
+  "phase11_diagnosis": {
+    "adapter_fix_tested": true,
+    "historical_inference_rerun": false,
+    "original_score_and_records_changed": false,
+    "root_cause": "Candidate-binding omitted in evaluator observer; changed bytes rejected against original source pin"
+  },
+  "regression": {
+    "historical_harness_passed": 10,
+    "hosted_implementation_node_passed": 6,
+    "hosted_implementation_python_skipped": 9,
+    "hosted_implementation_python_total": 636,
+    "hosted_implementation_run": 39943143951,
+    "local_failures": 0,
+    "local_node_passed": 7,
+    "local_python_passed": 628,
+    "local_python_total": 637,
+    "local_skipped": 9
+  },
+  "remaining_blockers": [
+    "Protected unseen evaluation requires a separately controlled verifier/test store unavailable to this coding agent.",
+    "Unattended Codex provider authentication and zero-cost authorization are not established.",
+    "Private execution admission and commercial/payment/launch/delivery gates remain separate and unapproved."
+  ],
+  "status": "ENGINEERING_READY_FOR_REVIEW",
+  "verification": {
+    "MCP_child_environment_names": [
+      "PATH"
+    ],
+    "blackbox_checks_passed": 14,
+    "blackbox_checks_total": 14,
+    "frozen_core_pins_preserved": true,
+    "legacy_native_MCP_refusals": 5,
+    "legacy_native_MCP_valid_calls": "5/5",
+    "owned_Docker_controls_passed": 20,
+    "replay_cases": 3,
+    "replay_test_methods": 17,
+    "separate_process_replay_passed": true
+  }
+}

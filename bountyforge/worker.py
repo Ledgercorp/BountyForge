@@ -105,7 +105,7 @@ def repair_fixture(issue: dict, fixture_root: Path, approved_paths: list[str], m
     then applied solely in its own disposable copy of a fixture. A test-passing
     proposal is reviewable, but not necessarily a legitimate real-world fix.
     """
-    if strategy not in {'full', 'minimal', 'line', 'auto_line'}:
+    if strategy not in {'full', 'minimal', 'line', 'auto_line', 'statement'}:
         raise ValueError('Only known patch strategies permitted')
     if not 1 <= max_attempts <= 2:
         raise ValueError('max_attempts must be 1 or 2')
@@ -114,8 +114,8 @@ def repair_fixture(issue: dict, fixture_root: Path, approved_paths: list[str], m
     allowed = [safe_path(x) for x in approved_paths]
     if not allowed or len(set(allowed)) != len(allowed) or len(allowed) > 3:
         raise DraftRejected('Invalid allowlist')
-    if strategy in {'line', 'auto_line'}:
-        if len(allowed) != 1 or (strategy == 'line' and (not isinstance(editable_lines, dict) or set(editable_lines) != set(allowed))):
+    if strategy in {'line', 'auto_line', 'statement'}:
+        if len(allowed) != 1 or (strategy in {'line','statement'} and (not isinstance(editable_lines, dict) or set(editable_lines) != set(allowed))):
             raise DraftRejected('Line strategy requires one trusted path; explicit lines required for manual line mode')
     start = time.monotonic()
     runner = test_runner or _run_tests
@@ -147,12 +147,18 @@ def repair_fixture(issue: dict, fixture_root: Path, approved_paths: list[str], m
                 or 'FAILED (failures=' not in initial['output'] or 'errors=' in initial['output']):
             report['error'] = 'baseline_not_assertion_failure'; return report
         feedback = None
+        previous_response = ''
+        seen_candidates = set()
         for number in range(1, max_attempts + 1):
             attempt = {'number': number, 'status': 'failed'}
             work = Path(temp) / ('attempt' + str(number))
             shutil.copytree(root, work)
             try:
                 adapted = dict(issue)
+                if strategy == 'statement':
+                    adapted.update(baseline_failure=initial['output'],
+                                   test_failure_excerpt=feedback or initial['output'],
+                                   prior_error=feedback or '', previous_proposal=previous_response)
                 if feedback:
                     adapted['description_excerpt'] = (
                         str(issue.get('description_excerpt', ''))[:900] +
@@ -161,12 +167,47 @@ def repair_fixture(issue: dict, fixture_root: Path, approved_paths: list[str], m
                 if strategy in {'minimal', 'line', 'auto_line'}:
                     adapted['test_failure_excerpt'] = initial['output'][-700:]
                     adapted['prior_error'] = feedback or ''
-                report['model_calls'] += 1
-                if strategy in {'line', 'auto_line'}:
+                if strategy == 'statement':
+                    from bountyforge.statements import propose_statements
+                    attempt['calls'] = []
+                    class CapturedModel:
+                        def complete_line(self, system, prompt, max_tokens):
+                            report['model_calls'] += 1
+                            call = {'system':system,'prompt':prompt,'max_tokens':max_tokens,'response':None}
+                            attempt['calls'].append(call)
+                            generated = time.monotonic()
+                            try:
+                                model.last_call = None
+                                response = model.complete_line(system,prompt,max_tokens)
+                                call['response'] = response
+                                call['response_sha256'] = hashlib.sha256(response.encode()).hexdigest()
+                                return response
+                            except Exception as exc:
+                                call['error'] = type(exc).__name__
+                                raise
+                            finally:
+                                call['seconds'] = round(time.monotonic()-generated,3)
+                                call['metadata'] = getattr(model,'last_call',None)
+                    try:
+                        result = propose_statements(adapted, work, allowed[0], editable_lines[allowed[0]], CapturedModel())
+                    finally:
+                        if attempt['calls']:
+                            previous_response = attempt['calls'][-1].get('response') or ''
+                    candidate = result['semantic_sha256']
+                    if candidate in seen_candidates:
+                        attempt['error'] = 'repeated_ineffective_candidate'
+                        feedback = 'Repeated semantically identical failed candidate; do not execute again'
+                        report['attempts'].append(attempt)
+                        continue
+                    seen_candidates.add(candidate)
+                elif strategy in {'line', 'auto_line'}:
+                    report['model_calls'] += 1
                     result = propose_lines(adapted, work, allowed[0], editable_lines[allowed[0]], model=model)
                 elif strategy == 'minimal':
+                    report['model_calls'] += 1
                     result = propose_minimal(adapted, work, allowed, model=model)
                 else:
+                    report['model_calls'] += 1
                     result = propose_draft(adapted, work, allowed, model=model)
                 # Every path is individually checked by stage_draft; never
                 # execute a model-provided shell command or alter test files.
@@ -183,6 +224,18 @@ def repair_fixture(issue: dict, fixture_root: Path, approved_paths: list[str], m
                 attempt['test'] = verified
                 attempt['diff'] = '\n'.join(entry['diff'] for entry in result['files'])[:12000]
                 if verified['passed']:
+                    if strategy == 'statement':
+                        independent_root = Path(temp) / 'independent'
+                        shutil.copytree(root, independent_root)
+                        for entry in result['files']:
+                            (independent_root/entry['path']).write_text(entry['content'],encoding='utf-8')
+                        independent = runner(independent_root)
+                        report['independent_verification'] = independent
+                        if not independent['passed']:
+                            attempt['error'] = 'independent_verification_failed'
+                            report['error'] = 'independent_verification_failed'
+                            report['attempts'].append(attempt)
+                            break
                     attempt['status'] = 'passed'
                     report['status'] = 'review_ready'
                     report['patch'] = [{'path': entry['path'], 'diff': entry['diff']}
@@ -197,7 +250,8 @@ def repair_fixture(issue: dict, fixture_root: Path, approved_paths: list[str], m
                 break  # Do not overlap inference after an endpoint timeout.
             except (DraftRejected, ValueError) as exc:
                 attempt['error'] = type(exc).__name__
-                feedback = type(exc).__name__
+                feedback = str(exc)[:450] if strategy == 'statement' else type(exc).__name__
+                if strategy == 'statement': attempt['diagnostic'] = feedback
             report['attempts'].append(attempt)
         report['elapsed_seconds'] = round(time.monotonic()-start, 3)
         return report

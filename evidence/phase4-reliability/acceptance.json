@@ -1,0 +1,351 @@
+{
+  "schema": 1,
+  "kind": "phase4_reliability_acceptance",
+  "started_from": "3909c1e50c2e7891afb4ebd50f93555d62fd9733",
+  "implementation_revision": "e712bdf86b1475501153c68c1ce334411949fac4",
+  "readiness": {
+    "internal": "DRY_RUN_READY",
+    "commercial": "NOT_READY"
+  },
+  "milestones": [
+    {
+      "sha": "5f3f0cc668d3993f013759133223e204fa61c904",
+      "subject": "Freeze opt-in AST statement editing and bounded verified worker integration",
+      "files_changed": [
+        "bountyforge/lineedit.py",
+        "bountyforge/statements.py",
+        "bountyforge/worker.py",
+        "docs/GROQ_REPAIR_ITERATION_2026_10_21.md",
+        "docs/superpowers/specs/2026-10-21-statement-repair-design.md",
+        "tests/test_statement_worker.py",
+        "tests/test_statements.py"
+      ],
+      "deployed": false,
+      "recurring_repair_active": false,
+      "additional_infrastructure_spending_usd": 0,
+      "external_submissions": 0,
+      "tests": {
+        "executed": 333,
+        "passed": 326,
+        "failed": 0,
+        "skipped": 7,
+        "new_neutral_methods": 12
+      }
+    },
+    {
+      "sha": "e551ff5c19ff480b568be03665d72d3a6a27c581",
+      "subject": "Execute namespace acceptance and harden rootfs immutability and preflight links",
+      "files_changed": [
+        "bountyforge/isolation.py",
+        "docs/PHASE4_NAMESPACE_SECURITY_2026_10_21.md",
+        "evidence/phase4-security/hardened-eight-checks.log",
+        "evidence/phase4-security/namespace-acceptance.json",
+        "evidence/phase4-security/original-seven-checks.log",
+        "evidence/phase4-security/readonly-red.log",
+        "isolation/README.md",
+        "isolation/launcher.sh",
+        "tests/test_isolation.py",
+        "tests/test_isolation_preflight.py"
+      ],
+      "deployed": false,
+      "recurring_repair_active": false,
+      "additional_infrastructure_spending_usd": 0,
+      "external_submissions": 0,
+      "tests": {
+        "namespace_executed": 8,
+        "namespace_passed": 8,
+        "standalone_full_executed": 325,
+        "standalone_full_passed": 325,
+        "standalone_skipped": 0
+      }
+    },
+    {
+      "sha": "36bbb02561748d6aafc3bc028a9efeebf3ac5998",
+      "subject": "Add private metadata-only paid scope review with fenced recovery and blocking holds",
+      "files_changed": [
+        "bountyforge/paid_scope_review.py",
+        "docs/PRIVATE_SCOPE_REVIEW.md",
+        "tests/test_paid_scope_review.py"
+      ],
+      "deployed": false,
+      "recurring_repair_active": false,
+      "additional_infrastructure_spending_usd": 0,
+      "external_submissions": 0,
+      "tests": {
+        "focused_executed": 10,
+        "focused_passed": 10,
+        "standalone_full_executed": 331,
+        "standalone_full_passed": 324,
+        "standalone_skipped": 7
+      }
+    },
+    {
+      "sha": "71c2d4d62d876dfad3430d22ce9cfd1cb6d10a27",
+      "subject": "Freeze independently authored owned maintenance evaluation catalog",
+      "files_changed": [
+        "benchmarks/phase6/evaluation_tasks/README.md",
+        "benchmarks/phase6/evaluation_tasks/integer_fields/subject.py",
+        "benchmarks/phase6/evaluation_tasks/integer_fields/tests/test_regression.py",
+        "benchmarks/phase6/evaluation_tasks/manifest.json",
+        "benchmarks/phase6/evaluation_tasks/page_window/subject.py",
+        "benchmarks/phase6/evaluation_tasks/page_window/tests/test_regression.py",
+        "benchmarks/phase6/evaluation_tasks/retry_delay/subject.py",
+        "benchmarks/phase6/evaluation_tasks/retry_delay/tests/test_regression.py",
+        "benchmarks/phase6/evaluation_tasks/utc_offset/subject.py",
+        "benchmarks/phase6/evaluation_tasks/utc_offset/tests/test_regression.py",
+        "tests/test_phase6_evaluation_catalog.py"
+      ],
+      "deployed": false,
+      "recurring_repair_active": false,
+      "additional_infrastructure_spending_usd": 0,
+      "external_submissions": 0,
+      "tests": {
+        "integrated_executed": 350,
+        "integrated_passed": 350,
+        "integrated_skipped": 0,
+        "hosted_run_id": 39696038176,
+        "hosted_executed": 350,
+        "hosted_passed": 342,
+        "hosted_skipped": 8
+      }
+    },
+    {
+      "sha": "6730d5775aadd3186733e3b0d5569219e377ff77",
+      "subject": "Add bounded paired owned evaluator with exact source admission and baseline cache",
+      "files_changed": [
+        "scripts/phase6_evaluate.py",
+        "tests/test_phase6_evaluator.py"
+      ],
+      "deployed": false,
+      "recurring_repair_active": false,
+      "additional_infrastructure_spending_usd": 0,
+      "external_submissions": 0,
+      "tests": {
+        "checkpoint_validation": "included in subsequent 365/372 integrated acceptance; see corresponding milestone"
+      }
+    },
+    {
+      "sha": "3184d82a3412bf096bdedd306b9e017a31d631cc",
+      "subject": "Validate paired provenance before independent replay and fail closed on incomplete inference",
+      "files_changed": [
+        "scripts/phase6_evaluate.py",
+        "scripts/phase6_replay.py",
+        "tests/test_phase6_evaluator.py",
+        "tests/test_phase6_replay.py"
+      ],
+      "deployed": false,
+      "recurring_repair_active": false,
+      "additional_infrastructure_spending_usd": 0,
+      "external_submissions": 0,
+      "tests": {
+        "integrated_executed": 365,
+        "integrated_passed": 365,
+        "integrated_skipped": 0
+      }
+    },
+    {
+      "sha": "8e28309fa1d52d6a5d4eec739fe0d2b631fa1a6d",
+      "subject": "Require terminal paired evidence and cover positive replay and blocked recovery paths",
+      "files_changed": [
+        "scripts/phase6_evaluate.py",
+        "scripts/phase6_replay.py",
+        "tests/test_phase6_evaluator.py",
+        "tests/test_phase6_replay.py"
+      ],
+      "deployed": false,
+      "recurring_repair_active": false,
+      "additional_infrastructure_spending_usd": 0,
+      "external_submissions": 0,
+      "tests": {
+        "focused_executed": 25,
+        "focused_passed": 25,
+        "integrated_executed": 372,
+        "integrated_passed": 372,
+        "integrated_skipped": 0
+      }
+    },
+    {
+      "sha": "e712bdf86b1475501153c68c1ce334411949fac4",
+      "subject": "Wire manual paired repair evaluation and record frozen reliability acceptance",
+      "files_changed": [
+        ".github/workflows/hosted-owned-canary.yml",
+        "docs/PHASE4_RELIABILITY_2026_10_21.md",
+        "evidence/phase4-reliability/evaluation-freeze.json"
+      ],
+      "deployed": false,
+      "recurring_repair_active": false,
+      "additional_infrastructure_spending_usd": 0,
+      "external_submissions": 0,
+      "tests": {
+        "hosted_run_id": 39697466242,
+        "hosted_executed": 372,
+        "hosted_passed": 364,
+        "hosted_skipped": 8,
+        "workflow_yaml_parsed": true,
+        "bash_blocks_checked": 6
+      }
+    }
+  ],
+  "verification": {
+    "integrated_cloud_rootfs": {
+      "command": "BOUNTYFORGE_TEST_ROOTFS=/tmp/bf-phase4-rootfs-security-20261021 python -m unittest discover -s tests",
+      "executed": 372,
+      "passed": 372,
+      "failed": 0,
+      "skipped": 0,
+      "seconds": 8.231
+    },
+    "hosted": {
+      "run_id": 39697466242,
+      "executed": 372,
+      "passed": 364,
+      "failed": 0,
+      "skipped": 8,
+      "seconds": 6.834,
+      "skipped_checks": "namespace/rootfs only; same eight ran in Codex Cloud",
+      "conclusion": "success"
+    },
+    "historical_harness": {
+      "executed": 10,
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0
+    },
+    "dashboard": {
+      "executed": 4,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0
+    },
+    "phase6_catalog_evaluator_replay": {
+      "executed": 25,
+      "passed": 25,
+      "model_calls": 0,
+      "mocked_cases_are_accuracy_results": false
+    },
+    "workflow": {
+      "yaml_parsed": true,
+      "bash_blocks_syntax_passed": 6,
+      "actionlint_executed": false
+    },
+    "independent_data_audit": {
+      "passed": true,
+      "zip_digest_and_raw_bytes_checked": true,
+      "raw_report_sha256": "68f589f446c27579fc39837a9e708978caf8ffbd2e6822984d3818aca82bbccf",
+      "all_five_patch_and_candidate_hashes_checked": true,
+      "model_calls": 0,
+      "target_execution": false
+    }
+  },
+  "experiment": {
+    "run_id": 39697530398,
+    "status": "completed",
+    "revision": "e712bdf86b1475501153c68c1ce334411949fac4",
+    "new_score_established": true,
+    "frozen_core": "5f3f0cc668d3993f013759133223e204fa61c904",
+    "owned_synthetic_only": true,
+    "catalog_integrated_revision": "71c2d4d62d876dfad3430d22ce9cfd1cb6d10a27",
+    "comparison_limit": "Same model, one attempt per protocol/case; owned synthetic cases only. Adapter time includes request pacing and is not pure inference latency.",
+    "scores": {
+      "line": {
+        "verified": 2,
+        "total": 4
+      },
+      "statement": {
+        "verified": 3,
+        "total": 4
+      }
+    },
+    "model_calls": 8,
+    "usage": {
+      "prompt_tokens": 8815,
+      "completion_tokens": 2381,
+      "total_tokens": 11196,
+      "reasoning_tokens": 1886
+    },
+    "adapter_wall_seconds_including_pacing": 418.889,
+    "job_seconds": 450,
+    "independent_replay_verified_candidates": 5,
+    "artifact_id": 12391935766,
+    "artifact_zip_sha256": "71fb3d0636c591fa1ff116d85706069d99c51c3013e0a07aedfcfabdbc6c390b",
+    "source_validator_rejections": {
+      "line": 2,
+      "statement": 1
+    },
+    "infrastructure_blocks": 0,
+    "historical_result_unchanged": {
+      "verified": 1,
+      "total": 5,
+      "model_calls": 8
+    }
+  },
+  "infrastructure": [
+    "existing Codex Cloud Linux",
+    "standard public GitHub-hosted Ubuntu CPU",
+    "existing digest-pinned Python Docker runtime",
+    "existing owner-attested Groq Free Plan"
+  ],
+  "deployment": {
+    "production_merged": false,
+    "deployed": false,
+    "recurring_repair_active": false,
+    "public_sales_active": false,
+    "customer_source_accepted": false
+  },
+  "continuity": {
+    "main": "22250921eb50b7a72e0f474b0f3ff329f81b55a8",
+    "base_engineering": "e242e611983fee17f1709a465d23353677f7f634",
+    "synthetic_ledger_blob": "803ba112e7d3568180e1e2038763eba8f528ad13",
+    "both_prs_draft": true,
+    "dashboard_version": 11,
+    "checked_at_utc": "2026-10-22T00:07:00Z",
+    "dashboard_read_only_discovery": {
+      "cron": "0 12 * * *",
+      "status": "active",
+      "runs_7d": 3,
+      "errors_7d": 0,
+      "repair_schedule": false
+    }
+  },
+  "financial": {
+    "additional_infrastructure_spending_usd": 0,
+    "purchases": 0,
+    "paid_service_enabled": false,
+    "groq_free_plan_owner_attested": true,
+    "billing_independently_verified": false,
+    "actual_provider_charges_independently_verified": false,
+    "confirmed_received_revenue_usd": 0
+  },
+  "external_actions": {
+    "internal_branch_pushes": true,
+    "manual_owned_actions_dispatches": 1,
+    "customer_communications": 0,
+    "upstream_submissions": 0,
+    "bounty_claims": 0,
+    "stripe_requests": 0,
+    "payment_or_refund_writes": 0,
+    "contracts": 0,
+    "read_only_services": [
+      "GitHub repository/Actions/PR metadata and existing prospect research",
+      "Hatchable BountyForge project and cron metadata"
+    ],
+    "internal_pr2_metadata_update": true
+  },
+  "remaining_blockers": [
+    "broader independently measured real-world repair quality",
+    "arbitrary/private source execution and dependency admission",
+    "immutable rootfs provenance, dedicated cgroups, syscall/ABI and kernel-escape assessment for namespace prototype",
+    "approved private persistent deployment and backup/recovery",
+    "verified source rights and model-sharing consent",
+    "fresh verified customer order and payment",
+    "specific approved offer/contract/delivery",
+    "independent provider billing verification"
+  ],
+  "security_checks_not_completed": [
+    "GitHub-hosted namespace/rootfs checks: eight default skips",
+    "arbitrary/private code security admission",
+    "private dependency admission and recovery",
+    "namespace prototype cgroup, syscall/ABI and kernel-escape assessment"
+  ],
+  "completed_at_utc": "2026-10-22T00:13:03Z"
+}

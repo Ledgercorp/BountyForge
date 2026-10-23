@@ -1,0 +1,218 @@
+{
+  "additional_spending_usd": 0,
+  "checkpoint_commit": "85729c3bcf4693627d50196ab81af1d783b8d88f",
+  "codex": {
+    "active_session_model_calls": null,
+    "active_session_tokens": null,
+    "additional_agent_turns_started": 0,
+    "additional_model_provider_requests_started": 0,
+    "attempted_repairs": 3,
+    "bridge_elapsed_seconds": 564.838,
+    "candidate_attempts": [
+      1,
+      1,
+      1
+    ],
+    "classification": "OWNED_DEVELOPMENT",
+    "fresh_replay_test_methods_passed": 22,
+    "further_separate_process_test_methods_passed": 22,
+    "regressions_observed": 0,
+    "targeted_test_methods_passed": 22,
+    "unauthorized_changes": 0,
+    "valid_patches": 3,
+    "verified_repairs": 3
+  },
+  "commercial_launch_authorized": false,
+  "engineering_status": "ENGINEERING_READY_FOR_REVIEW_OWNED_SCOPE_ONLY",
+  "experiment_workflows_manual_only": true,
+  "external_operations": [
+    "Authorized engineering commits/PR2 updates and standard public GitHub-hosted Actions.",
+    "Read-only public upstream metadata/source inspection and pinned public model/runtime downloads.",
+    "No external submission, customer interaction, financial operation or production deployment."
+  ],
+  "file_sha256": {
+    "baselines.json": "482655a00e8661edc023c23c618b4ae69ff01732d09808b967c6d21755c898f1",
+    "codex_independent_replay.json": "a57971d11b9bea5508a1458b9a7bb7abe514708afbb7b703ee154f063e237018",
+    "codex_session.json": "0ac58a876dd6d1eb7ab65633a1ec9c1f5f227a96638e7cba6aa41df2ed08fb96",
+    "legacy_mcp_acceptance.json": "58228364d1669dcac9f2ce65e8263568b9a3a1758315dcaa500bc7be3c58395b",
+    "model_candidate_metadata.json": "ae2b4703a7b72413086b6b16ddf667798431be9e46d996497d17c6a64059137f",
+    "model_profile_40001954401.json": "b8bc647eaa8304a722f931b3ffad3f00608de0a4f799f22f9c601ca9e38f9f2b",
+    "public_suite_exchange.json": "2bb1530367d024e32a5b51f0f5aa2b2f25490d139bc6ff3bc2659b7f3e6587d0",
+    "qwen_session_39954093867.json": "60fe38cf495268dd42e33a89ca71e4004fb2dd6c7a955d82b2f4bdb419b44231",
+    "qwen_session_40000312299.json": "29857516afebcfbe6b99d83e508a700a4ba7613d0ae6e6760df47c4de867d1ef",
+    "qwen_session_40001263033.json": "9a46e54933f74054c03885bfedd56922b6cc00c69327e61f8f789ec62aa80385",
+    "scorecard_39954093867.json": "97aceb957f7baa61ef3147ab62d7f9b0ce13340d007e8e8fac4b82628d8bf775",
+    "scorecard_40000312299.json": "4c98bde9d7871528f21214b4a6017282e7e830dbe6d02b9a6219cdaa04942dfb",
+    "scorecard_40001263033.json": "ad3a7512adb90e18d171568533fbf7862ae1ffe8e4ed5bd3cfd20c42c1c8d2b8"
+  },
+  "frozen_core_and_prior_fixtures_unchanged": true,
+  "historical_harness": {
+    "executed": 10,
+    "failed": 0,
+    "passed": 10
+  },
+  "hosted_regression": {
+    "commit": "1543cc86dc7bf51d238846483d076004e476e24b",
+    "executed": 686,
+    "failed": 0,
+    "node_passed": 7,
+    "passed": 677,
+    "run_id": 40001961631,
+    "skipped": 9
+  },
+  "implementation_commits": [
+    "f6fdf1e1346f11f0a4f643ea6f6e6a61cbc9efe7",
+    "d9e6b088c8d8dbc7c007739f1f8d56a6cdae432b",
+    "b99c3f8a51c4c0737488d99457b615c2fef04992",
+    "1543cc86dc7bf51d238846483d076004e476e24b"
+  ],
+  "independent_unseen_accuracy": null,
+  "independent_verifier_admitted": false,
+  "kind": "phase14_engineering_acceptance",
+  "known_blockers": [
+    "No independently controlled verifier inaccessible to this agent; all measurements developmental.",
+    "Current 1.5B Qwen failed all three new maintenance tasks in every experiment despite corrected output structure.",
+    "7B has only a short resource probe; full repair-context latency, quality and shared-engine admission unmeasured.",
+    "Nine existing optional/rootfs skips remain unverified; private execution NOT_ADMITTED.",
+    "No commercial rights/payment/launch/delivery approval or demonstrated unfamiliar-software reliability.",
+    "CODEX_AGENT requires the active authenticated session; workspace queue persistence across replacement is unproven."
+  ],
+  "larger_model_resource_probe": {
+    "address_space_limit_bytes": 10737418240,
+    "completion_tokens": 70,
+    "default_model_replaced": false,
+    "elapsed_seconds": 21.831,
+    "inference_seconds": 13.49,
+    "load_seconds": 4.012,
+    "model_calls": 1,
+    "observed_explanation_error": "Incorrectly described None values as zero; output not a verified repair.",
+    "peak_rss_kib": 7864644,
+    "prompt_tokens": 36,
+    "repair_accuracy_measured": false,
+    "run_id": 40001954401,
+    "status": "COMPLETED"
+  },
+  "local_regression": {
+    "executed": 686,
+    "failed": 0,
+    "passed": 677,
+    "skipped": 9
+  },
+  "mcp_security": {
+    "excluded_from_repair_measurement": true,
+    "kill_reconnect_passed": true,
+    "manual_negative_proposals_rejected_before_tests": 2,
+    "original_authorization_refusals": 5,
+    "original_tool_calls_passed": 5,
+    "tool_inventory": 18
+  },
+  "node_regression": {
+    "executed": 7,
+    "failed": 0,
+    "passed": 7
+  },
+  "owned_baselines": {
+    "reference_repairs_used": 0,
+    "reproduced": 6,
+    "test_methods": 43
+  },
+  "private_execution_admitted": false,
+  "production_deployed": false,
+  "qwen": {
+    "classification": "OWNED_DEVELOPMENT",
+    "conclusion": "Output contract adherence improved from 2/6 to 6/6; verified repairs remained 0/3 per experiment. No unseen improvement claim.",
+    "default_model_replaced": false,
+    "independent_accuracy": null,
+    "runs": [
+      {
+        "attempted_tasks": 3,
+        "commit": "f6fdf1e1346f11f0a4f643ea6f6e6a61cbc9efe7",
+        "experiment_elapsed_seconds": 97.931,
+        "new_failing_test_ids_observed": {
+          "cursor-adapter": [
+            "test_server_error"
+          ],
+          "invoice-summary": [],
+          "retry-policy": []
+        },
+        "outcome_counts": {
+          "SOURCE_REJECTED": 4,
+          "TEST_FAILED": 2
+        },
+        "probe_completion_tokens": 0,
+        "probe_prompt_tokens": 0,
+        "protocol_model_calls": 0,
+        "repair_completion_tokens": 699,
+        "repair_model_call_seconds": 70.556,
+        "repair_model_calls": 6,
+        "repair_prompt_tokens": 5516,
+        "run_id": 39954093867,
+        "source_valid_candidates": 2,
+        "status": "COMPLETED",
+        "structurally_valid_bounded_proposals": 2,
+        "targeted_suites_passed": 0,
+        "verified_repairs": 0
+      },
+      {
+        "attempted_tasks": 3,
+        "commit": "d9e6b088c8d8dbc7c007739f1f8d56a6cdae432b",
+        "experiment_elapsed_seconds": 75.221,
+        "new_failing_test_ids_observed": {
+          "cursor-adapter": [],
+          "invoice-summary": [],
+          "retry-policy": []
+        },
+        "outcome_counts": {
+          "REPEATED_PROPOSAL": 1,
+          "SOURCE_REJECTED": 4,
+          "TEST_FAILED": 1
+        },
+        "probe_completion_tokens": 48,
+        "probe_prompt_tokens": 62,
+        "protocol_model_calls": 2,
+        "repair_completion_tokens": 373,
+        "repair_model_call_seconds": 43.877,
+        "repair_model_calls": 6,
+        "repair_prompt_tokens": 5615,
+        "run_id": 40000312299,
+        "source_valid_candidates": 1,
+        "status": "COMPLETED",
+        "structurally_valid_bounded_proposals": 4,
+        "targeted_suites_passed": 0,
+        "verified_repairs": 0
+      },
+      {
+        "attempted_tasks": 3,
+        "commit": "b99c3f8a51c4c0737488d99457b615c2fef04992",
+        "experiment_elapsed_seconds": 98.852,
+        "new_failing_test_ids_observed": {
+          "cursor-adapter": [],
+          "invoice-summary": [],
+          "retry-policy": []
+        },
+        "outcome_counts": {
+          "REPEATED_PROPOSAL": 3,
+          "SOURCE_REJECTED": 1,
+          "TEST_FAILED": 2
+        },
+        "probe_completion_tokens": 68,
+        "probe_prompt_tokens": 71,
+        "protocol_model_calls": 2,
+        "repair_completion_tokens": 410,
+        "repair_model_call_seconds": 64.047,
+        "repair_model_calls": 6,
+        "repair_prompt_tokens": 5571,
+        "run_id": 40001263033,
+        "source_valid_candidates": 2,
+        "status": "COMPLETED",
+        "structurally_valid_bounded_proposals": 6,
+        "targeted_suites_passed": 0,
+        "verified_repairs": 0
+      }
+    ],
+    "status": "THREE_DEVELOPMENT_EXPERIMENTS_COMPLETED",
+    "unique_tasks": 3
+  },
+  "revenue_usd": 0,
+  "scheduled_operation_active": false
+}

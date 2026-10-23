@@ -1,0 +1,149 @@
+{
+  "schema": 1,
+  "kind": "owned_maintenance_independent_replay",
+  "source_report_sha256": "68f589f446c27579fc39837a9e708978caf8ffbd2e6822984d3818aca82bbccf",
+  "revision": "e712bdf86b1475501153c68c1ce334411949fac4",
+  "core_revision": "5f3f0cc668d3993f013759133223e204fa61c904",
+  "catalog_revision": "7687104d0b34d43f6b08ce598df2e764e467ec3b",
+  "model_calls": 0,
+  "inference_performed": false,
+  "commercial_bounty": false,
+  "external_submission": false,
+  "untrusted_execution_certified": false,
+  "status": "completed",
+  "reported_scores": {
+    "line": 2,
+    "statement": 3
+  },
+  "scores": {
+    "line": 2,
+    "statement": 3
+  },
+  "cases": [
+    {
+      "id": "page_window",
+      "arm": "line",
+      "source_sha256": "40ea55d649295b2916db8ce67b1b1a0b33b1f32ed68234584e869a3b4149b1ed",
+      "tests_sha256": "10242b19810988e18814d7f6af568e8d1933aa51a8aef65f9405a442dc8417c2",
+      "candidate_sha256": "2cd7f3157a2602ccafccf138c275084f5fc01fb0ff964f23c85c16f469022e60",
+      "patch_sha256": "492489044bf1a97757e6475a213b5f7a9ec6034c4a47d11be6c57e472335e1da",
+      "verified": true,
+      "test": {
+        "passed": true,
+        "returncode": 0,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 0.241,
+        "output": "----------------------------------------------------------------------\nRan 7 tests in 0.000s\n\nOK\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      }
+    },
+    {
+      "id": "page_window",
+      "arm": "statement",
+      "source_sha256": "40ea55d649295b2916db8ce67b1b1a0b33b1f32ed68234584e869a3b4149b1ed",
+      "tests_sha256": "10242b19810988e18814d7f6af568e8d1933aa51a8aef65f9405a442dc8417c2",
+      "candidate_sha256": "537b5d368356deccee6b38263358dd3d76a41360177c98c2f599bf2dc7ac095f",
+      "patch_sha256": "8257fda1a3ddeb64e1c51934143d6afa80a5486f6ba28d36e7907cd9abee986d",
+      "verified": true,
+      "test": {
+        "passed": true,
+        "returncode": 0,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 0.241,
+        "output": "----------------------------------------------------------------------\nRan 7 tests in 0.000s\n\nOK\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      }
+    },
+    {
+      "id": "utc_offset",
+      "arm": "statement",
+      "source_sha256": "57d71b4fed7c4a9fcebf45fcbcdbeaae224399d6b80e3fdba043a7a55543cea7",
+      "tests_sha256": "a4c0508168748221cc2a9eb76aaacda626b47bdfa194c742a51f63a9e1ce9334",
+      "candidate_sha256": "3733067ee7f80d5f2398f5715ea918942587c90d92688f9f068f2efdea51f49e",
+      "patch_sha256": "90572f095264bbe66c966363a901904f1bc7c46f93a667ee01f4f2d9372b2b47",
+      "verified": true,
+      "test": {
+        "passed": true,
+        "returncode": 0,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 0.241,
+        "output": "----------------------------------------------------------------------\nRan 6 tests in 0.000s\n\nOK\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      }
+    },
+    {
+      "id": "retry_delay",
+      "arm": "statement",
+      "source_sha256": "6692661297b54fc59c64671e34c92d5eaef12e4b7d70eeb7ba94573166cd32a6",
+      "tests_sha256": "cd5594b17bf0f4cfd229c42cd6d1b45d86be8aa7f106a708d117b21765763855",
+      "candidate_sha256": "ebc1620a5bdcde5373723462e301925d8f6ea4fd865f35b23c71fbb391bccb9a",
+      "patch_sha256": "f421e61bfc411b60b4889e674fcba316a73b56acf71b64c86e5023be96b040a6",
+      "verified": true,
+      "test": {
+        "passed": true,
+        "returncode": 0,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 0.241,
+        "output": "----------------------------------------------------------------------\nRan 6 tests in 0.000s\n\nOK\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      }
+    },
+    {
+      "id": "retry_delay",
+      "arm": "line",
+      "source_sha256": "6692661297b54fc59c64671e34c92d5eaef12e4b7d70eeb7ba94573166cd32a6",
+      "tests_sha256": "cd5594b17bf0f4cfd229c42cd6d1b45d86be8aa7f106a708d117b21765763855",
+      "candidate_sha256": "ebc1620a5bdcde5373723462e301925d8f6ea4fd865f35b23c71fbb391bccb9a",
+      "patch_sha256": "f421e61bfc411b60b4889e674fcba316a73b56acf71b64c86e5023be96b040a6",
+      "verified": true,
+      "test": {
+        "passed": true,
+        "returncode": 0,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 0.241,
+        "output": "----------------------------------------------------------------------\nRan 6 tests in 0.000s\n\nOK\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      }
+    }
+  ],
+  "sandbox_preflight": {
+    "network_denied": true,
+    "loopback_inference_unreachable": true,
+    "source_writes_denied": true,
+    "root_writes_denied": true,
+    "secrets_absent": true,
+    "uid_unprivileged": true,
+    "capabilities_empty": true,
+    "no_new_privileges": true,
+    "seccomp_active": true,
+    "memory_limit_enforced": true,
+    "swap_disabled": true,
+    "cpu_quota_verified": true,
+    "pid_limit_verified": true,
+    "tmpfs_bounded_noexec": true,
+    "wall_clock_enforced": true,
+    "cleanup_verified": true,
+    "output_bounded": true,
+    "docker_socket_absent": true,
+    "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+    "untrusted_execution_certified": false,
+    "pid_pressure_enforced": true,
+    "pid_current_at_denial": 64,
+    "pid_denial_events": 1,
+    "probe_threads": 63,
+    "cpu_pressure_enforced": true,
+    "cpu_pressure_wall_seconds": 3.053,
+    "cpu_pressure_used_seconds": 3.058,
+    "cpu_throttled_periods": 31
+  }
+}

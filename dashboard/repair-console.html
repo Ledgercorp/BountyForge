@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>BountyForge owned repair console</title>
+<style>
+body{font:16px/1.6 system-ui,sans-serif;background:#0b1118;color:#e7edf5;margin:0;padding:32px;max-width:900px;margin-inline:auto}
+h1{font-size:36px;line-height:1.2}section{background:#131e29;border:1px solid #344658;border-radius:12px;padding:24px;margin:24px 0}
+label{display:block;margin:16px 0 6px}select,button,input{font:inherit;padding:10px;background:#1d3040;color:#e7edf5;border:1px solid #638299;border-radius:6px}
+button{cursor:pointer;background:#255d45}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#091019;padding:16px}small{color:#b7c7d2}
+</style>
+<script defer src="./repair-console.js"></script>
+</head>
+<body>
+<small>LEFTSOCK LABS · LOCAL OWNER CONSOLE · OWNED DEVELOPMENT ONLY</small>
+<h1>Choose who repairs the code.</h1>
+<p>The configuration below selects the actual Linux repair backend. This local page exports configuration and checks saved receipts. Execution starts in the CLI or active Codex MCP session.</p>
+<section>
+<h2>Repair configuration</h2>
+<label for="engine">Repair engine</label>
+<select id="engine"><option value="QWEN_LOCAL">Autonomous Qwen</option><option value="CODEX_AGENT">Codex Agent</option></select>
+<label for="model-profile">Local model profile</label>
+<select id="model-profile"><option value="QWEN_1_5B">Qwen Coder 1.5B — default</option><option value="QWEN_7B">Qwen Coder 7B — experimental</option><option value="QWEN35_4B">Qwen3.5 4B — research</option><option value="GRANITE42_3B">IBM Granite 4.2 3B — research</option></select>
+<label for="case">Approved owned task</label>
+<select id="case"><option value="sparse-average">Sparse average</option><option value="label-order">Label order</option><option value="weighted-mix">Weighted mix</option><option value="reserve-release">Reserved-unit release</option><option value="response-normalize">Decoded API normalization</option><option value="weighted-window">Weighted time window</option><option value="cursor-checkpoint">Cursor checkpoint</option><option value="interval-compaction">Interval compaction</option><option value="retry-decision">HTTP retry decision</option></select>
+<p id="availability" role="status"></p>
+<pre id="configuration"></pre><button id="download" type="button">Download repair configuration</button>
+<pre id="command"></pre>
+<small>Codex Agent requires a session to author and submit a candidate. No automatic paid fallback exists. This console does not launch customer work or deliver patches.</small>
+</section>
+<section>
+<h2>Inspect a saved verification receipt</h2>
+<label for="receipt-file">Select a local owned receipt JSON</label>
+<input id="receipt-file" type="file" accept="application/json,.json">
+<pre id="verification" role="status">No receipt loaded. Runtime availability and execution state are unmeasured in this browser.</pre>
+<small>Files stay in this browser. Hash validity binds receipt contents; it does not authenticate an author or a runtime signature. Development results do not establish unseen repair accuracy.</small>
+</section>
+<footer>Private execution NOT_ADMITTED · Commercial activation NOT_AUTHORIZED · Delivery requires owner approval</footer>
+</body></html>

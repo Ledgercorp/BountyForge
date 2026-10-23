@@ -41,11 +41,18 @@ def preflight(source: Path) -> dict:
 
 def launch(source: Path, rootfs: Path, launcher: Path, timeout_seconds: int=25) -> dict:
     """No arbitrary commands, network, host VFS or package installs in guest."""
-    if not 2<=timeout_seconds<=30: raise ValueError('bounded timeout required')
-    source=Path(source).resolve(strict=True)
+    if type(timeout_seconds) is not int or not 2<=timeout_seconds<=30:
+        raise ValueError('bounded integer timeout required')
+    # Reject links before canonicalization; resolve() would erase the evidence
+    # needed by the source and trusted-launcher admission checks.
+    source=Path(source)
+    launcher=Path(launcher)
+    inspection=preflight(source)
+    if launcher.is_symlink() or not launcher.is_file():
+        raise SandboxUnavailable('Trusted launcher absent')
+    source=source.resolve(strict=True)
     rootfs=Path(rootfs).resolve(strict=True)
     launcher=Path(launcher).resolve(strict=True)
-    inspection=preflight(source)
     if rootfs==source or rootfs.is_relative_to(source) or source.is_relative_to(rootfs):
         raise SandboxUnavailable('Source and rootfs must not contain one another')
     if not (rootfs/'usr/bin/bf-safe-python').is_file() or not (rootfs/'usr/bin/python3.13').is_file():

@@ -1,0 +1,108 @@
+{
+  "baseline": "New tasks; no previous inference. No reference patches stored or supplied.",
+  "budgets": {
+    "attempts_per_task": 2,
+    "completion_tokens": 150,
+    "context_tokens": 2048,
+    "maximum_completion_requests": 14,
+    "request_timeout_seconds": 45,
+    "resource_probe_calls_per_model": 1,
+    "tasks_per_model": 3
+  },
+  "case_ids": [
+    "reserve-release",
+    "response-normalize",
+    "weighted-window"
+  ],
+  "cases": [
+    {
+      "categories": [
+        "state_transitions",
+        "multi_statement",
+        "helper_dependencies",
+        "error_recovery"
+      ],
+      "description": "Release reserved units only for settled events, once per event ID. Pending, cancelled and missing statuses are ignored without recording the ID. Clamp each accepted release to held units. Accumulate released units from the existing state; invalid amounts contribute zero. Return sorted seen IDs without mutating inputs.",
+      "id": "reserve-release",
+      "sha256": {
+        "subject.py": "6680558010929ddbd5ddbc21280a10b2b4406fecc103b6520d8d9fdb4a35d766",
+        "tests/test_regression.py": "e833bb513b5ebdb2cf5a1f699c2c135a83cb9c34466ef71a429b3d9541474921"
+      },
+      "symbol": "apply_release"
+    },
+    {
+      "categories": [
+        "api_responses",
+        "error_recovery",
+        "data_transformation",
+        "boundary"
+      ],
+      "description": "Normalize decoded 200 and 206 responses as successes with retry false. Trim and filter record IDs; preserve an explicit cursor including empty string or None, and use None when missing. Only 429/503 retry using the unchanged retry_seconds helper and previous cursor. Other errors retain the previous cursor without retry; do not mutate inputs.",
+      "id": "response-normalize",
+      "sha256": {
+        "subject.py": "16e9d683814425970670d886d9fdacbcbde0cc977a33b9371fd048bd6743bc7f",
+        "tests/test_regression.py": "459d30875f9e441425784062b97846d7e86507f1b27aa7a523c5cff0942d6d15"
+      },
+      "symbol": "normalize_response"
+    },
+    {
+      "categories": [
+        "data_transformation",
+        "multi_statement",
+        "boundary",
+        "helper_dependencies"
+      ],
+      "description": "Return a weighted mean from rows in the half-open interval [start,end). Ignore None values and invalid/nonpositive weights as defined by row_weight; include numeric zero and fractional weights. Return None if no valid weight remains. Preserve input rows and helper behavior.",
+      "id": "weighted-window",
+      "sha256": {
+        "subject.py": "532f6cf0a63013d4ccf1d36761f7e59ed5e08bfe5d7dbbe824ec7f3ca913b616",
+        "tests/test_regression.py": "9659c296d0aa671b7af65730d47c769dd6fbfd7a7afa900f8a00ddab91078c35"
+      },
+      "symbol": "summarize_window"
+    }
+  ],
+  "change": "Task-first compact prompt and concise equivalent generation instructions. Source, requirements, feedback and authorized statement units preserved; same resource and verification limits. Adds process CPU observations and unexpected-exit reporting.",
+  "classification": "OWNED_DEVELOPMENT",
+  "code_sha256": {
+    "bountyforge/curated_docker.py": "0beb01183867f514029f466274e641f5e9e2860de7a56d34fe725a12b61dfa2f",
+    "bountyforge/curated_tasks.py": "048bf0efe8e44278d4fb5a34ebc951b1d27c7034fb28a77da94f6990b965d48f",
+    "bountyforge/drafts.py": "e5336eb40548b72fae901d6b281ffd0d45de5d2cbf04f0189f2721f700b29af5",
+    "bountyforge/local_model_runtime.py": "09a28796712059d6a34f5e151f22cc02a660740f329348931d91c149efaa3395",
+    "bountyforge/mcp_server.py": "8e81f5abf3d34be5df1d1505ea7075f32c37b6f937eba0290f0c9b2b9856c689",
+    "bountyforge/model.py": "cc627d3b3ec1824772d9f7352cd266d1292d13c58a6f97909d2755751c7ff1a6",
+    "bountyforge/model_profiles.py": "42a2f4aeab95640161df1356bf4b241e10f3a5383f25260ed4cf6d5c0a728b53",
+    "bountyforge/native_qwen.py": "a990df9a4a9d6322dec3c0cdd7e280b65688bbc18c4a22d92f897c9737add323",
+    "bountyforge/owned_repair_queue.py": "10edcbdc41fc2cb8ef97df572f19ecbc389be032f7c6f25b69278f0ae19dc10e",
+    "bountyforge/phase8_evaluation.py": "c99d99987df89b32f542860e8f3eb8965e84c216a3fb0b1137505f70ad48a0a5",
+    "bountyforge/profiled_qwen.py": "fc8b987a1d4d7a0f61f9f5303927ef46edaadd396d5d3a5b639f11f2aa322f3f",
+    "bountyforge/qwen_statement_contract.py": "1cf4fcff49afdf4ff291f3ff5bc08e656b933d871f25d2795f7d2210ba3bebda",
+    "bountyforge/repair_engines.py": "84d19c90b620a524c50ecbef5fe86b4b36ba80737d15f42647e493a3e81c7a68",
+    "bountyforge/repair_intelligence.py": "7eb570b0975fc76abef356adb55e5e4ca1927ac1574cba239b05a8d12859e63a",
+    "bountyforge/repair_session.py": "b011ce262e9cba989afb02c69fbd2fd325345d9aaff76349378e7b674c65e8b3",
+    "bountyforge/statement_grammar.py": "90c16ac693cbcd0d5f6a231b07ac4819c81f6905b276e2b261b742b3b9e3ac0d",
+    "bountyforge/statements.py": "7ee92b1a794ce221042196ac7e5fedd97792691184f3d2709d182787ecfeb460",
+    "scripts/local_inference.py": "3d9a6f35eef7da70ad3e7f6699cdf806097d33571881867668f3f8bb81308b13",
+    "scripts/owned_queue.py": "2585e3e71cdefd32309dccdf9f9e1c7670da4cdae2c263deb64dcc9025c6fc7a",
+    "scripts/phase15_model_comparison.py": "fd7e721190876918318b0a48d3b33771900c631165baf093acf3a7e4f9ac9f04",
+    "scripts/repair_engine.py": "a2e882b62fdd49700ad5073b95e28c45d24f48ab070dd94a0336201d8dbc7930"
+  },
+  "development_reuse_disclosure": "These same three tasks were exposed in v1; this is a protocol comparison, never fresh unseen accuracy.",
+  "independent_evaluation": false,
+  "kind": "phase15_frozen_development_comparison_v2",
+  "model_profiles": [
+    "QWEN_1_5B",
+    "QWEN_7B"
+  ],
+  "order": "Sequential 1.5B then 7B; fresh bounded server per task; identical generation protocol/prompts/budgets.",
+  "previous_experiment_sha256": "02969e646c0a5fc5df1c34e2d4c484d38c1e02d2c4e095366d205224ac3b36b1",
+  "runtime_limits": {
+    "address_space_bytes": 10737418240,
+    "cpu_seconds_per_server": 180,
+    "log_bytes": 1048576,
+    "parallel_streams": 1,
+    "startup_seconds": 60,
+    "threads": 2,
+    "wall_seconds_per_server": 180
+  },
+  "verification": "Existing source/scope/binding/capability validators; targeted Docker plus fresh independent Docker replay."
+}

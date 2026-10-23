@@ -1,0 +1,111 @@
+{
+  "kind": "nonexecuting_frozen_worker_context_probe",
+  "core_revision": "48ce3f15a134ba06846d7eda8fe4ac2e594e7563",
+  "selected_cases": 20,
+  "prepared_cases": 20,
+  "subject_execution": false,
+  "provider_invoked": false,
+  "model_calls": 0,
+  "cases": [
+    {
+      "case_id": "stock_admission",
+      "prepared": true,
+      "prepared_prompt_bytes": 1602
+    },
+    {
+      "case_id": "booking_intersection",
+      "prepared": true,
+      "prepared_prompt_bytes": 1700
+    },
+    {
+      "case_id": "literal_tail",
+      "prepared": true,
+      "prepared_prompt_bytes": 1788
+    },
+    {
+      "case_id": "line_termination",
+      "prepared": true,
+      "prepared_prompt_bytes": 1665
+    },
+    {
+      "case_id": "duration_label",
+      "prepared": true,
+      "prepared_prompt_bytes": 1721
+    },
+    {
+      "case_id": "shipping_cartons",
+      "prepared": true,
+      "prepared_prompt_bytes": 1858
+    },
+    {
+      "case_id": "block_indentation",
+      "prepared": true,
+      "prepared_prompt_bytes": 1680
+    },
+    {
+      "case_id": "running_measurements",
+      "prepared": true,
+      "prepared_prompt_bytes": 2255
+    },
+    {
+      "case_id": "endpoint_authority",
+      "prepared": true,
+      "prepared_prompt_bytes": 2442
+    },
+    {
+      "case_id": "archive_classification",
+      "prepared": true,
+      "prepared_prompt_bytes": 1808
+    },
+    {
+      "case_id": "markup_text",
+      "prepared": true,
+      "prepared_prompt_bytes": 1768
+    },
+    {
+      "case_id": "csv_field_encoding",
+      "prepared": true,
+      "prepared_prompt_bytes": 1668
+    },
+    {
+      "case_id": "cyclic_sequence",
+      "prepared": true,
+      "prepared_prompt_bytes": 2012
+    },
+    {
+      "case_id": "configuration_switch",
+      "prepared": true,
+      "prepared_prompt_bytes": 2679
+    },
+    {
+      "case_id": "terminal_run_summary",
+      "prepared": true,
+      "prepared_prompt_bytes": 2904
+    },
+    {
+      "case_id": "rectangular_columns",
+      "prepared": true,
+      "prepared_prompt_bytes": 1998
+    },
+    {
+      "case_id": "rooted_segments",
+      "prepared": true,
+      "prepared_prompt_bytes": 2103
+    },
+    {
+      "case_id": "utf8_prefix_budget",
+      "prepared": true,
+      "prepared_prompt_bytes": 3065
+    },
+    {
+      "case_id": "wildcard_empty_prefix",
+      "prepared": true,
+      "prepared_prompt_bytes": 2826
+    },
+    {
+      "case_id": "network_word_order",
+      "prepared": true,
+      "prepared_prompt_bytes": 1796
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "baseline": "New tasks; no previous inference. No reference patches stored or supplied.",
+  "budgets": {
+    "attempts_per_task": 2,
+    "completion_tokens": 150,
+    "context_tokens": 2048,
+    "cpu_threads": 4,
+    "input_token_limit": 700,
+    "maximum_completion_requests": 4,
+    "request_timeout_seconds": 45,
+    "resource_probe_calls_per_model": 0,
+    "tasks_per_model": 1
+  },
+  "case_ids": [
+    "weighted-window"
+  ],
+  "cases": [
+    {
+      "categories": [
+        "data_transformation",
+        "multi_statement",
+        "boundary",
+        "helper_dependencies"
+      ],
+      "description": "Return a weighted mean from rows in the half-open interval [start,end). Ignore None values and invalid/nonpositive weights as defined by row_weight; include numeric zero and fractional weights. Return None if no valid weight remains. Preserve input rows and helper behavior.",
+      "id": "weighted-window",
+      "sha256": {
+        "subject.py": "532f6cf0a63013d4ccf1d36761f7e59ed5e08bfe5d7dbbe824ec7f3ca913b616",
+        "tests/test_regression.py": "9659c296d0aa671b7af65730d47c769dd6fbfd7a7afa900f8a00ddab91078c35"
+      },
+      "symbol": "summarize_window"
+    }
+  ],
+  "change": "After measured V4 if-header rejection: generation-only parenthesized condition expression framing. Same source/validators/tests/limits. Prepared for future manual evaluation; no V5 inference in Phase15.",
+  "classification": "OWNED_DEVELOPMENT",
+  "code_sha256": {
+    "bountyforge/curated_docker.py": "0beb01183867f514029f466274e641f5e9e2860de7a56d34fe725a12b61dfa2f",
+    "bountyforge/curated_tasks.py": "048bf0efe8e44278d4fb5a34ebc951b1d27c7034fb28a77da94f6990b965d48f",
+    "bountyforge/drafts.py": "e5336eb40548b72fae901d6b281ffd0d45de5d2cbf04f0189f2721f700b29af5",
+    "bountyforge/local_model_runtime.py": "8f1872962819747ede1b716cbeb55f2c3ea11b2c05666009dbf7139c7129d87c",
+    "bountyforge/mcp_server.py": "8e81f5abf3d34be5df1d1505ea7075f32c37b6f937eba0290f0c9b2b9856c689",
+    "bountyforge/model.py": "cc627d3b3ec1824772d9f7352cd266d1292d13c58a6f97909d2755751c7ff1a6",
+    "bountyforge/model_profiles.py": "7dcef7994a94ca298ed888b552809fd532d2e467febcebf9e5e515e2b030d9d7",
+    "bountyforge/native_qwen.py": "333cbb076bd38e16d061faa9203dca32f3702d7e751786fffbceff57fc0c86c3",
+    "bountyforge/owned_repair_queue.py": "10edcbdc41fc2cb8ef97df572f19ecbc389be032f7c6f25b69278f0ae19dc10e",
+    "bountyforge/phase8_evaluation.py": "c99d99987df89b32f542860e8f3eb8965e84c216a3fb0b1137505f70ad48a0a5",
+    "bountyforge/profiled_qwen.py": "5c5a8cc4b379bce44d974890654948b2bdd47e07a01bd29c36d3a612be870397",
+    "bountyforge/qwen_statement_contract.py": "1cf4fcff49afdf4ff291f3ff5bc08e656b933d871f25d2795f7d2210ba3bebda",
+    "bountyforge/repair_engines.py": "239157b7df7578f6950d985c755962b9dc7e6a6f97f72b1c333cb37fbfd58fdc",
+    "bountyforge/repair_intelligence.py": "7eb570b0975fc76abef356adb55e5e4ca1927ac1574cba239b05a8d12859e63a",
+    "bountyforge/repair_session.py": "b011ce262e9cba989afb02c69fbd2fd325345d9aaff76349378e7b674c65e8b3",
+    "bountyforge/statement_grammar.py": "30d036d445d9134dac9c7cc0bc903860fe3adde47add413cf594a7572675f4cc",
+    "bountyforge/statements.py": "7ee92b1a794ce221042196ac7e5fedd97792691184f3d2709d182787ecfeb460",
+    "scripts/local_inference.py": "af325e355d976c9b1a2b8b23b46ac5b1bdb00b9f62b260a763a1749af1d11b8d",
+    "scripts/owned_queue.py": "2585e3e71cdefd32309dccdf9f9e1c7670da4cdae2c263deb64dcc9025c6fc7a",
+    "scripts/phase15_model_comparison.py": "fcd157cd2598ea47326bc9c0aa95beb1f23bac57159a85e00fd55129b89530fc",
+    "scripts/repair_engine.py": "a2e882b62fdd49700ad5073b95e28c45d24f48ab070dd94a0336201d8dbc7930"
+  },
+  "development_reuse_disclosure": "These same three tasks were exposed in v1; this is a protocol comparison, never fresh unseen accuracy.",
+  "independent_evaluation": false,
+  "kind": "phase15_prepared_v5_condition_grammar_unmeasured",
+  "measured_in_phase15": false,
+  "model_profiles": [
+    "QWEN_1_5B",
+    "QWEN_7B"
+  ],
+  "order": "Sequential 1.5B then 7B; fresh bounded server per task; identical generation protocol/prompts/budgets.",
+  "previous_experiment_sha256": "ef65f2289ce8fa5f44188940c48b85bc21a86b4bc75f8f436621d6de393f1ae3",
+  "runtime_limits": {
+    "address_space_bytes": 10737418240,
+    "cpu_seconds_per_server": 180,
+    "log_bytes": 1048576,
+    "parallel_streams": 1,
+    "startup_seconds": 60,
+    "threads": 4,
+    "wall_seconds_per_server": 180
+  },
+  "verification": "Existing source/scope/binding/capability validators; targeted Docker plus fresh independent Docker replay."
+}

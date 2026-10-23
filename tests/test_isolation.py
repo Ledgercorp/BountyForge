@@ -33,6 +33,23 @@ class T(unittest.TestCase):
         (self.root/'tests/test_bad.py').write_text('import unittest\nclass T(unittest.TestCase):\n def test_bad(self): self.assertEqual(1,2)\n')
         r=launch(self.root,ROOTFS,LAUNCHER)
         self.assertEqual(r['status'],'fail')
+    def test_rootfs_is_read_only_including_owner_chmod(self):
+        # This canary belongs solely to the temporary trusted rootfs. A dropped
+        # capability set alone does not stop its mapped owner changing modes.
+        canary = ROOTFS/'tmp/bf-owned-readonly-canary'
+        canary.write_text('owned rootfs canary')
+        canary.chmod(0o444)
+        self.addCleanup(lambda: canary.unlink(missing_ok=True))
+        (self.root/'tests/test_readonly.py').write_text('''import os,unittest
+class T(unittest.TestCase):
+ def test_rootfs_write_and_chmod_denied(self):
+  with self.assertRaises(OSError): os.chmod('/tmp/bf-owned-readonly-canary',0o644)
+  with self.assertRaises(OSError):
+   with open('/tmp/bf-owned-readonly-canary','w') as f: f.write('changed')
+''')
+        r=launch(self.root,ROOTFS,LAUNCHER)
+        self.assertEqual(r['status'],'pass',r)
+        self.assertEqual(canary.read_text(),'owned rootfs canary')
     def test_timeout_is_failure(self):
         (self.root/'tests/test_hang.py').write_text('import unittest,time\nclass T(unittest.TestCase):\n def test_hang(self): time.sleep(20)\n')
         r=launch(self.root,ROOTFS,LAUNCHER,timeout_seconds=2)

@@ -1,0 +1,24 @@
+test_failing_test_is_failure (test_isolation.BoundaryTests.test_failing_test_is_failure) ... ok
+test_invalid_time_bound (test_isolation.BoundaryTests.test_invalid_time_bound) ... ok
+test_isolation_probes (test_isolation.BoundaryTests.test_isolation_probes) ... ok
+test_named_secret_tree_blocked (test_isolation.BoundaryTests.test_named_secret_tree_blocked) ... ok
+test_rootfs_is_read_only_including_owner_chmod (test_isolation.BoundaryTests.test_rootfs_is_read_only_including_owner_chmod) ... FAIL
+test_runner_missing_or_invalid (test_isolation.BoundaryTests.test_runner_missing_or_invalid) ... ok
+test_symlinks_blocked (test_isolation.BoundaryTests.test_symlinks_blocked) ... ok
+test_timeout_is_failure (test_isolation.BoundaryTests.test_timeout_is_failure) ... ok
+
+======================================================================
+FAIL: test_rootfs_is_read_only_including_owner_chmod (test_isolation.BoundaryTests.test_rootfs_is_read_only_including_owner_chmod)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/BountyForge-security-phase4/tests/test_isolation.py", line 51, in test_rootfs_is_read_only_including_owner_chmod
+    self.assertEqual(r['status'],'pass',r)
+AssertionError: 'fail' != 'pass'
+- fail
++ pass
+ : {'status': 'fail', 'exit_code': 1, 'timeout': False, 'seconds': 0.167, 'output': 'test_rootfs_write_and_chmod_denied (test_readonly.T.test_rootfs_write_and_chmod_denied) ... FAIL\n\n======================================================================\nFAIL: test_rootfs_write_and_chmod_denied (test_readonly.T.test_rootfs_write_and_chmod_denied)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File "/work/tests/test_readonly.py", line 4, in test_rootfs_write_and_chmod_denied\n    with self.assertRaises(OSError): os.chmod(\'/tmp/bf-owned-readonly-canary\',0o644)\n         ~~~~~~~~~~~~~~~~~^^^^^^^^^\nAssertionError: OSError not raised\n\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nFAILED (failures=1)\n', 'source_preflight': {'files': 2, 'total_source_bytes': 305}, 'runner': 'user+net+mount+pid namespaces, chroot, dropped capabilities, seccomp, tmpfs, rlimits', 'untrusted_execution_certified': False}
+
+----------------------------------------------------------------------
+Ran 8 tests in 2.554s
+
+FAILED (failures=1)

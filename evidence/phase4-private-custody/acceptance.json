@@ -1,0 +1,76 @@
+{
+  "schema": 1,
+  "kind": "bountyforge_private_review_custody_acceptance",
+  "at_utc": "2026-10-22",
+  "prior_verified_checkpoint": "9b70e5276905e76baf578a00f936d438bf82c66c",
+  "branch": "engineering/revenue-linux-scout-20261021",
+  "pr_number": 2,
+  "state": "local_owned_review_only",
+  "changes": [
+    "tests/test_private_source_custody.py",
+    "bountyforge/private_source_custody.py",
+    "docs/PRIVATE_SOURCE_CUSTODY_2026_10_21.md",
+    "evidence/phase4-private-custody/acceptance.json"
+  ],
+  "capabilities": {
+    "owned_private_copy_written_inside_fixture": true,
+    "no_follow_directory_walk": true,
+    "exact_scope_source_and_test_hashes": true,
+    "signed_review_lease_required_to_create": true,
+    "local_completed_copy_reopens_with_signed_review_lease": true,
+    "independently_verified_receipt_and_byte_hashes": true,
+    "prefix_sealed_is_not_immutable": true,
+    "current_review_and_payment_revision_checks": true,
+    "concurrent_revocation_rejects": true,
+    "partial_write_cannot_publish_completed_copy": true,
+    "no_real_customer_source_seen": true,
+    "source_accepted": false,
+    "private_worker_admitted": false,
+    "customer_rights_verified": false,
+    "model_sharing_verified": false,
+    "execution_authorized": false,
+    "delivery_authorized": false,
+    "fresh_payment_verified": false,
+    "public_sales_enabled": false
+  },
+  "evidence": {
+    "missing_module_red": 39703791633,
+    "first_green_assertion_fix": 39704078809,
+    "signed_reverify_red": 39704220082,
+    "signed_reverify_green": 39704271773,
+    "final_hosted_run": 39704442166,
+    "final_hosted_url": "https://github.com/Ledgercorp/BountyForge/actions/runs/39704442166",
+    "final_tests": {
+      "total": 403,
+      "passed": 395,
+      "skipped": 8,
+      "failed": 0
+    },
+    "skip_reason": "GitHub-hosted Ubuntu namespace/rootfs test environment; prior Codex Cloud Linux accepted 8/8 under a different policy",
+    "added_real_model_calls": 0,
+    "inference_cost_not_independently_verified": true,
+    "additional_infrastructure_spending_usd": 0,
+    "external_submissions": 0,
+    "actual_customer_orders": 0,
+    "received_revenue_usd": 0,
+    "private_source_published": false
+  },
+  "prior_results_untouched": {
+    "phase4_line_editor": "2/4 owned frozen maintenance",
+    "phase4_statement_editor": "3/4 owned frozen maintenance",
+    "phase4_comparison_run": 39697530398,
+    "historical_groq": "1/5, eight calls",
+    "owned_structural_groq": "2/4, six calls"
+  },
+  "known_limitations": [
+    "The snapshot is a mutable private local copy and requires fresh rehash before each authorized use",
+    "A logical sealed- prefix does not imply file-system immutability or security certification",
+    "Power loss/disk errors may leave a private .pending-* directory; no background recovery or private host exists",
+    "No independently verified customer source rights or model-sharing consent",
+    "Owner HMAC possession does not by itself prove signer legal identity",
+    "Historic payment-review evidence is not a fresh Stripe payment or bank payout",
+    "No approved private persistent host, immutable rootfs provenance, cgroup/ABI/kernel security review or dependency closure",
+    "No arbitrary customer source execution permitted",
+    "No guarantee of commercial repair quality or actual revenue"
+  ]
+}

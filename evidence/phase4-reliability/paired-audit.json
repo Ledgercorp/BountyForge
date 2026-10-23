@@ -1,0 +1,167 @@
+{
+  "schema": 1,
+  "kind": "owned_paired_failure_and_usage_audit",
+  "run_id": 39697530398,
+  "revision": "e712bdf86b1475501153c68c1ce334411949fac4",
+  "artifact_id": 12391935766,
+  "artifact_zip_sha256": "71fb3d0636c591fa1ff116d85706069d99c51c3013e0a07aedfcfabdbc6c390b",
+  "artifact_size_bytes": 13524,
+  "raw_files_sha256": {
+    "maintenance-replay.json": "e1d009c924eeaabfe165d5b9e938a32e4f2a1d0d24b757b51cd942702070aae4",
+    "maintenance-pair.json": "68f589f446c27579fc39837a9e708978caf8ffbd2e6822984d3818aca82bbccf",
+    "sandbox-preflight.json": "022ac2303ead82ffd95be47f5bef6e48fc3a85cd89b5e26f3b1071be90a78781"
+  },
+  "score": {
+    "line": {
+      "verified": 2,
+      "total": 4
+    },
+    "statement": {
+      "verified": 3,
+      "total": 4
+    }
+  },
+  "model_calls": 8,
+  "job_seconds": 450,
+  "adapter_wall_seconds_including_pacing": 418.889,
+  "pure_inference_seconds": null,
+  "model": "openai/gpt-oss-120b",
+  "usage": {
+    "prompt_tokens": 8815,
+    "completion_tokens": 2381,
+    "total_tokens": 11196,
+    "reasoning_tokens": 1886
+  },
+  "usage_by_protocol": {
+    "line": {
+      "prompt_tokens": 4098,
+      "completion_tokens": 1454,
+      "total_tokens": 5552,
+      "reasoning_tokens": 1211
+    },
+    "statement": {
+      "prompt_tokens": 4717,
+      "completion_tokens": 927,
+      "total_tokens": 5644,
+      "reasoning_tokens": 675
+    }
+  },
+  "cases": [
+    {
+      "id": "page_window",
+      "protocol": "line",
+      "model_calls": 1,
+      "verified": true,
+      "source_validation_rejection": null,
+      "targeted_tests_executed": true,
+      "independent_replay_passed": true,
+      "inference_failed": false
+    },
+    {
+      "id": "page_window",
+      "protocol": "statement",
+      "model_calls": 1,
+      "verified": true,
+      "source_validation_rejection": null,
+      "targeted_tests_executed": true,
+      "independent_replay_passed": true,
+      "inference_failed": false
+    },
+    {
+      "id": "utc_offset",
+      "protocol": "statement",
+      "model_calls": 1,
+      "verified": true,
+      "source_validation_rejection": null,
+      "targeted_tests_executed": true,
+      "independent_replay_passed": true,
+      "inference_failed": false
+    },
+    {
+      "id": "utc_offset",
+      "protocol": "line",
+      "model_calls": 1,
+      "verified": false,
+      "source_validation_rejection": "Proposed Python source does not parse",
+      "targeted_tests_executed": false,
+      "independent_replay_passed": false,
+      "inference_failed": false,
+      "proposed_physical_lines_per_change": [
+        1
+      ],
+      "classification": "source_validation_syntax_rejection",
+      "cause": "Physical-line replacement of a multiline return left the original continuation lines, so whole-source parsing rejected it.",
+      "wrong_logic_established": false,
+      "tests_not_run_reason": "proposal rejected before execution; no targeted/full regression failure was observed"
+    },
+    {
+      "id": "integer_fields",
+      "protocol": "line",
+      "model_calls": 1,
+      "verified": false,
+      "source_validation_rejection": "Unsafe replacement text",
+      "targeted_tests_executed": false,
+      "independent_replay_passed": false,
+      "inference_failed": false,
+      "proposed_physical_lines_per_change": [
+        8
+      ],
+      "classification": "source_validation_replacement_budget_rejection",
+      "cause": "Generated replacement exceeded the unchanged three-physical-line limit.",
+      "wrong_logic_established": false,
+      "tests_not_run_reason": "proposal rejected before execution; no targeted/full regression failure was observed"
+    },
+    {
+      "id": "integer_fields",
+      "protocol": "statement",
+      "model_calls": 1,
+      "verified": false,
+      "source_validation_rejection": "Unsafe replacement text",
+      "targeted_tests_executed": false,
+      "independent_replay_passed": false,
+      "inference_failed": false,
+      "proposed_physical_lines_per_change": [
+        5
+      ],
+      "classification": "source_validation_replacement_budget_rejection",
+      "cause": "Generated replacement exceeded the unchanged three-physical-line limit.",
+      "wrong_logic_established": false,
+      "tests_not_run_reason": "proposal rejected before execution; no targeted/full regression failure was observed"
+    },
+    {
+      "id": "retry_delay",
+      "protocol": "statement",
+      "model_calls": 1,
+      "verified": true,
+      "source_validation_rejection": null,
+      "targeted_tests_executed": true,
+      "independent_replay_passed": true,
+      "inference_failed": false
+    },
+    {
+      "id": "retry_delay",
+      "protocol": "line",
+      "model_calls": 1,
+      "verified": true,
+      "source_validation_rejection": null,
+      "targeted_tests_executed": true,
+      "independent_replay_passed": true,
+      "inference_failed": false
+    }
+  ],
+  "limits": [
+    "four owned synthetic cases; not real-world or commercial reliability",
+    "same model and one attempt per protocol/case; no fresh Qwen or historical comparison",
+    "historical set was not rerun or modified",
+    "adapter duration includes 60-second request pacing; arm times are not pure inference latency",
+    "no full external upstream suite, third-party dependencies or customer source",
+    "Free Plan attested; actual billing independently unverified"
+  ],
+  "independent_replay": {
+    "status": "completed",
+    "verified_candidates": 5,
+    "model_calls": 0,
+    "inference_payment_publication_credentials_absent": true
+  },
+  "post_evaluation_core_or_fixture_changes": false
+}

@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "kind": "independently_authored_owned_maintenance_evaluation",
+  "split": "held_out_until_repair_implementation_freeze",
+  "provenance": {
+    "owner": "BountyForge / LeftSock Labs",
+    "author": "independent evaluation agent",
+    "origin": "original owned source and acceptance tests authored for this evaluation; no upstream fixes or previous benchmark solutions",
+    "license": "MIT",
+    "authored_date": "2026-10-21",
+    "baseline_execution": "not executed; requires independent sandbox admission",
+    "manual_solution_supplied": false
+  },
+  "tasks": [
+    {
+      "id": "page_window",
+      "file": "subject.py",
+      "symbol": "select_page",
+      "description": "Select at most the requested number of records after a clamped nonnegative offset, preserving the input sequence and rejecting negative limits.",
+      "sha256": {
+        "subject.py": "40ea55d649295b2916db8ce67b1b1a0b33b1f32ed68234584e869a3b4149b1ed",
+        "tests/test_regression.py": "10242b19810988e18814d7f6af568e8d1933aa51a8aef65f9405a442dc8417c2"
+      },
+      "provenance": "owned original; independently authored and frozen before parent implementation sees test details"
+    },
+    {
+      "id": "utc_offset",
+      "file": "subject.py",
+      "symbol": "signed_offset_minutes",
+      "description": "Convert signed hour and unsigned minute components to signed UTC offset minutes; negative hours apply their sign to the full offset, and zero hours are nonnegative.",
+      "sha256": {
+        "subject.py": "57d71b4fed7c4a9fcebf45fcbcdbeaae224399d6b80e3fdba043a7a55543cea7",
+        "tests/test_regression.py": "a4c0508168748221cc2a9eb76aaacda626b47bdfa194c742a51f63a9e1ce9334"
+      },
+      "provenance": "owned original; independently authored and frozen before parent implementation sees test details"
+    },
+    {
+      "id": "integer_fields",
+      "file": "subject.py",
+      "symbol": "parse_integer_fields",
+      "description": "Parse comma-separated signed integers in order, ignoring only blank fields and rejecting malformed fields. Integer zero is a value.",
+      "sha256": {
+        "subject.py": "79f9e24c5312c1e828cfdf6af0c6252a83036e38981f8660fa6e4b0e6c27802f",
+        "tests/test_regression.py": "f294c06839d6830e07d327a2d2b73a5f6b94bb220b6325d3d11ee3f7761f3af6"
+      },
+      "provenance": "owned original; independently authored and frozen before parent implementation sees test details"
+    },
+    {
+      "id": "retry_delay",
+      "file": "subject.py",
+      "symbol": "retry_delay",
+      "description": "Calculate exponential retry backoff from a zero-based attempt and base delay, capped by a ceiling; preserve fractional base values and reject negative inputs.",
+      "sha256": {
+        "subject.py": "6692661297b54fc59c64671e34c92d5eaef12e4b7d70eeb7ba94573166cd32a6",
+        "tests/test_regression.py": "cd5594b17bf0f4cfd229c42cd6d1b45d86be8aa7f106a708d117b21765763855"
+      },
+      "provenance": "owned original; independently authored and frozen before parent implementation sees test details"
+    }
+  ]
+}

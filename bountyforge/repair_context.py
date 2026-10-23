@@ -32,6 +32,8 @@ def physical_lines(source, keepends=False):
 
 
 def build_prompt(source, path, editable, issue, *, budget=3600):
+    if issue.get('repair_protocol') == 'ast_contract_v7':
+        return build_iterative_prompt(source, path, editable, issue, budget=budget)
     tree = ast.parse(source, filename=path)
     symbol = issue.get('target_symbol')
     matches = [n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef) and n.name == symbol]
@@ -100,3 +102,88 @@ def build_prompt(source, path, editable, issue, *, budget=3600):
     if len(prompt.encode()) > budget:
         raise DraftRejected('Repair context exceeds inference budget')
     return SYSTEM, prompt
+
+
+ITERATIVE_SYSTEM = SYSTEM.replace(
+    'The prior proposal, when present, failed; use the failure evidence to revise it. ', ''
+) + (
+    ' A replacement removes the original statement: preserve its required assignments '
+    'when adding another statement. Up to three physical lines per replacement are allowed. '
+    'The validator_constraints are trusted limits, not suggestions. New attribute names '
+    'are prohibited even for familiar standard-library constants. Use only existing '
+    'capabilities; do not request expanded scope. The latest failure describes the '
+    'previous candidate, while baseline_failure describes the untouched source. '
+    'Every retry starts from that untouched source, not from the previous candidate. '
+    'A source_validated_partial proposal passed source checks, while another symbol '
+    'may have failed; it may be reused if still appropriate but is not proven correct. '
+    'Do not repeat a rejected proposal; reconsider all control-flow paths and local definitions.'
+)
+
+
+def diagnostic_summary(text, limit=450):
+    """Retain exception/validator evidence rather than unittest banner prefixes."""
+    text = str(text)
+    relevant = [row for row in text.split('\n') if row.startswith(
+        ('FAIL:', 'ERROR:', 'AssertionError:', 'TypeError:', 'UnboundLocalError:',
+         'NameError:', 'SyntaxError:', 'ValueError:', 'IndexError:', 'KeyError:'))]
+    return ('\n'.join(relevant) if relevant else text)[-limit:]
+
+
+def _test_units(contract, failure):
+    """Keep complete test methods, including inputs/loops, without evaluating them."""
+    try:
+        tree = ast.parse(contract)
+    except (SyntaxError, ValueError):
+        return [contract] if contract else []
+    methods = [n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)
+               and (n.name.startswith('test') or n.name in ('setUp', 'setUpClass'))]
+    if methods:
+        methods.sort(key=lambda n: (0 if n.name in ('setUp', 'setUpClass') else
+                                    1 if n.name in failure else 2, n.lineno))
+        return [ast.unparse(n) for n in methods]
+    return [ast.unparse(n) for n in tree.body
+            if not isinstance(n, (ast.Import, ast.ImportFrom))]
+
+
+def build_iterative_prompt(source, path, editable, issue, *, budget=3600):
+    # Freeze v5/v6 behavior; reuse the same nonexecuting source extraction.
+    base_issue = dict(issue, repair_protocol='ast_contract_v5', test_contract_untrusted='',
+                      previous_proposal='', prior_error='', test_failure_excerpt='')
+    _, raw = build_prompt(source, path, editable, base_issue)
+    data = json.loads(raw)
+    data['validator_constraints'] = {
+        'existing_attributes': sorted({n.attr for n in ast.walk(ast.parse(source))
+                                       if isinstance(n, ast.Attribute)}),
+        'new_attributes_prohibited': True,
+        'new_imports_declarations_dynamic_calls_prohibited': True,
+        'max_changes': 3, 'max_replacement_bytes': 400, 'max_physical_lines': 3,
+    }
+    data['baseline_failure_untrusted'] = diagnostic_summary(issue.get('baseline_failure', ''))
+    data['failure_untrusted'] = diagnostic_summary(issue.get('test_failure_excerpt', ''))
+    data['previous_error'] = diagnostic_summary(issue.get('prior_error', ''), 250)
+    data['previous_proposal'] = str(issue.get('previous_proposal', ''))[:600]
+    data['previous_proposal_status'] = ('rejected_candidate'
+        if issue.get('previous_proposal_rejected', True) is True else 'source_validated_partial')
+    units = _test_units(str(issue.get('test_contract_untrusted', '')),
+                        data['failure_untrusted'])
+    included = []
+    for unit in units:
+        if len(('\n'.join(included + [unit])).encode()) <= 1100:
+            included.append(unit)
+    data['test_contract_untrusted'] = '\n'.join(included)
+    data['test_contract_complete'] = len(included) == len(units)
+
+    def encode():
+        return json.dumps(data, ensure_ascii=True)
+
+    # Never silently elide executable source flow or weaken capability limits.
+    while len(encode().encode()) > budget and len(included) > 1:
+        included.pop()
+        data['test_contract_untrusted'] = '\n'.join(included)
+        data['test_contract_complete'] = False
+    if len(encode().encode()) > budget:
+        data['issue_untrusted'] = data['issue_untrusted'][:150]
+        data['baseline_failure_untrusted'] = data['baseline_failure_untrusted'][-200:]
+    if len(encode().encode()) > budget:
+        raise DraftRejected('Repair context exceeds inference budget')
+    return ITERATIVE_SYSTEM, encode()

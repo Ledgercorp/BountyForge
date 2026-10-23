@@ -1,0 +1,66 @@
+[
+  {
+    "case_id": "cursor-checkpoint",
+    "baseline_feedback": {
+      "failing_tests": [
+        "test_all_fresh_ids_are_retained",
+        "test_duplicate_sequence_is_excluded",
+        "test_replayed_checkpoint_is_excluded"
+      ],
+      "assertions": [
+        "AssertionError: {'ids': ['b'], 'checkpoint': 6} != {'ids': ['a', 'b'], 'checkpoint': 6}",
+        "AssertionError: Lists differ: ['b'] != ['a']",
+        "AssertionError: {'ids': ['item'], 'checkpoint': 4} != {'ids': [], 'checkpoint': 4}"
+      ],
+      "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+      "unseen_evaluation": false
+    },
+    "source_sha256": "3a40a822f616beff85a7978b0a055ed37bbd210f781a04c190f2236c3ec3d683",
+    "tests_sha256": "d648c3ef9766393226c03b687e6389c0201e908742c97f9da625e24ae8fa5ff5",
+    "baseline_reproduced": true,
+    "prompt_bytes": 1860
+  },
+  {
+    "case_id": "interval-compaction",
+    "baseline_feedback": {
+      "failing_tests": [
+        "test_nested_does_not_shrink",
+        "test_touching_merge",
+        "test_unsorted_negative"
+      ],
+      "assertions": [
+        "AssertionError: Lists differ: [(1, 3)] != [(1, 10)]",
+        "AssertionError: Lists differ: [(1, 3), (3, 5)] != [(1, 5)]",
+        "AssertionError: Lists differ: [(-3, 2), (2, 4)] != [(-3, 4)]"
+      ],
+      "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+      "unseen_evaluation": false
+    },
+    "source_sha256": "be2e4025e6a714b7c098f1736678d8bb0f75d6f666300c296e66b70f98b20b68",
+    "tests_sha256": "138e6d64daa1d298f83b9fb9f157629c336057ee49d62aa16f34c587f21542a4",
+    "baseline_reproduced": true,
+    "prompt_bytes": 1590
+  },
+  {
+    "case_id": "retry-decision",
+    "baseline_feedback": {
+      "failing_tests": [
+        "test_cap",
+        "test_exponential_delay",
+        "test_limit_is_terminal",
+        "test_zero_retry_budget"
+      ],
+      "assertions": [
+        "AssertionError: 8 != 20",
+        "AssertionError: 5 != 12",
+        "AssertionError: {'retry': True, 'attempt': 4, 'delay': 5} != {'retry': False, 'attempt': 3, 'delay': 0}"
+      ],
+      "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+      "unseen_evaluation": false
+    },
+    "source_sha256": "61fc63e78fe326edc952deb9c01bfa1e98d8ee9123ef8aec6d6b3c67ab2f2015",
+    "tests_sha256": "784fbbf5877c125457ad618d38304311ab21a95f672f7be4383a27b4c0c44af3",
+    "baseline_reproduced": true,
+    "prompt_bytes": 1662
+  }
+]

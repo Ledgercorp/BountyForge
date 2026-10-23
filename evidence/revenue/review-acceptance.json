@@ -1,0 +1,169 @@
+{
+  "schema": 1,
+  "kind": "revenue_branch_review_acceptance",
+  "observed_at": "2026-10-21T17:16:06.333567+00:00",
+  "implementation_revision": "dc06867e26976c075916cb84c22c3c46dde56173",
+  "baseline_revision": "1f2833581ca6f9d96a0406c7c0a40dc9320cb3ba",
+  "commits": [
+    {
+      "sha": "8892f753649c5ccd24e620cc8723a9b398c7fbe3",
+      "files_changed": [
+        "bountyforge/paid_review_ledger.py",
+        "bountyforge/stripe_order_gate.py",
+        "docs/REVENUE_REVIEW_2026_10_21.md",
+        "tests/test_paid_review_ledger.py",
+        "tests/test_stripe_order_gate.py"
+      ]
+    },
+    {
+      "sha": "9e46c803f1e842eb53b336375b77342a8c442504",
+      "files_changed": [
+        "bountyforge/paid_review_store.py",
+        "docs/PRIVATE_PAID_REVIEW_STORE.md",
+        "tests/test_paid_review_store.py"
+      ]
+    },
+    {
+      "sha": "dc06867e26976c075916cb84c22c3c46dde56173",
+      "files_changed": [
+        ".github/workflows/hosted-owned-canary.yml",
+        ".github/workflows/owned-qwen-v6-study.yml",
+        ".github/workflows/revenue-linux-scout.yml",
+        "bountyforge/groq_adapter.py",
+        "bountyforge/paid_review_store.py",
+        "bountyforge/revenue_scout.py",
+        "docs/FREE_MODEL_ADMISSION_REVIEW_2026_10_21.md",
+        "docs/GROQ_HOSTED_CANARY.md",
+        "docs/OWNED_QWEN_STUDY_2026_10_21.md",
+        "docs/PAID_ORDER_INTAKE.md",
+        "docs/PRIVATE_PAID_REVIEW_STORE.md",
+        "docs/REVENUE_LINUX_WORKER.md",
+        "docs/REVENUE_REVIEW_2026_10_21.md",
+        "docs/REVENUE_TAKEOVER_2026_10_21.md",
+        "evidence/revenue/model-provider-policy-review.json",
+        "scripts/replay_owned_canary.py",
+        "scripts/validate_owned_canary.py",
+        "tests/test_groq_adapter.py",
+        "tests/test_owned_canary_gate.py",
+        "tests/test_owned_canary_replay.py",
+        "tests/test_paid_review_store.py",
+        "tests/test_revenue_scout.py"
+      ]
+    }
+  ],
+  "hosted_regression": {
+    "run_url": "https://github.com/Ledgercorp/BountyForge/actions/runs/39641609731",
+    "job_id": 119366300935,
+    "tests_total": 294,
+    "passed": 287,
+    "skipped": 7,
+    "failed": 0,
+    "scan_mode": "offline"
+  },
+  "hosted_canary_checks": {
+    "run_url": "https://github.com/Ledgercorp/BountyForge/actions/runs/39641609712",
+    "offline_tests_passed": 49,
+    "live_model_job": "skipped",
+    "live_model_job_id": 119366376940
+  },
+  "local_checks": {
+    "python_tests_total": 294,
+    "passed": 287,
+    "skipped": 7,
+    "failed": 0,
+    "historical_harness_passed": 10,
+    "dashboard_tests_passed": 4,
+    "workflow_yaml_and_shell_validated": 3,
+    "actionlint": "not_installed_not_run",
+    "skipped_test_details": [
+      "test_failing_test_is_failure (test_isolation.BoundaryTests.test_failing_test_is_failure) ... skipped 'Linux namespace rootfs not provisioned; run isolation/build_rootfs.sh before sandbox acceptance'",
+      "test_invalid_time_bound (test_isolation.BoundaryTests.test_invalid_time_bound) ... skipped 'Linux namespace rootfs not provisioned; run isolation/build_rootfs.sh before sandbox acceptance'",
+      "test_isolation_probes (test_isolation.BoundaryTests.test_isolation_probes) ... skipped 'Linux namespace rootfs not provisioned; run isolation/build_rootfs.sh before sandbox acceptance'",
+      "test_named_secret_tree_blocked (test_isolation.BoundaryTests.test_named_secret_tree_blocked) ... skipped 'Linux namespace rootfs not provisioned; run isolation/build_rootfs.sh before sandbox acceptance'",
+      "test_runner_missing_or_invalid (test_isolation.BoundaryTests.test_runner_missing_or_invalid) ... skipped 'Linux namespace rootfs not provisioned; run isolation/build_rootfs.sh before sandbox acceptance'",
+      "test_symlinks_blocked (test_isolation.BoundaryTests.test_symlinks_blocked) ... skipped 'Linux namespace rootfs not provisioned; run isolation/build_rootfs.sh before sandbox acceptance'",
+      "test_timeout_is_failure (test_isolation.BoundaryTests.test_timeout_is_failure) ... skipped 'Linux namespace rootfs not provisioned; run isolation/build_rootfs.sh before sandbox acceptance'"
+    ]
+  },
+  "canonical_qwen_archive": {
+    "run_url": "https://github.com/Ledgercorp/BountyForge/actions/runs/39634493066",
+    "workflow_head_sha": "1c0fe8faea4ff45be63cecc9e527e693f69fd0c9",
+    "artifact_id": 12359904484,
+    "artifact_zip_sha256": "13b8e9f8fb7e13195fadd10f07eee1346f9454e1380bd4881a00637cb1a1faae",
+    "measurement_type": "existing_result_archived_not_rerun",
+    "reports": {
+      "v5": {
+        "file": "evidence/revenue/qwen-baseline-owned-v5.json",
+        "sha256": "d1f4ad8ab795ce705a22b00815603cf3f14e252652278887169b428f13a69772",
+        "repairs_passed": 0,
+        "tasks": 4,
+        "model_calls": 8,
+        "inference_seconds": 34.437,
+        "report_revision": "d1be38c0ac0dab274e9a3fa53281e86ebe8efc07"
+      },
+      "v6": {
+        "file": "evidence/revenue/qwen-baseline-owned-v6.json",
+        "sha256": "5034d0a0745ea7931d0e830ccb29883b0491e226b56f7558fbb38ba4bbdffd9f",
+        "repairs_passed": 0,
+        "tasks": 4,
+        "model_calls": 16,
+        "inference_seconds": 98.947,
+        "report_revision": "d1be38c0ac0dab274e9a3fa53281e86ebe8efc07"
+      }
+    }
+  },
+  "continuity": {
+    "ledger": {
+      "ledger_blob": "803ba112e7d3568180e1e2038763eba8f528ad13",
+      "discoveries": 33,
+      "synthetic_jobs": 4,
+      "states": [
+        "review_ready",
+        "review_ready",
+        "review_ready",
+        "review_ready"
+      ],
+      "active_leases": 0
+    },
+    "dashboard": {
+      "project_id": "proj_IXx0xMsdZDSg",
+      "version": 11,
+      "status": "active",
+      "tier": "personal"
+    },
+    "schedules": {
+      "count": 1,
+      "tasks": [
+        {
+          "route": "/api/daily-scan",
+          "cron": "0 12 * * *",
+          "status": "active"
+        }
+      ]
+    }
+  },
+  "boundaries": {
+    "new_qwen_runs_after_sync": 0,
+    "live_groq_calls_after_sync": 0,
+    "live_stripe_calls_after_sync": 0,
+    "customer_source_executed": false,
+    "production_deployed": false,
+    "private_store_deployed": false,
+    "repair_schedule_activated": false,
+    "sales_activated": false,
+    "new_infrastructure_spending_usd": 0,
+    "paid_api_spending_usd": 0,
+    "confirmed_revenue_usd": 0,
+    "account_invoices_audited": false
+  },
+  "readiness": {
+    "internal": "DRY_RUN_READY",
+    "commercial": "NOT_READY"
+  },
+  "blockers": [
+    "Groq current Free Plan, account quota and scoped credential not independently verified; repository secret/variable metadata requests returned HTTP403.",
+    "No live stronger-model repair result.",
+    "No approved private persistent volume or private customer-code execution admission.",
+    "No owner-approved live offer, source contract, customer order or delivery authorization."
+  ]
+}

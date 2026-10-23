@@ -1,0 +1,17 @@
+{
+  "all_checks_passed": true,
+  "checks": {
+    "mcp_remains_available": true,
+    "queue_recovers_after_lock_release": true,
+    "sanitized_lock_refusal": true
+  },
+  "elapsed_seconds": 2.38,
+  "kind": "phase13_native_mcp_sqlite_contention_acceptance",
+  "new_model_generations": 0,
+  "refusal": {
+    "delivery_authorized": false,
+    "outcome": "OWNED_QUEUE_DATABASE_UNAVAILABLE",
+    "paid_fallback": false,
+    "state": "REJECTED"
+  }
+}

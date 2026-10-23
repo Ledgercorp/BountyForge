@@ -1,0 +1,28 @@
+{
+  "client": "Codex app-server MCP",
+  "model_turns_started": 0,
+  "profile_ids": [
+    "QWEN_1_5B",
+    "QWEN_7B",
+    "QWEN35_4B",
+    "GRANITE42_3B"
+  ],
+  "prepared_case": "cursor-checkpoint",
+  "prepared_profile": "QWEN35_4B",
+  "source_sha256": "3a40a822f616beff85a7978b0a055ed37bbd210f781a04c190f2236c3ec3d683",
+  "tests_sha256": "d648c3ef9766393226c03b687e6389c0201e908742c97f9da625e24ae8fa5ff5",
+  "unavailable_result": {
+    "engine": "QWEN_LOCAL",
+    "independently_verified": false,
+    "model_calls": 0,
+    "model_profile": "QWEN35_4B",
+    "model_sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
+    "outcome": "QWEN_UNAVAILABLE",
+    "paid_fallback": false,
+    "state": "BLOCKED"
+  },
+  "invalid_profile_refusals": [
+    true,
+    true
+  ]
+}

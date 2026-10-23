@@ -3,7 +3,7 @@ import hashlib
 import json
 import unittest
 from pathlib import Path
-from scripts.verify_phase5_repairs import verify
+from scripts.verify_phase5_repairs import verify, validate_successful_transcript
 from unittest.mock import patch
 from benchmarks.phase4 import benchmark_runner as runner
 import tempfile
@@ -29,3 +29,29 @@ class Phase5EvidenceTests(unittest.TestCase):
     def test_missing_or_invented_success_rejected(self):
         report=copy.deepcopy(self.report);report['tasks'][0]['model_generated_success']=True
         with self.assertRaises(ValueError):verify(report)
+
+
+class DiagnosisEvidenceTests(unittest.TestCase):
+    def calls(self,patchline=2):
+        source='def f():\n    x=1\n    return x\n'
+        common={'symbol':'f','source_sha256':hashlib.sha256(source.encode()).hexdigest()}
+        data={'approved_file':'app.py','target_symbol':'f','editable_lines':[2,3]}
+        diagnosis={**common,'kind':'diagnosis','prompt':json.dumps(data),
+                   'response':json.dumps({'lines':[2],'reason':'inspect assignment'})}
+        data['editable_lines']=[2]
+        patch_call={**common,'kind':'patch','stage':'source_validated','prompt':json.dumps(data),
+                    'response':json.dumps({'changes':[{'line':patchline,'new':'x=2' if patchline==2 else 'return x+1'}]})}
+        return source,[diagnosis,patch_call]
+    def test_valid_ordered_narrowing_replays_without_execution(self):
+        source,calls=self.calls()
+        revised,proposals=validate_successful_transcript(source,{'file':'app.py','symbols':['f']},calls,'ast_contract_v6')
+        self.assertIn('x=2',revised);self.assertEqual(len(proposals),1)
+    def test_tampered_diagnosis_cannot_authorize_other_original_scope_line(self):
+        source,calls=self.calls(patchline=3)
+        with self.assertRaises(ValueError):
+            validate_successful_transcript(source,{'file':'app.py','symbols':['f']},calls,'ast_contract_v6')
+    def test_tampered_order_and_stale_source_fail_closed(self):
+        source,calls=self.calls()
+        for changed in (list(reversed(calls)),[calls[0],{**calls[1],'source_sha256':'0'*64}]):
+            with self.assertRaises(ValueError):
+                validate_successful_transcript(source,{'file':'app.py','symbols':['f']},changed,'ast_contract_v6')

@@ -1,0 +1,648 @@
+{
+  "app_server_exit": 0,
+  "calls": [
+    {
+      "response": {
+        "id": 4,
+        "result": {
+          "content": [
+            {
+              "text": "Owned-only tool request rejected",
+              "type": "text"
+            }
+          ],
+          "isError": true
+        }
+      },
+      "tool": "prepare_owned_repair"
+    },
+    {
+      "response": {
+        "id": 5,
+        "result": {
+          "content": [
+            {
+              "text": "Owned-only tool request rejected",
+              "type": "text"
+            }
+          ],
+          "isError": true
+        }
+      },
+      "tool": "prepare_owned_repair"
+    },
+    {
+      "response": {
+        "id": 6,
+        "result": {
+          "content": [
+            {
+              "text": "{\"approved_file\":\"subject.py\",\"baseline_feedback\":{\"assertions\":[\"AssertionError: 12.0 != 6\",\"AssertionError: 10.0 != 5\",\"AssertionError: 26.0 != 2\"],\"classification\":\"OWNED_DEVELOPMENT_FEEDBACK\",\"failing_tests\":[\"test_lower_bound_included\",\"test_null_and_invalid_weights\",\"test_upper_bound_excluded\",\"test_weighted_mean\",\"test_zero_value_and_fractional_weight\",\"test_zero_width_is_empty\"],\"unseen_evaluation\":false},\"case_id\":\"weighted-window\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"description\":\"Return a weighted mean from rows in the half-open interval [start,end). Ignore None values and invalid/nonpositive weights as defined by row_weight; include numeric zero and fractional weights. Return None if no valid weight remains. Preserve input rows and helper behavior.\",\"edit_units\":[{\"bindings\":[\"numerator\"],\"end_line\":7,\"kind\":\"statement\",\"line\":7},{\"bindings\":[\"denominator\"],\"end_line\":8,\"kind\":\"statement\",\"line\":8},{\"bindings\":[],\"end_line\":17,\"kind\":\"statement\",\"line\":17},{\"bindings\":[],\"end_line\":10,\"kind\":\"condition\",\"line\":10},{\"bindings\":[\"weight\"],\"end_line\":12,\"kind\":\"statement\",\"line\":12},{\"bindings\":[],\"end_line\":13,\"kind\":\"condition\",\"line\":13},{\"bindings\":[\"numerator\"],\"end_line\":15,\"kind\":\"statement\",\"line\":15},{\"bindings\":[\"denominator\"],\"end_line\":16,\"kind\":\"statement\",\"line\":16}],\"editable_lines\":[7,8,10,12,13,15,16,17],\"engine\":\"QWEN_LOCAL\",\"independent_evaluation\":false,\"max_attempts\":2,\"model_profile\":\"QWEN_7B\",\"model_sha256\":\"509287f78cb4d4cf6b3843734733b914b2c158e43e22a7f4bf5e963800894d3c\",\"proposal_protocol\":\"ast_statement_v1\",\"revision\":0,\"source\":\"def row_weight(row):\\n    weight = row.get('weight', 1)\\n    return weight if type(weight) in (int, float) and weight > 0 else 0\\n\\n\\ndef summarize_window(rows, start, end):\\n    numerator = 0\\n    denominator = 0\\n    for row in rows:\\n        if not start <= row['at'] <= end:\\n            continue\\n        weight = row_weight(row)\\n        if row['value'] is None or not weight:\\n            continue\\n        numerator += row['value'] * weight\\n        denominator += 1\\n    return numerator / denominator if denominator else None\\n\",\"source_context\":{\"authorized_anchors\":[7,8,10,12,13,15,16,17],\"called_helpers\":[\"row_weight\"],\"prioritized_anchors\":[8,7,17,10,12,13,15,16],\"scope_policy\":\"Only authorized anchors in the target function; helpers are context only\",\"target_range\":[6,17]},\"source_sha256\":\"532f6cf0a63013d4ccf1d36761f7e59ed5e08bfe5d7dbbe824ec7f3ca913b616\",\"state\":\"QWEN_PREPARED\",\"target_symbol\":\"summarize_window\",\"task_id\":\"2b244974cc5e4a92a5a6203820200a15\",\"tests_sha256\":\"9659c296d0aa671b7af65730d47c769dd6fbfd7a7afa900f8a00ddab91078c35\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "prepare_owned_repair"
+    },
+    {
+      "response": {
+        "id": 7,
+        "result": {
+          "content": [
+            {
+              "text": "{\"engine\":\"QWEN_LOCAL\",\"independently_verified\":false,\"model_calls\":0,\"model_profile\":\"QWEN_7B\",\"model_sha256\":\"509287f78cb4d4cf6b3843734733b914b2c158e43e22a7f4bf5e963800894d3c\",\"outcome\":\"QWEN_UNAVAILABLE\",\"paid_fallback\":false,\"state\":\"BLOCKED\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "run_owned_qwen"
+    }
+  ],
+  "classification": "BOUNDARY_QA_NOT_REPAIR_SCORE",
+  "discovery": {
+    "data": [
+      {
+        "authStatus": "unsupported",
+        "httpOrigin": null,
+        "name": "bountyforge",
+        "pluginId": null,
+        "resourceTemplates": [],
+        "resources": [],
+        "runtimeStatus": "connected",
+        "serverCapabilities": {
+          "tools": {
+            "listChanged": false
+          }
+        },
+        "serverInfo": {
+          "description": null,
+          "icons": null,
+          "name": "bountyforge-owned-review",
+          "title": null,
+          "version": "0.3.0",
+          "websiteUrl": null
+        },
+        "tools": {
+          "bountyforge_status": {
+            "annotations": {
+              "destructiveHint": false,
+              "idempotentHint": true,
+              "openWorldHint": false,
+              "readOnlyHint": true
+            },
+            "description": "Recorded engineering/admission state. Not live operational readiness.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {},
+              "required": [],
+              "type": "object"
+            },
+            "name": "bountyforge_status"
+          },
+          "claim_owned_queue": {
+            "annotations": {
+              "destructiveHint": false,
+              "idempotentHint": false,
+              "openWorldHint": false,
+              "readOnlyHint": false
+            },
+            "description": "Lease one owned task globally and reproduce its baseline. Codex must remain active to generate a patch.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "batch_id": {
+                  "maxLength": 48,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "batch_id"
+              ],
+              "type": "object"
+            },
+            "name": "claim_owned_queue"
+          },
+          "create_owned_queue": {
+            "annotations": {
+              "destructiveHint": false,
+              "idempotentHint": false,
+              "openWorldHint": false,
+              "readOnlyHint": false
+            },
+            "description": "Idempotently enqueue up to five fixed owned tasks. Four batches per store; no scheduling or customer intake.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "batch_id": {
+                  "maxLength": 48,
+                  "type": "string"
+                },
+                "case_ids": {
+                  "items": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "maxItems": 5,
+                  "minItems": 1,
+                  "type": "array"
+                },
+                "engine": {
+                  "enum": [
+                    "CODEX_AGENT",
+                    "QWEN_LOCAL"
+                  ],
+                  "type": "string"
+                },
+                "model_profile": {
+                  "enum": [
+                    "QWEN_1_5B",
+                    "QWEN_7B"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "batch_id",
+                "engine",
+                "case_ids"
+              ],
+              "type": "object"
+            },
+            "name": "create_owned_queue"
+          },
+          "heartbeat_owned_queue": {
+            "annotations": {
+              "destructiveHint": false,
+              "idempotentHint": false,
+              "openWorldHint": false,
+              "readOnlyHint": false
+            },
+            "description": "Renew a live lease up to its absolute ten-minute job deadline.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "batch_id": {
+                  "maxLength": 48,
+                  "type": "string"
+                },
+                "job_id": {
+                  "maxLength": 32,
+                  "type": "string"
+                },
+                "lease_token": {
+                  "maxLength": 32,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "batch_id",
+                "job_id",
+                "lease_token"
+              ],
+              "type": "object"
+            },
+            "name": "heartbeat_owned_queue"
+          },
+          "inspect_owned_calibration": {
+            "annotations": {
+              "destructiveHint": false,
+              "idempotentHint": true,
+              "openWorldHint": false,
+              "readOnlyHint": true
+            },
+            "description": "Inspect one exact public owned defect without its reference solution.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "case_id": {
+                  "maxLength": 64,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "case_id"
+              ],
+              "type": "object"
+            },
+            "name": "inspect_owned_calibration"
+          },
+          "list_owned_calibration": {
+            "annotations": {
+              "destructiveHint": false,
+              "idempotentHint": true,
+              "openWorldHint": false,
+              "readOnlyHint": true
+            },
+            "description": "List four public, authored calibration defects. NOT a hidden benchmark.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {},
+              "required": [],
+              "type": "object"
+            },
+            "name": "list_owned_calibration"
+          },
+          "list_owned_repair_tasks": {
+            "annotations": {
+              "destructiveHint": false,
+              "idempotentHint": true,
+              "openWorldHint": false,
+              "readOnlyHint": true
+            },
+            "description": "List fixed owned DEVELOPMENT tasks, not a hidden evaluation.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {},
+              "required": [],
+              "type": "object"
+            },
+            "name": "list_owned_repair_tasks"
+          },
+          "list_repair_engines": {
+            "annotations": {
+              "destructiveHint": false,
+              "idempotentHint": true,
+              "openWorldHint": false,
+              "readOnlyHint": true
+            },
+            "description": "Select Autonomous Qwen or session-driven Codex Agent; no provider fallback.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {},
+              "required": [],
+              "type": "object"
+            },
+            "name": "list_repair_engines"
+          },
+          "owned_queue_status": {
+            "annotations": {
+              "destructiveHint": false,
+              "idempotentHint": false,
+              "openWorldHint": false,
+              "readOnlyHint": false
+            },
+            "description": "Read bounded local SQLite progress without exposing lease capabilities.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "batch_id": {
+                  "maxLength": 48,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "batch_id"
+              ],
+              "type": "object"
+            },
+            "name": "owned_queue_status"
+          },
+          "prepare_owned_repair": {
+            "annotations": {
+              "destructiveHint": false,
+              "idempotentHint": false,
+              "openWorldHint": false,
+              "readOnlyHint": false
+            },
+            "description": "Reproduce an exact owned defect, then hand off source and authorized AST edit units. No tests or answers are returned.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "case_id": {
+                  "maxLength": 64,
+                  "type": "string"
+                },
+                "engine": {
+                  "enum": [
+                    "QWEN_LOCAL",
+                    "CODEX_AGENT"
+                  ],
+                  "type": "string"
+                },
+                "model_profile": {
+                  "enum": [
+                    "QWEN_1_5B",
+                    "QWEN_7B"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "case_id",
+                "engine"
+              ],
+              "type": "object"
+            },
+            "name": "prepare_owned_repair"
+          },
+          "preview_owned_review_package": {
+            "annotations": {
+              "destructiveHint": false,
+              "idempotentHint": true,
+              "openWorldHint": false,
+              "readOnlyHint": true
+            },
+            "description": "Inspect only the static owned patch-review manifest, no files written.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {},
+              "required": [],
+              "type": "object"
+            },
+            "name": "preview_owned_review_package"
+          },
+          "release_owned_queue": {
+            "annotations": {
+              "destructiveHint": false,
+              "idempotentHint": false,
+              "openWorldHint": false,
+              "readOnlyHint": false
+            },
+            "description": "Release a lease after interruption. A second claim requires fresh admission and baseline reproduction.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "batch_id": {
+                  "maxLength": 48,
+                  "type": "string"
+                },
+                "job_id": {
+                  "maxLength": 32,
+                  "type": "string"
+                },
+                "lease_token": {
+                  "maxLength": 32,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "batch_id",
+                "job_id",
+                "lease_token"
+              ],
+              "type": "object"
+            },
+            "name": "release_owned_queue"
+          },
+          "run_owned_queue_qwen": {
+            "annotations": {
+              "destructiveHint": false,
+              "idempotentHint": false,
+              "openWorldHint": false,
+              "readOnlyHint": false
+            },
+            "description": "Execute only the selected QWEN_LOCAL queue job with at most two local requests; no provider fallback.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "batch_id": {
+                  "maxLength": 48,
+                  "type": "string"
+                },
+                "job_id": {
+                  "maxLength": 32,
+                  "type": "string"
+                },
+                "lease_token": {
+                  "maxLength": 32,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "batch_id",
+                "job_id",
+                "lease_token"
+              ],
+              "type": "object"
+            },
+            "name": "run_owned_queue_qwen"
+          },
+          "run_owned_qwen": {
+            "annotations": {
+              "destructiveHint": false,
+              "idempotentHint": false,
+              "openWorldHint": false,
+              "readOnlyHint": false
+            },
+            "description": "Run at most two autonomous requests to the pinned local Qwen runtime for a QWEN_LOCAL task only.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "revision": {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "task_id": {
+                  "maxLength": 32,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "task_id",
+                "revision"
+              ],
+              "type": "object"
+            },
+            "name": "run_owned_qwen"
+          },
+          "stop_owned_queue": {
+            "annotations": {
+              "destructiveHint": false,
+              "idempotentHint": false,
+              "openWorldHint": false,
+              "readOnlyHint": false
+            },
+            "description": "Irreversibly stop a batch and revoke its leases. In-flight bounded work may finish but cannot commit success.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "batch_id": {
+                  "maxLength": 48,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "batch_id"
+              ],
+              "type": "object"
+            },
+            "name": "stop_owned_queue"
+          },
+          "submit_owned_queue": {
+            "annotations": {
+              "destructiveHint": false,
+              "idempotentHint": false,
+              "openWorldHint": false,
+              "readOnlyHint": false
+            },
+            "description": "Submit a Codex candidate under its live lease and revision. Durable two-attempt budget; never bypasses verification.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "batch_id": {
+                  "maxLength": 48,
+                  "type": "string"
+                },
+                "job_id": {
+                  "maxLength": 32,
+                  "type": "string"
+                },
+                "lease_token": {
+                  "maxLength": 32,
+                  "type": "string"
+                },
+                "proposal": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "changes": {
+                      "items": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "line": {
+                            "maximum": 200,
+                            "minimum": 1,
+                            "type": "integer"
+                          },
+                          "new": {
+                            "maxLength": 400,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "line",
+                          "new"
+                        ],
+                        "type": "object"
+                      },
+                      "maxItems": 3,
+                      "minItems": 1,
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "changes"
+                  ],
+                  "type": "object"
+                },
+                "revision": {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "batch_id",
+                "job_id",
+                "lease_token",
+                "revision",
+                "proposal"
+              ],
+              "type": "object"
+            },
+            "name": "submit_owned_queue"
+          },
+          "submit_owned_repair": {
+            "annotations": {
+              "destructiveHint": false,
+              "idempotentHint": false,
+              "openWorldHint": false,
+              "readOnlyHint": false
+            },
+            "description": "Verify a Codex-session candidate with existing validators and two isolated Docker observations. No delivery.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "proposal": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "changes": {
+                      "items": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "line": {
+                            "maximum": 200,
+                            "minimum": 1,
+                            "type": "integer"
+                          },
+                          "new": {
+                            "maxLength": 400,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "line",
+                          "new"
+                        ],
+                        "type": "object"
+                      },
+                      "maxItems": 3,
+                      "minItems": 1,
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "changes"
+                  ],
+                  "type": "object"
+                },
+                "revision": {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "task_id": {
+                  "maxLength": 32,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "task_id",
+                "revision",
+                "proposal"
+              ],
+              "type": "object"
+            },
+            "name": "submit_owned_repair"
+          },
+          "verify_owned_reference": {
+            "annotations": {
+              "destructiveHint": false,
+              "idempotentHint": true,
+              "openWorldHint": false,
+              "readOnlyHint": true
+            },
+            "description": "Recheck an exact authored reference repair; not an AI-generated repair score.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "case_id": {
+                  "maxLength": 64,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "case_id"
+              ],
+              "type": "object"
+            },
+            "name": "verify_owned_reference"
+          }
+        },
+        "toolsError": null
+      }
+    ],
+    "nextCursor": null
+  },
+  "kind": "phase15_native_mcp_profile_acceptance",
+  "mcp_environment_names": [
+    "PATH"
+  ],
+  "model_inference_calls": 0,
+  "model_turns_started": 0,
+  "status": "PASSED"
+}

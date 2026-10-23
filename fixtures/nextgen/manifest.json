@@ -1,0 +1,34 @@
+{
+  "classification": "OWNED_DEVELOPMENT",
+  "origin": "LeftSock-authored new maintenance problems; no stored reference repairs",
+  "independent_evaluation": false,
+  "cases": [
+    {
+      "id": "cursor-checkpoint",
+      "symbol": "consume_page",
+      "description": "Consume a page of ordered event records for the requested generation. Keep every eligible fresh identifier in order, ignore repeated or older sequence numbers, and advance the checkpoint only for accepted events. Do not mutate input records.",
+      "sha256": {
+        "subject.py": "3a40a822f616beff85a7978b0a055ed37bbd210f781a04c190f2236c3ec3d683",
+        "tests/test_regression.py": "d648c3ef9766393226c03b687e6389c0201e908742c97f9da625e24ae8fa5ff5"
+      }
+    },
+    {
+      "id": "interval-compaction",
+      "symbol": "compact_intervals",
+      "description": "Normalize and compact half-open intervals. Discard empty or reversed spans, merge overlapping or touching spans without losing coverage, preserve separate disjoint spans, and do not mutate caller data.",
+      "sha256": {
+        "subject.py": "be2e4025e6a714b7c098f1736678d8bb0f75d6f666300c296e66b70f98b20b68",
+        "tests/test_regression.py": "138e6d64daa1d298f83b9fb9f157629c336057ee49d62aa16f34c587f21542a4"
+      }
+    },
+    {
+      "id": "retry-decision",
+      "symbol": "retry_decision",
+      "description": "Decide whether a transient HTTP failure can retry within the maximum retry count. The attempt is the number already used. Eligible retries increment it once and use capped exponential backoff starting from base_delay at attempt zero. Terminal responses preserve attempt and have zero delay.",
+      "sha256": {
+        "subject.py": "61fc63e78fe326edc952deb9c01bfa1e98d8ee9123ef8aec6d6b3c67ab2f2015",
+        "tests/test_regression.py": "784fbbf5877c125457ad618d38304311ab21a95f672f7be4383a27b4c0c44af3"
+      }
+    }
+  ]
+}

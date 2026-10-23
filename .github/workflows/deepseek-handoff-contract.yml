@@ -1,12 +1,14 @@
 name: BountyForge DeepSeek handoff contract (offline)
 
-# Tests only. No SDK, model requests, Docker launch, credentials, uploads or schedules.
+# Owned fixture and pinned offline Docker verifier only. No SDK, model requests,
+# external source, credentials, customer execution, uploads or schedules.
 on:
   pull_request:
     branches: [engineering/revenue-linux-scout-20261021]
     paths:
       - 'deepseek_harness_handoff.py'
       - 'deepseek_owned_bridge.py'
+      - 'scripts/deepseek_docker_smoke.py'
       - 'tests/test_deepseek_handoff.py'
       - 'tests/test_deepseek_owned_bridge.py'
       - '.github/workflows/deepseek-handoff-contract.yml'
@@ -18,7 +20,7 @@ jobs:
   handoff-tests:
     if: ${{ github.repository == 'Ledgercorp/BountyForge' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'engineering/deepseek-handoff-20261023' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 6
+    timeout-minutes: 12
     steps:
       - name: Checkout without persisting credentials
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -28,3 +30,7 @@ jobs:
         run: python3 -m unittest discover -s tests -p 'test_deepseek*.py' -v
       - name: Existing Python regression (no model downloads)
         run: python3 -m unittest discover -s tests -v
+      - name: Pull existing pinned verifier image (not a model)
+        run: docker pull python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590
+      - name: Real Docker owned-fixture rejection and stale-session smoke
+        run: python3 -m scripts.deepseek_docker_smoke

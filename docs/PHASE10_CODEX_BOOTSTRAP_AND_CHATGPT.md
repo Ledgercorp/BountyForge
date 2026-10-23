@@ -100,3 +100,47 @@ A repeatable Codex session bootstrap is not the same as persistence.
 ChatGPT MCP is **NOT_CONNECTED**, pending tunnel or authenticated hosting
 and actual connector installation. Revenue remains $0, new spending $0,
 Mac not accessed.
+
+## Verified hosted implementation result
+
+[GitHub Actions #39893513956](https://github.com/Ledgercorp/BountyForge/actions/runs/39893513956)
+completed successfully at commit
+`ce6c961d385cf04ace1b67b153c5b355c638a9ef`:
+**605 tests, 596 passed, nine existing skips, zero failures**.
+All eight new bootstrap tests passed, including one subprocess which
+started the actual BountyForge MCP with only PATH using the isolated
+launcher and completed MCP initialize and tools/list.
+
+This was a fake-Codex-registration acceptance test in the GitHub
+runner, **not a new Codex Cloud account connection**. The earlier
+actual Codex app-server connection from Phase 9 is separate verified
+evidence. The next authorized Codex Linux session should run the
+session bootstrap once and inspect the result before using its MCP
+tools. No GitHub Actions workflow was changed or added.
+
+### ChatGPT private connection checkpoint
+
+Checked connected personal plugin inventory: **no existing BountyForge
+private plugin was present**. Existing LeftSock Secret Bridge plugins
+were preserved and not repurposed.
+
+An authorized operator can begin checking the applicable Platform
+tunnel/workspace permissions at:
+https://platform.openai.com/settings/organization/tunnels
+
+Once a real allowed tunnel, restricted runtime key and trusted persistent
+Linux host are available, the separate approved tunnel-client installation
+and ChatGPT Plugins custom MCP connection may be tested against the five
+read-only tools. The previous stand-alone stdio server does not itself
+make the tools visible to ChatGPT.
+
+The current authorized chat environment cannot create or run a
+persistent tunnel. No tunnel ID or runtime credential was available
+through approved connection tools. The existing Hatchable project
+remains deployed at its previous version and has **not** been modified
+to expose any new MCP route.
+
+**Result:** Repeatable Codex registration CODE_COMPLETE_AND_TESTED,
+Codex session persistence NOT_ESTABLISHED,
+ChatGPT custom MCP connection NOT_CONNECTED,
+private customer execution NOT_ADMITTED, commercial activation DISABLED.

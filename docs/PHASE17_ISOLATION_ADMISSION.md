@@ -117,3 +117,35 @@ $0 admission, model compatibility and a separately bounded live measurement.
 
 **Customer execution, uploads, outreach, payment, commercial admission and
 production remain disabled.**
+
+
+## Controlled native SDK binary bootstrap, no agent inference
+
+A separately gated Phase 17 action uses the publicly released
+\`0.2.1rc2\` SDK wheel and matching Linux native runtime wheel. Both files are
+downloaded by the trusted runner as **data only**, with no installation
+or native-code execution on the host. The \`phase17_sdk_bootstrap.py\`
+script verifies their exact PyPI-published SHA-256 digests, rejects symlinks
+and unsafe archive entries, bounds decompression, then extracts only the
+native runtime payload into a disposable directory.
+
+The native \`dsh\` binary is mounted **read-only into an isolated
+no-network Docker container**, alongside the separate read-only
+harmless owned-development workspace. It runs exactly:
+
+\`dsh --profile sdk-minimal --dump-default-config\`
+
+The resulting configuration fingerprint is the only output retained. Its
+expected default profile includes the \`sdk-jsonrpc-server\`, the
+\`persistent-bash\` tool and \`danger-full-access\`; the last two are explicitly
+**negative security findings**, so the resulting bundle must not be trusted to
+execute uncontained model-generated instructions.
+
+This performs a native CLI *configuration bootstrap*, **not**
+\`DeepSeekHarness.run()\`, Python SDK initialization, model API inference,
+repair planning, agent tool calls or customer code execution. It must not
+be represented as a functioning autonomous DeepSeek agent.
+
+Any CI failure at download, wheel hash, archive extraction, container
+launch, profile recognition, quota enforcement or cleanup leaves runtime
+and provider admission **blocked**.

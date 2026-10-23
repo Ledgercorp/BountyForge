@@ -1,0 +1,454 @@
+{
+  "additional_spending_usd": 0,
+  "architecture_effect_independently_measured": false,
+  "classification": "OWNED_DEVELOPMENT",
+  "commit": "a53bd6a95f9f1ec5ab75f7da93f5f5a70bda7be4",
+  "completion_requests_total": 14,
+  "default_model_profile": "QWEN_1_5B",
+  "default_replaced": false,
+  "experiment_sha256": "a9d5c8c01cd6325f5aa864ae34de59d6425e13133488594419a908e39480e4f6",
+  "independent_accuracy": null,
+  "independent_evaluation": false,
+  "inference_spending_usd": 0,
+  "initial_prompt_comparison": {
+    "cursor-checkpoint": {
+      "identical_hashes": true,
+      "models_observed": 3
+    },
+    "interval-compaction": {
+      "identical_hashes": true,
+      "models_observed": 2
+    },
+    "retry-decision": {
+      "identical_hashes": true,
+      "models_observed": 2
+    }
+  },
+  "input_sha256": "495d2222af293aea2952a83fbc3e54991ecf3d011a3604e5c36a7426768b3189",
+  "kind": "nextgen_verified_development_model_summary",
+  "maximum_completion_requests": 18,
+  "models": [
+    {
+      "admission_usage": {
+        "completion_requests": 0,
+        "completion_tokens": 0,
+        "prompt_tokens": 0
+      },
+      "all_recorded_servers_stopped": true,
+      "blocking_reason": null,
+      "cases": [
+        {
+          "attempts": [
+            {
+              "diagnostic": "Owned regression failed; follow the public repair contract",
+              "failure_kind": "TEST_FAILED",
+              "new_failing_test_ids": [
+                "test_old_out_of_order_row_is_ignored"
+              ],
+              "outcome": "TEST_FAILED",
+              "receipt_sha256": "015457e7dd277e967a319b815ba878aab8ba29b2b917db855c7171e5fa73b32e"
+            },
+            {
+              "diagnostic": "Identical prior proposal; no test executed",
+              "failure_kind": "REPEATED_PROPOSAL",
+              "new_failing_test_ids": [],
+              "outcome": "REPEATED_PROPOSAL",
+              "receipt_sha256": "10bd6e5fabdd9095f57b6ae24341602242213c0efca4c79676f5ba3692162dc4"
+            }
+          ],
+          "case_id": "cursor-checkpoint",
+          "client_attempts": 2,
+          "elapsed_seconds": 36.534,
+          "inference_failure": null,
+          "queue_state": "FAILED",
+          "terminal_outcome": "REPEATED_PROPOSAL",
+          "valid_patches": 1,
+          "verified_repair": false
+        },
+        {
+          "attempts": [
+            {
+              "diagnostic": "Owned regression failed; follow the public repair contract",
+              "failure_kind": "TEST_FAILED",
+              "new_failing_test_ids": [
+                "test_invalid_and_duplicate",
+                "test_overlap_chain"
+              ],
+              "outcome": "TEST_FAILED",
+              "receipt_sha256": "fbf8e250b73f9681259e87ef97640e4b92aa323968edd08b648df09567c455ff"
+            },
+            {
+              "diagnostic": "Identical prior proposal; no test executed",
+              "failure_kind": "REPEATED_PROPOSAL",
+              "new_failing_test_ids": [],
+              "outcome": "REPEATED_PROPOSAL",
+              "receipt_sha256": "fe62006d784a0c9d31ca3e2310f154d5d852deb7a24d28e2ce11ada3ac52ea4e"
+            }
+          ],
+          "case_id": "interval-compaction",
+          "client_attempts": 2,
+          "elapsed_seconds": 30.045,
+          "inference_failure": null,
+          "queue_state": "FAILED",
+          "terminal_outcome": "REPEATED_PROPOSAL",
+          "valid_patches": 1,
+          "verified_repair": false
+        },
+        {
+          "attempts": [
+            {
+              "diagnostic": "Semantically ineffective proposal",
+              "failure_kind": "NO_OP",
+              "new_failing_test_ids": [],
+              "outcome": "SOURCE_REJECTED",
+              "receipt_sha256": "0b95ce0cc3c1ee4ee2aec589af0b1a49011be2cedc2a88183a20342714611c44"
+            },
+            {
+              "diagnostic": "Owned regression failed; follow the public repair contract",
+              "failure_kind": "TEST_FAILED",
+              "new_failing_test_ids": [
+                "test_initial_delay"
+              ],
+              "outcome": "TEST_FAILED",
+              "receipt_sha256": "5edb776cdbafb8cd15673f4d4a97f1e1779247ad9004e65c129e7a340cc9a6a0"
+            }
+          ],
+          "case_id": "retry-decision",
+          "client_attempts": 2,
+          "elapsed_seconds": 31.283,
+          "inference_failure": null,
+          "queue_state": "FAILED",
+          "terminal_outcome": "TEST_FAILED",
+          "valid_patches": 1,
+          "verified_repair": false
+        }
+      ],
+      "client_attempts": 6,
+      "configured_tasks": 3,
+      "cpu_measurement_note": "Process CPU counters at last pre-shutdown sample; not host-wide utilization. V1 did not collect CPU time.",
+      "failure_categories": {
+        "REPEATED_PROPOSAL": 2,
+        "SOURCE_REJECTED": 1,
+        "TEST_FAILED": 3
+      },
+      "fresh_replay_methods_passed": 0,
+      "inference_seconds": 62.397,
+      "model_profile": "QWEN_1_5B",
+      "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+      "new_failure_ids_by_attempt": [
+        [
+          "test_old_out_of_order_row_is_ignored"
+        ],
+        [],
+        [
+          "test_invalid_and_duplicate",
+          "test_overlap_chain"
+        ],
+        [],
+        [],
+        [
+          "test_initial_delay"
+        ]
+      ],
+      "observed_process_cpu_seconds": 252.42,
+      "peak_rss_kib_observed": 1946168,
+      "repair_tokenized_prompt_tokens": [
+        579,
+        725,
+        533,
+        634,
+        553,
+        616
+      ],
+      "repair_usage": {
+        "completion_requests": 6,
+        "completion_tokens": 354,
+        "prompt_tokens": 3640
+      },
+      "repeated_proposals": 2,
+      "resource_admitted": false,
+      "resource_probe_inference_seconds": null,
+      "resource_probe_tokenized_prompt_tokens": null,
+      "returned_completion_limit_hits": 0,
+      "returned_completions_above_legacy_150_tokens": 0,
+      "server_load_seconds": [
+        2.035,
+        2.006,
+        2.006
+      ],
+      "source_rejected": 1,
+      "status": "COMPLETED",
+      "targeted_suites_passed": 0,
+      "tasks_blocked": 0,
+      "tasks_completed": 3,
+      "tasks_not_prepared": 0,
+      "tasks_prepared": 3,
+      "tasks_with_completion_request": 3,
+      "tasks_with_model_response": 3,
+      "total_execution_seconds": 97.874,
+      "unexpected_server_exits": [],
+      "valid_patches": 3,
+      "verified_repairs": 0
+    },
+    {
+      "admission_usage": {
+        "completion_requests": 0,
+        "completion_tokens": 0,
+        "prompt_tokens": 0
+      },
+      "all_recorded_servers_stopped": true,
+      "blocking_reason": null,
+      "cases": [
+        {
+          "attempts": [
+            {
+              "diagnostic": "Condition requires one Python expression",
+              "failure_kind": "INVALID_PYTHON_FRAGMENT",
+              "new_failing_test_ids": [],
+              "outcome": "SOURCE_REJECTED",
+              "receipt_sha256": "b0f5ae302e623f3cb85ace7f85d524e623ce69618d2954898e5aff534435f64e"
+            },
+            {
+              "diagnostic": "Condition requires one Python expression",
+              "failure_kind": "INVALID_PYTHON_FRAGMENT",
+              "new_failing_test_ids": [],
+              "outcome": "SOURCE_REJECTED",
+              "receipt_sha256": "ed3cb1839fa0bb16dd4fc5941a10e8ca3033568e398e770a79a3065dd5c63bb0"
+            }
+          ],
+          "case_id": "cursor-checkpoint",
+          "client_attempts": 2,
+          "elapsed_seconds": 82.985,
+          "inference_failure": null,
+          "queue_state": "FAILED",
+          "terminal_outcome": "SOURCE_REJECTED",
+          "valid_patches": 0,
+          "verified_repair": false
+        },
+        {
+          "attempts": [
+            {
+              "diagnostic": "Replacement statement does not parse",
+              "failure_kind": "SOURCE_VALIDATION_REJECTION",
+              "new_failing_test_ids": [],
+              "outcome": "SOURCE_REJECTED",
+              "receipt_sha256": "c4a031c5c713b12d3ba59cefbb1d3b5be6402e61e27a8dd60ff60080529ee31e"
+            },
+            {
+              "diagnostic": "Identical prior proposal; no test executed",
+              "failure_kind": "REPEATED_PROPOSAL",
+              "new_failing_test_ids": [],
+              "outcome": "REPEATED_PROPOSAL",
+              "receipt_sha256": "2c1c964bab6f813f84e8e80d42b0fb209f5d4a1653ea0742793bdaf3c1b73f70"
+            }
+          ],
+          "case_id": "interval-compaction",
+          "client_attempts": 2,
+          "elapsed_seconds": 71.078,
+          "inference_failure": null,
+          "queue_state": "FAILED",
+          "terminal_outcome": "REPEATED_PROPOSAL",
+          "valid_patches": 0,
+          "verified_repair": false
+        },
+        {
+          "attempts": [
+            {
+              "diagnostic": "Invalid structured JSON proposal",
+              "failure_kind": "INVALID_JSON",
+              "new_failing_test_ids": [],
+              "outcome": "SOURCE_REJECTED",
+              "receipt_sha256": "e4643008fe17418bedfe106c0036f30be8c8a6963c5a6513467dedcd7bd539b5"
+            },
+            {
+              "diagnostic": "Condition requires one Python expression",
+              "failure_kind": "INVALID_PYTHON_FRAGMENT",
+              "new_failing_test_ids": [],
+              "outcome": "SOURCE_REJECTED",
+              "receipt_sha256": "aa5ba12b9359b65fd258df7836dc060693141ddd6d65dc9553af85b1977348ba"
+            }
+          ],
+          "case_id": "retry-decision",
+          "client_attempts": 2,
+          "elapsed_seconds": 111.683,
+          "inference_failure": null,
+          "queue_state": "FAILED",
+          "terminal_outcome": "SOURCE_REJECTED",
+          "valid_patches": 0,
+          "verified_repair": false
+        }
+      ],
+      "client_attempts": 6,
+      "configured_tasks": 3,
+      "cpu_measurement_note": "Process CPU counters at last pre-shutdown sample; not host-wide utilization. V1 did not collect CPU time.",
+      "failure_categories": {
+        "REPEATED_PROPOSAL": 1,
+        "SOURCE_REJECTED": 5
+      },
+      "fresh_replay_methods_passed": 0,
+      "inference_seconds": 221.706,
+      "model_profile": "QWEN35_4B",
+      "model_sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
+      "new_failure_ids_by_attempt": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ],
+      "observed_process_cpu_seconds": 848.62,
+      "peak_rss_kib_observed": 4757604,
+      "repair_tokenized_prompt_tokens": [
+        583,
+        695,
+        537,
+        615,
+        557,
+        850
+      ],
+      "repair_usage": {
+        "completion_requests": 6,
+        "completion_tokens": 625,
+        "prompt_tokens": 3837
+      },
+      "repeated_proposals": 1,
+      "resource_admitted": false,
+      "resource_probe_inference_seconds": null,
+      "resource_probe_tokenized_prompt_tokens": null,
+      "returned_completion_limit_hits": 1,
+      "returned_completions_above_legacy_150_tokens": 1,
+      "server_load_seconds": [
+        3.062,
+        3.007,
+        3.089
+      ],
+      "source_rejected": 5,
+      "status": "COMPLETED",
+      "targeted_suites_passed": 0,
+      "tasks_blocked": 0,
+      "tasks_completed": 3,
+      "tasks_not_prepared": 0,
+      "tasks_prepared": 3,
+      "tasks_with_completion_request": 3,
+      "tasks_with_model_response": 3,
+      "total_execution_seconds": 265.768,
+      "unexpected_server_exits": [],
+      "valid_patches": 0,
+      "verified_repairs": 0
+    },
+    {
+      "admission_usage": {
+        "completion_requests": 0,
+        "completion_tokens": 0,
+        "prompt_tokens": 0
+      },
+      "all_recorded_servers_stopped": true,
+      "blocking_reason": "WORKER_BLOCKED",
+      "cases": [
+        {
+          "attempts": [
+            {
+              "diagnostic": "Owned regression failed; follow the public repair contract",
+              "failure_kind": "TEST_FAILED",
+              "new_failing_test_ids": [
+                "test_invalid_row_cannot_advance_checkpoint",
+                "test_old_out_of_order_row_is_ignored"
+              ],
+              "outcome": "TEST_FAILED",
+              "receipt_sha256": "2cb07db478fca0d1ed7b8b581dc837825b02fb5b4bdef66e701cd4b069fdb881"
+            },
+            {
+              "diagnostic": "Owned regression failed; follow the public repair contract",
+              "failure_kind": "TEST_FAILED",
+              "new_failing_test_ids": [
+                "test_invalid_row_cannot_advance_checkpoint",
+                "test_missing_identity_cannot_advance_checkpoint",
+                "test_old_out_of_order_row_is_ignored"
+              ],
+              "outcome": "TEST_FAILED",
+              "receipt_sha256": "da51d555fb9f0682718cd10fa2a339a3a8accbcab999f4a9fb74cd564b7767ff"
+            }
+          ],
+          "case_id": "cursor-checkpoint",
+          "client_attempts": 2,
+          "elapsed_seconds": 70.937,
+          "inference_failure": null,
+          "queue_state": "FAILED",
+          "terminal_outcome": "TEST_FAILED",
+          "valid_patches": 2,
+          "verified_repair": false
+        }
+      ],
+      "client_attempts": 2,
+      "configured_tasks": 3,
+      "cpu_measurement_note": "Process CPU counters at last pre-shutdown sample; not host-wide utilization. V1 did not collect CPU time.",
+      "failure_categories": {
+        "TEST_FAILED": 2
+      },
+      "fresh_replay_methods_passed": 0,
+      "inference_seconds": 57.283,
+      "model_profile": "GRANITE42_3B",
+      "model_sha256": "e0406663965846ae22a403456eb826ccce5f450840491f71952f18a7cb78e7d5",
+      "new_failure_ids_by_attempt": [
+        [
+          "test_invalid_row_cannot_advance_checkpoint",
+          "test_old_out_of_order_row_is_ignored"
+        ],
+        [
+          "test_invalid_row_cannot_advance_checkpoint",
+          "test_missing_identity_cannot_advance_checkpoint",
+          "test_old_out_of_order_row_is_ignored"
+        ]
+      ],
+      "observed_process_cpu_seconds": 230.16,
+      "peak_rss_kib_observed": 4081128,
+      "repair_tokenized_prompt_tokens": [
+        621,
+        731
+      ],
+      "repair_usage": {
+        "completion_requests": 2,
+        "completion_tokens": 145,
+        "prompt_tokens": 1352
+      },
+      "repeated_proposals": 0,
+      "resource_admitted": false,
+      "resource_probe_inference_seconds": null,
+      "resource_probe_tokenized_prompt_tokens": null,
+      "returned_completion_limit_hits": 0,
+      "returned_completions_above_legacy_150_tokens": 0,
+      "server_load_seconds": [
+        2.005
+      ],
+      "source_rejected": 0,
+      "status": "BLOCKED",
+      "targeted_suites_passed": 0,
+      "tasks_blocked": 0,
+      "tasks_completed": 1,
+      "tasks_not_prepared": 2,
+      "tasks_prepared": 1,
+      "tasks_with_completion_request": 1,
+      "tasks_with_model_response": 1,
+      "total_execution_seconds": 70.955,
+      "unexpected_server_exits": [],
+      "valid_patches": 2,
+      "verified_repairs": 0
+    }
+  ],
+  "receipt_sha256": "769c48649cf6a5a746d1e668820cfa3ed53086d547ed3c12f7c80bc26e2af5d6",
+  "record_receipt_sha256": "18ef2c079fc0f7d48c939627de99dd11eb5fc94cdf60040a7b03d91e32fdef55",
+  "resource_envelope": {
+    "address_space_bytes": 10737418240,
+    "completion_tokens": 256,
+    "context_tokens": 2048,
+    "cpu_seconds": 600,
+    "id": "NEXTGEN_TRIAL",
+    "log_bytes": 1048576,
+    "maximum_threads": 4,
+    "parallel_streams": 1,
+    "request_seconds": 75,
+    "wall_seconds": 240
+  },
+  "run_id": "40021191461"
+}

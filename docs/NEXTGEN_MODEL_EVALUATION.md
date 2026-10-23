@@ -124,3 +124,73 @@ The comparison instead reuses the already registered Phase15 manual workflow
 entry point; the superseded, never-measured V5 launcher's exact bytes are
 archived under `experiments/phase15/unmeasured-v5-workflow.yml`. No push trigger
 or automatic inference is added. All earlier workflow run records remain intact.
+
+Sampling caveat, recorded while the trial is still running: the frozen native
+transport uses temperature zero for every model, preserving the deterministic
+baseline decoder. IBM's card recommends temperature 1.0 and top_p 0.95 even in
+non-thinking mode. Shared greedy decoding is a controlled protocol comparison,
+not an optimized-model comparison. Neither a failure nor a success establishes
+the model's performance under its recommended sampler. A future sampling arm
+would require a separately frozen experiment and fresh tasks, not retuning these
+three problems and claiming unseen accuracy.
+
+## First actual trial and controller correction
+
+Implementation commits `cf168148c245246bc71a941274964d1c8ee9ec7c` and
+`a53bd6a95f9f1ec5ab75f7da93f5f5a70bda7be4` passed hosted regression
+[40021185351](https://github.com/Ledgercorp/BountyForge/actions/runs/40021185351):
+725 tests, 716 passed, nine existing skips, Node 8/8.
+
+[Trial 40021191461](https://github.com/Ledgercorp/BountyForge/actions/runs/40021191461)
+ran for 434.618s and ended PARTIAL_BLOCKED. Actual full model/runtime hashes,
+loaded model identity, non-thinking rendered templates and tokenization passed.
+All seven model processes stopped normally; no CPU/wall/memory cap was exceeded.
+
+| Model | Completed tasks | Valid patches | Verified repairs | Calls | Returned prompt/output tokens | Inference seconds | Peak RSS KiB |
+|---|---:|---:|---:|---:|---|---:|---:|
+| Qwen2.5 Coder 1.5B | 3 | 3 | 0 | 6 | 3640 / 354 | 62.397 | 1946168 |
+| Qwen3.5 4B | 3 | 0 | 0 | 6 | 3837 / 625 | 221.706 | 4757604 |
+| Granite 4.2 3B | 1 | 2 | 0 | 2 | 1352 / 145 | 57.283 | 4081128 |
+
+Granite's other two cases were not attempted; this is not a 0/3 score. All
+returned responses are genuine local model output. No repair passed a targeted
+suite or independent successful-repair replay. Source-valid proposals introduced
+new failures; the machine summary lists exact new failing test IDs per attempt.
+
+1.5B misunderstood state accumulation, repeated rejected/failed candidates, and
+rewrote the retry guard incorrectly. Qwen3.5 returned Python headers/fragments at
+wrong statement anchors, invalid condition expressions, repeated a malformed
+statement and once exhausted 256 output tokens before completing JSON. Its five
+other responses used <=131 tokens: merely raising the output cap did not solve
+its contract misunderstanding. Granite inverted an eligibility guard and retained
+faulty state logic; its second proposal introduced another regression. None of
+these outcomes justify replacing the default. The larger CPU envelope allowed
+both newer models to return proposals without timeout; it did not establish
+useful repair quality.
+
+A real controller race stopped Granite after its completed first task. The
+heartbeat renewed at 30s, then attempted renewal after `_finish` had atomically
+committed FAILED and deliberately cleared the lease. The refusal is correct;
+the controller incorrectly called it WORKER_BLOCKED. The raw artifact is intact.
+A failing regression plus a separate-SQLite-connection reproduction verifies the
+fix: stop heartbeat before runtime shutdown, and distinguish a committed terminal
+result from in-flight revocation. Expired/stopped leases remain rejected by the
+unchanged queue fence. No result or model failure is reclassified as success.
+
+Only Granite's two unattempted tasks are prepared for continuation, with unchanged
+model, sampler, prompt, source/tests, validator and generation envelope. Its four
+maximum requests plus the original fourteen stay within the original eighteen.
+The continuation config binds the exact prior artifact and verifies that those
+tasks were not attempted. It downloads only Granite and the same runtime, not
+Qwen again. Full-run config and receipts remain immutable. Current continuation
+regression: 727 tests, 718 passed, nine skipped, zero failures.
+
+Separate credential-free Docker replay revalidated all five source-valid failed
+candidates (40 methods) and reproduced every failed suite. No model was running
+and no new inference occurred. The first launcher invocation could not resolve
+`python` in its cleared PATH and executed no tests; selecting the existing
+absolute interpreter corrected it. Replay evidence records zero successes.
+
+The default remains QWEN_1_5B. No model has demonstrated commercial readiness.
+Qwen3.5-9B remains unmeasured/deferred: the smaller model's dominant failure was
+patch-contract adherence, so another large download is not justified yet.

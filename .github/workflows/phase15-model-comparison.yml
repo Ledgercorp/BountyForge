@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       confirm_zero_cost:
-        description: Three new developmental tasks per model, eighteen completion requests maximum, experimental bounded CPU envelope
+        description: Only the two previously unattempted Granite tasks; four completion requests maximum
         type: boolean
         required: true
         default: false
@@ -19,7 +19,7 @@ jobs:
       github.ref == 'refs/heads/engineering/revenue-linux-scout-20261021' &&
       github.event_name == 'workflow_dispatch' && inputs.confirm_zero_cost
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
@@ -29,6 +29,7 @@ jobs:
           python-version: '3.11'
       - name: Contract tests and no-charge standard runner capacity gate
         run: |
+          python -c "from scripts.nextgen_comparison import verify_experiment; verify_experiment('77709bd5ee7b858dc5c1fbc5af2599d617086209ef5551aedf8734c5ba400f11','granite-continuation')"
           python -m unittest tests.test_nextgen_repair tests.test_model_profiles tests.test_local_model_runtime tests.test_profiled_qwen tests.test_owned_repair_queue tests.test_mcp_stdio_blackbox -q
           python - <<'PY'
           import os,shutil
@@ -38,21 +39,16 @@ jobs:
           assert shutil.disk_usage(Path.home()).free>=10*1024**3
           print('Public standard Linux CPU runner; no provider or paid runner')
           PY
-      - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
-        with:
-          path: ~/.cache/bountyforge/models
-          key: bountyforge-public-qwen25-coder-1p5b-cc324af0-v1
-      - name: Restore existing baseline model and exact b11750 runtime
-        run: bash scripts/bootstrap_actions_inference.sh --verify-only
-      - name: Download two fixed experimental data artifacts; no cache writes
+      - name: Acquire only the pinned runtime and Granite data; no cache writes
         run: |
+          mkdir -p "$HOME/.cache/bountyforge/runtime" "$HOME/.cache/bountyforge/models"
           curl --fail --location --retry 1 --connect-timeout 20 --max-time 300 \
-            'https://huggingface.co/unsloth/Qwen3.5-4B-GGUF/resolve/e87f176479d0855a907a41277aca2f8ee7a09523/Qwen3.5-4B-Q4_K_M.gguf' \
-            -o "$HOME/.cache/bountyforge/models/Qwen3.5-4B-Q4_K_M.gguf"
+            'https://github.com/ggml-org/llama.cpp/releases/download/b11750/llama-b11750-bin-ubuntu-x64.tar.gz' \
+            -o "$HOME/.cache/bountyforge/runtime/llama-b11750-bin-ubuntu-x64.tar.gz"
+          printf '152e33221c9c9d37816a8ee9943f8d87339199197c80cb692559c9756b2027d8  %s\n' "$HOME/.cache/bountyforge/runtime/llama-b11750-bin-ubuntu-x64.tar.gz" | sha256sum -c -
           curl --fail --location --retry 1 --connect-timeout 20 --max-time 300 \
             'https://huggingface.co/ibm-granite/granite-4.2-3b-GGUF/resolve/c40945d71cd90f249a56985e8155551a9188dc30/granite-4.2-3b-Q4_K_M.gguf' \
             -o "$HOME/.cache/bountyforge/models/granite-4.2-3b-Q4_K_M.gguf"
-          printf '00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4  %s\n' "$HOME/.cache/bountyforge/models/Qwen3.5-4B-Q4_K_M.gguf" | sha256sum -c -
           printf 'e0406663965846ae22a403456eb826ccce5f450840491f71952f18a7cb78e7d5  %s\n' "$HOME/.cache/bountyforge/models/granite-4.2-3b-Q4_K_M.gguf" | sha256sum -c -
       - name: Pull unchanged owned-verifier image
         run: docker pull --platform linux/amd64 python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590
@@ -64,7 +60,7 @@ jobs:
             GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_SHA="$GITHUB_SHA" RUNNER_OS=Linux RUNNER_ARCH=X64 \
             BOUNTYFORGE_NEXTGEN_FREE_ACK=true LD_LIBRARY_PATH="$pythonLocation/lib" \
             "$pythonLocation/bin/python" -m scripts.nextgen_comparison \
-            --experiment-sha256 a9d5c8c01cd6325f5aa864ae34de59d6425e13133488594419a908e39480e4f6 --output evidence-run/nextgen_comparison.json
+            --experiment granite-continuation --experiment-sha256 77709bd5ee7b858dc5c1fbc5af2599d617086209ef5551aedf8734c5ba400f11 --output evidence-run/nextgen_comparison.json
       - if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:

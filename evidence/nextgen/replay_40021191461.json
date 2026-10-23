@@ -1,0 +1,113 @@
+{
+  "cases": [
+    {
+      "candidate_sha256": "1b7368cda1be0b0ad688128ccbb1cdf68d49a44aee8e349936a9565d8536ab7e",
+      "case_id": "cursor-checkpoint",
+      "model_profile": "QWEN_1_5B",
+      "original_claimed_success": false,
+      "original_receipt_sha256": "015457e7dd277e967a319b815ba878aab8ba29b2b917db855c7171e5fa73b32e",
+      "verification": {
+        "exit_code": 1,
+        "output_sha256": "81f35bab31db2fe5397aaa4cf7e787bfba4f6bde78a709d76e52eceb5686d98e",
+        "passed": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+        "tests_run": 8
+      }
+    },
+    {
+      "candidate_sha256": "e0419836a3f7c554f1ef98b5b424296e3c8938c130e173afc98c8affb8987d42",
+      "case_id": "interval-compaction",
+      "model_profile": "QWEN_1_5B",
+      "original_claimed_success": false,
+      "original_receipt_sha256": "fbf8e250b73f9681259e87ef97640e4b92aa323968edd08b648df09567c455ff",
+      "verification": {
+        "exit_code": 1,
+        "output_sha256": "b814b7d8bf50f2437ff4f3e5eec6da4295d2d1fbbadbb3adfdbb467b1318b6bd",
+        "passed": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+        "tests_run": 8
+      }
+    },
+    {
+      "candidate_sha256": "28497f2527898a0ece4fd5bc9895d100e8236af4532421b258230de2be69b0f0",
+      "case_id": "retry-decision",
+      "model_profile": "QWEN_1_5B",
+      "original_claimed_success": false,
+      "original_receipt_sha256": "5edb776cdbafb8cd15673f4d4a97f1e1779247ad9004e65c129e7a340cc9a6a0",
+      "verification": {
+        "exit_code": 1,
+        "output_sha256": "48c200d97e02575d84e461b3bf3575efedf29ea503a5e1e7d6ba8ed48c31e626",
+        "passed": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+        "tests_run": 8
+      }
+    },
+    {
+      "candidate_sha256": "f0d78231f9e9faa15d4b435d7e83042c44d26ef9bbb769357db48ad86c5765f7",
+      "case_id": "cursor-checkpoint",
+      "model_profile": "GRANITE42_3B",
+      "original_claimed_success": false,
+      "original_receipt_sha256": "2cb07db478fca0d1ed7b8b581dc837825b02fb5b4bdef66e701cd4b069fdb881",
+      "verification": {
+        "exit_code": 1,
+        "output_sha256": "a6e7f1e2be77ebae84620b8c8de14e5de93d8330fe00010ed31e1a3852380e49",
+        "passed": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+        "tests_run": 8
+      }
+    },
+    {
+      "candidate_sha256": "1bdf62d112f8af0d24c84d063c0e17df2ae716b9d551fd258ffcb8e5dbf7a9aa",
+      "case_id": "cursor-checkpoint",
+      "model_profile": "GRANITE42_3B",
+      "original_claimed_success": false,
+      "original_receipt_sha256": "da51d555fb9f0682718cd10fa2a339a3a8accbcab999f4a9fb74cd564b7767ff",
+      "verification": {
+        "exit_code": 1,
+        "output_sha256": "6351835ca112a08ea070bdec4707872b344ee8d26b3e1250aa6ae1ed7434c28e",
+        "passed": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+        "tests_run": 8
+      }
+    }
+  ],
+  "classification": "OWNED_DEVELOPMENT",
+  "failure_reproduction_matched": true,
+  "independent_evaluation": false,
+  "kind": "nextgen_separate_credential_free_replay",
+  "model_generation_calls": 0,
+  "receipt_sha256": "181e1a80fba34002b88dc60ff16ea6c5ff0d5648d7222cb00661416dd613122e",
+  "record_receipt_sha256": "18ef2c079fc0f7d48c939627de99dd11eb5fc94cdf60040a7b03d91e32fdef55",
+  "replay_passed": null,
+  "runtime_admission": {
+    "capabilities_empty": true,
+    "cleanup_verified": true,
+    "cpu_pressure_enforced": true,
+    "cpu_pressure_used_seconds": 3.038,
+    "cpu_pressure_wall_seconds": 3.014,
+    "cpu_quota_verified": true,
+    "cpu_throttled_periods": 31,
+    "docker_socket_absent": true,
+    "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+    "loopback_inference_unreachable": true,
+    "memory_limit_enforced": true,
+    "network_denied": true,
+    "no_new_privileges": true,
+    "output_bounded": true,
+    "pid_current_at_denial": 64,
+    "pid_denial_events": 1,
+    "pid_limit_verified": true,
+    "pid_pressure_enforced": true,
+    "probe_threads": 63,
+    "root_writes_denied": true,
+    "seccomp_active": true,
+    "secrets_absent": true,
+    "source_writes_denied": true,
+    "swap_disabled": true,
+    "tmpfs_bounded_noexec": true,
+    "uid_unprivileged": true,
+    "untrusted_execution_certified": false,
+    "wall_clock_enforced": true
+  },
+  "verified_successes_replayed": 0
+}

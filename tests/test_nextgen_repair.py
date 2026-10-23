@@ -91,3 +91,28 @@ class NextgenTests(unittest.TestCase):
             record=load_record(raw,digest(raw))
             self.assertEqual(sum(r['verified_repairs'] for r in summarize(record)['models']),0)
 
+    def test_completed_lease_revocation_is_not_a_worker_failure_but_inflight_revocation_is(self):
+        from scripts.nextgen_comparison import heartbeat_blocks
+        self.assertFalse(heartbeat_blocks({'failed':True},{'state':'FAILED','receipt':{'outcome':'TEST_FAILED'}}))
+        self.assertFalse(heartbeat_blocks({'failed':True},{'state':'VERIFIED','receipt':{'outcome':'VERIFIED'}}))
+        for result in ({},{'state':'STOPPED_OR_EXPIRED'},{'state':'LEASED'},{'state':'BLOCKED'}):
+            self.assertTrue(heartbeat_blocks({'failed':True},result))
+
+    def test_real_sqlite_rejects_renewal_after_terminal_commit_without_reclassifying_failure(self):
+        from scripts.nextgen_comparison import heartbeat_blocks
+        from bountyforge.owned_repair_queue import OwnedRepairQueue
+        with tempfile.TemporaryDirectory() as d:
+            path=Path(d)/'private/q.sqlite3'
+            queue=OwnedRepairQueue(path,service_factory=helpers.ProfileSelectionTests().service)
+            queue.create('race','CODEX_AGENT',['weighted-mix']);job=queue.claim('race')
+            for revision in (0,1):
+                result=queue.submit('race',job['job_id'],job['lease_token'],revision,
+                    {'changes':[{'line':100+revision,'new':'value = 1'}]})
+            self.assertEqual(result['state'],'FAILED')
+            # A separate connection sees the committed terminal state and the
+            # intentionally revoked lease; the fence must remain strict.
+            restarted=OwnedRepairQueue(path)
+            with self.assertRaisesRegex(ValueError,'STALE_EXPIRED_OR_REVOKED_LEASE'):
+                restarted.heartbeat('race',job['job_id'],job['lease_token'])
+            self.assertFalse(heartbeat_blocks({'failed':True},result))
+

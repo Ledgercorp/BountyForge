@@ -48,12 +48,14 @@ def load_record(raw,expected_sha):
     configs=[p.read_bytes() for p in (ROOT/'experiments/phase15/comparison.json',ROOT/'experiments/phase15/comparison-v2.json',
                                     ROOT/'experiments/phase15/comparison-v3.json',ROOT/'experiments/phase15/comparison-v4.json',
                                     ROOT/'experiments/phase15/comparison-v5-unmeasured.json',
-                                    ROOT/'experiments/nextgen/comparison.json') if p.is_file()]
+                                    ROOT/'experiments/nextgen/comparison.json',
+                                    ROOT/'experiments/nextgen/granite-continuation.json') if p.is_file()]
     config_raw=next((r for r in configs if digest(r)==record.get('experiment_sha256')),None)
     if config_raw is None:raise ValueError('FROZEN_EXPERIMENT_NOT_FOUND')
     config=strict_json(config_raw)
-    nextgen=config_raw in [p.read_bytes() for p in [ROOT/'experiments/nextgen/comparison.json'] if p.is_file()]
-    expected_profiles=['QWEN_1_5B','QWEN35_4B','GRANITE42_3B'] if nextgen else ['QWEN_1_5B','QWEN_7B']
+    continued=config_raw in [p.read_bytes() for p in [ROOT/'experiments/nextgen/granite-continuation.json'] if p.is_file()]
+    nextgen=continued or config_raw in [p.read_bytes() for p in [ROOT/'experiments/nextgen/comparison.json'] if p.is_file()]
+    expected_profiles=['GRANITE42_3B'] if continued else ['QWEN_1_5B','QWEN35_4B','GRANITE42_3B'] if nextgen else ['QWEN_1_5B','QWEN_7B']
     if (record.get('kind')!=('nextgen_local_model_comparison' if nextgen else 'phase15_local_model_comparison') or record.get('receipt_sha256')!=receipt_hash(record)
             or record.get('experiment_sha256')!=digest(config_raw) or record.get('frozen_experiment')!=config
             or record.get('independent_evaluation') is not False or record.get('default_replaced') is not False

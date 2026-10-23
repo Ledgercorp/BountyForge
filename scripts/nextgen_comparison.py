@@ -18,33 +18,57 @@ from bountyforge.repair_engines import ROOT,RepairService,catalog,digest,receipt
 PROFILES=('QWEN_1_5B','QWEN35_4B','GRANITE42_3B')
 CASES=('cursor-checkpoint','interval-compaction','retry-decision')
 CONFIG=ROOT/'experiments/nextgen/comparison.json'
+CONTINUATION=ROOT/'experiments/nextgen/granite-continuation.json'
 CODE=tuple(sorted([p.relative_to(ROOT).as_posix() for p in (ROOT/'bountyforge').glob('*.py')]
     +['scripts/nextgen_comparison.py']))
 
 
-def verify_experiment(expected):
-    if not re.fullmatch('[a-f0-9]{64}',expected) or CONFIG.is_symlink() or CONFIG.stat().st_size>50000:
+def verify_experiment(expected,version='full'):
+    if version not in ('full','granite-continuation'):raise ValueError('UNKNOWN_EXPERIMENT')
+    path=CONTINUATION if version=='granite-continuation' else CONFIG
+    profiles=('GRANITE42_3B',) if version=='granite-continuation' else PROFILES
+    cases=CASES[1:] if version=='granite-continuation' else CASES
+    if not re.fullmatch('[a-f0-9]{64}',expected) or path.is_symlink() or path.stat().st_size>50000:
         raise ValueError('FROZEN_EXPERIMENT_REJECTED')
-    raw=CONFIG.read_bytes()
+    raw=path.read_bytes()
     if digest(raw)!=expected:raise ValueError('FROZEN_EXPERIMENT_CHANGED')
     value=strict_json(raw)
-    if (value['model_profiles']!=list(PROFILES) or value['case_ids']!=list(CASES)
+    if (value['model_profiles']!=list(profiles) or value['case_ids']!=list(cases)
             or value['envelope']!=envelope_spec('NEXTGEN_TRIAL')
-            or value['budgets']!={'tasks_per_model':3,'attempts_per_task':2,'maximum_completion_requests':18,
+            or value['budgets']!={'tasks_per_model':len(cases),'attempts_per_task':2,'maximum_completion_requests':2*len(cases)*len(profiles),
                                  'input_token_limit':1200,'cpu_threads':4}
             or set(value['code_sha256'])!=set(CODE)):
         raise ValueError('BOUNDED_EXPERIMENT_REQUIRED')
     for name,sha in value['code_sha256'].items():
         if digest((ROOT/name).read_bytes())!=sha:raise ValueError('EXPERIMENT_IMPLEMENTATION_CHANGED')
     specs={c['id']:c for c in catalog()}
-    if value['cases']!=[specs[c] for c in CASES] or value['models']!=[profile_spec(p) for p in PROFILES]:
+    if value['cases']!=[specs[c] for c in cases] or value['models']!=[profile_spec(p) for p in profiles]:
         raise ValueError('EXPERIMENT_ASSETS_CHANGED')
+    if version=='granite-continuation':
+        from bountyforge.model_comparison_evidence import load_record,summarize
+        prior=ROOT/'evidence/nextgen/comparison_40021191461.json'
+        original=load_record(prior.read_bytes(),'495d2222af293aea2952a83fbc3e54991ecf3d011a3604e5c36a7426768b3189')
+        if value.get('prior_run_id')!='40021191461' or value.get('prior_evidence_sha256')!=digest(prior.read_bytes()):
+            raise ValueError('CONTINUATION_IDENTITY_REJECTED')
+        last=original['models'][-1]
+        if (last['model_profile']!='GRANITE42_3B' or [j['case_id'] for j in last['jobs']]!=[CASES[0]]
+                or last['jobs'][0].get('result',{}).get('state')!='FAILED'
+                or summarize(original)['completion_requests_total']!=14):
+            raise ValueError('CONTINUATION_NOT_REQUIRED')
     return value
+
+
+def heartbeat_blocks(heartbeat,result):
+    # _finish already fenced and committed these terminal results. A renewal
+    # after that commit must fail because the token was deliberately cleared.
+    terminal=result.get('state') in ('FAILED','VERIFIED') and type(result.get('receipt')) is dict
+    return heartbeat['failed'] and not terminal
 
 
 def main(argv=None):
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--experiment-sha256',required=True);p.add_argument('--output',required=True)
+    p.add_argument('--experiment',choices=('full','granite-continuation'),default='full')
     args=p.parse_args(argv);output=Path(args.output);began=time.monotonic()
     report={'kind':'nextgen_local_model_comparison','status':'BLOCKED','stage':'FREE_HOST_GATE',
         'classification':'OWNED_DEVELOPMENT','independent_evaluation':False,'independent_accuracy':None,
@@ -63,18 +87,18 @@ def main(argv=None):
             'GITHUB_REF':'refs/heads/engineering/revenue-linux-scout-20261021','RUNNER_OS':'Linux','RUNNER_ARCH':'X64',
             'BOUNTYFORGE_NEXTGEN_FREE_ACK':'true'}
         if any(os.environ.get(k)!=v for k,v in required.items()):raise ValueError('FREE_STANDARD_PUBLIC_RUNNER_REQUIRED')
-        require_credential_free_host();config=verify_experiment(args.experiment_sha256);report['frozen_experiment']=config
+        require_credential_free_host();config=verify_experiment(args.experiment_sha256,args.experiment);report['frozen_experiment']=config
         available=int(next(r.split()[1] for r in Path('/proc/meminfo').read_text().splitlines() if r.startswith('MemAvailable:')))
         report['host']={'logical_cpus':os.cpu_count(),'available_memory_kib':available,'disk_free_bytes':shutil.disk_usage(ROOT).free}
         if (os.cpu_count() or 0)<4 or available<12*1024**2 or report['host']['disk_free_bytes']<2*1024**3:
             raise RuntimeError('RESOURCE_CAPACITY_UNAVAILABLE')
         queue=OwnedRepairQueue(service_factory=lambda:RepairService(model_factory=TrialStatementModel,
                 prompt_factory=mapped_prompt,resource_envelope='NEXTGEN_TRIAL'))
-        for profile in PROFILES:
+        for profile in config['model_profiles']:
             started=time.monotonic();row={'model_profile':profile,'jobs':[],'status':'BLOCKED'};report['models'].append(row)
-            batch='nextgen-'+profile.lower();queue.create(batch,'QWEN_LOCAL',list(CASES),model_profile=profile)
+            batch='nextgen-'+profile.lower();queue.create(batch,'QWEN_LOCAL',config['case_ids'],model_profile=profile)
             report['stage']='AUTONOMOUS_QUEUE';checkpoint()
-            for case in CASES:
+            for case in config['case_ids']:
                 entry={'case_id':case};row['jobs'].append(entry);t=time.monotonic()
                 entry['preparation']=queue.claim(batch);checkpoint();job=entry['preparation']
                 if job.get('task',{}).get('case_id')!=case or job['task']['model_profile']!=profile:
@@ -93,6 +117,7 @@ def main(argv=None):
                         thread.start()
                         entry['runtime']=runtime.measurement;checkpoint()
                         entry['result']=queue.run_qwen(batch,job['job_id'],job['lease_token'])
+                        done.set()
                 except (ValueError,OSError,RuntimeError) as exc:
                     entry['runtime_error']=str(exc) if re.fullmatch('[A-Z_]{1,80}',str(exc)) else type(exc).__name__
                     row['blocking_reason']='RUNTIME_OR_RESOURCE_FAILURE'
@@ -100,11 +125,12 @@ def main(argv=None):
                     done.set()
                     if thread.ident is not None:thread.join(timeout=2)
                     entry['elapsed_seconds']=round(time.monotonic()-t,3);checkpoint()
-                if (row.get('blocking_reason') or heartbeat['failed'] or entry.get('runtime',{}).get('unexpected_exit')
+                if (row.get('blocking_reason') or heartbeat_blocks(heartbeat,entry.get('result',{})) or entry.get('runtime',{}).get('unexpected_exit')
                         or entry.get('runtime',{}).get('wall_limit_reached') or entry.get('result',{}).get('state')=='BLOCKED'):
                     row.setdefault('blocking_reason','WORKER_BLOCKED');queue.stop(batch);break
             row['queue_status']=queue.status(batch)
-            row['status']='COMPLETED' if len(row['jobs'])==3 and not row.get('blocking_reason') else 'BLOCKED'
+            row['status']='COMPLETED' if (len(row['jobs'])==len(config['case_ids']) and not row.get('blocking_reason')
+                and all(j.get('result',{}).get('state') in ('FAILED','VERIFIED') for j in row['jobs'])) else 'BLOCKED'
             row['elapsed_seconds']=round(time.monotonic()-started,3);checkpoint()
         report['stage']='COMPARISON_FINISHED'
         report['status']='COMPLETED' if all(m['status']=='COMPLETED' for m in report['models']) else 'PARTIAL_BLOCKED'

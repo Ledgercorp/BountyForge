@@ -45,6 +45,15 @@
     "failed": 0,
     "passed": 10
   },
+  "hosted_final_regression": {
+    "commit": "58284f3bdef7942fdd060759833944a97dda584d",
+    "executed": 663,
+    "failed": 0,
+    "node_passed": 7,
+    "passed": 654,
+    "run_id": 39948860581,
+    "skipped": 9
+  },
   "hosted_history_regression": {
     "commit": "6ab6672f7218c5dc39d0a2c93334ca46c083000d",
     "executed": 662,
@@ -115,5 +124,10 @@
   },
   "revenue_usd": 0,
   "scheduling_active": false,
-  "unattended_codex_admitted": false
+  "skipped_checks": {
+    "namespace_rootfs_not_provisioned": 8,
+    "older_development_catalog_opt_in_replay": 1
+  },
+  "unattended_codex_admitted": false,
+  "verified_code_commit": "58284f3bdef7942fdd060759833944a97dda584d"
 }

@@ -179,7 +179,7 @@ existing inactive patch-only service. Runtime/private-storage/consent and
 commercial launch gates remain separate and unresolved.
 
 Local implementation acceptance: 659 Python tests executed, 650 passed, nine
-existing isolation skips and zero failures. The historical benchmark harness
+existing skips and zero failures. The historical benchmark harness
 passed 10/10 model-free tests; the owner-console/dashboard Node suite passed
 7/7. Frozen core pins and evaluation files remain unchanged. The skipped
 namespace/rootfs checks were not completed by Docker admission. Structured
@@ -223,3 +223,13 @@ availability (3/3; `sqlite_mcp_acceptance.json`). No model turn was started.
 The corresponding regression brings final local checks to **663 tests: 654
 passed, nine existing skips, zero failures**. Final hosted verification is linked
 in PR #2; earlier hosted measurements above remain tied to their exact commits.
+
+
+Final code commit `58284f3bdef7942fdd060759833944a97dda584d` passed
+[hosted regression 39948860581](https://github.com/Ledgercorp/BountyForge/actions/runs/39948860581):
+**663 executed, 654 passed, nine skipped, zero failures; Node 7/7**.
+The nine skips are eight unprovisioned namespace/rootfs tests and one opt-in
+older development-catalog Docker replay. Fresh Phase13 Docker admission/replay
+was performed separately as recorded above; it does not complete those skips.
+This final ledger publication changes documentation/evidence only; its code is
+identical to the tested commit. No further inference was run.

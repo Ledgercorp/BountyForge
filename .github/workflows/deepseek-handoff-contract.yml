@@ -9,8 +9,10 @@ on:
       - 'deepseek_harness_handoff.py'
       - 'deepseek_owned_bridge.py'
       - 'scripts/deepseek_docker_smoke.py'
+      - 'scripts/deepseek_owned_file.py'
       - 'tests/test_deepseek_handoff.py'
       - 'tests/test_deepseek_owned_bridge.py'
+      - 'tests/test_deepseek_file.py'
       - '.github/workflows/deepseek-handoff-contract.yml'
 
 permissions:

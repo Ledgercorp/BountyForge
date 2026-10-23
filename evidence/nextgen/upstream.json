@@ -1,0 +1,170 @@
+{
+  "classification": "READ_ONLY_UPSTREAM_RESEARCH",
+  "recorded_at_utc": "2026-10-23T20:35:53.456931+00:00",
+  "runtime_tag": "b11750",
+  "runtime_commit": "dd002b91f583af0b80140f9a140dc04856bfc2e0",
+  "runtime_changed": false,
+  "source_documents": {
+    "granite42_3b.json": {
+      "bytes": 13326,
+      "sha256": "7f32f889905adcfd8c206da6359e51481da931a427ad2298ab8147cfc3561e97"
+    },
+    "granite42_3b_gguf.json": {
+      "bytes": 14520,
+      "sha256": "57a4ac8df8edfcc85d65165c158cf4f431f6eb31a3645dcc21a328cb72b072a4"
+    },
+    "qwen35_4b.json": {
+      "bytes": 22415,
+      "sha256": "ef14b40bf37fc99b8d10c602ac1aaf2ce6939120412e1c4419e8572628656ebf"
+    },
+    "qwen35_9b.json": {
+      "bytes": 23240,
+      "sha256": "91f404742fa6ce4c9290f4d2e48243c22b1dffcb618d27c4f6c943238d8cf9bb"
+    },
+    "qwen35_quant": {
+      "bytes": 15962,
+      "sha256": "b013ae2db2bd1877921b7c545a58c9c4bbaf5d9c3842ddea6c083b5399272cd4"
+    },
+    "qwen9_quant": {
+      "bytes": 15976,
+      "sha256": "a09a69af46234b2183d84a76330a53a2004abac57e5c40ed05e6f75aac7367a4"
+    },
+    "granite_config": {
+      "bytes": 905,
+      "sha256": "e4f44b9c6924a283f1d1d36057a89f1a04404bf1561fc2c0b64cf98180e72915"
+    },
+    "qwen35_config": {
+      "bytes": 3161,
+      "sha256": "ddc63e1c717afa86c865bb5e01313d89d72bb53b97ad4a8a03ba8510c0621670"
+    },
+    "granite_tokenizer": {
+      "bytes": 17677,
+      "sha256": "2007f26df166ed10a2d6fa881c1c8f3cdd151e451469f59b274897f14449835f"
+    },
+    "qwen_tokenizer": {
+      "bytes": 16710,
+      "sha256": "316230d6a809701f4db5ea8f8fc862bc3a6f3229c937c174e674ff3ca0a64ac8"
+    },
+    "qwen_license": {
+      "bytes": 11544,
+      "sha256": "bbedc3fda3305820b977265f01b8619d87570a6739de3a5582c3464840f1e57a"
+    },
+    "granite_readme": {
+      "bytes": 35640,
+      "sha256": "8f22ddce440f0c15ecb58fc9f8501b882baf5f2b7ab0d13872fe77d88c1ad792"
+    },
+    "granite_gguf_readme": {
+      "bytes": 368,
+      "sha256": "366a634da286ca154ef41214dc503ce1dcb8e6de126bec73f80ae3216fb01c99"
+    },
+    "qwen_quant_readme": {
+      "bytes": 78906,
+      "sha256": "28546f5fc4f22ee1b3f17b908957f17fcfa66174032136265bdb27f404bc1e6c"
+    },
+    "llama-model": {
+      "bytes": 95201,
+      "sha256": "1170b4b3b2c99642b4b6b65f245b56e3f9d5a1fb58d8c8dad1fabea52f29fc50"
+    },
+    "llama-tokenizer": {
+      "bytes": 200849,
+      "sha256": "4b78a3c35d9dbcf81d69b119c06ad22e520a45887984001c6032fd605b481e86"
+    },
+    "llama_parser": {
+      "bytes": 75061,
+      "sha256": "b4f4aae7eed919f914d132ae64416a0e7cfb23442161af6f63ba8d902954d442"
+    },
+    "llama_granite_converter": {
+      "bytes": 41117,
+      "sha256": "facfb194ae08514cc934b5988cda4e1e1e0a7c09ea5992ed0218ce967553df45"
+    },
+    "qwen35_template": {
+      "bytes": 7756,
+      "sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715"
+    },
+    "mini_swe": {
+      "bytes": 4493,
+      "sha256": "2b55c9a868b22c9d7c29f69ac30c7527d13c607e2242dab924e4a7017bbd039b"
+    },
+    "aider": {
+      "bytes": 6986,
+      "sha256": "9ff3de94a75d4a8f5611394b4005ae69981e18f9016302dda3e7727916065795"
+    },
+    "mini_config": {
+      "bytes": 5829,
+      "sha256": "112aa58328f478a41cc2630702a4b89ef459e912870e05065157ed221f56701f"
+    },
+    "aider_repomap": {
+      "bytes": 27306,
+      "sha256": "a5d4befe70445114b9f62da47b0eeb2a5384f9e84a0c083c77a4b339caf61ecd"
+    },
+    "aider_license": {
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    "ruff": {
+      "bytes": 80647,
+      "sha256": "00f2f5364daadbe1057cc35a2ce6ca45fd2bbdf213488f13e0a6255b7dc5761c"
+    },
+    "ast_grep": {
+      "bytes": 14228,
+      "sha256": "b4b1bcae2d5e9e2a63a1770a94ea421ac0bf1ffb253e63c1df1104b9a2c1781d"
+    },
+    "granite_template": {
+      "bytes": 9013,
+      "sha256": "f0ba43f79b3cabca5e5a7584c77aec92f49feae45cdf7779c87d9fc54cd90258"
+    },
+    "mini_license": {
+      "bytes": 1094,
+      "sha256": "0f796e58f91d1c07bb2c1b1d0f8bf3a83017c3a5dec1bdc6fae733b2cd2e875b"
+    }
+  },
+  "new_models": {
+    "granite42_3b": {
+      "id": "ibm-granite/granite-4.2-3b",
+      "revision": "4e9c275e232f10211ec88644d106a1f6a1b60e06",
+      "license": "apache-2.0"
+    },
+    "granite42_3b_gguf": {
+      "id": "ibm-granite/granite-4.2-3b-GGUF",
+      "revision": "c40945d71cd90f249a56985e8155551a9188dc30",
+      "license": "apache-2.0"
+    },
+    "qwen35_4b": {
+      "id": "Qwen/Qwen3.5-4B",
+      "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+      "license": "apache-2.0"
+    }
+  },
+  "limitations": [
+    "Qwen quantizer declares the official base but does not pin/attest the conversion input revision.",
+    "GGUF hashes are upstream LFS declarations until full download verification.",
+    "No signed publisher or build provenance is established.",
+    "Source architecture/tokenizer support is not proof of load or repair success."
+  ],
+  "qwen35_9b": {
+    "status": "DEFERRED_RESOURCE_REVIEW",
+    "bytes": 5680522464,
+    "sha256": "03b74727a860a56338e042c4420bb3f04b2fec5734175f4cb9fa853daf52b7e8",
+    "revision": "3885219b6810b007914f3a7950a8d1b469d598a5",
+    "reason": "Evaluate smaller models first; Phase15 7B exhausted CPU. No 9B download or inference."
+  },
+  "official_sources": [
+    "https://huggingface.co/Qwen/Qwen3.5-4B/tree/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "https://huggingface.co/ibm-granite/granite-4.2-3b/tree/4e9c275e232f10211ec88644d106a1f6a1b60e06",
+    "https://huggingface.co/ibm-granite/granite-4.2-3b-GGUF/tree/c40945d71cd90f249a56985e8155551a9188dc30",
+    "https://huggingface.co/unsloth/Qwen3.5-4B-GGUF/tree/e87f176479d0855a907a41277aca2f8ee7a09523",
+    "https://github.com/ggml-org/llama.cpp/tree/dd002b91f583af0b80140f9a140dc04856bfc2e0",
+    "https://github.com/SWE-agent/mini-swe-agent/blob/04d809ceab9df28f9adaed044884180159172930/src/minisweagent/config/default.yaml",
+    "https://github.com/Aider-AI/aider/blob/5dc9490bb35f9729ef2c95d00a19ccd30c26339c/aider/repomap.py"
+  ],
+  "tools": {
+    "mini_swe_license": "MIT (read LICENSE.md at recorded revision)",
+    "aider_license": "Apache-2.0 (read LICENSE.txt at recorded revision)",
+    "copied_upstream_implementation": false,
+    "executed_upstream_code": false,
+    "ruff_release": "0.17.2",
+    "ast_grep_release": "0.51.0",
+    "ruff_or_ast_grep_installed": false
+  },
+  "granite_signature_status": "model.sig files listed upstream, not authenticated or verified here"
+}

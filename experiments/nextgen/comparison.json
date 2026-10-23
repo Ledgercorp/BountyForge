@@ -1,0 +1,203 @@
+{
+  "baseline": "New maintenance cases; failing Docker baselines reproduced; no reference patches stored or supplied.",
+  "budgets": {
+    "attempts_per_task": 2,
+    "cpu_threads": 4,
+    "input_token_limit": 1200,
+    "maximum_completion_requests": 18,
+    "tasks_per_model": 3
+  },
+  "case_ids": [
+    "cursor-checkpoint",
+    "interval-compaction",
+    "retry-decision"
+  ],
+  "cases": [
+    {
+      "description": "Consume a page of ordered event records for the requested generation. Keep every eligible fresh identifier in order, ignore repeated or older sequence numbers, and advance the checkpoint only for accepted events. Do not mutate input records.",
+      "id": "cursor-checkpoint",
+      "sha256": {
+        "subject.py": "3a40a822f616beff85a7978b0a055ed37bbd210f781a04c190f2236c3ec3d683",
+        "tests/test_regression.py": "d648c3ef9766393226c03b687e6389c0201e908742c97f9da625e24ae8fa5ff5"
+      },
+      "symbol": "consume_page"
+    },
+    {
+      "description": "Normalize and compact half-open intervals. Discard empty or reversed spans, merge overlapping or touching spans without losing coverage, preserve separate disjoint spans, and do not mutate caller data.",
+      "id": "interval-compaction",
+      "sha256": {
+        "subject.py": "be2e4025e6a714b7c098f1736678d8bb0f75d6f666300c296e66b70f98b20b68",
+        "tests/test_regression.py": "138e6d64daa1d298f83b9fb9f157629c336057ee49d62aa16f34c587f21542a4"
+      },
+      "symbol": "compact_intervals"
+    },
+    {
+      "description": "Decide whether a transient HTTP failure can retry within the maximum retry count. The attempt is the number already used. Eligible retries increment it once and use capped exponential backoff starting from base_delay at attempt zero. Terminal responses preserve attempt and have zero delay.",
+      "id": "retry-decision",
+      "sha256": {
+        "subject.py": "61fc63e78fe326edc952deb9c01bfa1e98d8ee9123ef8aec6d6b3c67ab2f2015",
+        "tests/test_regression.py": "784fbbf5877c125457ad618d38304311ab21a95f672f7be4383a27b4c0c44af3"
+      },
+      "symbol": "retry_decision"
+    }
+  ],
+  "classification": "OWNED_DEVELOPMENT",
+  "code_sha256": {
+    "bountyforge/__init__.py": "2969e29f255f7d331516f5614a4d62667206ab1fc4f3d9e2a9285fb7a4b1c79a",
+    "bountyforge/autonomy.py": "8500d7c38da9b8de74b1527235ff90b3c60efc37e15b71ff7017d5c8285e9e7b",
+    "bountyforge/cli.py": "cb9b799f15f3a1f8d811a86b0c3a33f4971835036201eca0d51a880dfbaee35c",
+    "bountyforge/coder.py": "cdcf8ac137ad12c457dfb43e7645d6f1170bbfc6c1a2ee6d43bce595470dfe5a",
+    "bountyforge/context.py": "91d567b87b1e8c566fc543d797a2d735614bfb547e75e8a2a8242a4d549a1fad",
+    "bountyforge/curated_docker.py": "0beb01183867f514029f466274e641f5e9e2860de7a56d34fe725a12b61dfa2f",
+    "bountyforge/curated_tasks.py": "048bf0efe8e44278d4fb5a34ebc951b1d27c7034fb28a77da94f6990b965d48f",
+    "bountyforge/development_scorecard.py": "994c7e2e64dafc53068f86956178e0388aa4b22ece447def0738fea364da302b",
+    "bountyforge/drafts.py": "e5336eb40548b72fae901d6b281ffd0d45de5d2cbf04f0189f2721f700b29af5",
+    "bountyforge/durable.py": "082c7ba46135cf689908f364c1accf1255bd33d125797189017ba83a59e2a8ce",
+    "bountyforge/evaluation.py": "47baee5bbd89513462cb76d7450c23247ffa4dd17d40497311646f72bd6f0483",
+    "bountyforge/evaluation_exchange.py": "0d1f2c9b423422b5f73a2a9ed8abc608dd90e38ad20a8cd167b3e1bad1eb6519",
+    "bountyforge/groq_adapter.py": "6e808c41baab332356af5ac27d15b115b673dd4c0aedf2f608d5071b36298137",
+    "bountyforge/inference_envelopes.py": "1131f544d6e6b7b4f77c04e378791399e52985fb27ca095d5aaf7255dd758e13",
+    "bountyforge/isolation.py": "23f07b985458c03d06de8fcebf3408792f6a77de4ad2543d0ec0e47105308f2c",
+    "bountyforge/line_scope.py": "df2d83ccc9f290b387df299625c63fe16729a63029cc481c9a05d00adc0f6128",
+    "bountyforge/lineedit.py": "cfafdde8490cd3f7f84e7f3ef3a10aa0bc43973baa3468ec431e7ee4d2205e14",
+    "bountyforge/local_model_runtime.py": "1e95486028d04d764e074cdda47d31e4e34f337f56bea847fbfd2fc34b87f3b1",
+    "bountyforge/mcp_server.py": "85361801184013aa60b71c1a0b97244c27e1888143764534552ed64e2d8def26",
+    "bountyforge/minimal.py": "cfaf4251c092bcf8516fac910cc22013a725719daaea48de80b8843b7396263d",
+    "bountyforge/model.py": "cc627d3b3ec1824772d9f7352cd266d1292d13c58a6f97909d2755751c7ff1a6",
+    "bountyforge/model_comparison_evidence.py": "e2e73dfdcc2cd07bfc46ff9947947f606ea8094a42e601ad3c639a2e7b935475",
+    "bountyforge/model_profiles.py": "879f6dd286e7d8dfb3f3d24dd8706596df3521329dcedb8b8ac6dfc7bc796065",
+    "bountyforge/native_qwen.py": "fbd5548fcd1d9682cb580df12de0784779f81adb96fdb6d7a2412cf974024f36",
+    "bountyforge/nextgen_repair.py": "0a729531ffb1ab6113fa52a6a59cb3f5d60a99aacf9d47fbc0a0d5e98080313e",
+    "bountyforge/oci_layer_digest.py": "ac2eba89d50dde0ebe7d1654eda140c0c187eaefd8de4c8e0c71119036756675",
+    "bountyforge/oci_registry_acquisition.py": "9082c096bcd97f037f03ccec5948947100c54462412444a4960cf57d5b126c6a",
+    "bountyforge/oci_runtime_provenance.py": "750ebf86ae327400f3777f7354d2ae0e2479a33b1707fe55a25617805a7b16ff",
+    "bountyforge/operator.py": "2d2215790b90971ee5287d8fe00b1454e386812332eddbc2553deb068d3a2265",
+    "bountyforge/opportunities.py": "28fe4092f38c63ef30ab6f000074af27eb1324cad9971763e891dbf6dd171e73",
+    "bountyforge/owned_repair_queue.py": "d5ff48d525212ca6fc616ebcefb15362568bfa269667f92a4e396aca5fb7cc84",
+    "bountyforge/paid_intake.py": "e302d3ba468960fccc975291d406ee5d2cfa06dcdbb6dc1084a95ecb8af30c1d",
+    "bountyforge/paid_review_ledger.py": "f902b0afc82ac6f1c9ce8345934977225ff16d36ed373e2e19ece1a995c0bf3d",
+    "bountyforge/paid_review_store.py": "04430da63f159a5a82cc38d0694575f696385e5c78b60f49b2a1f5b3d816f901",
+    "bountyforge/paid_scope_review.py": "d8c7b5c1fc49b4edd71fcd7e991bf0fb077c353fd7ce4a5eb0b1f77ce3dc9efa",
+    "bountyforge/patch_review_service.py": "94c8178595d636cde417aa7f1f178a0ce381530601ccb565a6776549d8ce32b5",
+    "bountyforge/phase12_replay.py": "bc82c67ff96ca10310308ce79980923e8861d4d7f81e972870aa23abdf74264c",
+    "bountyforge/phase13_replay.py": "a63f84bc7ad6a1e0b7b272e8a72e789c5becc640e1a94f55b1069591032eeb5b",
+    "bountyforge/phase7_calibration.py": "c15eb3dcabf47ca71f2fe98c29b881f7cb201e7257ba86b550f854101f3d192d",
+    "bountyforge/phase7_owned_demo.py": "1abdb085d48404b0a624060bd5d97b7e9b5a6cc95764bc769ca0fa0bb7c9e78a",
+    "bountyforge/phase8_evaluation.py": "c99d99987df89b32f542860e8f3eb8965e84c216a3fb0b1137505f70ad48a0a5",
+    "bountyforge/phase8_live_qwen.py": "8275130cf646b2f754201d7f1bfb93b7df6204edbbb4fd00df1c7d2345faa2a4",
+    "bountyforge/phase8_synthetic_order.py": "373892ddf82f203114aad3e518d615ebb2b92416a4e45796fe0e678dee6c2399",
+    "bountyforge/private_boundary_review.py": "50449775214782e575dde91972461f2b2d43adb2f3950d4a4cfb8adaedbed2b3",
+    "bountyforge/private_host_probe.py": "5ba29aa745bc679792c09da991b071e2ca93ab1fbb732ceea6a76134096b09ec",
+    "bountyforge/private_job_contract.py": "dcaab69cdd9a0fb4f7960c1c988b162bd22a2752ad95dde049fd210ca8542385",
+    "bountyforge/private_source_custody.py": "cd3e66692807ed593bc71e4ceb8aa2a36149a1bd5aafdeb078bef7530dd7a3b0",
+    "bountyforge/private_source_inventory.py": "14900b87b731f8c1494f6c70a424cd48d843d3f5bbb040a534827a618b673c0d",
+    "bountyforge/profiled_qwen.py": "3b90d554c8be00fdac2129f7cbb42cfdefb16f4116241dfc9c84cae2712400e0",
+    "bountyforge/qualification.py": "48b10e739eb9609a88ff9ef54fc7c8a1a06535dd55da2044f6d9da9eabacd75b",
+    "bountyforge/queue.py": "396e9e8bad649b3393c4cb99e5cd3b49a8970a6ff0c92a1a425624c79733a26f",
+    "bountyforge/qwen_statement_contract.py": "1cf4fcff49afdf4ff291f3ff5bc08e656b933d871f25d2795f7d2210ba3bebda",
+    "bountyforge/repair_context.py": "fb0aac6f25e7ad23e7fbedba20d6638c523c5304508bedfcd5b892d419f7b70f",
+    "bountyforge/repair_engines.py": "5965fdc8bbda496f0ee87ce917adabe200555f399aba1127a9f1a76977334613",
+    "bountyforge/repair_intelligence.py": "7eb570b0975fc76abef356adb55e5e4ca1927ac1574cba239b05a8d12859e63a",
+    "bountyforge/repair_session.py": "b011ce262e9cba989afb02c69fbd2fd325345d9aaff76349378e7b674c65e8b3",
+    "bountyforge/revenue_scout.py": "cf1c119f2a50e5699d202c2c33accbab4b0209260d35f7cdda8ff484d9ad8f03",
+    "bountyforge/rootfs_provenance.py": "fedb07441d5964f2f09d62684165d5a8895156252453e94ef0701dd2f94fee1e",
+    "bountyforge/run_draft.py": "cc0bde74779c5a4911530d7c28ddcc0be89b658e003685902d8676262805ad96",
+    "bountyforge/scanner.py": "a925cbbb0d40e224d2d8b11ee03b0484abe4dbb76faf29adcd4e0775a4175dff",
+    "bountyforge/statement_grammar.py": "30d036d445d9134dac9c7cc0bc903860fe3adde47add413cf594a7572675f4cc",
+    "bountyforge/statements.py": "7ee92b1a794ce221042196ac7e5fedd97792691184f3d2709d182787ecfeb460",
+    "bountyforge/stripe_order_gate.py": "88e0ffae249dd68d7073e1ea82b93d00f767090fd440834349ec37fb1fed6f0a",
+    "bountyforge/unseen_evaluation.py": "38335951b318df96b4b121c079ddb062eab91b107ab92592ff88efb8dee07ecc",
+    "bountyforge/worker.py": "564678b2c00c750ee580a4bb802d9f5236258b2d7cf24b30da03ebfdf4d655fb",
+    "scripts/nextgen_comparison.py": "a3da8482da21a1090c59883a8f5cdcd419dd10de057b15d1b89e994b38314a37"
+  },
+  "envelope": {
+    "address_space_bytes": 10737418240,
+    "completion_tokens": 256,
+    "context_tokens": 2048,
+    "cpu_seconds": 600,
+    "id": "NEXTGEN_TRIAL",
+    "log_bytes": 1048576,
+    "maximum_threads": 4,
+    "parallel_streams": 1,
+    "request_seconds": 75,
+    "wall_seconds": 240
+  },
+  "generation_architecture": "nextgen_v1_non_thinking_ast_map",
+  "independent_evaluation": false,
+  "model_profiles": [
+    "QWEN_1_5B",
+    "QWEN35_4B",
+    "GRANITE42_3B"
+  ],
+  "models": [
+    {
+      "context_tokens": 2048,
+      "experimental": false,
+      "filename": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+      "id": "QWEN_1_5B",
+      "label": "Qwen Coder 1.5B (default)",
+      "license": "Apache-2.0",
+      "max_prompt_tokens": 1898,
+      "paid_fallback": false,
+      "parallel_streams": 1,
+      "revision": null,
+      "runtime_sha256": "152e33221c9c9d37816a8ee9943f8d87339199197c80cb692559c9756b2027d8",
+      "sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+      "supported_cpu_threads": [
+        2,
+        4
+      ],
+      "threads": 2
+    },
+    {
+      "bytes": 2740937888,
+      "context_tokens": 2048,
+      "experimental": true,
+      "filename": "Qwen3.5-4B-Q4_K_M.gguf",
+      "id": "QWEN35_4B",
+      "label": "Qwen3.5 4B (research)",
+      "license": "Apache-2.0",
+      "max_prompt_tokens": 1898,
+      "paid_fallback": false,
+      "parallel_streams": 1,
+      "provenance": "Quantizer-declared official base; conversion revision/attestation unavailable",
+      "repository": "unsloth/Qwen3.5-4B-GGUF",
+      "revision": "e87f176479d0855a907a41277aca2f8ee7a09523",
+      "runtime_sha256": "152e33221c9c9d37816a8ee9943f8d87339199197c80cb692559c9756b2027d8",
+      "sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
+      "supported_cpu_threads": [
+        2,
+        4
+      ],
+      "thinking_disabled": true,
+      "threads": 2,
+      "upstream_repository": "Qwen/Qwen3.5-4B",
+      "upstream_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+    },
+    {
+      "bytes": 2244011552,
+      "context_tokens": 2048,
+      "experimental": true,
+      "filename": "granite-4.2-3b-Q4_K_M.gguf",
+      "id": "GRANITE42_3B",
+      "label": "IBM Granite 4.2 3B (research)",
+      "license": "Apache-2.0",
+      "max_prompt_tokens": 1898,
+      "paid_fallback": false,
+      "parallel_streams": 1,
+      "provenance": "IBM-published GGUF; no signed conversion provenance established",
+      "repository": "ibm-granite/granite-4.2-3b-GGUF",
+      "revision": "c40945d71cd90f249a56985e8155551a9188dc30",
+      "runtime_sha256": "152e33221c9c9d37816a8ee9943f8d87339199197c80cb692559c9756b2027d8",
+      "sha256": "e0406663965846ae22a403456eb826ccce5f450840491f71952f18a7cb78e7d5",
+      "supported_cpu_threads": [
+        2,
+        4
+      ],
+      "thinking_disabled": true,
+      "threads": 2,
+      "upstream_repository": "ibm-granite/granite-4.2-3b",
+      "upstream_revision": "4e9c275e232f10211ec88644d106a1f6a1b60e06"
+    }
+  ]
+}

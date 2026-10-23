@@ -13,6 +13,7 @@ from bountyforge.statement_grammar import statement_grammar
 
 class NativeStatementModel(AdaptiveStatementModel):
     protocol='qwen_native_json_safe_grammar_v5'
+    maximum_completion_tokens=150
 
     def _post_native(self,path,body):
         parsed=urllib.parse.urlsplit(self.endpoint)  # Constructor validates approved host/port.
@@ -31,7 +32,7 @@ class NativeStatementModel(AdaptiveStatementModel):
     def _complete_bounded_schema(self,system,user,max_tokens,schema,name):
         self.last_call=None
         if (type(system) is not str or type(user) is not str or len(system.encode())>3600
-                or len(user.encode())>3600 or type(max_tokens) is not int or not 1<=max_tokens<=150):
+                or len(user.encode())>3600 or type(max_tokens) is not int or not 1<=max_tokens<=self.maximum_completion_tokens):
             raise ValueError('Bounded native request required')
         template=self._post_native('/apply-template',{'messages':[
             {'role':'system','content':system},{'role':'user','content':user}],

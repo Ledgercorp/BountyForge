@@ -10,6 +10,7 @@ import json
 import os
 import sys
 from pathlib import Path
+from bountyforge.model_profiles import PROFILES
 
 PROTOCOL = "2025-11-25"
 SUPPORTED = {"2025-03-26", "2025-06-18", PROTOCOL}
@@ -50,7 +51,7 @@ TOOLS = (
     _tool("list_owned_repair_tasks", "List fixed owned DEVELOPMENT tasks, not a hidden evaluation."),
     _tool("prepare_owned_repair", "Reproduce an exact owned defect, then hand off source and authorized AST edit units. No tests or answers are returned.",
           {"case_id":{"type":"string","maxLength":64},
-           "model_profile":{"type":"string","enum":["QWEN_1_5B","QWEN_7B"]},
+           "model_profile":{"type":"string","enum":list(PROFILES)},
            "engine":{"type":"string","enum":["QWEN_LOCAL","CODEX_AGENT"]}},
           ["case_id","engine"], stateful=True),
     _tool("submit_owned_repair", "Verify a Codex-session candidate with existing validators and two isolated Docker observations. No delivery.",
@@ -73,7 +74,7 @@ PROPOSAL = TOOLS[8]['inputSchema']['properties']['proposal']
 TOOLS += (
     _tool('create_owned_queue','Idempotently enqueue up to five fixed owned tasks. Four batches per store; no scheduling or customer intake.',
           {'batch_id':{'type':'string','maxLength':48},'engine':{'type':'string','enum':['CODEX_AGENT','QWEN_LOCAL']},
-           'model_profile':{'type':'string','enum':['QWEN_1_5B','QWEN_7B']},
+           'model_profile':{'type':'string','enum':list(PROFILES)},
            'case_ids':{'type':'array','minItems':1,'maxItems':5,'items':{'type':'string','maxLength':64}}},
           ['batch_id','engine','case_ids'],stateful=True),
     _tool('claim_owned_queue','Lease one owned task globally and reproduce its baseline. Codex must remain active to generate a patch.',

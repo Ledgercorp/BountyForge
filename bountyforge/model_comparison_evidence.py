@@ -47,17 +47,21 @@ def load_record(raw,expected_sha):
     record=strict_json(raw)
     configs=[p.read_bytes() for p in (ROOT/'experiments/phase15/comparison.json',ROOT/'experiments/phase15/comparison-v2.json',
                                     ROOT/'experiments/phase15/comparison-v3.json',ROOT/'experiments/phase15/comparison-v4.json',
-                                    ROOT/'experiments/phase15/comparison-v5-unmeasured.json') if p.is_file()]
+                                    ROOT/'experiments/phase15/comparison-v5-unmeasured.json',
+                                    ROOT/'experiments/nextgen/comparison.json') if p.is_file()]
     config_raw=next((r for r in configs if digest(r)==record.get('experiment_sha256')),None)
     if config_raw is None:raise ValueError('FROZEN_EXPERIMENT_NOT_FOUND')
     config=strict_json(config_raw)
-    if (record.get('kind')!='phase15_local_model_comparison' or record.get('receipt_sha256')!=receipt_hash(record)
+    nextgen=config_raw in [p.read_bytes() for p in [ROOT/'experiments/nextgen/comparison.json'] if p.is_file()]
+    expected_profiles=['QWEN_1_5B','QWEN35_4B','GRANITE42_3B'] if nextgen else ['QWEN_1_5B','QWEN_7B']
+    if (record.get('kind')!=('nextgen_local_model_comparison' if nextgen else 'phase15_local_model_comparison') or record.get('receipt_sha256')!=receipt_hash(record)
             or record.get('experiment_sha256')!=digest(config_raw) or record.get('frozen_experiment')!=config
             or record.get('independent_evaluation') is not False or record.get('default_replaced') is not False
             or record.get('paid_fallback') is not False or type(record.get('models')) is not list
-            or [m['model_profile'] for m in record['models']]!=list(PROFILES)[:len(record['models'])]
-            or len(record['models'])>2):raise ValueError('COMPARISON_BINDING_REJECTED')
-    if record.get('status')=='COMPLETED' and (len(record['models'])!=2 or any(
+            or config['model_profiles']!=expected_profiles
+            or [m['model_profile'] for m in record['models']]!=expected_profiles[:len(record['models'])]
+            or len(record['models'])>len(expected_profiles)):raise ValueError('COMPARISON_BINDING_REJECTED')
+    if record.get('status')=='COMPLETED' and (len(record['models'])!=len(expected_profiles) or any(
             m['status']!='COMPLETED' or len(m['jobs'])!=len(config['case_ids']) or any(j.get('result',{}).get('state') not in ('FAILED','VERIFIED')
             for j in m['jobs']) for m in record['models'])):raise ValueError('INCOMPLETE_COMPARISON_MISLABELED')
     return record
@@ -171,7 +175,7 @@ def summarize(record):
         for job in engine['jobs']:
             calls=job.get('result',{}).get('receipt',{}).get('calls',[])
             if calls:hashes.setdefault(job['case_id'],[]).append(calls[0]['prompt_sha256'])
-    return {'kind':'phase15_verified_development_model_summary','classification':'OWNED_DEVELOPMENT',
+    return {'kind':('nextgen_verified_development_model_summary' if record['kind']=='nextgen_local_model_comparison' else 'phase15_verified_development_model_summary'),'classification':'OWNED_DEVELOPMENT',
         'independent_evaluation':False,'independent_accuracy':None,'run_id':record['run_id'],'commit':record['commit'],
         'record_receipt_sha256':record['receipt_sha256'],'experiment_sha256':record['experiment_sha256'],
         'models':rows,'completion_requests_total':total,'maximum_completion_requests':maximum,

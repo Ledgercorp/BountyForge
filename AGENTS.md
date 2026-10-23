@@ -93,3 +93,14 @@ resource-blocked, not 0/3 model scores. V9 condition-expression generation was
 unit-tested afterward but is unmeasured live. The prepared V5 workflow is manual
 only and not scheduled. Preserve every frozen V1–V4 configuration and original
 artifact. All cases remain developmental; see docs/PHASE15_MODEL_COMPARISON.md.
+
+Next-generation research adds QWEN35_4B and GRANITE42_3B experimental local model
+profiles. QWEN_1_5B is still default; QWEN_LOCAL is the legacy local-engine ID,
+while the exact profile/digest identifies the actual author. There is no provider
+fallback. Three new owned maintenance cases remain developmental, never unseen.
+The manual-only nextgen workflow uses the explicit NEXTGEN_TRIAL envelope:
+4 threads, 10GiB AS, 600 aggregate CPU seconds, 240s wall, 75s requests, 256 output
+and <=1200 input tokens, two attempts/task, <=18 completion requests total.
+Legacy runtime/request defaults remain intact. No runtime replacement is allowed.
+Keep the frozen nextgen config/source/test bytes intact after inference. See
+/docs/NEXTGEN_MODEL_EVALUATION.md for provenance limitations and measured results.

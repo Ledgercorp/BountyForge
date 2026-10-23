@@ -20,10 +20,10 @@ button{cursor:pointer;background:#255d45}pre{white-space:pre-wrap;overflow-wrap:
 <h2>Repair configuration</h2>
 <label for="engine">Repair engine</label>
 <select id="engine"><option value="QWEN_LOCAL">Autonomous Qwen</option><option value="CODEX_AGENT">Codex Agent</option></select>
-<label for="model-profile">Local Qwen model</label>
-<select id="model-profile"><option value="QWEN_1_5B">Qwen Coder 1.5B — default</option><option value="QWEN_7B">Qwen Coder 7B — experimental</option></select>
+<label for="model-profile">Local model profile</label>
+<select id="model-profile"><option value="QWEN_1_5B">Qwen Coder 1.5B — default</option><option value="QWEN_7B">Qwen Coder 7B — experimental</option><option value="QWEN35_4B">Qwen3.5 4B — research</option><option value="GRANITE42_3B">IBM Granite 4.2 3B — research</option></select>
 <label for="case">Approved owned task</label>
-<select id="case"><option value="sparse-average">Sparse average</option><option value="label-order">Label order</option><option value="weighted-mix">Weighted mix</option><option value="reserve-release">Reserved-unit release</option><option value="response-normalize">Decoded API normalization</option><option value="weighted-window">Weighted time window</option></select>
+<select id="case"><option value="sparse-average">Sparse average</option><option value="label-order">Label order</option><option value="weighted-mix">Weighted mix</option><option value="reserve-release">Reserved-unit release</option><option value="response-normalize">Decoded API normalization</option><option value="weighted-window">Weighted time window</option><option value="cursor-checkpoint">Cursor checkpoint</option><option value="interval-compaction">Interval compaction</option><option value="retry-decision">HTTP retry decision</option></select>
 <p id="availability" role="status"></p>
 <pre id="configuration"></pre><button id="download" type="button">Download repair configuration</button>
 <pre id="command"></pre>

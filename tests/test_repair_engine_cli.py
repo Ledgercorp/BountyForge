@@ -23,7 +23,7 @@ class EngineCliTests(unittest.TestCase):
         self.assertEqual(p.returncode,0,p.stderr)
         data=json.loads(p.stdout)
         self.assertEqual([x['label'] for x in data['engines']],['Autonomous Qwen','Codex Agent'])
-        self.assertEqual(len(data['tasks']),15)
+        self.assertEqual(len(data['tasks']),18)
 
     def test_codex_configuration_requires_session_instead_of_launching_model(self):
         with tempfile.TemporaryDirectory() as d:

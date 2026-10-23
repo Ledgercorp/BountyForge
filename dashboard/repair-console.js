@@ -3,8 +3,8 @@
   const engines = ['QWEN_LOCAL', 'CODEX_AGENT'];
   const cases = ['sparse-average', 'label-order', 'weighted-mix', 'optional-setting', 'chunk-count', 'inclusive-window',
     'invoice-summary','event-reducer','cursor-adapter','reading-groups','retry-policy','stock-allocation',
-    'reserve-release','response-normalize','weighted-window'];
-  const profiles = ['QWEN_1_5B', 'QWEN_7B'];
+    'reserve-release','response-normalize','weighted-window','cursor-checkpoint','interval-compaction','retry-decision'];
+  const profiles = ['QWEN_1_5B', 'QWEN_7B', 'QWEN35_4B', 'GRANITE42_3B'];
   function buildConfig(engine, caseId, profile) {
     if (!engines.includes(engine) || !cases.includes(caseId)) throw Error('Unsupported owned selection');
     if (profile !== undefined && (engine !== 'QWEN_LOCAL' || !profiles.includes(profile))) throw Error('Unsupported local model profile');

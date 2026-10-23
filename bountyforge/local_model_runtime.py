@@ -12,6 +12,7 @@ import urllib.request
 
 from bountyforge.model import _NoRedirect
 from bountyforge.model_profiles import profile_spec
+from bountyforge.inference_envelopes import envelope_spec
 from bountyforge.phase8_evaluation import require_credential_free_host
 
 
@@ -20,14 +21,16 @@ def digest_file(path):
     with path.open('rb') as stream:return hashlib.file_digest(stream,'sha256').hexdigest()
 
 
-def enforce_limits():
-    for kind,cap in ((resource.RLIMIT_AS,10*1024**3),(resource.RLIMIT_CPU,180),
+def enforce_limits(envelope='LEGACY'):
+    spec=envelope_spec(envelope)
+    for kind,cap in ((resource.RLIMIT_AS,spec['address_space_bytes']),(resource.RLIMIT_CPU,spec['cpu_seconds']),
                      (resource.RLIMIT_CORE,0),(resource.RLIMIT_FSIZE,1024*1024)):
         resource.setrlimit(kind,(cap,cap))
 
 
 class LocalRuntime:
-    def __init__(self,model_profile,*,threads=None):
+    def __init__(self,model_profile,*,threads=None,resource_envelope='LEGACY'):
+        self.envelope=envelope_spec(resource_envelope)
         self.spec=profile_spec(model_profile);self.child=None;self.temporary=None;self.monitor=None
         self.threads=self.spec['threads'] if threads is None else threads
         if type(self.threads) is not int or self.threads not in self.spec['supported_cpu_threads']:
@@ -36,14 +39,16 @@ class LocalRuntime:
         self.done=threading.Event();self.log=None
         self.measurement={'model_profile':self.spec['id'],'model_sha256':self.spec['sha256'],
             'context_tokens':2048,'threads':self.threads,'address_space_limit_bytes':10*1024**3,
-            'cpu_limit_seconds':180,'wall_limit_seconds':180,'peak_rss_kib':None,'peak_address_kib':None,
+            'resource_envelope':self.envelope['id'],
+            'cpu_limit_seconds':self.envelope['cpu_seconds'],'wall_limit_seconds':self.envelope['wall_seconds'],
+            'peak_rss_kib':None,'peak_address_kib':None,
             'observed_cpu_seconds':None,'cpu_observation':'Linux process counters at last sample before shutdown',
             'server_stopped':False,'wall_limit_reached':False}
 
     def _monitor(self):
         while not self.done.wait(0.5):
             if self.child.poll() is not None:return
-            if time.monotonic()-self.started>180:
+            if time.monotonic()-self.started>self.envelope['wall_seconds']:
                 self.measurement['wall_limit_reached']=True
                 try:self.child.kill()
                 except ProcessLookupError:pass
@@ -75,7 +80,7 @@ class LocalRuntime:
             self.started=time.monotonic()
             self.child=subprocess.Popen([str(binary),'-m',str(model),'--host','127.0.0.1','--port','8080',
                     '-t',str(self.threads),'-c','2048','-np','1'],env={'PATH':'/usr/local/bin:/usr/bin:/bin','LD_LIBRARY_PATH':str(binary.parent)},
-                    stdout=self.log,stderr=self.log,preexec_fn=enforce_limits)
+                    stdout=self.log,stderr=self.log,preexec_fn=lambda:enforce_limits(self.envelope['id']))
             self.monitor=threading.Thread(target=self._monitor,daemon=True);self.monitor.start()
             opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),_NoRedirect())
             deadline=time.monotonic()+60

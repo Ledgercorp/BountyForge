@@ -18,13 +18,15 @@ class ProfiledStatementModel(NativeStatementModel):
     protocol='qwen_json_safe_grammar_v9_condition_expression'
     compact_wire=True
 
-    def __init__(self,*,prompt_token_limit=1898,**kwargs):
+    def __init__(self,*,prompt_token_limit=1898,disable_thinking=False,**kwargs):
         if type(prompt_token_limit) is not int or not 1<=prompt_token_limit<=1898:raise ValueError('Bounded input-token ceiling required')
+        if type(disable_thinking) is not bool:raise ValueError('BOOLEAN_THINKING_MODE_REQUIRED')
+        self.disable_thinking=disable_thinking
         super().__init__(**kwargs);self.prompt_token_limit=prompt_token_limit
 
     def complete_line(self,system,user,max_tokens=150):
         self.last_call={'completion_requests':0,'tokenized_prompt_tokens':None,'input_token_limit':self.prompt_token_limit}
-        if (type(user) is not str or len(user.encode())>3600 or type(max_tokens) is not int or not 1<=max_tokens<=150):
+        if (type(user) is not str or len(user.encode())>3600 or type(max_tokens) is not int or not 1<=max_tokens<=self.maximum_completion_tokens):
             raise ValueError('Bounded statement request required')
         task=json.loads(user);schema=statement_schema(task['source'],task['edit_units'])
         kinds={u['line']:u['kind'] for u in task['edit_units']}
@@ -33,6 +35,8 @@ class ProfiledStatementModel(NativeStatementModel):
         return self._complete_bounded_schema(COMPACT_SYSTEM,user,max_tokens,schema,self.protocol)
 
     def _post_native(self,path,body):
+        if path=='/apply-template' and self.disable_thinking:
+            body={**body,'chat_template_kwargs':{'enable_thinking':False}}
         if path=='/completion':
             self.failure_stage='tokenization'
             tokens=super()._post_native('/tokenize',{'content':body['prompt'],'add_special':False,'parse_special':True})
@@ -43,7 +47,13 @@ class ProfiledStatementModel(NativeStatementModel):
             if len(values)>self.prompt_token_limit or len(values)+body['n_predict']>2048:raise ProfiledInferenceError('CONTEXT_LIMIT_EXCEEDED')
             self.dispatched_completions=1
         self.failure_stage=path.strip('/').replace('-','_')
-        return super()._post_native(path,body)
+        value=super()._post_native(path,body)
+        if path=='/apply-template' and self.disable_thinking:
+            prompt=value.get('prompt') if type(value) is dict else None
+            if type(prompt) is not str:raise ProfiledInferenceError('THINKING_TEMPLATE_NOT_VERIFIED')
+            tail=prompt.rsplit('<|im_start|>assistant',1)[-1]
+            if tail.count('<think>')!=tail.count('</think>'):raise ProfiledInferenceError('THINKING_TEMPLATE_NOT_VERIFIED')
+        return value
 
     def _complete_bounded_schema(self,*args,**kwargs):
         self.dispatched_completions=0;self.tokenized_prompt_tokens=None;self.failure_stage='request_validation'

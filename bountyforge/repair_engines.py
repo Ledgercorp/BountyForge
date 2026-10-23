@@ -23,6 +23,7 @@ from bountyforge.drafts import DraftRejected
 from bountyforge.line_scope import infer_editable_lines
 from bountyforge.model import _NoRedirect
 from bountyforge.model_profiles import DEFAULT_PROFILE, PROFILES, profile_spec, select_profile, endpoint_matches
+from bountyforge.inference_envelopes import envelope_spec
 from bountyforge.profiled_qwen import ProfiledStatementModel as LocalModel, ProfiledInferenceError
 from bountyforge.repair_intelligence import (failure_feedback, source_context, compact_model_prompt as model_prompt,
     revision_proposal, validate_local_dependencies)
@@ -40,6 +41,8 @@ MAINTENANCE = ROOT / 'fixtures/phase14'
 MAINTENANCE_SHA256 = 'f698a6c04a000b8adc29508b74006bab331532979a2dd76c0a4517feb98e487a'
 COMPARISON = ROOT / 'fixtures/phase15'
 COMPARISON_SHA256 = '5a8332f4c052b7b0cd70b89c7ac097ad4c7d59391c3a0de1e0c9c0014ddd77c9'
+NEXTGEN=ROOT/'fixtures/nextgen'
+NEXTGEN_SHA256='f35fba899e532cd4ac48599b8eb4536f01892bfcf87dd1fb853b07ee2364035c'
 ENGINES = ('QWEN_LOCAL', 'CODEX_AGENT')
 MAX_ATTEMPTS = 2
 TASK_TTL = 600
@@ -84,7 +87,8 @@ def receipt_hash(receipt):
 def catalog():
     verify_core()  # Preserve every previously frozen source/security pin.
     return (_catalog(CATALOG, MANIFEST_SHA256) + _catalog(DEVELOPMENT, DEVELOPMENT_SHA256)
-            + _catalog(MAINTENANCE, MAINTENANCE_SHA256) + _catalog(COMPARISON, COMPARISON_SHA256))
+            + _catalog(MAINTENANCE, MAINTENANCE_SHA256) + _catalog(COMPARISON, COMPARISON_SHA256)
+            + _catalog(NEXTGEN,NEXTGEN_SHA256))
 
 
 def _catalog(directory, expected):
@@ -111,7 +115,8 @@ def _catalog(directory, expected):
 def source_directory(spec):
     # The directory comes only from pinned manifest membership, never caller data.
     for directory, expected in ((CATALOG,MANIFEST_SHA256),(DEVELOPMENT,DEVELOPMENT_SHA256),
-                                (MAINTENANCE,MAINTENANCE_SHA256),(COMPARISON,COMPARISON_SHA256)):
+                                (MAINTENANCE,MAINTENANCE_SHA256),(COMPARISON,COMPARISON_SHA256),
+                                (NEXTGEN,NEXTGEN_SHA256)):
         if spec in _catalog(directory,expected):return directory/spec['id']
     raise RepairRejected('UNKNOWN_OWNED_SOURCE')
 
@@ -122,13 +127,13 @@ def task_inventory():
             for item in catalog()]
 
 
-def qwen_availability(model_profile=DEFAULT_PROFILE):
+def qwen_availability(model_profile=DEFAULT_PROFILE,*,resource_envelope='LEGACY'):
     """Admit only the existing pinned bootstrap's assets and loopback process.
 
     No downloads, process launches, remote requests or credential inspection.
     Health alone never establishes runtime/model identity.
     """
-    try:selected=profile_spec(model_profile)
+    try:selected=profile_spec(model_profile);envelope=envelope_spec(resource_envelope)
     except ValueError:return False
     base = Path.home()/'.cache/bountyforge'
     model = base/'models'/selected['filename']
@@ -161,13 +166,13 @@ def qwen_availability(model_profile=DEFAULT_PROFILE):
                         and args[args.index('-np')+1] == '1'):
                     with (proc/'exe').open('rb') as stream:
                         found = hashlib.file_digest(stream, 'sha256').hexdigest() == binary_sha
-                    if found and model_profile=='QWEN_7B':
+                    if found and (model_profile!=DEFAULT_PROFILE or resource_envelope!='LEGACY'):
                         # The experimental profile requires the measured resource envelope.
                         limits={kind:resource.prlimit(int(proc.name),kind) for kind in
                                 (resource.RLIMIT_AS,resource.RLIMIT_CPU,resource.RLIMIT_CORE,resource.RLIMIT_FSIZE)}
                         found=(args[args.index('-c')+1]=='2048' and args[args.index('-t')+1] in ('2','4')
                                and all(0<=limits[k][1]<=cap for k,cap in
-                                   ((resource.RLIMIT_AS,10*1024**3),(resource.RLIMIT_CPU,180),
+                                   ((resource.RLIMIT_AS,10*1024**3),(resource.RLIMIT_CPU,envelope['cpu_seconds']),
                                     (resource.RLIMIT_CORE,0),(resource.RLIMIT_FSIZE,1024*1024))))
                     if found:
                         break
@@ -248,9 +253,11 @@ def observation_summary(value):
 
 class RepairService:
     """Process-local capability store. MCP callers cannot inject its verifier."""
-    def __init__(self, *, verifier=None, model_factory=None):
+    def __init__(self, *, verifier=None, model_factory=None,prompt_factory=None,resource_envelope='LEGACY'):
         self.verifier = verifier if verifier is not None else OwnedVerifier()
         self.model_factory = model_factory
+        self.prompt_factory=prompt_factory or model_prompt
+        self.resource_envelope=envelope_spec(resource_envelope)['id']
         self.tasks = {}
 
     def prepare(self, case_id, engine, model_profile=None):
@@ -391,16 +398,18 @@ class RepairService:
     def run_qwen(self, task_id, revision):
         task=self._get(task_id,revision,'QWEN_LOCAL')
         identity={k:task['public'][k] for k in ('model_profile','model_sha256')}
-        if not qwen_availability(identity['model_profile']):
+        if not qwen_availability(identity['model_profile'],**(
+                {'resource_envelope':self.resource_envelope} if self.resource_envelope!='LEGACY' else {})):
             task['public']['state']='BLOCKED'
             return {**identity,'engine':'QWEN_LOCAL','state':'BLOCKED','outcome':'QWEN_UNAVAILABLE',
                     'model_calls':0,'paid_fallback':False,'independently_verified':False}
         model=(self.model_factory or LocalModel)(timeout_seconds=45,**(
-            {'prompt_token_limit':profile_spec(identity['model_profile'])['max_prompt_tokens']} if self.model_factory is None else {}))
+            {'prompt_token_limit':profile_spec(identity['model_profile'])['max_prompt_tokens'],
+             'disable_thinking':profile_spec(identity['model_profile']).get('thinking_disabled',False)} if self.model_factory is None else {}))
         calls=[]; started=time.monotonic()
         while len(task['attempts'])<MAX_ATTEMPTS:
             previous=task['attempts'][-1] if task['attempts'] else None
-            try:prompt=model_prompt(task['public'],previous)
+            try:prompt=self.prompt_factory(task['public'],previous)
             except ValueError:
                 task['public']['state']='BLOCKED'
                 return {**identity,'engine':'QWEN_LOCAL','state':'BLOCKED','outcome':'CONTEXT_BUDGET_EXHAUSTED',
@@ -408,7 +417,7 @@ class RepairService:
             began=time.monotonic()
             call={'response':None,'prompt_sha256':digest(prompt.encode()),'prompt':strict_json(prompt)};calls.append(call)
             try:
-                response=model.complete_line(SYSTEM,prompt,max_tokens=150)
+                response=model.complete_line(SYSTEM,prompt,max_tokens=envelope_spec(self.resource_envelope)['completion_tokens'])
                 if type(response) is not str or len(response.encode())>3000:
                     raise RuntimeError('Invalid bounded response')
                 call.update(response=response,response_sha256=digest(response.encode()),

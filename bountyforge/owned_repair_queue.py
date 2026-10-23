@@ -167,7 +167,7 @@ class OwnedRepairQueue:
         service=self.factory()
         try:
             selected=select_profile(batch['engine'],batch['model_profile'])
-            task=service.prepare(row['case_id'],batch['engine'],**({'model_profile':selected} if selected=='QWEN_7B' else {}))
+            task=service.prepare(row['case_id'],batch['engine'],**({'model_profile':selected} if selected is not None else {}))
         except (ValueError,RuntimeError,OSError) as exc:
             outcome=(str(exc) if isinstance(exc,RepairUnavailable) and str(exc) in {
                 'SANDBOX_ADMISSION_UNAVAILABLE','BASELINE_OBSERVATION_UNAVAILABLE'}

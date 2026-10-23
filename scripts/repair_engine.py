@@ -47,8 +47,8 @@ def main(argv=None):
             choice=sys.stdin.readline(8).strip()
             opts.engine={'1':'QWEN_LOCAL','2':'CODEX_AGENT'}.get(choice)
             if opts.engine=='QWEN_LOCAL' and opts.model_profile is None:
-                print('1. Qwen 1.5B (default)\n2. Qwen 7B (experimental)\nSelect model [1/2]:',file=sys.stderr,flush=True)
-                opts.model_profile={'1':'QWEN_1_5B','2':'QWEN_7B'}.get(sys.stdin.readline(8).strip(),'INVALID')
+                print('1. Qwen 1.5B (default)\n2. Qwen 7B (experimental)\n3. Qwen3.5 4B (research)\n4. Granite 4.2 3B (research)\nSelect model [1/2/3/4]:',file=sys.stderr,flush=True)
+                opts.model_profile={'1':'QWEN_1_5B','2':'QWEN_7B','3':'QWEN35_4B','4':'GRANITE42_3B'}.get(sys.stdin.readline(8).strip(),'INVALID')
             print('Select owned case: '+', '.join(item['case_id'] for item in task_inventory()),file=sys.stderr,flush=True)
             opts.case_id=sys.stdin.readline(66).strip()
         if opts.engine not in ENGINES or opts.case_id not in {item['case_id'] for item in task_inventory()}:

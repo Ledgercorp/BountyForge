@@ -8,4 +8,5 @@ reports/
 .DS_Store
 .env
 .env.*
+.bountyforge-owned-queue/
 !*.example

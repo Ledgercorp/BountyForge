@@ -14,7 +14,7 @@ from pathlib import Path
 PROTOCOL = "2025-11-25"
 SUPPORTED = {"2025-03-26", "2025-06-18", PROTOCOL}
 NAME = "bountyforge-owned-review"
-VERSION = "0.2.0"
+VERSION = "0.3.0"
 MAX_REQUEST = 8192
 MAX_REQUESTS = 100
 ROOT = Path(__file__).resolve().parents[1]
@@ -47,7 +47,7 @@ TOOLS = (
           {"case_id": {"type": "string", "maxLength": 64}}, ["case_id"]),
     _tool("preview_owned_review_package", "Inspect only the static owned patch-review manifest, no files written."),
     _tool("list_repair_engines", "Select Autonomous Qwen or session-driven Codex Agent; no provider fallback."),
-    _tool("list_owned_repair_tasks", "List exact Phase12 owned DEVELOPMENT tasks, not a hidden evaluation."),
+    _tool("list_owned_repair_tasks", "List fixed owned DEVELOPMENT tasks, not a hidden evaluation."),
     _tool("prepare_owned_repair", "Reproduce an exact owned defect, then hand off source and authorized AST edit units. No tests or answers are returned.",
           {"case_id":{"type":"string","maxLength":64},
            "engine":{"type":"string","enum":["QWEN_LOCAL","CODEX_AGENT"]}},
@@ -65,8 +65,34 @@ TOOLS = (
            "revision":{"type":"integer","minimum":0,"maximum":1}},
           ["task_id","revision"], stateful=True),
 )
+QUEUE_LEASE = {'batch_id':{'type':'string','maxLength':48},
+               'job_id':{'type':'string','maxLength':32},
+               'lease_token':{'type':'string','maxLength':32}}
+PROPOSAL = TOOLS[8]['inputSchema']['properties']['proposal']
+TOOLS += (
+    _tool('create_owned_queue','Idempotently enqueue up to five fixed owned tasks. Four batches per store; no scheduling or customer intake.',
+          {'batch_id':{'type':'string','maxLength':48},'engine':{'type':'string','enum':['CODEX_AGENT','QWEN_LOCAL']},
+           'case_ids':{'type':'array','minItems':1,'maxItems':5,'items':{'type':'string','maxLength':64}}},
+          ['batch_id','engine','case_ids'],stateful=True),
+    _tool('claim_owned_queue','Lease one owned task globally and reproduce its baseline. Codex must remain active to generate a patch.',
+          {'batch_id':{'type':'string','maxLength':48}},['batch_id'],stateful=True),
+    _tool('submit_owned_queue','Submit a Codex candidate under its live lease and revision. Durable two-attempt budget; never bypasses verification.',
+          {**QUEUE_LEASE,'revision':{'type':'integer','minimum':0,'maximum':1},'proposal':PROPOSAL},
+          [*QUEUE_LEASE,'revision','proposal'],stateful=True),
+    _tool('run_owned_queue_qwen','Execute only the selected QWEN_LOCAL queue job with at most two local requests; no provider fallback.',
+          QUEUE_LEASE,list(QUEUE_LEASE),stateful=True),
+    _tool('heartbeat_owned_queue','Renew a live lease up to its absolute ten-minute job deadline.',
+          QUEUE_LEASE,list(QUEUE_LEASE),stateful=True),
+    _tool('release_owned_queue','Release a lease after interruption. A second claim requires fresh admission and baseline reproduction.',
+          QUEUE_LEASE,list(QUEUE_LEASE),stateful=True),
+    _tool('owned_queue_status','Read bounded local SQLite progress without exposing lease capabilities.',
+          {'batch_id':{'type':'string','maxLength':48}},['batch_id'],stateful=True),
+    _tool('stop_owned_queue','Irreversibly stop a batch and revoke its leases. In-flight bounded work may finish but cannot commit success.',
+          {'batch_id':{'type':'string','maxLength':48}},['batch_id'],stateful=True),
+)
 BY_NAME = {t["name"]: t for t in TOOLS}
 _REPAIRS = None
+_QUEUE = None
 
 
 class Rejected(ValueError):
@@ -144,8 +170,22 @@ def _receipt():
 
 
 def call_tool(name, args):
-    global _REPAIRS
+    global _REPAIRS, _QUEUE
     _schema_args(name, args)
+    if name in {'create_owned_queue','claim_owned_queue','submit_owned_queue','run_owned_queue_qwen',
+                'heartbeat_owned_queue','release_owned_queue','owned_queue_status','stop_owned_queue'}:
+        from bountyforge.owned_repair_queue import OwnedRepairQueue
+        from bountyforge.repair_engines import RepairRejected
+        if _QUEUE is None:_QUEUE=OwnedRepairQueue()
+        methods={'create_owned_queue':'create','claim_owned_queue':'claim','submit_owned_queue':'submit',
+                 'run_owned_queue_qwen':'run_qwen','heartbeat_owned_queue':'heartbeat',
+                 'release_owned_queue':'release','owned_queue_status':'status','stop_owned_queue':'stop'}
+        try:return getattr(_QUEUE,methods[name])(**args)
+        except RepairRejected as exc:
+            import re
+            code=str(exc)
+            if not re.fullmatch('[A-Z_]{1,80}',code):code='OWNED_QUEUE_REQUEST_REJECTED'
+            return {'state':'REJECTED','outcome':code,'paid_fallback':False,'delivery_authorized':False}
     if name in {'list_repair_engines','list_owned_repair_tasks','prepare_owned_repair',
                 'submit_owned_repair','run_owned_qwen'}:
         from bountyforge.repair_engines import RepairService, RepairUnavailable, engine_inventory, task_inventory

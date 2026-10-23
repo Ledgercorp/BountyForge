@@ -1,0 +1,27 @@
+{
+  "additional_spending_usd": 0,
+  "agent_can_read_mode_000_owned_probe": false,
+  "agent_can_restore_permissions_and_read_owned_probe": true,
+  "blocker": "No separately controlled verifier host or identity inaccessible to this agent is configured. Local MCP redaction is not evaluation blindness.",
+  "classification": "OWNED_DEVELOPMENT",
+  "external_verifier_admitted": false,
+  "independent_evaluation": false,
+  "kind": "phase13_evaluation_separation_assessment",
+  "official_references": [
+    "https://developers.openai.com/codex/app-server/",
+    "https://developers.openai.com/codex/sdk/",
+    "https://developers.openai.com/codex/mcp/"
+  ],
+  "same_agent_checkout_contains_development_tests": true,
+  "unattended_codex_probe": {
+    "account_read_error": null,
+    "account_type": "chatgpt",
+    "additional_model_turns": 0,
+    "installed_version": "0.163.0",
+    "plan_type": "unknown",
+    "rate_limits_available": false,
+    "rate_limits_read_error": -32603,
+    "requires_openai_auth": true,
+    "unattended_zero_cost_admitted": false
+  }
+}

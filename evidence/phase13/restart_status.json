@@ -1,0 +1,37 @@
+{
+  "additional_agent_turns": 0,
+  "all_three_verified": true,
+  "cross_cloud_session_storage_verified": false,
+  "jobs": [
+    {
+      "attempts": 1,
+      "case_id": "chunk-count",
+      "claims": 1,
+      "id": "75b96f3955d4491c91908ca56252c504",
+      "outcome": "VERIFIED",
+      "receipt_sha256": "f3d12000f1f149953115c2723dac983ca097b1ef8fc25ea75eb9f585214a2157",
+      "state": "VERIFIED"
+    },
+    {
+      "attempts": 1,
+      "case_id": "optional-setting",
+      "claims": 1,
+      "id": "32f5f188bbff4158b4228bdea77c04a0",
+      "outcome": "VERIFIED",
+      "receipt_sha256": "182afcbe14090b1c65a9eddd92c13dacee0200d259154381371f0d1ac1e5788a",
+      "state": "VERIFIED"
+    },
+    {
+      "attempts": 1,
+      "case_id": "inclusive-window",
+      "claims": 1,
+      "id": "867041f2d6b44a458cdad42813f1b1d5",
+      "outcome": "VERIFIED",
+      "receipt_sha256": "85638d0b2a1a1d389862ecf9b66780817b13ce2bab42d81ae24006a89be8b32c",
+      "state": "VERIFIED"
+    }
+  ],
+  "kind": "phase13_restart_verified_receipt_validation",
+  "new_model_generations": 0,
+  "private_execution_admitted": false
+}

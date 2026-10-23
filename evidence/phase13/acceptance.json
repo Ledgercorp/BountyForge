@@ -1,0 +1,63 @@
+{
+  "additional_spending_usd": 0,
+  "checkpoint_commit": "dd7b3e4bf7878b280a76d7928e6a33ebd72c1ce2",
+  "classification": "OWNED_DEVELOPMENT",
+  "codex_development": {
+    "active_session_tokens": null,
+    "additional_model_provider_requests_started": 0,
+    "additional_model_turns_started": 0,
+    "attempted_tasks": 3,
+    "elapsed_seconds": 225.99,
+    "fresh_replay_test_methods": 18,
+    "further_separate_process_test_methods": 18,
+    "generated_proposals": 3,
+    "regressions": 0,
+    "targeted_test_methods": 18,
+    "unauthorized_file_changes": 0,
+    "verified_repairs": 3
+  },
+  "codex_requires_active_session": true,
+  "commercial_launch_authorized": false,
+  "cross_cloud_session_storage_verified": false,
+  "external_operations": [
+    "Read-only GitHub metadata and official documentation",
+    "Draft branch evidence publication"
+  ],
+  "file_sha256": {
+    "blackbox_acceptance.json": "b9bb47a50794ef68509d30f71981fa4092dd15c443c6c5a8f10248aaca4c931a",
+    "codex_queue_session.json": "42a7be644b2f566276f1205959aa25600f5a26bc23e69f440ba3210d68f5b488",
+    "environment_admission.json": "685c51f74c72ffd4230518ebcc2b3b7f7a1fbca426170c2cfc6b833cde901cc2",
+    "independent_replay.json": "a3c68f7060588773865f15f4a75e1a334d9e13c0f4c5412497c0398af97bac33",
+    "restart_status.json": "375c3e6f05beb45d07cb324181db7caaed71a919afb271131c8f3272c2fadbd4"
+  },
+  "frozen_core_unchanged": true,
+  "historical_harness": {
+    "executed": 10,
+    "failed": 0,
+    "passed": 10
+  },
+  "independent_unseen_accuracy": null,
+  "kind": "phase13_engineering_acceptance",
+  "local_regression": {
+    "executed": 659,
+    "failed": 0,
+    "passed": 650,
+    "skipped": 9
+  },
+  "native_mcp_blackbox": {
+    "checks": 22,
+    "new_model_generations": 0,
+    "passed": 22
+  },
+  "owner_console_node": {
+    "executed": 7,
+    "failed": 0,
+    "passed": 7
+  },
+  "private_execution_admitted": false,
+  "production_deployed": false,
+  "qwen_comparison_status": "Prepared, live evidence pending",
+  "revenue_usd": 0,
+  "scheduling_active": false,
+  "unattended_codex_admitted": false
+}

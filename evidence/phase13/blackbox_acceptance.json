@@ -1,0 +1,436 @@
+{
+  "accuracy_claim": false,
+  "additional_spending_usd": 0,
+  "all_checks_passed": true,
+  "checks": {
+    "arbitrary_path_refused": true,
+    "capability_patch_and_attempt_budget": true,
+    "controlled_mcp_termination": true,
+    "customer_source_refused": true,
+    "duplicate_enqueue_idempotent": true,
+    "engine_identity_fenced": true,
+    "exact_eighteen_tools": true,
+    "failed_tests_not_verified": true,
+    "heartbeat": true,
+    "old_writer_fenced_after_recovery": true,
+    "path_only_environment": true,
+    "recovered_candidate_requires_fresh_replay": true,
+    "recovery_uses_new_lease_and_preparation": true,
+    "restart_cannot_reuse_process_capability": true,
+    "restart_preserves_terminal_and_active_state": true,
+    "separate_process_stop_control": true,
+    "single_active_worker": true,
+    "stale_revision_refused": true,
+    "stop_revokes_candidate_submission": true,
+    "stopped_batch_cannot_reclaim": true,
+    "unavailable_qwen_no_inference_or_fallback": true,
+    "unknown_delivery_tool_refused": true
+  },
+  "elapsed_seconds": 74.403,
+  "first_client_exit": 0,
+  "kind": "phase13_native_codex_queue_blackbox",
+  "new_model_generations": 0,
+  "observations": [
+    {
+      "response": {
+        "id": 4,
+        "result": {
+          "content": [
+            {
+              "text": "{\"batch_id\":\"phase13-blackbox\",\"created\":true,\"engine\":\"CODEX_AGENT\",\"jobs\":2}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "create_owned_queue"
+    },
+    {
+      "response": {
+        "id": 5,
+        "result": {
+          "content": [
+            {
+              "text": "{\"batch_id\":\"phase13-blackbox\",\"created\":false}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "create_owned_queue"
+    },
+    {
+      "response": {
+        "id": 6,
+        "result": {
+          "content": [
+            {
+              "text": "Owned-only tool request rejected",
+              "type": "text"
+            }
+          ],
+          "isError": true
+        }
+      },
+      "tool": "create_owned_queue"
+    },
+    {
+      "response": {
+        "error": {
+          "code": -32602,
+          "message": "Unknown tool"
+        },
+        "id": 7
+      },
+      "tool": "deliver_customer_patch"
+    },
+    {
+      "response": {
+        "id": 8,
+        "result": {
+          "content": [
+            {
+              "text": "{\"attempts_remaining\":2,\"attempts_used\":0,\"batch_id\":\"phase13-blackbox\",\"job_id\":\"be555fa6f1ef4f14ba7cbc5907c0ad07\",\"lease_seconds\":180,\"lease_token\":\"61bf139fa3f449d8aa1636bec7b107e8\",\"previous_receipt\":null,\"task\":{\"approved_file\":\"subject.py\",\"case_id\":\"chunk-count\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"description\":\"Return the number of nonempty chunks needed for count items at a positive chunk size, including any partial final chunk. Zero items require zero chunks.\",\"edit_units\":[{\"bindings\":[],\"end_line\":2,\"kind\":\"condition\",\"line\":2},{\"bindings\":[],\"end_line\":4,\"kind\":\"statement\",\"line\":4},{\"bindings\":[],\"end_line\":3,\"kind\":\"statement\",\"line\":3}],\"editable_lines\":[2,3,4],\"engine\":\"CODEX_AGENT\",\"independent_evaluation\":false,\"max_attempts\":2,\"proposal_protocol\":\"ast_statement_v1\",\"revision\":0,\"source\":\"def chunk_count(count, size):\\n    if count < 0 or size <= 0:\\n        raise ValueError(\\\"invalid chunk dimensions\\\")\\n    return count // size\\n\",\"source_sha256\":\"c3c646c84eb283dad12c1dbe142ab29a80a5b492a82357f3f152ef32525be1af\",\"state\":\"AWAITING_CODEX_CANDIDATE\",\"target_symbol\":\"chunk_count\",\"task_id\":\"aa8629ad9cde43aa9c69e3519f38784e\",\"tests_sha256\":\"d009d0d85f0ee63cbe82f9e479b043d451488323eb48468030944c6f72f47b96\"}}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "claim_owned_queue"
+    },
+    {
+      "response": {
+        "id": 9,
+        "result": {
+          "content": [
+            {
+              "text": "{\"outcome\":\"WORKER_BUSY\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "claim_owned_queue"
+    },
+    {
+      "response": {
+        "id": 10,
+        "result": {
+          "content": [
+            {
+              "text": "{\"lease_seconds\":179,\"outcome\":\"LEASE_RENEWED\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "heartbeat_owned_queue"
+    },
+    {
+      "response": {
+        "id": 11,
+        "result": {
+          "content": [
+            {
+              "text": "Owned-only tool request rejected",
+              "type": "text"
+            }
+          ],
+          "isError": true
+        }
+      },
+      "tool": "submit_owned_queue"
+    },
+    {
+      "response": {
+        "id": 12,
+        "result": {
+          "content": [
+            {
+              "text": "{\"attempts_used\":1,\"delivery_authorized\":false,\"independent_evaluation\":false,\"job_id\":\"be555fa6f1ef4f14ba7cbc5907c0ad07\",\"receipt\":{\"attempt\":1,\"authorship_basis\":\"session_submitted_candidate\",\"authorship_identity_attested\":false,\"candidate_sha256\":\"7b1ddf4fbbb8a07dc00b159369824aaaac662aff3389c72ca68bd37718da301a\",\"case_id\":\"chunk-count\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"diagnostic\":\"Owned regression failed; follow the public repair contract\",\"diff\":\"--- a/subject.py\\n+++ b/subject.py\\n@@ -1,4 +1,4 @@\\n def chunk_count(count, size):\\n     if count < 0 or size <= 0:\\n         raise ValueError(\\\"invalid chunk dimensions\\\")\\n-    return count // size\\n+    return 0\\n\",\"engine\":\"CODEX_AGENT\",\"failure_stage\":\"targeted_tests\",\"image\":\"python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590\",\"independent_evaluation\":false,\"independently_verified\":false,\"kind\":\"owned_dual_engine_verification\",\"outcome\":\"TEST_FAILED\",\"paid_fallback\":false,\"previous_receipt_sha256\":null,\"proposal\":{\"changes\":[{\"line\":4,\"new\":\"return 0\"}]},\"proposal_sha256\":\"4da6f6dbe3d9093982f7b998dcce83debffce5be3757c63c41f88f4378e24abd\",\"receipt_sha256\":\"74781ac859ad2d83d529b40c7a571e78ac36288337020b87b7853376798c50fc\",\"revision\":1,\"runtime_admission\":{\"capabilities_empty\":true,\"cleanup_verified\":true,\"cpu_pressure_enforced\":true,\"cpu_quota_verified\":true,\"docker_socket_absent\":true,\"image_digest\":\"sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590\",\"loopback_inference_unreachable\":true,\"memory_limit_enforced\":true,\"network_denied\":true,\"no_new_privileges\":true,\"output_bounded\":true,\"pid_limit_verified\":true,\"pid_pressure_enforced\":true,\"root_writes_denied\":true,\"seccomp_active\":true,\"secrets_absent\":true,\"source_writes_denied\":true,\"swap_disabled\":true,\"tmpfs_bounded_noexec\":true,\"uid_unprivileged\":true,\"untrusted_execution_certified\":false,\"wall_clock_enforced\":true},\"runtime_admission_sha256\":\"4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108\",\"schema\":1,\"signature_verified\":false,\"source_sha256\":\"c3c646c84eb283dad12c1dbe142ab29a80a5b492a82357f3f152ef32525be1af\",\"state\":\"REVISION_REQUIRED\",\"targeted\":{\"exit_code\":1,\"output_sha256\":\"9ee6da56e04c72e5da7fd96fbc086e00aa998888ff385a91138f1d84773d1292\",\"passed\":false,\"sandbox\":\"digest_pinned_docker_no_network_read_only_no_privileges\",\"tests_run\":6},\"task_id\":\"aa8629ad9cde43aa9c69e3519f38784e\",\"tests_sha256\":\"d009d0d85f0ee63cbe82f9e479b043d451488323eb48468030944c6f72f47b96\"},\"state\":\"LEASED\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "submit_owned_queue"
+    },
+    {
+      "response": {
+        "id": 13,
+        "result": {
+          "content": [
+            {
+              "text": "{\"delivery_authorized\":false,\"outcome\":\"STALE_REVISION\",\"paid_fallback\":false,\"state\":\"REJECTED\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "submit_owned_queue"
+    },
+    {
+      "response": {
+        "id": 14,
+        "result": {
+          "content": [
+            {
+              "text": "{\"attempts_used\":2,\"delivery_authorized\":false,\"independent_evaluation\":false,\"job_id\":\"be555fa6f1ef4f14ba7cbc5907c0ad07\",\"receipt\":{\"attempt\":2,\"authorship_basis\":\"session_submitted_candidate\",\"authorship_identity_attested\":false,\"case_id\":\"chunk-count\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"diagnostic\":\"New execution capability outside bounded profile\",\"engine\":\"CODEX_AGENT\",\"failure_stage\":\"source_validation\",\"image\":\"python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590\",\"independent_evaluation\":false,\"independently_verified\":false,\"kind\":\"owned_dual_engine_verification\",\"outcome\":\"SOURCE_REJECTED\",\"paid_fallback\":false,\"previous_receipt_sha256\":\"74781ac859ad2d83d529b40c7a571e78ac36288337020b87b7853376798c50fc\",\"proposal\":{\"changes\":[{\"line\":4,\"new\":\"import os\"}]},\"proposal_sha256\":\"491afb586fbff1ed982ccc6f807814765c5dc3328f1c5d770ce5f36214e51de0\",\"receipt_sha256\":\"f3074adc7dfa0fa26f6ccbfe768c2b180522c52d6900879dca7c84ac034a1d59\",\"revision\":2,\"runtime_admission\":{\"capabilities_empty\":true,\"cleanup_verified\":true,\"cpu_pressure_enforced\":true,\"cpu_quota_verified\":true,\"docker_socket_absent\":true,\"image_digest\":\"sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590\",\"loopback_inference_unreachable\":true,\"memory_limit_enforced\":true,\"network_denied\":true,\"no_new_privileges\":true,\"output_bounded\":true,\"pid_limit_verified\":true,\"pid_pressure_enforced\":true,\"root_writes_denied\":true,\"seccomp_active\":true,\"secrets_absent\":true,\"source_writes_denied\":true,\"swap_disabled\":true,\"tmpfs_bounded_noexec\":true,\"uid_unprivileged\":true,\"untrusted_execution_certified\":false,\"wall_clock_enforced\":true},\"runtime_admission_sha256\":\"4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108\",\"schema\":1,\"signature_verified\":false,\"source_sha256\":\"c3c646c84eb283dad12c1dbe142ab29a80a5b492a82357f3f152ef32525be1af\",\"state\":\"EXHAUSTED\",\"task_id\":\"aa8629ad9cde43aa9c69e3519f38784e\",\"tests_sha256\":\"d009d0d85f0ee63cbe82f9e479b043d451488323eb48468030944c6f72f47b96\"},\"state\":\"FAILED\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "submit_owned_queue"
+    },
+    {
+      "response": {
+        "id": 15,
+        "result": {
+          "content": [
+            {
+              "text": "{\"attempts_remaining\":2,\"attempts_used\":0,\"batch_id\":\"phase13-blackbox\",\"job_id\":\"c1a8091bcc5344548fd406cb6780d888\",\"lease_seconds\":180,\"lease_token\":\"e8f2ed4772cb4ffc80f2a7cc799740fb\",\"previous_receipt\":null,\"task\":{\"approved_file\":\"subject.py\",\"case_id\":\"optional-setting\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"description\":\"Use the provided setting whenever it is not None, preserving explicit False, zero and empty strings; use the fallback only when the setting is None.\",\"edit_units\":[{\"bindings\":[\"selected\"],\"end_line\":2,\"kind\":\"statement\",\"line\":2},{\"bindings\":[],\"end_line\":3,\"kind\":\"statement\",\"line\":3}],\"editable_lines\":[2,3],\"engine\":\"CODEX_AGENT\",\"independent_evaluation\":false,\"max_attempts\":2,\"proposal_protocol\":\"ast_statement_v1\",\"revision\":0,\"source\":\"def optional_setting(value, fallback):\\n    selected = value or fallback\\n    return selected\\n\",\"source_sha256\":\"da0c303cb3e23bf5c9f4b9e011a8e9d64c983cc114b45e9c3ae6b45bcc6c544c\",\"state\":\"AWAITING_CODEX_CANDIDATE\",\"target_symbol\":\"optional_setting\",\"task_id\":\"cf98cb3d3806494db419fcb9815273f8\",\"tests_sha256\":\"d224e154be27910dc19463b0e138181a68dff0d5c37dc7cfd740263210a292a0\"}}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "claim_owned_queue"
+    },
+    {
+      "response": {
+        "id": 3,
+        "result": {
+          "content": [
+            {
+              "text": "{\"active_session_required\":true,\"batch_id\":\"phase13-blackbox\",\"cross_cloud_session_storage_verified\":false,\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"engine\":\"CODEX_AGENT\",\"independent_evaluation\":false,\"jobs\":[{\"attempts\":2,\"case_id\":\"chunk-count\",\"claims\":1,\"id\":\"be555fa6f1ef4f14ba7cbc5907c0ad07\",\"outcome\":\"SOURCE_REJECTED\",\"receipt_sha256\":\"1a1f3dadb07ff9efb1d581a8afddd87b2b6627275618aeb38d553ece64dcaaa9\",\"state\":\"FAILED\"},{\"attempts\":0,\"case_id\":\"optional-setting\",\"claims\":1,\"id\":\"c1a8091bcc5344548fd406cb6780d888\",\"outcome\":null,\"receipt_sha256\":null,\"state\":\"LEASED\"}],\"paid_fallback\":false,\"stopped\":false}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "owned_queue_status"
+    },
+    {
+      "response": {
+        "id": 4,
+        "result": {
+          "content": [
+            {
+              "text": "{\"delivery_authorized\":false,\"outcome\":\"SESSION_CAPABILITY_LOST\",\"paid_fallback\":false,\"state\":\"REJECTED\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "submit_owned_queue"
+    },
+    {
+      "response": {
+        "id": 5,
+        "result": {
+          "content": [
+            {
+              "text": "{\"outcome\":\"SESSION_RELEASED\",\"state\":\"QUEUED\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "release_owned_queue"
+    },
+    {
+      "response": {
+        "id": 6,
+        "result": {
+          "content": [
+            {
+              "text": "{\"attempts_remaining\":2,\"attempts_used\":0,\"batch_id\":\"phase13-blackbox\",\"job_id\":\"c1a8091bcc5344548fd406cb6780d888\",\"lease_seconds\":180,\"lease_token\":\"04b217c468f5453f954602665c338dda\",\"previous_receipt\":null,\"task\":{\"approved_file\":\"subject.py\",\"case_id\":\"optional-setting\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"description\":\"Use the provided setting whenever it is not None, preserving explicit False, zero and empty strings; use the fallback only when the setting is None.\",\"edit_units\":[{\"bindings\":[\"selected\"],\"end_line\":2,\"kind\":\"statement\",\"line\":2},{\"bindings\":[],\"end_line\":3,\"kind\":\"statement\",\"line\":3}],\"editable_lines\":[2,3],\"engine\":\"CODEX_AGENT\",\"independent_evaluation\":false,\"max_attempts\":2,\"proposal_protocol\":\"ast_statement_v1\",\"revision\":0,\"source\":\"def optional_setting(value, fallback):\\n    selected = value or fallback\\n    return selected\\n\",\"source_sha256\":\"da0c303cb3e23bf5c9f4b9e011a8e9d64c983cc114b45e9c3ae6b45bcc6c544c\",\"state\":\"AWAITING_CODEX_CANDIDATE\",\"target_symbol\":\"optional_setting\",\"task_id\":\"ec4e04ef2fd94007a5a3b1e28f6eb51f\",\"tests_sha256\":\"d224e154be27910dc19463b0e138181a68dff0d5c37dc7cfd740263210a292a0\"}}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "claim_owned_queue"
+    },
+    {
+      "response": {
+        "id": 7,
+        "result": {
+          "content": [
+            {
+              "text": "{\"delivery_authorized\":false,\"outcome\":\"STALE_EXPIRED_OR_REVOKED_LEASE\",\"paid_fallback\":false,\"state\":\"REJECTED\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "submit_owned_queue"
+    },
+    {
+      "response": {
+        "id": 8,
+        "result": {
+          "content": [
+            {
+              "text": "{\"attempts_used\":1,\"delivery_authorized\":false,\"independent_evaluation\":false,\"job_id\":\"c1a8091bcc5344548fd406cb6780d888\",\"receipt\":{\"attempt\":1,\"authorship_basis\":\"session_submitted_candidate\",\"authorship_identity_attested\":false,\"candidate\":\"def optional_setting(value, fallback):\\n    selected = fallback if value is None else value\\n    return selected\\n\",\"candidate_sha256\":\"cd06ae6d03051707d32a457e8cd7751e1c7eb9563ecfb4143ba236bdb13b3679\",\"case_id\":\"optional-setting\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"diagnostic\":\"\",\"diff\":\"--- a/subject.py\\n+++ b/subject.py\\n@@ -1,3 +1,3 @@\\n def optional_setting(value, fallback):\\n-    selected = value or fallback\\n+    selected = fallback if value is None else value\\n     return selected\\n\",\"engine\":\"CODEX_AGENT\",\"failure_stage\":null,\"image\":\"python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590\",\"independent\":{\"exit_code\":0,\"output_sha256\":\"e370c111a98df15085a51db84a4800db4905f4468cc42b60a06c44b78e22f3e1\",\"passed\":true,\"sandbox\":\"digest_pinned_docker_no_network_read_only_no_privileges\",\"tests_run\":6},\"independent_evaluation\":false,\"independently_verified\":true,\"kind\":\"owned_dual_engine_verification\",\"outcome\":\"VERIFIED\",\"paid_fallback\":false,\"previous_receipt_sha256\":null,\"proposal\":{\"changes\":[{\"line\":2,\"new\":\"selected = fallback if value is None else value\"}]},\"proposal_sha256\":\"1db9da06f820f5d2dc7b5ebb5d1c06e228388e5bee0c958366f8a82059118a44\",\"receipt_sha256\":\"fb6a92aa7eec54399afedda1961bd29e17b43a828577aa3d0952bbde308a843e\",\"revision\":1,\"runtime_admission\":{\"capabilities_empty\":true,\"cleanup_verified\":true,\"cpu_pressure_enforced\":true,\"cpu_quota_verified\":true,\"docker_socket_absent\":true,\"image_digest\":\"sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590\",\"loopback_inference_unreachable\":true,\"memory_limit_enforced\":true,\"network_denied\":true,\"no_new_privileges\":true,\"output_bounded\":true,\"pid_limit_verified\":true,\"pid_pressure_enforced\":true,\"root_writes_denied\":true,\"seccomp_active\":true,\"secrets_absent\":true,\"source_writes_denied\":true,\"swap_disabled\":true,\"tmpfs_bounded_noexec\":true,\"uid_unprivileged\":true,\"untrusted_execution_certified\":false,\"wall_clock_enforced\":true},\"runtime_admission_sha256\":\"4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108\",\"schema\":1,\"signature_verified\":false,\"source_sha256\":\"da0c303cb3e23bf5c9f4b9e011a8e9d64c983cc114b45e9c3ae6b45bcc6c544c\",\"state\":\"AWAITING_OWNER_APPROVAL\",\"targeted\":{\"exit_code\":0,\"output_sha256\":\"e370c111a98df15085a51db84a4800db4905f4468cc42b60a06c44b78e22f3e1\",\"passed\":true,\"sandbox\":\"digest_pinned_docker_no_network_read_only_no_privileges\",\"tests_run\":6},\"task_id\":\"ec4e04ef2fd94007a5a3b1e28f6eb51f\",\"tests_sha256\":\"d224e154be27910dc19463b0e138181a68dff0d5c37dc7cfd740263210a292a0\"},\"state\":\"VERIFIED\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "submit_owned_queue"
+    },
+    {
+      "response": {
+        "id": 9,
+        "result": {
+          "content": [
+            {
+              "text": "{\"batch_id\":\"phase13-stop\",\"created\":true,\"engine\":\"CODEX_AGENT\",\"jobs\":1}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "create_owned_queue"
+    },
+    {
+      "response": {
+        "id": 10,
+        "result": {
+          "content": [
+            {
+              "text": "{\"attempts_remaining\":2,\"attempts_used\":0,\"batch_id\":\"phase13-stop\",\"job_id\":\"9223beb0fb84485eb5a4aa1ef5d586c3\",\"lease_seconds\":180,\"lease_token\":\"4de2765640bd4056afa202b467953e17\",\"previous_receipt\":null,\"task\":{\"approved_file\":\"subject.py\",\"case_id\":\"inclusive-window\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"description\":\"Select values between lower and upper inclusive, preserving input order and duplicates. An inverted interval selects nothing.\",\"edit_units\":[{\"bindings\":[\"selected\"],\"end_line\":2,\"kind\":\"statement\",\"line\":2},{\"bindings\":[],\"end_line\":3,\"kind\":\"statement\",\"line\":3}],\"editable_lines\":[2,3],\"engine\":\"CODEX_AGENT\",\"independent_evaluation\":false,\"max_attempts\":2,\"proposal_protocol\":\"ast_statement_v1\",\"revision\":0,\"source\":\"def inclusive_window(values, lower, upper):\\n    selected = [value for value in values if lower <= value < upper]\\n    return selected\\n\",\"source_sha256\":\"62f9c047228278f00094707c816e1c3ca30c09d610a43eda9ac0bc432385c1d4\",\"state\":\"AWAITING_CODEX_CANDIDATE\",\"target_symbol\":\"inclusive_window\",\"task_id\":\"7c305f22aba54ba0ab65a61f089ffa39\",\"tests_sha256\":\"0d210655c6e53e8de0b820fccb75a5b4a15715586a5f3451f25acbc6f312b040\"}}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "claim_owned_queue"
+    },
+    {
+      "response": {
+        "id": 11,
+        "result": {
+          "content": [
+            {
+              "text": "{\"delivery_authorized\":false,\"outcome\":\"STALE_EXPIRED_OR_REVOKED_LEASE\",\"paid_fallback\":false,\"state\":\"REJECTED\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "submit_owned_queue"
+    },
+    {
+      "response": {
+        "id": 12,
+        "result": {
+          "content": [
+            {
+              "text": "{\"batch_id\":\"phase13-stop\",\"outcome\":\"STOPPED\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "claim_owned_queue"
+    },
+    {
+      "response": {
+        "id": 13,
+        "result": {
+          "content": [
+            {
+              "text": "{\"batch_id\":\"phase13-qwen\",\"created\":true,\"engine\":\"QWEN_LOCAL\",\"jobs\":1}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "create_owned_queue"
+    },
+    {
+      "response": {
+        "id": 14,
+        "result": {
+          "content": [
+            {
+              "text": "{\"attempts_remaining\":2,\"attempts_used\":0,\"batch_id\":\"phase13-qwen\",\"job_id\":\"ea4d12eafe994f5fa4af1f68e3559c40\",\"lease_seconds\":180,\"lease_token\":\"672c7769983547bd86c3d0101e5b2ae3\",\"previous_receipt\":null,\"task\":{\"approved_file\":\"subject.py\",\"case_id\":\"optional-setting\",\"classification\":\"OWNED_DEVELOPMENT\",\"customer_execution_authorized\":false,\"delivery_authorized\":false,\"description\":\"Use the provided setting whenever it is not None, preserving explicit False, zero and empty strings; use the fallback only when the setting is None.\",\"edit_units\":[{\"bindings\":[\"selected\"],\"end_line\":2,\"kind\":\"statement\",\"line\":2},{\"bindings\":[],\"end_line\":3,\"kind\":\"statement\",\"line\":3}],\"editable_lines\":[2,3],\"engine\":\"QWEN_LOCAL\",\"independent_evaluation\":false,\"max_attempts\":2,\"proposal_protocol\":\"ast_statement_v1\",\"revision\":0,\"source\":\"def optional_setting(value, fallback):\\n    selected = value or fallback\\n    return selected\\n\",\"source_sha256\":\"da0c303cb3e23bf5c9f4b9e011a8e9d64c983cc114b45e9c3ae6b45bcc6c544c\",\"state\":\"QWEN_PREPARED\",\"target_symbol\":\"optional_setting\",\"task_id\":\"64d9c7933c464220953c5c6613be4b69\",\"tests_sha256\":\"d224e154be27910dc19463b0e138181a68dff0d5c37dc7cfd740263210a292a0\"}}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "claim_owned_queue"
+    },
+    {
+      "response": {
+        "id": 15,
+        "result": {
+          "content": [
+            {
+              "text": "{\"delivery_authorized\":false,\"outcome\":\"QUEUE_ENGINE_MISMATCH\",\"paid_fallback\":false,\"state\":\"REJECTED\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "submit_owned_queue"
+    },
+    {
+      "response": {
+        "id": 16,
+        "result": {
+          "content": [
+            {
+              "text": "{\"engines\":[{\"autonomous_mode_supported\":true,\"availability\":\"PINNED_LOCAL_RUNTIME_UNAVAILABLE\",\"id\":\"QWEN_LOCAL\",\"label\":\"Autonomous Qwen\",\"paid_fallback\":false,\"unattended_backend_available\":false},{\"availability\":\"ACTIVE_CODEX_SESSION_REQUIRED\",\"id\":\"CODEX_AGENT\",\"label\":\"Codex Agent\",\"paid_fallback\":false,\"unattended_backend_available\":false}],\"paid_fallback\":false}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "list_repair_engines"
+    },
+    {
+      "response": {
+        "id": 17,
+        "result": {
+          "content": [
+            {
+              "text": "{\"attempts_used\":2,\"delivery_authorized\":false,\"independent_evaluation\":false,\"job_id\":\"ea4d12eafe994f5fa4af1f68e3559c40\",\"receipt\":{\"engine\":\"QWEN_LOCAL\",\"independently_verified\":false,\"model_calls\":0,\"outcome\":\"QWEN_UNAVAILABLE\",\"paid_fallback\":false,\"state\":\"BLOCKED\"},\"state\":\"BLOCKED\"}",
+              "type": "text"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "tool": "run_owned_queue_qwen"
+    }
+  ],
+  "second_client_exit": 0
+}

@@ -13,6 +13,7 @@ on:
       - 'scripts/**'
       - 'benchmarks/**'
       - 'fixtures/phase12/**'
+      - 'fixtures/phase13/**'
       - 'dashboard/**'
   workflow_dispatch:
     inputs:

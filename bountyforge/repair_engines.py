@@ -20,7 +20,8 @@ from bountyforge.curated_docker import IMAGE, _execute
 from bountyforge.curated_tasks import editable_scope
 from bountyforge.drafts import DraftRejected
 from bountyforge.line_scope import infer_editable_lines
-from bountyforge.model import LocalModel, _NoRedirect
+from bountyforge.model import _NoRedirect
+from bountyforge.qwen_statement_contract import StatementModel as LocalModel
 from bountyforge.phase8_evaluation import CONTROLS, preflight, validate_proof, verify_core
 from bountyforge.repair_session import admit, check_receipt, validate_proposal_bindings
 from bountyforge.statements import SYSTEM, stage_statements, statement_catalog
@@ -29,6 +30,8 @@ from bountyforge.worker import FIXTURE_MARKER
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / 'fixtures/phase12'
 MANIFEST_SHA256 = '4220ab13e3aae1e8cc688902795eae9a8e809c8a635a0838a6f9e52c4639729d'
+DEVELOPMENT = ROOT / 'fixtures/phase13'
+DEVELOPMENT_SHA256 = '10a90ac0108d9269cd077f002a5212a1c9a39b7925db145eb367bb672900ef77'
 ENGINES = ('QWEN_LOCAL', 'CODEX_AGENT')
 MAX_ATTEMPTS = 2
 TASK_TTL = 600
@@ -72,14 +75,18 @@ def receipt_hash(receipt):
 
 def catalog():
     verify_core()  # Preserve every previously frozen source/security pin.
-    path = CATALOG / 'manifest.json'
-    if (CATALOG.is_symlink() or path.is_symlink() or not path.is_file()
+    return _catalog(CATALOG, MANIFEST_SHA256) + _catalog(DEVELOPMENT, DEVELOPMENT_SHA256)
+
+
+def _catalog(directory, expected):
+    path = directory / 'manifest.json'
+    if (directory.is_symlink() or path.is_symlink() or not path.is_file()
             or path.stat().st_nlink != 1 or path.stat().st_size>20000
-            or digest(path.read_bytes()) != MANIFEST_SHA256):
+            or digest(path.read_bytes()) != expected):
         raise RepairRejected('OWNED_CATALOG_CHANGED')
     items = strict_json(path.read_bytes())['cases']
     for item in items:
-        base = CATALOG / item['id']
+        base = directory / item['id']
         if base.is_symlink() or (base/'tests').is_symlink():
             raise RepairRejected('OWNED_CUSTODY_REJECTED')
         for name, sha in item['sha256'].items():
@@ -90,6 +97,13 @@ def catalog():
             if digest(file.read_bytes()) != sha:
                 raise RepairRejected('OWNED_BYTES_CHANGED')
     return copy.deepcopy(items)
+
+
+def source_directory(spec):
+    # The directory comes only from pinned manifest membership, never caller data.
+    for directory, expected in ((CATALOG,MANIFEST_SHA256),(DEVELOPMENT,DEVELOPMENT_SHA256)):
+        if spec in _catalog(directory,expected):return directory/spec['id']
+    raise RepairRejected('UNKNOWN_OWNED_SOURCE')
 
 
 def task_inventory():
@@ -164,7 +178,7 @@ def materialize(spec, root, candidate=None):
     root.mkdir(parents=True)
     (root/'tests').mkdir()
     for name in spec['sha256']:
-        (root/name).write_bytes((CATALOG/spec['id']/name).read_bytes())
+        (root/name).write_bytes((source_directory(spec)/name).read_bytes())
     (root/FIXTURE_MARKER).write_text('owned-phase12-'+spec['id'])
     if candidate is not None:
         (root/'subject.py').write_text(candidate)
@@ -206,8 +220,9 @@ def observation_summary(value):
 
 class RepairService:
     """Process-local capability store. MCP callers cannot inject its verifier."""
-    def __init__(self, *, verifier=None):
+    def __init__(self, *, verifier=None, model_factory=None):
         self.verifier = verifier if verifier is not None else OwnedVerifier()
+        self.model_factory = model_factory
         self.tasks = {}
 
     def prepare(self, case_id, engine):
@@ -341,7 +356,7 @@ class RepairService:
             task['public']['state']='BLOCKED'
             return {'engine':'QWEN_LOCAL','state':'BLOCKED','outcome':'QWEN_UNAVAILABLE',
                     'model_calls':0,'paid_fallback':False,'independently_verified':False}
-        model=LocalModel(timeout_seconds=45)
+        model=(self.model_factory or LocalModel)(timeout_seconds=45)
         calls=[]; started=time.monotonic()
         while len(task['attempts'])<MAX_ATTEMPTS:
             prompt={key:task['public'][key] for key in ('approved_file','source','target_symbol',
@@ -375,5 +390,6 @@ class RepairService:
                 break
         return {**{key:result[key] for key in ('engine','state','outcome','independently_verified')},
                 'model_calls':len(calls),'calls':calls,'attempts':copy.deepcopy(task['attempts']),
+                'generation_protocol':getattr(model,'protocol','legacy_line_schema'),
                 'elapsed_seconds':round(time.monotonic()-started,3),
                 'verification_receipt':result,'additional_inference_cost_usd':0,'paid_fallback':False}

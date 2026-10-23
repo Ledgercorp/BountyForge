@@ -58,12 +58,16 @@ class MCPBlackBoxTests(unittest.TestCase):
         self.assertEqual({t['name'] for t in tools},{
             'bountyforge_status','list_owned_calibration', 'inspect_owned_calibration',
             'verify_owned_reference','preview_owned_review_package','list_repair_engines',
-            'list_owned_repair_tasks','prepare_owned_repair','submit_owned_repair','run_owned_qwen'})
+            'list_owned_repair_tasks','prepare_owned_repair','submit_owned_repair','run_owned_qwen',
+            'create_owned_queue','claim_owned_queue','submit_owned_queue','run_owned_queue_qwen',
+            'heartbeat_owned_queue','release_owned_queue','owned_queue_status','stop_owned_queue'})
         original={'bountyforge_status','list_owned_calibration','inspect_owned_calibration',
                   'verify_owned_reference','preview_owned_review_package'}
         self.assertTrue(all(t['annotations']['readOnlyHint'] for t in tools if t['name'] in original))
         self.assertTrue(all(not t['annotations']['readOnlyHint'] for t in tools
-                            if t['name'] in {'prepare_owned_repair','submit_owned_repair','run_owned_qwen'}))
+                            if t['name'] in {'prepare_owned_repair','submit_owned_repair','run_owned_qwen',
+            'create_owned_queue','claim_owned_queue','submit_owned_queue','run_owned_queue_qwen',
+            'heartbeat_owned_queue','release_owned_queue','stop_owned_queue'}))
         self.assertTrue(all(t['inputSchema']['additionalProperties'] is False for t in tools))
         self.assertEqual(records[2]['result'],{})
 
@@ -146,7 +150,7 @@ class MCPBlackBoxTests(unittest.TestCase):
             request(4, 'tools/call', {'name': 'bountyforge_status',
                 'arguments': {'delivery_authorized': True}, '_meta': {}})])
         self.assertEqual(p.returncode, 0)
-        self.assertEqual(len(records[1]['result']['tools']), 10)
+        self.assertEqual(len(records[1]['result']['tools']), 18)
         status = json.loads(records[2]['result']['content'][0]['text'])
         self.assertFalse(status['delivery_authorized'])
         self.assertTrue(records[3]['result']['isError'])
@@ -175,9 +179,20 @@ class MCPBlackBoxTests(unittest.TestCase):
         self.assertEqual([x['id'] for x in payload['engines']],['QWEN_LOCAL','CODEX_AGENT'])
         self.assertFalse(payload['engines'][1]['unattended_backend_available'])
         tasks=json.loads(records[2]['result']['content'][0]['text'])
-        self.assertEqual(len(tasks['tasks']),3)
+        self.assertEqual(len(tasks['tasks']),6)
         self.assertFalse(tasks['independent_evaluation'])
         self.assertTrue(all(x['result']['isError'] for x in records[3:]))
         self.assertNotIn(b'private',p.stdout.splitlines()[-1])
+
+    def test_queue_schemas_reject_unbounded_jobs_source_and_approval_flags(self):
+        lease={'batch_id':'trial','job_id':'0'*32,'lease_token':'0'*32}
+        p,records=self.interact([INIT,READY,
+            tool(2,'create_owned_queue',{'batch_id':'trial','engine':'CODEX_AGENT','case_ids':['chunk-count']*6}),
+            tool(3,'create_owned_queue',{'batch_id':'trial','engine':'CODEX_AGENT','case_ids':['chunk-count'],'source':'private'}),
+            tool(4,'submit_owned_queue',dict(lease,revision=True,proposal={'changes':[{'line':4,'new':'return 0'}]})),
+            tool(5,'stop_owned_queue',{'batch_id':'trial','resume':True}),
+            tool(6,'claim_owned_queue',{'batch_id':'trial','customer_execution_authorized':True})])
+        self.assertEqual(p.returncode,0)
+        self.assertTrue(all(row['result']['isError'] for row in records[1:]))
 
 if __name__=='__main__': unittest.main()

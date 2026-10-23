@@ -22,6 +22,8 @@ EXPECTED = {
     "preview_owned_review_package",
     "list_repair_engines", "list_owned_repair_tasks", "prepare_owned_repair",
     "submit_owned_repair", "run_owned_qwen",
+    'create_owned_queue','claim_owned_queue','submit_owned_queue','run_owned_queue_qwen',
+    'heartbeat_owned_queue','release_owned_queue','owned_queue_status','stop_owned_queue',
 }
 
 

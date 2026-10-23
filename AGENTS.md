@@ -38,6 +38,20 @@ All Phase12 examples are developmental; this agent can read their tests.
 
 See docs/PHASE12_DUAL_ENGINE.md and the local dashboard/repair-console.html.
 
+Phase13 adds eight owned-queue MCP tools; the original ten stay available.
+Use create_owned_queue, claim_owned_queue, submit_owned_queue (or the explicit
+run_owned_queue_qwen), heartbeat_owned_queue, owned_queue_status,
+release_owned_queue and stop_owned_queue. Queue tasks cannot be submitted through
+the legacy process-local service. The SQLite store is fixed, local, private and
+gitignored; its continuity across a new Cloud workspace is NOT established.
+Four batches of up to five jobs, one active lease globally, two claims and two
+reserved candidate attempts per job are hard limits. Stop is irreversible for
+that batch. Never reset the store to evade its budget during a bounded run.
+Use scripts.owned_queue for local owner status/stop and Qwen-only processing.
+CODEX_AGENT still requires this active session; never recursively launch a turn.
+Phase13 source/tests are exposed development material. See
+docs/PHASE13_OWNED_ORCHESTRATION.md for evidence and exact limitations.
+
 Full details: docs/PHASE10_CODEX_BOOTSTRAP_AND_CHATGPT.md
 
 ## Invariants

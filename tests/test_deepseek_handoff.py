@@ -1,5 +1,6 @@
 """Offline DeepSeek Harness candidate-handoff contract tests."""
 import copy
+import hashlib
 import json
 import unittest
 from deepseek_harness_handoff import HarnessHandoffRejected, prepare_harness_handoff
@@ -7,9 +8,14 @@ from deepseek_harness_handoff import HarnessHandoffRejected, prepare_harness_han
 TASK = {
     'engine': 'CODEX_AGENT', 'proposal_protocol': 'ast_statement_v1',
     'approved_file': 'subject.py', 'task_id': 'a'*32, 'case_id': 'owned_example',
-    'revision': 0, 'source_sha256': 'b'*64, 'tests_sha256': 'c'*64,
+    'revision': 0, 'source': 'def sample():\n    return 0\n',
+    'tests_sha256': 'c'*64, 'state': 'AWAITING_CODEX_CANDIDATE',
+    'max_attempts': 2, 'classification': 'OWNED_DEVELOPMENT',
+    'independent_evaluation': False, 'customer_execution_authorized': False,
+    'delivery_authorized': False,
     'editable_lines': [4, 7, 19]
 }
+TASK['source_sha256'] = hashlib.sha256(TASK['source'].encode()).hexdigest()
 
 
 class HarnessHandoffContract(unittest.TestCase):
@@ -89,6 +95,26 @@ class HarnessHandoffContract(unittest.TestCase):
 
     def test_disallow_nonstring_candidate(self):
         self.rejects({'changes': [{'line': 7, 'new': 'x'}]})
+
+    def test_source_tampering_rejected(self):
+        bad = copy.deepcopy(TASK)
+        bad['source'] += 'evil'
+        self.rejects('{"changes":[{"line":7,"new":"x=1"}]}', bad)
+
+    def test_rejects_claimed_customer_authorization(self):
+        bad = copy.deepcopy(TASK)
+        bad['customer_execution_authorized'] = True
+        self.rejects('{"changes":[{"line":7,"new":"x=1"}]}', bad)
+
+    def test_rejects_false_evaluation_claim(self):
+        bad = copy.deepcopy(TASK)
+        bad['independent_evaluation'] = True
+        self.rejects('{"changes":[{"line":7,"new":"x=1"}]}', bad)
+
+    def test_rejects_terminal_state(self):
+        bad = copy.deepcopy(TASK)
+        bad['state'] = 'AWAITING_OWNER_APPROVAL'
+        self.rejects('{"changes":[{"line":7,"new":"x=1"}]}', bad)
 
     def test_no_data_mutation(self):
         task = copy.deepcopy(TASK)

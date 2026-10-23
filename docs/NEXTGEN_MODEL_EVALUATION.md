@@ -117,3 +117,10 @@ Pre-dispatch regression: 725 tests, 716 passed, nine existing skips, no failures
 Node 8/8. Actual Codex app-server MCP discovery retained all 18 tools, original
 five successful calls, five refusals and kill/reconnection, PATH-only child,
 zero model turns/inference. New profile/queue and unavailable-backend tests pass.
+
+GitHub did not register the newly added manual-only workflow on this feature
+branch (workflow lookup returned HTTP 404). Main is not changed to register it.
+The comparison instead reuses the already registered Phase15 manual workflow
+entry point; the superseded, never-measured V5 launcher's exact bytes are
+archived under `experiments/phase15/unmeasured-v5-workflow.yml`. No push trigger
+or automatic inference is added. All earlier workflow run records remain intact.

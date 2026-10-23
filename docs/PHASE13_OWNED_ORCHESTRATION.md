@@ -211,3 +211,15 @@ verification, both receipts survived restart, and corrupted history was refused.
 starts no model calls. The final local suite executed **662 tests: 653 passed,
 nine existing skips, zero failures**; Node checks remain 7/7. The increment from
 659 includes a real-Qwen-artifact contract check and two history regressions.
+
+History/evidence commit `6ab6672f7218c5dc39d0a2c93334ca46c083000d` passed
+[hosted regression 39948492272](https://github.com/Ledgercorp/BountyForge/actions/runs/39948492272):
+662 tests, 653 passed, nine skips, zero failures, plus all seven Node checks.
+A final real two-connection SQLite lock reproduced an uncaught OperationalError.
+The adapter now rolls back/closes safely and converts SQLite connection,
+transaction and cleanup failures to sanitized coordinator refusals. Native Codex
+MCP verified the bounded refusal, recovery after lock release, and continued
+availability (3/3; `sqlite_mcp_acceptance.json`). No model turn was started.
+The corresponding regression brings final local checks to **663 tests: 654
+passed, nine existing skips, zero failures**. Final hosted verification is linked
+in PR #2; earlier hosted measurements above remain tied to their exact commits.

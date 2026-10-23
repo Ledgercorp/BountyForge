@@ -1,6 +1,7 @@
 """Coordination tests use a fake repair service, never AI accuracy evidence."""
 import tempfile
 import os
+import sqlite3
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import unittest
@@ -130,6 +131,14 @@ class QueueTests(unittest.TestCase):
         with self.q._db() as db:
             db.execute('UPDATE owned_attempt_receipts SET result=? WHERE job_id=?',('{}',first['job_id']))
         with self.assertRaisesRegex(ValueError,'QUEUE_HISTORY_CORRUPT'):self.factory().status('trial')
+
+    def test_database_contention_is_a_sanitized_refusal_not_a_server_exception(self):
+        blocker=sqlite3.connect(self.path)
+        try:
+            blocker.execute('BEGIN IMMEDIATE')
+            with self.assertRaisesRegex(ValueError,'OWNED_QUEUE_DATABASE_UNAVAILABLE'):
+                self.q.status('trial')
+        finally:blocker.rollback();blocker.close()
 
     def test_restart_requires_new_preparation_not_caller_supplied_completion(self):
         first=self.claim();restarted=self.factory()

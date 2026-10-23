@@ -82,16 +82,25 @@ class OwnedRepairQueue:
                     or not (stat.S_ISDIR(info.st_mode) if directory else stat.S_ISREG(info.st_mode))
                     or (not directory and (info.st_nlink!=1 or info.st_size>8_000_000))):
                 raise RepairRejected('OWNED_QUEUE_PRIVACY_OR_SIZE_REJECTED')
-        db=sqlite3.connect(self.path,timeout=2,isolation_level=None)
-        db.row_factory=sqlite3.Row
+        db=None
         try:
+            db=sqlite3.connect(self.path,timeout=2,isolation_level=None)
+            db.row_factory=sqlite3.Row
             db.execute('PRAGMA synchronous=FULL')
             db.execute('BEGIN IMMEDIATE')
             yield db
             db.execute('COMMIT')
-        except BaseException:
-            db.rollback();raise
-        finally:db.close()
+        except BaseException as exc:
+            if db is not None:
+                try:db.rollback()
+                except sqlite3.Error:pass
+            if isinstance(exc,sqlite3.Error):
+                raise RepairRejected('OWNED_QUEUE_DATABASE_UNAVAILABLE') from None
+            raise
+        finally:
+            if db is not None:
+                try:db.close()
+                except sqlite3.Error:raise RepairRejected('OWNED_QUEUE_CLEANUP_UNAVAILABLE') from None
 
     @staticmethod
     def _id(value):

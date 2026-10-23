@@ -66,7 +66,7 @@ jobs:
             sleep 2
           done
           [[ "$ready" == 1 ]] || { echo 'Pinned local Qwen did not become healthy'; exit 2; }
-      - name: Run bounded frozen evaluation and independent Docker replay
+      - name: Continue only unseen cases and independently replay passing candidates
         env:
           BOUNTYFORGE_QWEN_COST_ACK: ${{ inputs.confirm_zero_cost || (github.event_name == 'push' && contains(github.event.head_commit.message, '[qwen-frozen-eval]')) }}
           BOUNTYFORGE_QWEN_PUSH_ACK: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[qwen-frozen-eval]') }}
@@ -74,7 +74,7 @@ jobs:
           set -euo pipefail
           mkdir -p evidence-run
           env -u GROQ_API_KEY -u OPENAI_API_KEY -u STRIPE_SECRET_KEY -u GITHUB_TOKEN -u GH_TOKEN \
-            python -m scripts.phase8_live_qwen --output evidence-run/phase8_qwen.json
+            python -m scripts.phase8_live_qwen --continue-pinned-partial --output evidence-run/phase8_qwen.json
       - name: Upload bounded public-owned evaluation evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

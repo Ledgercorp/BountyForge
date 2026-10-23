@@ -30,15 +30,46 @@ infrastructure, and a one-day bounded evidence artifact. The manual
 `confirm_zero_cost` input or explicit tagged workflow-only commit is a gate; it
 cannot change the runner or inference backend.
 
-## Current measurement
+## First measurement segment
 
-No new live inference result is recorded in this document yet. Do not treat
-Phase 8 preparation (20/20 reproduced baselines, zero model calls), prior
-historical Qwen studies, or the preauthored calibration fixtures as a Phase 11
-score. The first admitted workflow must publish its run URL, commit SHA, report
-artifact, per-case failure categories, actual request/token/runtime counts and
-independent replay receipts here. If the runner or Docker preflight rejects,
-the result is infrastructure-blocked and accuracy remains unmeasured.
+At commit `777004ca60f0b3252c97112e851f22c89944f273`, hosted run
+[39896337388](https://github.com/Ledgercorp/BountyForge/actions/runs/39896337388)
+passed its full 610-test regression gate, restored the existing public model
+cache, verified both pinned model/runtime digests, pulled the previously
+verified Docker image, and passed all 20 fresh Docker controls before inference.
+The bounded report is retained as
+[`partial_qwen_39896337388.json`](../evidence/phase11/partial_qwen_39896337388.json)
+with SHA-256 `b3bd0415afbc3a910e3de797e819c7f5c6a7b2cc190894b823b25811007d47c7`.
+
+The first segment made **11 local Qwen calls** across six cases: **9,204 prompt
+tokens, 693 completion tokens, 65.541 seconds in inference, 81.147 seconds in
+the evaluation coordinator**, and $0 model/API cost. Four cases received two
+proposals each that the unchanged source/AST validator rejected because the
+model returned complete `if` statements where condition edit units require
+only an expression (eight rejected responses). `line_termination` received two
+semantically ineffective proposals. `shipping_cartons` produced one candidate,
+then the worker reported `model_or_runner_unavailable` before recording a test
+receipt. Five model cases therefore yielded no admitted patch; one was blocked
+at the worker/test boundary. No case was accepted and independently replayed;
+the full-suite `accuracy` remains **null**, not 0/20.
+
+After the run stopped, a separate diagnostic replay of the exact recorded
+`shipping_cartons` response passed a fresh 20-control Docker admission and ran
+eight fixture tests. The candidate failed five targeted assertions. This
+post-run diagnostic is recorded in
+[`shipping_cartons_postrun_diagnostic.json`](../evidence/phase11/shipping_cartons_postrun_diagnostic.json);
+it is not an end-to-end worker success and is excluded from the success count.
+The initial worker error is only recorded as the generic
+`model_or_runner_unavailable`, so its exact transient cause remains unknown.
+
+The workflow now resumes from the SHA-pinned partial report and skips those six
+cases entirely. It will use the unchanged model, prompt, source, tests and
+repair core for the remaining 14; aggregate calls stay within the original
+40-request cap. That produces a split-run fixed-suite measurement, with the
+first segment's failed/incomplete attempts preserved. These six exposed model
+responses must not be used for prompt tuning and the full catalog is no longer
+a fresh held-out set for future iterations. A new unseen suite is required for
+another independent accuracy claim.
 
 Actual financial spend remains $0; local inference uses no model API. Customer
 execution, private source, payments, delivery, external submissions and

@@ -7,6 +7,8 @@ frozen 20-case selection and a fresh Docker proof. It cannot fall back remotely.
 """
 from __future__ import annotations
 
+import copy
+import hashlib
 import json
 import os
 import tempfile
@@ -15,8 +17,8 @@ from pathlib import Path
 
 from bountyforge.model import LocalModel
 from bountyforge.phase8_evaluation import (
-    Catalog, EvaluationRejected, issue_for, materialize, observe, preflight,
-    replay, require_credential_free_host,
+    Catalog, CONTROLS, EvaluationRejected, ROOT, issue_for, materialize, observe,
+    preflight, replay, require_credential_free_host, validate_proof,
 )
 from bountyforge.repair_session import repair_owned
 
@@ -24,6 +26,12 @@ SELECTION = 'benchmarks/phase8/supplemental_tasks/selection.json'
 SELECTION_SHA256 = '55e7de2b2c59eaaea75a494315df5b95cea5eeabcaeb835309a517f43abb891e'
 MAX_ATTEMPTS = 2
 MAX_TOTAL_CALLS = 40
+RESUME_REPORT = 'evidence/phase11/partial_qwen_39896337388.json'
+RESUME_REPORT_SHA256 = 'b3bd0415afbc3a910e3de797e819c7f5c6a7b2cc190894b823b25811007d47c7'
+PREVIOUS_RUN_ID = 39896337388
+PREVIOUS_COMMIT = '777004ca60f0b3252c97112e851f22c89944f273'
+EXPOSED_CASES = ('stock_admission', 'booking_intersection', 'literal_tail',
+                 'line_termination', 'duration_label', 'shipping_cartons')
 MODEL_SHA256 = 'cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046'
 RUNTIME_SHA256 = '152e33221c9c9d37816a8ee9943f8d87339199197c80cb692559c9756b2027d8'
 
@@ -51,9 +59,13 @@ def _category(session: dict, replay_result: dict | None) -> str:
     errors = [row.get('error') for row in attempts if isinstance(row, dict)]
     if session.get('reason') == 'context_rejected_before_inference' or reason in ('automatic_scope_rejected', 'baseline_not_assertion_failure'):
         return 'deterministic_admission_or_context_failure'
-    if any(row.get('source_rejection') for row in session.get('calls', []) if isinstance(row, dict)) or any(
-            error in ('DraftRejected', 'ValueError') for error in errors):
+    diagnostics = [row.get('diagnostic') for row in attempts if isinstance(row, dict)]
+    if any('Semantically ineffective proposal' in str(value) for value in diagnostics):
+        return 'ineffective_model_proposal'
+    if any(row.get('source_rejection') for row in session.get('calls', []) if isinstance(row, dict)):
         return 'source_or_patch_validation_rejection'
+    if any(error in ('DraftRejected', 'ValueError') for error in errors):
+        return 'other_patch_validation_rejection'
     if 'repeated_ineffective_candidate' in errors:
         return 'repeated_ineffective_proposal'
     if 'test_failure_or_timeout' in errors:
@@ -63,6 +75,63 @@ def _category(session: dict, replay_result: dict | None) -> str:
     if session.get('model_calls', 0) == 0:
         return 'no_inference_due_to_admission'
     return 'no_independently_verified_repair'
+
+
+def load_resume_report(catalog: Catalog, tasks: list[dict]) -> dict:
+    """Load the immutable first segment; never repeat its six exposed cases."""
+    path = ROOT / RESUME_REPORT
+    if path.is_symlink() or not path.is_file() or path.stat().st_nlink != 1:
+        raise EvaluationRejected('Pinned prior evaluation segment is unavailable')
+    raw = path.read_bytes()
+    if len(raw) > 3_000_000 or hashlib.sha256(raw).hexdigest() != RESUME_REPORT_SHA256:
+        raise EvaluationRejected('Prior evaluation segment differs from its trusted digest')
+    prior = json.loads(raw)
+    expected_ids = [task['id'] for task in tasks]
+    if (prior.get('evaluation') != 'phase8_frozen20_live_local_qwen'
+            or prior.get('status') != 'blocked' or prior.get('accuracy') is not None
+            or prior.get('selected_cases') != expected_ids
+            or prior.get('attempted_cases') != len(EXPOSED_CASES)
+            or [row.get('case_id') for row in prior.get('cases', [])] != list(EXPOSED_CASES)
+            or prior.get('inference_calls') != 11
+            or sum(row.get('model_calls', 0) for row in prior.get('cases', [])) != 11
+            or prior.get('verified_successes') != 0
+            or prior.get('independently_replayed_successes') != 0
+            or prior.get('customer_execution_authorized') is not False
+            or prior.get('delivery_authorized') is not False
+            or prior.get('paid_fallback') is not False
+            or prior.get('model', {}).get('sha256') != MODEL_SHA256
+            or prior.get('model', {}).get('runtime_archive_sha256') != RUNTIME_SHA256
+            or prior.get('execution', {}).get('selection_sha256') != SELECTION_SHA256):
+        raise EvaluationRejected('Prior evaluation segment does not match the frozen continuation contract')
+    validate_proof(prior.get('preflight'))
+    by_id = {task['id']: task for task in tasks}
+    for row in prior['cases']:
+        spec = by_id[row['case_id']]
+        if (row.get('source_sha256') != spec['sha256']['subject.py']
+                or row.get('tests_sha256') != spec['sha256']['tests/test_regression.py']
+                or row.get('model_calls') not in (1, 2)
+                or not isinstance(row.get('session'), dict)):
+            raise EvaluationRejected('Prior case provenance or bounded transcript failed')
+        session = row['session']
+        if (session.get('source_sha256') != spec['sha256']['subject.py']
+                or session.get('tests_sha256') != spec['sha256']['tests/test_regression.py']
+                or session.get('model_calls') != row['model_calls']
+                or any(session.get(flag) is not False for flag in (
+                    'customer_execution_authorized', 'delivery_authorized', 'paid_fallback'))
+                or len(session.get('calls', [])) != row['model_calls']):
+            raise EvaluationRejected('Prior session is not bound to its frozen case')
+        # Re-derive taxonomy from the immutable raw transcript instead of
+        # carrying forward the first adapter's overly broad rejection label.
+        row['failure_category'] = _category(session, row.get('independent_replay'))
+        row['status'] = 'failed_or_unverified'
+    prior['run_segments'] = [
+        {'run_id': PREVIOUS_RUN_ID, 'commit': PREVIOUS_COMMIT,
+         'cases': list(EXPOSED_CASES), 'calls': 11,
+         'inference_seconds': prior.get('inference_seconds'),
+         'report_sha256': RESUME_REPORT_SHA256},
+    ]
+    prior['preflight_history'] = [{'run_id': PREVIOUS_RUN_ID, 'proof': copy.deepcopy(prior['preflight'])}]
+    return prior
 
 
 def _atomic_write(path: Path, report: dict) -> None:
@@ -80,6 +149,7 @@ def _atomic_write(path: Path, report: dict) -> None:
 def _summarize_cases(report: dict) -> None:
     categories = {}
     counters = {'patch_proposals_returned': 0, 'source_validation_rejections': 0,
+                'ineffective_proposals_rejected': 0, 'other_patch_validation_rejections': 0,
                 'targeted_test_failures': 0, 'repeated_ineffective_proposals': 0,
                 'inference_or_runner_errors': 0}
     for row in report['cases']:
@@ -93,9 +163,14 @@ def _summarize_cases(report: dict) -> None:
             1 for attempt in attempts if isinstance(attempt, dict) and attempt.get('diff'))
         counters['source_validation_rejections'] += sum(
             1 for call in calls if isinstance(call, dict) and call.get('source_rejection'))
-        counters['source_validation_rejections'] += sum(
+        counters['ineffective_proposals_rejected'] += sum(
             1 for attempt in attempts if isinstance(attempt, dict)
-            and attempt.get('error') in ('DraftRejected', 'ValueError', 'SyntaxError'))
+            and 'Semantically ineffective proposal' in str(attempt.get('diagnostic', '')))
+        counters['other_patch_validation_rejections'] += sum(
+            1 for attempt in attempts if isinstance(attempt, dict)
+            and attempt.get('error') in ('DraftRejected', 'ValueError', 'SyntaxError')
+            and 'Semantically ineffective proposal' not in str(attempt.get('diagnostic', ''))
+            and not any(call.get('source_rejection') for call in calls if isinstance(call, dict)))
         counters['targeted_test_failures'] += sum(
             1 for attempt in attempts if isinstance(attempt, dict)
             and (attempt.get('error') == 'test_failure_or_timeout'
@@ -111,7 +186,7 @@ def _summarize_cases(report: dict) -> None:
 
 
 def evaluate(*, output: str | Path) -> dict:
-    """Run all 20 selected cases; two calls/case maximum, replay successes fresh."""
+    """Continue the pinned partial evaluation without repeating exposed cases."""
     started = time.monotonic()
     report = {
         'schema': 1, 'evaluation': 'phase8_frozen20_live_local_qwen',
@@ -139,13 +214,23 @@ def evaluate(*, output: str | Path) -> dict:
         tasks = catalog.tasks()
         if len(tasks) != 20:
             raise EvaluationRejected('Frozen selection must contain exactly twenty cases')
-        report['selected_cases'] = [task['id'] for task in tasks]
-        report['novelty'] = catalog.novelty
-        report['preflight'] = preflight()
+        report = load_resume_report(catalog, tasks)
+        report['resumed_from_report_sha256'] = RESUME_REPORT_SHA256
+        report['resumed_case_ids'] = list(EXPOSED_CASES)
+        report['runner_run_id'] = os.environ.get('GITHUB_RUN_ID', 'unit-test')
+        report['runner_commit'] = os.environ.get('GITHUB_SHA', 'unit-test')
+        proof = preflight()
+        report['preflight'] = proof
+        report['preflight_history'].append({'run_id': report['runner_run_id'], 'proof': proof})
+        report['run_segments'].append({'run_id': report['runner_run_id'],
+                                       'commit': report['runner_commit'],
+                                       'cases': [], 'calls': 0})
         report['status'] = 'running'
         _atomic_write(path, report)
         backend = LocalModel(timeout_seconds=45)
         for spec in tasks:
+            if spec['id'] in report['resumed_case_ids']:
+                continue
             row = {'case_id': spec['id'], 'status': 'attempting',
                    'source_sha256': spec['sha256']['subject.py'],
                    'tests_sha256': spec['sha256']['tests/test_regression.py'],
@@ -163,6 +248,8 @@ def evaluate(*, output: str | Path) -> dict:
                 )
             row['model_calls'] = session.get('model_calls', 0)
             report['inference_calls'] += row['model_calls']
+            report['run_segments'][-1]['cases'].append(spec['id'])
+            report['run_segments'][-1]['calls'] += row['model_calls']
             report['inference_seconds'] = round(report['inference_seconds'] + sum(
                 float(call.get('seconds', 0)) for call in session.get('calls', [])
                 if isinstance(call, dict)), 3)

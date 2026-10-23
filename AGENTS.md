@@ -57,7 +57,8 @@ earlier catalogs or validators. Existing MCP preparation now returns bounded
 development assertion feedback and read-only helper context. The autonomous
 Qwen retry loop retains only previously source-validated, test-failing sibling
 edits, records that transformation and revalidates the complete proposal.
-Its v3 grammar permits at most three physical replacement lines; the existing
+Its native v5 JSON-safe grammar prevents raw delimiter escapes. The original
+v2/v3 adapters remain available; the existing
 three-change, two-attempt, 150-token request limits remain intact. Codex stays
 session-driven. No independently controlled unseen verifier is configured.
 See docs/PHASE14_REPAIR_INTELLIGENCE.md; never call these public tasks unseen.
@@ -72,3 +73,8 @@ Full details: docs/PHASE10_CODEX_BOOTSTRAP_AND_CHATGPT.md
 - Preserve Phase 8 frozen selected 20-case evaluation and core hashes.
 - Keep routine PR CI single-trigger, and both existing PRs in draft.
 - Do not invent a verified AI repair rate, runtime signature or income.
+
+Phase14 resource-profile evidence proves only a short 7B CPU load/inference
+probe. It does not admit 7B as the repair engine or replace pinned 1.5B assets.
+Both Phase14 experiments are manual-only after measured runs. Do not reuse
+the public development tasks to claim new independent accuracy.

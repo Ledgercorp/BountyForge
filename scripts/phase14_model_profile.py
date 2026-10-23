@@ -10,6 +10,7 @@ import time
 import urllib.request
 
 from bountyforge.native_qwen import NativeStatementModel
+from bountyforge.model import _NoRedirect
 from bountyforge.phase8_evaluation import require_credential_free_host
 
 MODEL_SHA='509287f78cb4d4cf6b3843734733b914b2c158e43e22a7f4bf5e963800894d3c'
@@ -59,13 +60,14 @@ def main(argv=None):
             child=subprocess.Popen([str(binary),'-m',str(model),'--host','127.0.0.1','--port','18080',
                 '-t','2','-c','2048','-np','1'],env={'PATH':'/usr/local/bin:/usr/bin:/bin',
                 'LD_LIBRARY_PATH':str(binary.parent)},stdout=log,stderr=log,preexec_fn=limits)
-            opener=urllib.request.build_opener(urllib.request.ProxyHandler({}))
+            opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),_NoRedirect())
             deadline=time.monotonic()+60
             while time.monotonic()<deadline:
                 if child.poll() is not None:raise RuntimeError('Resource-bounded server exited')
                 try:
                     with opener.open('http://127.0.0.1:18080/health',timeout=1) as response:
-                        if json.loads(response.read(1024)).get('status')=='ok':break
+                        value=json.loads(response.read(1024))
+                        if type(value) is dict and value.get('status')=='ok':break
                 except (OSError,ValueError):pass
                 time.sleep(1)
             else:raise RuntimeError('Server readiness timeout')

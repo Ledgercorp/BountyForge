@@ -70,8 +70,7 @@ reported in `codex_independent_replay.json`, with no additional generation.
 The opt-in standard public-Ubuntu workflow runs an actual owned QWEN_LOCAL queue
 of invoice-summary, cursor-adapter and retry-policy. Qwen independently obtains
 each prepared task, generates candidates, receives actual verification feedback,
-retries or terminates, and commits bounded queue results. Maximum six local model
-calls, one inference stream and one worker; no Codex session or provider key is
+retries or terminates, and commits bounded queue results. Maximum six repair calls plus two admission probes, one inference stream and one worker; no Codex session or provider key is
 available in that workflow. Exact outcomes, usage and timings are published from
 the completed run, not inferred from workflow success.
 
@@ -188,7 +187,7 @@ The correction uses a small owned GBNF emitter with explicit JSON escaping,
 fixed authorized numeric anchors, preserved assignment/return prefixes, at
 most three edits and bounded continuation lines. The runtime's raw string
 pattern conversion is not used for repairs. The v2/v3 interfaces and all
-source validators remain intact. A full-contract adversarial grammar probe
+source validators remain intact. A patch wire-contract adversarial grammar probe
 now checks anchor and edit-count enforcement before any repair execution;
 a deliberately invalid probe is tested to block queue creation. No test
 solution is contained in the grammar or probe. A subsequent live run measures
@@ -203,8 +202,9 @@ Commit `b99c3f8a51c4c0737488d99457b615c2fef04992` passed hosted regression
 
 [Qwen run 40001263033](https://github.com/Ledgercorp/BountyForge/actions/runs/40001263033)
 completed with **0/3 verified repairs**, six repair calls plus two admission
-probes, 98.852 seconds experiment time. The actual full-contract grammar probe
-passed. All six repair responses were parseable JSON within the three-change
+probes, 98.852 seconds experiment time. The actual patch wire-contract grammar probe
+passed (JSON shape/count/anchor checks only; probe output is not executed or
+claimed to be valid Python). All six repair responses were parseable JSON within the three-change
 bound, eliminating the prior structural violations in this small experiment.
 Invoice still copied existing faulty statements; cursor retained incorrect
 terminal-cursor logic; retry copied the faulty maximum clamp and altered
@@ -223,3 +223,81 @@ address-space cap, bounded startup/request/CPU/log limits and a credential-free
 child. Weights are disposable and not added to the persistent cache. The
 probe generates only an explanation on an owned neutral question; it never
 executes model output, changes the default, or measures repair accuracy.
+
+## Final resource result and engineering ledger
+
+[7B probe 40001954401](https://github.com/Ledgercorp/BountyForge/actions/runs/40001954401)
+at `1543cc86dc7bf51d238846483d076004e476e24b` completed successfully. The exact
+4,683,073,536-byte official weight digest and existing runtime archive digest
+were checked before launch. Load took 4.012s; the single request took 13.49s
+(36 prompt, 70 completion tokens); the probe took 21.831s excluding download.
+Peak server resident memory was 7,864,644 KiB, approximately 7.50 GiB, within
+the 10GiB address-space cap. The process stopped, weights/log were deleted,
+and no persistent model cache entry was added. This proves short-request
+resource feasibility on the actual standard hosted CPU, not full repair-context
+latency, accuracy or production admission. Its generated explanation incorrectly
+described None values as zero and is not accepted as a verified coding result.
+No default replacement occurred.
+
+| Measurement | Verified repairs | Repair calls | Prompt / completion tokens | Experiment seconds |
+| --- | ---: | ---: | ---: | ---: |
+| Active Codex session | 3/3 | unavailable | unavailable | 564.838 |
+| Qwen v3 chat | 0/3 | 6 | 5516 / 699 | 97.931 |
+| Qwen v4 native schema | 0/3 | 6 | 5615 / 373 | 75.221 |
+| Qwen v5 JSON-safe grammar | 0/3 | 6 | 5571 / 410 | 98.852 |
+
+The v4/v5 experiments each additionally used two diagnostic calls (110 and
+139 total probe tokens respectively); these are separate from repair tokens
+in the table. The 7B resource probe used one further non-repair call, totaling
+23 new local-model calls across these experiments. Active-session Codex usage
+is unavailable. Same exposed tasks and different hosts mean this is a
+developmental comparison, not an independent or randomized accuracy estimate.
+The first Qwen run introduced one newly failing test; subsequent runs observed
+no additional failing test IDs relative to baseline, while still failing repairs.
+
+Final local Python regression: **686 executed, 677 passed, nine skipped, zero
+failed**. Hosted regression [40001961631](https://github.com/Ledgercorp/BountyForge/actions/runs/40001961631)
+matched at `1543cc86dc7bf51d238846483d076004e476e24b`; Node 7/7. Earlier
+historical harness check was 10/10 with model-free test doubles, not new
+historical repair attempts. Frozen core and previous fixture/evaluation paths
+remain unchanged. Actual Docker baseline, targeted and fresh replay receipts
+are preserved, along with SQLite recovery and MCP subprocess tests in regression.
+The final health-client hardening forbids redirects and handles non-object
+health responses; it does not change the measured resource result.
+
+Implementation commits and scope:
+
+* `f6fdf1e1346f11f0a4f643ea6f6e6a61cbc9efe7`: six owned fixture directories,
+  repair intelligence/context/retry integration, public evaluation exchange,
+  MCP/session/replay scripts and focused tests; six baselines, three genuine
+  Codex repairs and separate replay, original MCP compatibility.
+* `d9e6b088c8d8dbc7c007739f1f8d56a6cdae432b`: native transport, source-local
+  dependency guard, dataflow anchor ordering, receipt-bound scorecards/tests
+  and first Qwen evidence.
+* `b99c3f8a51c4c0737488d99457b615c2fef04992`: JSON-safe statement grammar,
+  patch wire-contract admission probe/tests and second Qwen evidence.
+* `1543cc86dc7bf51d238846483d076004e476e24b`: disposable single-call 7B
+  profiling workflow/script/test and third Qwen evidence; Qwen returns to
+  manual-only. Final evidence commit retains receipts, hardens the profile
+  health client, restores profile manual-only operation and updates this ledger.
+
+Files changed are in the existing repair wrappers, new generation-only grammar,
+owned fixtures, scripts/tests, two opt-in workflows, AGENTS.md and Phase14
+evidence/documentation. No production dashboard deployment occurred. Evidence
+checksums and exact per-run failure counts are in `evidence/phase14/acceptance.json`.
+All implementations are on the engineering branch for draft PR2 review; both
+PRs remain draft, main unchanged. Infrastructure actually used: this managed
+Linux/Codex session, existing local Docker, standard public Ubuntu Actions,
+existing pinned inference runtime and public model assets. No paid API, new
+host, customer execution, scheduling, delivery or financial action. Spending $0,
+confirmed revenue $0. The nine skips remain unverified security checks/options.
+
+Status: ENGINEERING_READY_FOR_REVIEW for the measured owned functionality.
+PRIVATE_EXECUTION_ADMITTED and COMMERCIALLY_AUTHORIZED remain false. Next
+quality milestone is a bounded 7B repair-context comparison with explicit
+asset/process admission and new development material; the resource probe
+alone does not authorize a model substitution. Trustworthy generalization
+requires an independently controlled evaluator inaccessible to the coding
+agent. Commercial readiness additionally requires demonstrated repair quality,
+rights/consent, payment and operational gates, and explicit launch/delivery
+approval. No owner action is required to review these engineering commits.

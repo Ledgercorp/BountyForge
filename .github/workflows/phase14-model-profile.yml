@@ -1,8 +1,5 @@
 name: BountyForge Phase14 bounded 7B CPU feasibility
 on:
-  push:
-    branches: [engineering/revenue-linux-scout-20261021]
-    paths: ['.github/workflows/phase14-model-profile.yml']
   workflow_dispatch:
     inputs:
       confirm_zero_cost:
@@ -20,8 +17,7 @@ jobs:
     if: >-
       github.repository == 'Ledgercorp/BountyForge' && github.event.repository.private == false &&
       github.ref == 'refs/heads/engineering/revenue-linux-scout-20261021' &&
-      ((github.event_name == 'workflow_dispatch' && inputs.confirm_zero_cost) ||
-       (github.event_name == 'push' && contains(github.event.head_commit.message, '[phase14-model-profile]')))
+      github.event_name == 'workflow_dispatch' && inputs.confirm_zero_cost
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:

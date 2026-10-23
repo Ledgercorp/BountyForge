@@ -33,6 +33,7 @@ class LocalRuntime:
         self.measurement={'model_profile':self.spec['id'],'model_sha256':self.spec['sha256'],
             'context_tokens':2048,'threads':2,'address_space_limit_bytes':10*1024**3,
             'cpu_limit_seconds':180,'wall_limit_seconds':180,'peak_rss_kib':None,'peak_address_kib':None,
+            'observed_cpu_seconds':None,'cpu_observation':'Linux process counters at last sample before shutdown',
             'server_stopped':False,'wall_limit_reached':False}
 
     def _monitor(self):
@@ -50,6 +51,10 @@ class LocalRuntime:
             for row in Path('/proc/'+str(self.child.pid)+'/status').read_text().splitlines():
                 key='peak_rss_kib' if row.startswith('VmHWM:') else 'peak_address_kib' if row.startswith('VmPeak:') else None
                 if key:self.measurement[key]=max(self.measurement[key] or 0,int(row.split()[1]))
+            stat=Path('/proc/'+str(self.child.pid)+'/stat').read_text()
+            fields=stat[stat.rfind(')')+2:].split()
+            seconds=(int(fields[11])+int(fields[12]))/os.sysconf('SC_CLK_TCK')
+            self.measurement['observed_cpu_seconds']=max(self.measurement['observed_cpu_seconds'] or 0,seconds)
         except (OSError,ValueError):pass
 
     def __enter__(self):
@@ -89,6 +94,7 @@ class LocalRuntime:
         if self.monitor is not None:self.monitor.join(timeout=2)
         if self.child is not None:
             self._sample()
+            self.measurement['unexpected_exit']=self.child.poll() is not None
             if self.child.poll() is None:
                 self.child.terminate()
                 try:self.child.wait(timeout=5)

@@ -15,7 +15,8 @@ def main(argv=None):
             print(json.dumps({'status':'READY','model_profile':args.model_profile,'port':8080}),flush=True)
             deadline=time.monotonic()+args.serve_seconds
             while time.monotonic()<deadline and runtime.child.poll() is None:time.sleep(1)
-        print(json.dumps(runtime.measurement));return 0
+        print(json.dumps(runtime.measurement))
+        return 2 if runtime.measurement.get('unexpected_exit') or runtime.measurement['wall_limit_reached'] else 0
     except (RuntimeError,ValueError,OSError):
         print(json.dumps({'status':'BLOCKED','model_profile':args.model_profile,'paid_fallback':False}));return 2
 

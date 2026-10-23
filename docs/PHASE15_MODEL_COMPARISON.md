@@ -119,3 +119,40 @@ unresolved gates. No customer/private execution, payments, production deployment
 recurring schedule, upstream submission, paid API or new host is authorized.
 Spending and confirmed revenue remain $0. Live results are pending; no score is
 inferred from unit tests or the Phase14 short resource probe.
+
+## V1 actual measurement and bounded protocol correction
+
+Implementation `e3b359e6d1adbe16c6eb35674ae22e1ae662c5e1` passed hosted
+regression [40007722674](https://github.com/Ledgercorp/BountyForge/actions/runs/40007722674).
+The first actual comparison [40007714754](https://github.com/Ledgercorp/BountyForge/actions/runs/40007714754)
+finished PARTIAL_BLOCKED in 241.023s. 1.5B completed three tasks with zero
+verified repairs and six repair requests. Reserved-release introduced a new
+read of event before its binding; the source guard rejected it. Response
+normalization preserved faulty retry/cursor logic and failed tests; its
+equivalent revision was rejected. Weighted-window read weight before binding
+and was rejected. No failed candidate became review-ready.
+
+7B passed its 929-prompt-token resource calibration (41 output tokens, 44.117s,
+peak RSS 8,042,632 KiB), with selected-model identity and wrong-profile refusal
+verified. Its first real request had 989 tokenized input tokens and exceeded
+the unchanged 45s completion deadline. No response/proposal was received and
+no candidate test ran. The worker stopped, revoked remaining work, closed the
+server and removed weights. Two tasks were not attempted. This is an incomplete
+7B comparison, **not 0/3 incorrect repairs**. Nine completion requests were
+dispatched in total; timed-out completion usage is unknown. Process CPU time
+was not collected in V1; hard limits and wall/memory measurements are recorded.
+
+The frozen V1 file and exact raw artifact remain intact. V2 changes only
+generation context/instructions and measurement/exit reporting, leaving all
+tests, source, validators, model identities, two-thread/10GiB/180CPU-second
+limits, 45s requests, 150 output tokens and two attempts unchanged. It removes
+duplicated editable-lines/scope/protocol metadata and redundant binding names
+(the grammar derives names from the same original source). Description, full
+source, exact failure feedback and every statement anchor/end/kind remain.
+The prompt becomes task-first and the system instruction is concise. Initial
+JSON bytes shrink from 2664/2844/2209 to 2096/2309/1678 on the three tasks.
+No source-specific fix or reference solution is inserted. Neutral unit tests
+check information preservation. CPU process counters are now sampled and
+unexpected exits block continuation. V2 is frozen separately before inference;
+reusing these now-exposed tasks remains developmental. No timeout, validator,
+resource limit or test was relaxed to obtain a score.

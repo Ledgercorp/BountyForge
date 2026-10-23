@@ -14,10 +14,10 @@ from bountyforge.owned_repair_queue import OwnedRepairQueue
 from bountyforge.phase8_evaluation import require_credential_free_host
 from bountyforge.profiled_qwen import ProfiledStatementModel
 from bountyforge.repair_engines import ROOT,catalog,digest,receipt_hash,strict_json,qwen_availability
-from bountyforge.repair_intelligence import model_prompt,source_context
+from bountyforge.repair_intelligence import compact_model_prompt as model_prompt,source_context
 from bountyforge.statements import statement_catalog,SYSTEM
 
-CONFIG=ROOT/'experiments/phase15/comparison.json'
+CONFIGS={'v1':ROOT/'experiments/phase15/comparison.json','v2':ROOT/'experiments/phase15/comparison-v2.json'}
 CASES=('reserve-release','response-normalize','weighted-window')
 CODE_PATHS=('bountyforge/repair_engines.py','bountyforge/model_profiles.py','bountyforge/profiled_qwen.py',
     'bountyforge/local_model_runtime.py','bountyforge/native_qwen.py','bountyforge/qwen_statement_contract.py',
@@ -28,10 +28,11 @@ CODE_PATHS=('bountyforge/repair_engines.py','bountyforge/model_profiles.py','bou
     'scripts/phase15_model_comparison.py')
 
 
-def verify_experiment(expected):
-    if not re.fullmatch('[a-f0-9]{64}',expected) or CONFIG.is_symlink() or CONFIG.stat().st_size>30000:
+def verify_experiment(expected,version='v1'):
+    config_path=CONFIGS[version]
+    if not re.fullmatch('[a-f0-9]{64}',expected) or config_path.is_symlink() or config_path.stat().st_size>30000:
         raise ValueError('FROZEN_EXPERIMENT_REJECTED')
-    raw=CONFIG.read_bytes()
+    raw=config_path.read_bytes()
     if digest(raw)!=expected:raise ValueError('FROZEN_EXPERIMENT_CHANGED')
     config=strict_json(raw)
     if config['model_profiles']!=list(PROFILES) or config['budgets']!={
@@ -63,6 +64,7 @@ def resource_prompt():
 
 def main(argv=None):
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--experiment-sha256',required=True);p.add_argument('--output',required=True)
+    p.add_argument('--experiment',choices=CONFIGS,default='v1')
     args=p.parse_args(argv);path=Path(args.output);started=time.monotonic()
     report={'kind':'phase15_local_model_comparison','status':'BLOCKED','stage':'FREE_HOST_GATE',
         'classification':'OWNED_DEVELOPMENT','independent_evaluation':False,'independent_accuracy':None,
@@ -78,7 +80,7 @@ def main(argv=None):
             'GITHUB_REF':'refs/heads/engineering/revenue-linux-scout-20261021','RUNNER_OS':'Linux','RUNNER_ARCH':'X64',
             'BOUNTYFORGE_PHASE15_FREE_ACK':'true'}
         if any(os.environ.get(k)!=v for k,v in required.items()):raise ValueError('FREE_STANDARD_PUBLIC_RUNNER_REQUIRED')
-        require_credential_free_host();config=verify_experiment(args.experiment_sha256);report['frozen_experiment']=config
+        require_credential_free_host();config=verify_experiment(args.experiment_sha256,args.experiment);report['frozen_experiment']=config
         mem={r.split(':')[0]:int(r.split()[1]) for r in Path('/proc/meminfo').read_text().splitlines() if r.startswith(('MemTotal:','MemAvailable:'))}
         report['host']={'logical_cpus':os.cpu_count(),'memory_kib':mem,'disk_free_bytes':shutil.disk_usage(ROOT).free}
         if (os.cpu_count() or 0)<2 or mem['MemAvailable']<12*1024**2 or report['host']['disk_free_bytes']<2*1024**3:
@@ -101,7 +103,8 @@ def main(argv=None):
                         probe['response_sha256']=digest(probe['response'].encode())
                     finally:
                         probe['inference_seconds']=round(time.monotonic()-t,3);probe['metadata']=model.last_call
-                if not runtime.measurement['server_stopped']:raise RuntimeError('CLEANUP_NOT_VERIFIED')
+                if (not runtime.measurement['server_stopped'] or runtime.measurement['wall_limit_reached']
+                        or runtime.measurement.get('unexpected_exit')):raise RuntimeError('RUNTIME_BOUNDARY_OR_EXIT_FAILURE')
                 engine['resource_admitted']=True
             except (RuntimeError,ValueError,OSError) as exc:
                 engine.update(blocking_reason=str(exc) if re.fullmatch('[A-Z_]{1,80}',str(exc)) else type(exc).__name__,resource_admitted=False)
@@ -121,7 +124,8 @@ def main(argv=None):
                     entry['runtime_error']=str(exc) if re.fullmatch('[A-Z_]{1,80}',str(exc)) else type(exc).__name__
                     queue.stop(batch);engine['blocking_reason']='RUNTIME_OR_RESOURCE_FAILURE';break
                 finally:entry['elapsed_seconds']=round(time.monotonic()-job_started,3);checkpoint()
-                if entry['result']['state']=='BLOCKED' or not runtime.measurement['server_stopped']:
+                if (entry['result']['state']=='BLOCKED' or not runtime.measurement['server_stopped']
+                        or runtime.measurement['wall_limit_reached'] or runtime.measurement.get('unexpected_exit')):
                     queue.stop(batch);engine['blocking_reason']='WORKER_BLOCKED';break
             engine['queue_status']=queue.status(batch)
             engine['status']='COMPLETED' if len(engine['jobs'])==3 and not engine.get('blocking_reason') else 'BLOCKED'

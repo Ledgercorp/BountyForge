@@ -132,3 +132,21 @@ def model_prompt(public,previous):
         data['failure_feedback']['assertions']=data['failure_feedback']['assertions'][:1]
     if len(encode().encode())>3600:raise ValueError('CONTEXT_BUDGET_EXCEEDED')
     return encode()
+
+
+def compact_model_prompt(public,previous):
+    """Task first; remove duplicate scope metadata, never source or edit units.
+
+    The verifier retains full scope/binding metadata. The wire grammar derives
+    names from the exact source. No solution-specific hints or test code.
+    """
+    feedback=copy.deepcopy(previous.get('test_feedback',public['baseline_feedback']) if previous else public['baseline_feedback'])
+    order=public['source_context']['prioritized_anchors']
+    units=sorted(public['edit_units'],key=lambda u:order.index(u['line']))
+    data={'description':public['description'],'failure_feedback':feedback,
+          'revision_strategy':revision_strategy(previous),'target_symbol':public['target_symbol'],
+          'source':public['source'],'edit_units':[{k:u[k] for k in ('line','end_line','kind')} for u in units]}
+    if previous:data.update(previous_proposal=previous['proposal'],previous_error=previous['diagnostic'])
+    raw=json.dumps(data,separators=(',',':'))
+    if len(raw.encode())>3600:raise ValueError('CONTEXT_BUDGET_EXCEEDED')
+    return raw

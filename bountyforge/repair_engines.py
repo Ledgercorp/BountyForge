@@ -24,7 +24,7 @@ from bountyforge.line_scope import infer_editable_lines
 from bountyforge.model import _NoRedirect
 from bountyforge.model_profiles import DEFAULT_PROFILE, PROFILES, profile_spec, select_profile, endpoint_matches
 from bountyforge.profiled_qwen import ProfiledStatementModel as LocalModel, ProfiledInferenceError
-from bountyforge.repair_intelligence import (failure_feedback, source_context, model_prompt,
+from bountyforge.repair_intelligence import (failure_feedback, source_context, compact_model_prompt as model_prompt,
     revision_proposal, validate_local_dependencies)
 from bountyforge.phase8_evaluation import CONTROLS, preflight, validate_proof, verify_core
 from bountyforge.repair_session import admit, check_receipt, validate_proposal_bindings

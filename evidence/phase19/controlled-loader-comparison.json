@@ -1,0 +1,68 @@
+{
+  "execution_host": "AUTHORIZED_CODEX_LINUX_SESSION",
+  "model_calls": 0,
+  "sdk_binary_sha256": "b6f70327db1392b4ff879b8be26c87349b14933c1b4f7a90b391446bb005aae8",
+  "observations": [
+    {
+      "mode": "original",
+      "error": "IsolationUnavailable",
+      "code": "SDK_RPC_STREAM_CLOSED_EXIT_1_DIAGNOSTIC_NATIVE_BINDING",
+      "diagnostics": [
+        {
+          "keys_supplied": false,
+          "kind": "PHASE18_SANITIZED_SDK_BOOT_DIAGNOSTIC",
+          "model_calls": 0,
+          "plugin_ids": [],
+          "raw_stderr_disclosed": false,
+          "redacted_excerpt": [
+            "error: dsh: host preparation failed: no usable native binding found for opaque (auto)",
+            "at boot (file: path :4560:9)",
+            "at async runprofile (file: path :302:15)",
+            "at async runcli (file: path :215:5)",
+            "at async file: path :100:3 {",
+            "[cause]: error: no usable native binding found for opaque (auto)",
+            "at nousablebindingerror ( path :490:19)",
+            "at loadentry ( path :554:11)",
+            "at createentryapi ( path :567:20)",
+            "at object. anonymous ( path :11:13)",
+            "at module._compile (node:internal path :1929:14)",
+            "at nodemodule._extensions..js ( path :3156:21)"
+          ],
+          "signature": [
+            "NATIVE_BINDING_UNAVAILABLE"
+          ],
+          "stderr_bytes_captured": 1472,
+          "stderr_sha256": "6fd52d4214eeb7c98d1e5957358a66dd2e12bbab9b650c2c3d69703f4e1cdefe",
+          "truncated": false
+        }
+      ]
+    },
+    {
+      "mode": "immutable_native_cache",
+      "result": {
+        "initialize_confirmed": true,
+        "shutdown_confirmed": true,
+        "model_requests": 0,
+        "agent_turns": 0
+      },
+      "diagnostics": []
+    }
+  ],
+  "boundary": {
+    "schema": 1,
+    "owned_canary_read": true,
+    "workspace_write_denied": true,
+    "root_write_denied": true,
+    "docker_socket_absent": true,
+    "tmpfs_writable": true,
+    "nonloopback_network_absent": true,
+    "external_connect_denied": true,
+    "uid_unprivileged": true,
+    "capabilities_dropped": true,
+    "no_new_privileges": true,
+    "seccomp_enabled": true,
+    "memory_limit_enforced": true,
+    "pids_limit_enforced": true,
+    "cpu_limit_enforced": true
+  }
+}

@@ -9,7 +9,7 @@ from unittest.mock import patch
 from phase17_isolation import IMAGE, IsolationUnavailable
 from phase17_sdk_bootstrap import (
     RUNTIME_BIN, RUNTIME_NAME, RUNTIME_SHA, SDK_NAME, SDK_SHA,
-    extract_offline_runtime, main, sdk_bootstrap_command,
+    extract_offline_runtime, main, sdk_bootstrap_command, validate_hardened_profile,
 )
 
 
@@ -55,6 +55,22 @@ class Phase17NativeSDKTests(unittest.TestCase):
         self.assertFalse(any("api_key" in item.lower() for item in args))
         self.assertEqual(len([x for x in args if x.startswith("--mount=")]), 2)
         self.assertTrue(all("readonly" in x for x in args if x.startswith("--mount=")))
+
+
+    def test_hardened_composition_requires_every_tool_disabled(self):
+        from phase17_sdk_bootstrap import DISABLED_TOOL_ROWS
+        parts = ["- id: sdk-jsonrpc-server", "  name: '@deepseek-ai/dsh-sdk-jsonrpc-server'"]
+        for identity in DISABLED_TOOL_ROWS:
+            parts.extend(["- id: " + identity, "  disabled: true"])
+        parts.extend(["- id: session-log-deepseek", "  config:", "    enabled: false"])
+        good = "\n".join(parts)
+        self.assertRegex(validate_hardened_profile(good), r"^[a-f0-9]{64}$")
+        for identity in DISABLED_TOOL_ROWS:
+            with self.subTest(identity=identity), self.assertRaises(IsolationUnavailable):
+                validate_hardened_profile(good.replace("- id: " + identity + "\n  disabled: true",
+                                                       "- id: " + identity + "\n  disabled: false"))
+        with self.assertRaisesRegex(IsolationUnavailable, "SDK_SESSION_LOG_UPLOAD"):
+            validate_hardened_profile(good.replace("enabled: false", "enabled: true"))
 
     def test_sdk_root_must_be_known(self):
         with tempfile.TemporaryDirectory() as directory:

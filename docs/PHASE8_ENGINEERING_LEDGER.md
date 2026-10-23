@@ -184,25 +184,25 @@ Final actual preparation at source revision
 `64dfd566d2c8c9346890fb5d850eb4f5f6660fd1`:
 
 - Fresh **20/20 Docker controls** passed with the existing unchanged image.
-- **20/20 baseline assertions reproduced**,20 valid receipts,20 prepared contexts.
+- **20/20 baseline assertions reproduced**, 20 valid receipts, 20 prepared contexts.
 - **148 owned unittest methods executed**; these are intentionally failing defect
   baselines, not successful repairs or the repository regression count.
 - Actual session contexts fit **1,869–3,098 bytes**. A separate nonexecuting
-  inspection confirmed the frozen worker's earlier prepared context fits20/20.
+  inspection confirmed the frozen worker's earlier prepared context fits 20/20.
 - **47.015 seconds** total preparation wall time; **zero inference calls**.
-- Accuracy remains **null/unmeasured**. The16/20 model repair target is unmeasured.
+- Accuracy remains **null/unmeasured**. The 16/20 model repair target is unmeasured.
 
-Unmodified report `evidence/phase8/prepare.json`:114,723 bytes, SHA-256
+Unmodified report `evidence/phase8/prepare.json`: 114,723 bytes, SHA-256
 `0c8fb3c30d9d93b5274de56ecbe82cebdf6a2ea7877cc3b6ac2a324b12cb5b63`.
 The earlier credential refusal, blocked permission run, single-case diagnosis and
 fixed single-case receipt remain separate records. No fixtures or prompts were
 tuned after observing preparation. No new image was pulled.
 
-Final integrated regression: **589 total,580 passed,9 skipped,zero failures**
-(22.504s), up from492 total at takeover. The skips are eight existing rootfs
+Final integrated regression: **589 total, 580 passed, 9 skipped, zero failures**
+(22.504s), up from 492 total at takeover. The skips are eight existing rootfs
 checks and one opt-in DEV Docker reference test, which was separately executed.
-Historical harness **10/10** and dashboard **4/4** passed. All97 new test methods
-are retained;96 execute in the default suite. Existing frozen core/catalog pins
+Historical harness **10/10** and dashboard **4/4** passed. All 97 new test methods
+are retained; 96 execute in the default suite. Existing frozen core/catalog pins
 were verified again without executing or rerunning historical inference.
 
 Independent process acceptance additionally exercises the repair component
@@ -225,3 +225,21 @@ or dashboard deployment, recurring repair/sales activation or customer delivery.
 Exact per-commit changed files and all operational/financial boundaries are in
 `evidence/phase8/acceptance.json`. Hosted PR acceptance follows this evidence
 checkpoint; no source change is planned after local acceptance.
+
+## Hosted acceptance and review handoff
+
+[PR regression 39882300128](https://github.com/Ledgercorp/BountyForge/actions/runs/39882300128)
+at `a382a74a3e5b85285ddbe2caba2b9e0375262e10` passed: **589 total, 580 passed,
+9 skipped, zero failures** (26.836s). Exactly one routine PR workflow ran.
+Duplicate triggers remain removed; no live inference was dispatched. Reporting
+changes after that SHA contain only documentation/evidence. PR2's title and body
+now describe this final scope and exact evidence; it remains draft against the
+base engineering branch. No production deployment, merge or customer delivery.
+
+Owner input still needed for the blocked external gates: a current nonsecret
+Groq Free Plan/no-paid-billing/remaining-quota confirmation and an appropriately
+authorized Stripe TEST-mode connection. No keys should be pasted into chat.
+Those gates do not change the completed owned/simulator acceptance. Customer
+launch and delivery remain separately unauthorized; private execution remains
+NOT_ADMITTED. New live inference cost, additional infrastructure spending and
+confirmed received revenue remain $0.

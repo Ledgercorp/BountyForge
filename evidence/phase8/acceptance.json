@@ -325,6 +325,18 @@
       "single_case_diagnostic_dispatches": 1,
       "single_case_staging_fix_dispatches": 1,
       "prior_block_is_model_failure": false
+    },
+    "hosted_PR": {
+      "run_id": 39882300128,
+      "url": "https://github.com/Ledgercorp/BountyForge/actions/runs/39882300128",
+      "head_sha": "a382a74a3e5b85285ddbe2caba2b9e0375262e10",
+      "conclusion": "success",
+      "total": 589,
+      "passed": 580,
+      "failed": 0,
+      "skipped": 9,
+      "seconds": 26.836,
+      "routine_PR_workflows_for_pushed_head": 1
     }
   },
   "model_evaluation": {
@@ -398,7 +410,7 @@
   "infrastructure": [
     "Existing Codex Cloud Linux",
     "Existing Docker28.4.0/vfs and unchanged pinned Python image",
-    "Standard public GitHub-hosted Ubuntu PR CI (pending at evidence commit)",
+    "Standard public GitHub-hosted Ubuntu PR CI (verified run39882300128)",
     "Loopback simulated provider and owned Python subprocesses",
     "Private temporary SQLite/workspaces; not production persistent deployment"
   ],
@@ -406,7 +418,7 @@
     "Read-only GitHub/source/Actions metadata",
     "Stripe connector account-mode metadata only",
     "Bounded read-only public Docker/Sigstore documentation",
-    "Internal engineering branch pushes and draft PR2 metadata update (pending)"
+    "Internal engineering branch pushes and draft PR2 metadata update"
   ],
   "forbidden_actions_performed": {
     "Mac_access": false,
@@ -435,6 +447,12 @@
     "integrated-regression.log": "75f7b6f3497c84c54bfb3a7a18cfe73d9a5c033edd1cf65109938df7cad2f11d",
     "prepare.json": "0c8fb3c30d9d93b5274de56ecbe82cebdf6a2ea7877cc3b6ac2a324b12cb5b63",
     "staging-permission-failure.json": "9f0a83430bc7af99d8134d8dbac8a832f3a7025b37a84b9a36cc92215f6eaf83",
-    "prepare-blocked-permissions.json": "4848d202a53fdc6d82c968ffcc4a16fdfc77be9d71e2804cc6d1fcf28891b519"
-  }
+    "prepare-blocked-permissions.json": "4848d202a53fdc6d82c968ffcc4a16fdfc77be9d71e2804cc6d1fcf28891b519",
+    "hosted-regression.log": "6bdf5d5f1c2a88ce928022de9017850851f7ae479cfdf84cca7f68a806179233"
+  },
+  "owner_action_required": [
+    "Current nonsecret Groq Free Plan/no-paid-billing and remaining quota confirmation before new inference",
+    "Appropriately authorized Stripe TEST-mode connection before real sandbox payment retrieval",
+    "Explicit launch/delivery approval and finalized source/privacy/model-sharing/commercial terms before any customer operation"
+  ]
 }

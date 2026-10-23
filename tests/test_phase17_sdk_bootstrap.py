@@ -1,5 +1,6 @@
 """Non-executing SDK wheel provenance, extraction and Docker argv tests."""
 import hashlib
+import json
 import os
 import json
 from pathlib import Path
@@ -10,7 +11,7 @@ from unittest.mock import patch
 from phase17_isolation import IMAGE, IsolationUnavailable
 from phase17_sdk_bootstrap import (
     RUNTIME_BIN, RUNTIME_NAME, RUNTIME_SHA, SDK_NAME, SDK_SHA,
-    extract_offline_runtime, main, sdk_bootstrap_command, validate_hardened_profile, _rpc_response,
+    extract_offline_runtime, main, sdk_bootstrap_command, validate_hardened_profile, _rpc_response, sanitized_boot_diagnostic,
 )
 
 
@@ -100,6 +101,22 @@ class Phase17NativeSDKTests(unittest.TestCase):
                     _rpc_response(child, "phase17", timeout=0.1)
             finally:
                 child.stdout.close()
+
+    def test_phase18_diagnostic_never_echoes_native_logs(self):
+        sample = b"Cannot find module /tmp/private-key/foobar, ENOENT: no such file or directory\n"
+        got = sanitized_boot_diagnostic(sample)
+        self.assertIn("BAD_MODULE", got["signature"])
+        self.assertIn("ENOENT", got["signature"])
+        self.assertFalse(got["raw_stderr_disclosed"])
+        self.assertNotIn("private-key", json.dumps(got))
+        self.assertEqual(got["model_calls"], 0)
+        self.assertEqual(got["stderr_bytes_captured"], len(sample))
+        ids = sanitized_boot_diagnostic(
+            b"required injection for sdk-jsonrpc-server: working-directory\n")["plugin_ids"]
+        self.assertIn("sdk-jsonrpc-server", ids)
+        self.assertIn("working-directory", ids)
+        with self.assertRaises(IsolationUnavailable):
+            sanitized_boot_diagnostic("not bytes")
 
     def test_sdk_root_must_be_known(self):
         with tempfile.TemporaryDirectory() as directory:

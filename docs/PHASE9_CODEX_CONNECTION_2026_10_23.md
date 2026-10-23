@@ -52,6 +52,13 @@ failed, then started it again for a fresh ephemeral Codex thread; a subsequent
 status call succeeded. The app-server shut down with exit code 0. The harness
 made zero model turns and zero inference calls.
 
+The hosted PR workflow for commit `60a3fbe256efa234d196e8e295af42b8b69aeb77`
+also passed: [run 39892577941](https://github.com/Ledgercorp/BountyForge/actions/runs/39892577941)
+completed on standard Ubuntu 24.04. The full suite reported 597 tests in
+29.112 seconds, with nine skips and no failures. This run did not install
+Codex or perform Codex-originated calls; those were separately verified in
+the managed Linux session above.
+
 ## Compatibility correction
 
 The first Codex discovery attempt failed because Codex 0.163.0 sends the

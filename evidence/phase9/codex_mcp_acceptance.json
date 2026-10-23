@@ -16,6 +16,17 @@
   ],
   "discovery_status": "connected",
   "external_operations": [],
+  "hosted_regression": {
+    "commit": "60a3fbe256efa234d196e8e295af42b8b69aeb77",
+    "failed": 0,
+    "result": "success",
+    "run_id": 39892577941,
+    "runner": "ubuntu-24.04",
+    "skipped": 9,
+    "tests": 597,
+    "url": "https://github.com/Ledgercorp/BountyForge/actions/runs/39892577941",
+    "wall_seconds": 29.112
+  },
   "inference_calls": 0,
   "kind": "bountyforge_phase9_codex_mcp_connection_acceptance",
   "local_regression": {

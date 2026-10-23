@@ -12,18 +12,23 @@ def main(argv=None):
     p.add_argument('--evidence-sha256',required=True);p.add_argument('--replay',action='store_true');args=p.parse_args(argv)
     if not re.fullmatch('[0-9]{1,12}',args.run_id):p.error('Bounded numeric run ID required')
     directory=ROOT/'evidence/phase15';source=directory/('comparison_'+args.run_id+'.json')
-    if source.is_symlink() or source.stat().st_nlink!=1 or source.stat().st_size>500000:raise ValueError('Evidence file rejected')
+    if source.is_symlink() or not source.is_file() or source.stat().st_nlink!=1 or source.stat().st_size>500000:raise ValueError('Evidence file rejected')
     record=load_record(source.read_bytes(),args.evidence_sha256)
     if record['run_id']!=args.run_id:raise ValueError('Run identity rejected')
     report=summarize(record);report['input_sha256']=args.evidence_sha256;report['receipt_sha256']=receipt_hash(report)
     (directory/('summary_'+args.run_id+'.json')).write_text(json.dumps(report,indent=2,sort_keys=True)+'\n')
     if args.replay:
-        require_credential_free_host();replay=replay_successes(record)
+        require_credential_free_host();replay=replay_successes(record,include_failed=True)
         (directory/('replay_'+args.run_id+'.json')).write_text(json.dumps(replay,indent=2,sort_keys=True)+'\n')
-        if replay['replay_passed'] is False:return 2
+        if replay['replay_passed'] is False or replay['failure_reproduction_matched'] is False:return 2
     print(json.dumps({'models':[{'profile':r['model_profile'],'verified':r['verified_repairs']} for r in report['models']],
-                      'completion_requests':report['completion_requests_total'],'replayed':args.replay}))
+                      'completion_requests':report['completion_requests_total'],'replay_requested':args.replay,
+                      'candidates_replayed':len(replay['cases']) if args.replay else 0,
+                      'verified_successes_replayed':replay['verified_successes_replayed'] if args.replay else 0}))
     return 0
 
 
-if __name__=='__main__':raise SystemExit(main())
+if __name__=='__main__':
+    try:raise SystemExit(main())
+    except (ValueError,RuntimeError,OSError,KeyError,TypeError):
+        print(json.dumps({'status':'BLOCKED','outcome':'EVIDENCE_REJECTED','model_calls':0}));raise SystemExit(2)

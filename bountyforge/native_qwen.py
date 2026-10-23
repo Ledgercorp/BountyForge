@@ -39,7 +39,7 @@ class NativeStatementModel(AdaptiveStatementModel):
         if type(template) is not dict:raise RuntimeError('Invalid model template response')
         prompt=template.get('prompt')
         if type(prompt) is not str or len(prompt.encode())>16000:raise RuntimeError('Invalid model template response')
-        constraints=({'grammar':statement_grammar(schema)}
+        constraints=({'grammar':statement_grammar(schema,compact=getattr(self,'compact_wire',False))}
                      if set(schema.get('properties',{}))=={'changes'} else {'json_schema':schema})
         value=self._post_native('/completion',{'prompt':prompt,'n_predict':max_tokens,
               'temperature':0,'stream':False,**constraints,'cache_prompt':False})

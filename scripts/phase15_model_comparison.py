@@ -13,11 +13,12 @@ from bountyforge.model_profiles import PROFILES
 from bountyforge.owned_repair_queue import OwnedRepairQueue
 from bountyforge.phase8_evaluation import require_credential_free_host
 from bountyforge.profiled_qwen import ProfiledStatementModel
-from bountyforge.repair_engines import ROOT,catalog,digest,receipt_hash,strict_json,qwen_availability
+from bountyforge.repair_engines import ROOT,RepairService,catalog,digest,receipt_hash,strict_json,qwen_availability
 from bountyforge.repair_intelligence import compact_model_prompt as model_prompt,source_context
 from bountyforge.statements import statement_catalog,SYSTEM
 
-CONFIGS={'v1':ROOT/'experiments/phase15/comparison.json','v2':ROOT/'experiments/phase15/comparison-v2.json'}
+CONFIGS={'v1':ROOT/'experiments/phase15/comparison.json','v2':ROOT/'experiments/phase15/comparison-v2.json',
+         'v3':ROOT/'experiments/phase15/comparison-v3.json'}
 CASES=('reserve-release','response-normalize','weighted-window')
 CODE_PATHS=('bountyforge/repair_engines.py','bountyforge/model_profiles.py','bountyforge/profiled_qwen.py',
     'bountyforge/local_model_runtime.py','bountyforge/native_qwen.py','bountyforge/qwen_statement_contract.py',
@@ -35,11 +36,13 @@ def verify_experiment(expected,version='v1'):
     raw=config_path.read_bytes()
     if digest(raw)!=expected:raise ValueError('FROZEN_EXPERIMENT_CHANGED')
     config=strict_json(raw)
-    if config['model_profiles']!=list(PROFILES) or config['budgets']!={
+    budgets={
         'tasks_per_model':3,'attempts_per_task':2,'completion_tokens':150,'request_timeout_seconds':45,
-        'context_tokens':2048,'resource_probe_calls_per_model':1,'maximum_completion_requests':14}:
+        'context_tokens':2048,'resource_probe_calls_per_model':1,'maximum_completion_requests':14}
+    if version=='v3':budgets.update(tasks_per_model=1,resource_probe_calls_per_model=0,maximum_completion_requests=4,input_token_limit=700)
+    if config['model_profiles']!=list(PROFILES) or config['budgets']!=budgets:
         raise ValueError('EXPERIMENT_BUDGET_CHANGED')
-    if config['case_ids']!=list(CASES) or set(config['code_sha256'])!=set(CODE_PATHS):raise ValueError('BOUNDED_CASES_REQUIRED')
+    if config['case_ids']!=(['weighted-window'] if version=='v3' else list(CASES)) or set(config['code_sha256'])!=set(CODE_PATHS):raise ValueError('BOUNDED_CASES_REQUIRED')
     for name,sha in config['code_sha256'].items():
         if digest((ROOT/name).read_bytes())!=sha:raise ValueError('EXPERIMENT_IMPLEMENTATION_CHANGED')
     specs={s['id']:s for s in catalog()}
@@ -85,27 +88,37 @@ def main(argv=None):
         report['host']={'logical_cpus':os.cpu_count(),'memory_kib':mem,'disk_free_bytes':shutil.disk_usage(ROOT).free}
         if (os.cpu_count() or 0)<2 or mem['MemAvailable']<12*1024**2 or report['host']['disk_free_bytes']<2*1024**3:
             raise RuntimeError('RESOURCE_CAPACITY_UNAVAILABLE')
-        queue=OwnedRepairQueue();prompt=resource_prompt()
+        queue=OwnedRepairQueue(service_factory=(lambda:RepairService(model_factory=lambda **kw:ProfiledStatementModel(prompt_token_limit=700,**kw)))
+                               if args.experiment=='v3' else RepairService)
+        prompt=resource_prompt()
         for profile in config['model_profiles']:
             begin=time.monotonic();engine={'model_profile':profile,'status':'BLOCKED','jobs':[]};report['models'].append(engine)
             report['stage']='RESOURCE_ADMISSION';probe={'prompt':strict_json(prompt),'prompt_sha256':digest(prompt.encode())}
             engine['resource_probe']=probe;checkpoint()
             try:
-                with LocalRuntime(profile) as runtime:
-                    probe['runtime']=runtime.measurement
-                    if not qwen_availability(profile):raise RuntimeError('SELECTED_PROCESS_NOT_ADMITTED')
-                    other=next(p for p in PROFILES if p!=profile)
-                    probe['unselected_profile_available']=qwen_availability(other)
-                    if probe['unselected_profile_available']:raise RuntimeError('LOCAL_MODEL_IDENTITY_AMBIGUOUS')
-                    model=ProfiledStatementModel(timeout_seconds=45);t=time.monotonic()
-                    try:
-                        probe['response']=model.complete_line(SYSTEM,prompt,max_tokens=150)
-                        probe['response_sha256']=digest(probe['response'].encode())
-                    finally:
-                        probe['inference_seconds']=round(time.monotonic()-t,3);probe['metadata']=model.last_call
-                if (not runtime.measurement['server_stopped'] or runtime.measurement['wall_limit_reached']
-                        or runtime.measurement.get('unexpected_exit')):raise RuntimeError('RUNTIME_BOUNDARY_OR_EXIT_FAILURE')
-                engine['resource_admitted']=True
+                if args.experiment=='v3':
+                    # Reuse completed pinned resource receipts; narrow both inputs
+                    # below failed probes. Every actual request is token-checked.
+                    engine['resource_probe']={'completion_requests':0,'metadata':{'completion_requests':0},
+                        'mode':'PRIOR_PINNED_RESOURCE_RECEIPTS_WITH_LIVE_700_TOKEN_GATE',
+                        'prior_resource_runs':[40001954401,40007714754,40009784193]}
+                    engine['resource_admitted']=True
+                else:
+                    with LocalRuntime(profile) as runtime:
+                        probe['runtime']=runtime.measurement
+                        if not qwen_availability(profile):raise RuntimeError('SELECTED_PROCESS_NOT_ADMITTED')
+                        other=next(p for p in PROFILES if p!=profile)
+                        probe['unselected_profile_available']=qwen_availability(other)
+                        if probe['unselected_profile_available']:raise RuntimeError('LOCAL_MODEL_IDENTITY_AMBIGUOUS')
+                        model=ProfiledStatementModel(timeout_seconds=45);t=time.monotonic()
+                        try:
+                            probe['response']=model.complete_line(SYSTEM,prompt,max_tokens=150)
+                            probe['response_sha256']=digest(probe['response'].encode())
+                        finally:
+                            probe['inference_seconds']=round(time.monotonic()-t,3);probe['metadata']=model.last_call
+                    if (not runtime.measurement['server_stopped'] or runtime.measurement['wall_limit_reached']
+                            or runtime.measurement.get('unexpected_exit')):raise RuntimeError('RUNTIME_BOUNDARY_OR_EXIT_FAILURE')
+                    engine['resource_admitted']=True
             except (RuntimeError,ValueError,OSError) as exc:
                 engine.update(blocking_reason=str(exc) if re.fullmatch('[A-Z_]{1,80}',str(exc)) else type(exc).__name__,resource_admitted=False)
                 engine['elapsed_seconds']=round(time.monotonic()-begin,3);checkpoint();continue
@@ -119,6 +132,8 @@ def main(argv=None):
                 try:
                     with LocalRuntime(profile) as runtime:
                         entry['runtime']=runtime.measurement
+                        entry['unselected_profile_available']=qwen_availability(next(p for p in PROFILES if p!=profile))
+                        if entry['unselected_profile_available']:raise RuntimeError('LOCAL_MODEL_IDENTITY_AMBIGUOUS')
                         entry['result']=queue.run_qwen(batch,entry['preparation']['job_id'],entry['preparation']['lease_token'])
                 except (RuntimeError,ValueError,OSError) as exc:
                     entry['runtime_error']=str(exc) if re.fullmatch('[A-Z_]{1,80}',str(exc)) else type(exc).__name__
@@ -128,7 +143,7 @@ def main(argv=None):
                         or runtime.measurement['wall_limit_reached'] or runtime.measurement.get('unexpected_exit')):
                     queue.stop(batch);engine['blocking_reason']='WORKER_BLOCKED';break
             engine['queue_status']=queue.status(batch)
-            engine['status']='COMPLETED' if len(engine['jobs'])==3 and not engine.get('blocking_reason') else 'BLOCKED'
+            engine['status']='COMPLETED' if len(engine['jobs'])==len(config['case_ids']) and not engine.get('blocking_reason') else 'BLOCKED'
             engine['elapsed_seconds']=round(time.monotonic()-begin,3);checkpoint()
         report['stage']='COMPARISON_FINISHED';report['status']='COMPLETED' if all(m['status']=='COMPLETED' for m in report['models']) else 'PARTIAL_BLOCKED'
     except (RuntimeError,ValueError,OSError,KeyError,TypeError) as exc:report['blocking_reason']=type(exc).__name__

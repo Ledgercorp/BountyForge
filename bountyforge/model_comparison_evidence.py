@@ -31,10 +31,22 @@ def usage(calls,*,unknown=False):
     return result
 
 
+def failure_kind(attempt):
+    if attempt['outcome']!='SOURCE_REJECTED':return attempt['outcome']
+    diagnostic=attempt.get('diagnostic','')
+    for phrase,kind in [('Semantically ineffective','NO_OP'),('reads local before','INVALID_LOCAL_BINDING'),
+                        ('Condition requires','INVALID_PYTHON_FRAGMENT'),('Invalid structured JSON','INVALID_JSON'),
+                        ('proposal schema','INVALID_PATCH_STRUCTURE'),('Unapproved','INVALID_SCOPE'),
+                        ('New callable','SOURCE_CAPABILITY_REJECTION')]:
+        if phrase in diagnostic:return kind
+    return 'SOURCE_VALIDATION_REJECTION'
+
+
 def load_record(raw,expected_sha):
     if type(raw) is not bytes or len(raw)>500000 or digest(raw)!=expected_sha:raise ValueError('COMPARISON_DIGEST_REJECTED')
     record=strict_json(raw)
-    configs=[p.read_bytes() for p in (ROOT/'experiments/phase15/comparison.json',ROOT/'experiments/phase15/comparison-v2.json') if p.is_file()]
+    configs=[p.read_bytes() for p in (ROOT/'experiments/phase15/comparison.json',ROOT/'experiments/phase15/comparison-v2.json',
+                                    ROOT/'experiments/phase15/comparison-v3.json') if p.is_file()]
     config_raw=next((r for r in configs if digest(r)==record.get('experiment_sha256')),None)
     if config_raw is None:raise ValueError('FROZEN_EXPERIMENT_NOT_FOUND')
     config=strict_json(config_raw)
@@ -45,7 +57,7 @@ def load_record(raw,expected_sha):
             or [m['model_profile'] for m in record['models']]!=list(PROFILES)[:len(record['models'])]
             or len(record['models'])>2):raise ValueError('COMPARISON_BINDING_REJECTED')
     if record.get('status')=='COMPLETED' and (len(record['models'])!=2 or any(
-            m['status']!='COMPLETED' or len(m['jobs'])!=3 or any(j.get('result',{}).get('state') not in ('FAILED','VERIFIED')
+            m['status']!='COMPLETED' or len(m['jobs'])!=len(config['case_ids']) or any(j.get('result',{}).get('state') not in ('FAILED','VERIFIED')
             for j in m['jobs']) for m in record['models'])):raise ValueError('INCOMPLETE_COMPARISON_MISLABELED')
     return record
 
@@ -71,9 +83,11 @@ def summarize(record):
     for engine in record['models']:
         profile=engine['model_profile'];model=profile_spec(profile)
         jobs=engine['jobs'];case_ids=[j['case_id'] for j in jobs]
-        if case_ids!=allowed[:len(jobs)] or len(jobs)>3:raise ValueError('COMPARISON_CASE_ORDER_REJECTED')
+        if case_ids!=allowed[:len(jobs)] or len(jobs)>len(allowed):raise ValueError('COMPARISON_CASE_ORDER_REJECTED')
         row={'model_profile':profile,'model_sha256':model['sha256'],'status':engine['status'],
-             'configured_tasks':3,'tasks_prepared':0,'tasks_with_model_response':0,'valid_patches':0,
+             'blocking_reason':engine.get('blocking_reason'),'resource_admitted':engine.get('resource_admitted',False),
+             'configured_tasks':len(allowed),'tasks_prepared':0,'tasks_with_model_response':0,'valid_patches':0,
+             'tasks_with_completion_request':0,'tasks_completed':0,'tasks_blocked':0,
              'targeted_suites_passed':0,'verified_repairs':0,'fresh_replay_methods_passed':0,
              'source_rejected':0,'repeated_proposals':0,'client_attempts':0,'failure_categories':{},'cases':[]}
         all_calls=[];unknown=False;categories=Counter();runtimes=[]
@@ -90,6 +104,7 @@ def summarize(record):
                 if task.get('model_profile')!=profile or task.get('model_sha256')!=model['sha256']:raise ValueError('TASK_MODEL_IDENTITY_REJECTED')
                 row['tasks_prepared']+=1
             metrics={'case_id':job['case_id'],'queue_state':result.get('state'),'terminal_outcome':wrapper.get('outcome'),
+                     'inference_failure':wrapper.get('inference_failure'),
                      'client_attempts':len(calls),'valid_patches':0,'verified_repair':False,'attempts':[],
                      'elapsed_seconds':job.get('elapsed_seconds')}
             for index,attempt in enumerate(attempts):
@@ -116,18 +131,24 @@ def summarize(record):
                     metrics['verified_repair']=True;row['fresh_replay_methods_passed']+=attempt['independent']['tests_run']
                 categories[attempt['outcome']]+=1
                 row['targeted_suites_passed']+=attempt.get('targeted',{}).get('passed') is True
-                metrics['attempts'].append({'outcome':attempt['outcome'],'diagnostic':attempt['diagnostic'],
+                metrics['attempts'].append({'outcome':attempt['outcome'],'failure_kind':failure_kind(attempt),'diagnostic':attempt['diagnostic'],
                     'receipt_sha256':attempt['receipt_sha256'],'new_failing_test_ids':sorted(
                         set(attempt.get('test_feedback',{}).get('failing_tests',[]))-set(task['baseline_feedback']['failing_tests']))})
             if (result.get('state')=='VERIFIED')!=metrics['verified_repair']:raise ValueError('QUEUE_SUCCESS_CONTRADICTION')
             if wrapper.get('outcome') and not attempts:categories[wrapper['outcome']]+=1
             if any(type(c.get('response')) is str for c in calls):row['tasks_with_model_response']+=1
+            if any(type(c.get('metadata')) is dict and c['metadata'].get('completion_requests')==1 for c in calls):row['tasks_with_completion_request']+=1
+            row['tasks_completed']+=result.get('state') in ('FAILED','VERIFIED')
+            row['tasks_blocked']+=result.get('state')=='BLOCKED' or bool(job.get('runtime_error'))
             row['client_attempts']+=len(calls);row['valid_patches']+=metrics['valid_patches'];row['verified_repairs']+=metrics['verified_repair']
             row['cases'].append(metrics);all_calls+=calls
         row['source_rejected']=categories['SOURCE_REJECTED'];row['repeated_proposals']=categories['REPEATED_PROPOSAL']
+        row['tasks_not_prepared']=len(allowed)-row['tasks_prepared']
         row['failure_categories']={k:v for k,v in categories.items() if k!='VERIFIED'}
         row['repair_usage']=usage(all_calls,unknown=unknown)
         row['admission_usage']=usage([probe] if probe.get('metadata') is not None else [])
+        row['resource_probe_tokenized_prompt_tokens']=(probe.get('metadata') or {}).get('tokenized_prompt_tokens')
+        row['repair_tokenized_prompt_tokens']=[(c.get('metadata') or {}).get('tokenized_prompt_tokens') for c in all_calls]
         row['inference_seconds']=round(sum(c.get('seconds',0) for c in all_calls),3)
         row['resource_probe_inference_seconds']=probe.get('inference_seconds');row['total_execution_seconds']=engine.get('elapsed_seconds')
         row['peak_rss_kib_observed']=max((r['peak_rss_kib'] for r in runtimes if r.get('peak_rss_kib') is not None),default=None)
@@ -139,7 +160,8 @@ def summarize(record):
         rows.append(row)
     requests=[r[k]['completion_requests'] for r in rows for k in ('repair_usage','admission_usage')]
     total=sum(requests) if all(type(n) is int for n in requests) else None
-    if total is not None and total>14:raise ValueError('TOTAL_COMPLETION_BUDGET_EXCEEDED')
+    maximum=record['frozen_experiment']['budgets']['maximum_completion_requests']
+    if total is not None and total>maximum:raise ValueError('TOTAL_COMPLETION_BUDGET_EXCEEDED')
     hashes={}
     for engine in record['models']:
         for job in engine['jobs']:
@@ -148,29 +170,40 @@ def summarize(record):
     return {'kind':'phase15_verified_development_model_summary','classification':'OWNED_DEVELOPMENT',
         'independent_evaluation':False,'independent_accuracy':None,'run_id':record['run_id'],'commit':record['commit'],
         'record_receipt_sha256':record['receipt_sha256'],'experiment_sha256':record['experiment_sha256'],
-        'models':rows,'completion_requests_total':total,'maximum_completion_requests':14,
+        'models':rows,'completion_requests_total':total,'maximum_completion_requests':maximum,
         'initial_prompt_comparison':{case:{'models_observed':len(values),'identical_hashes':len(set(values))==1} for case,values in hashes.items()},
         'additional_spending_usd':0,'inference_spending_usd':0,'default_model_profile':'QWEN_1_5B','default_replaced':False}
 
 
-def replay_successes(record):
+def replay_successes(record,*,include_failed=False):
     specs={s['id']:s for s in catalog()};selected=[]
     for engine in record['models']:
         for job in engine['jobs']:
             task=job.get('preparation',{}).get('task');wrapper=job.get('result',{}).get('receipt',{})
             receipt=wrapper.get('verification_receipt',{})
-            if receipt.get('independently_verified') is not True:continue
-            if not valid_success(receipt,job['case_id'],'QWEN_LOCAL',task['task_id'],engine['model_profile']):raise ValueError('REPLAY_SUCCESS_BINDING_REJECTED')
-            selected.append((specs[job['case_id']],task,receipt))
+            if receipt.get('independently_verified') is True:
+                if not valid_success(receipt,job['case_id'],'QWEN_LOCAL',task['task_id'],engine['model_profile']):raise ValueError('REPLAY_SUCCESS_BINDING_REJECTED')
+                selected.append((specs[job['case_id']],task,receipt,True))
+            elif include_failed:
+                for receipt in wrapper.get('attempts',[]):
+                    if receipt.get('outcome')=='TEST_FAILED' and 'candidate_sha256' in receipt:
+                        if (receipt.get('receipt_sha256')!=receipt_hash(receipt) or receipt.get('model_profile')!=engine['model_profile']
+                                or receipt.get('engine')!='QWEN_LOCAL'):raise ValueError('FAILED_REPLAY_BINDING_REJECTED')
+                        selected.append((specs[job['case_id']],task,receipt,False))
     report={'kind':'phase15_separate_credential_free_replay','model_generation_calls':0,
         'classification':'OWNED_DEVELOPMENT','independent_evaluation':False,
-        'record_receipt_sha256':record['receipt_sha256'],'cases':[],'replay_passed':None}
+        'record_receipt_sha256':record['receipt_sha256'],'cases':[],'replay_passed':None,
+        'failure_reproduction_matched':None,'verified_successes_replayed':0}
     if selected:
         verifier=OwnedVerifier();proof=verifier.preflight();validate_proof(proof);report['runtime_admission']=proof
-        for spec,task,receipt in selected:
+        for spec,task,receipt,expected_pass in selected:
             source=candidate(spec,task,receipt);observation=verifier.observe(spec,source)
             report['cases'].append({'case_id':spec['id'],'model_profile':receipt['model_profile'],
                 'candidate_sha256':receipt['candidate_sha256'],'original_receipt_sha256':receipt['receipt_sha256'],
-                'verification':observation_summary(observation)})
-        report['replay_passed']=all(c['verification']['passed'] for c in report['cases'])
+                'original_claimed_success':expected_pass,'verification':observation_summary(observation)})
+        successes=[c for c in report['cases'] if c['original_claimed_success']]
+        failures=[c for c in report['cases'] if not c['original_claimed_success']]
+        report['verified_successes_replayed']=sum(c['verification']['passed'] for c in successes)
+        report['replay_passed']=all(c['verification']['passed'] for c in successes) if successes else None
+        report['failure_reproduction_matched']=all(not c['verification']['passed'] for c in failures) if failures else None
     report['receipt_sha256']=receipt_hash(report);return report

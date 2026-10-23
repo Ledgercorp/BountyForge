@@ -1,0 +1,2040 @@
+{
+  "additional_spending_usd": 0,
+  "classification": "OWNED_DEVELOPMENT",
+  "commit": "c142cf4a04fd096bb2d21ca954040493e3e2e48a",
+  "default_replaced": false,
+  "elapsed_seconds": 201.055,
+  "experiment_sha256": "d50f8f245536778f3638ec0ccb9a8f481873b15beea142c839ec5b26bdc34884",
+  "frozen_experiment": {
+    "baseline": "New tasks; no previous inference. No reference patches stored or supplied.",
+    "budgets": {
+      "attempts_per_task": 2,
+      "completion_tokens": 150,
+      "context_tokens": 2048,
+      "maximum_completion_requests": 14,
+      "request_timeout_seconds": 45,
+      "resource_probe_calls_per_model": 1,
+      "tasks_per_model": 3
+    },
+    "case_ids": [
+      "reserve-release",
+      "response-normalize",
+      "weighted-window"
+    ],
+    "cases": [
+      {
+        "categories": [
+          "state_transitions",
+          "multi_statement",
+          "helper_dependencies",
+          "error_recovery"
+        ],
+        "description": "Release reserved units only for settled events, once per event ID. Pending, cancelled and missing statuses are ignored without recording the ID. Clamp each accepted release to held units. Accumulate released units from the existing state; invalid amounts contribute zero. Return sorted seen IDs without mutating inputs.",
+        "id": "reserve-release",
+        "sha256": {
+          "subject.py": "6680558010929ddbd5ddbc21280a10b2b4406fecc103b6520d8d9fdb4a35d766",
+          "tests/test_regression.py": "e833bb513b5ebdb2cf5a1f699c2c135a83cb9c34466ef71a429b3d9541474921"
+        },
+        "symbol": "apply_release"
+      },
+      {
+        "categories": [
+          "api_responses",
+          "error_recovery",
+          "data_transformation",
+          "boundary"
+        ],
+        "description": "Normalize decoded 200 and 206 responses as successes with retry false. Trim and filter record IDs; preserve an explicit cursor including empty string or None, and use None when missing. Only 429/503 retry using the unchanged retry_seconds helper and previous cursor. Other errors retain the previous cursor without retry; do not mutate inputs.",
+        "id": "response-normalize",
+        "sha256": {
+          "subject.py": "16e9d683814425970670d886d9fdacbcbde0cc977a33b9371fd048bd6743bc7f",
+          "tests/test_regression.py": "459d30875f9e441425784062b97846d7e86507f1b27aa7a523c5cff0942d6d15"
+        },
+        "symbol": "normalize_response"
+      },
+      {
+        "categories": [
+          "data_transformation",
+          "multi_statement",
+          "boundary",
+          "helper_dependencies"
+        ],
+        "description": "Return a weighted mean from rows in the half-open interval [start,end). Ignore None values and invalid/nonpositive weights as defined by row_weight; include numeric zero and fractional weights. Return None if no valid weight remains. Preserve input rows and helper behavior.",
+        "id": "weighted-window",
+        "sha256": {
+          "subject.py": "532f6cf0a63013d4ccf1d36761f7e59ed5e08bfe5d7dbbe824ec7f3ca913b616",
+          "tests/test_regression.py": "9659c296d0aa671b7af65730d47c769dd6fbfd7a7afa900f8a00ddab91078c35"
+        },
+        "symbol": "summarize_window"
+      }
+    ],
+    "change": "Task-first compact prompt and concise equivalent generation instructions. Source, requirements, feedback and authorized statement units preserved; same resource and verification limits. Adds process CPU observations and unexpected-exit reporting.",
+    "classification": "OWNED_DEVELOPMENT",
+    "code_sha256": {
+      "bountyforge/curated_docker.py": "0beb01183867f514029f466274e641f5e9e2860de7a56d34fe725a12b61dfa2f",
+      "bountyforge/curated_tasks.py": "048bf0efe8e44278d4fb5a34ebc951b1d27c7034fb28a77da94f6990b965d48f",
+      "bountyforge/drafts.py": "e5336eb40548b72fae901d6b281ffd0d45de5d2cbf04f0189f2721f700b29af5",
+      "bountyforge/local_model_runtime.py": "09a28796712059d6a34f5e151f22cc02a660740f329348931d91c149efaa3395",
+      "bountyforge/mcp_server.py": "8e81f5abf3d34be5df1d1505ea7075f32c37b6f937eba0290f0c9b2b9856c689",
+      "bountyforge/model.py": "cc627d3b3ec1824772d9f7352cd266d1292d13c58a6f97909d2755751c7ff1a6",
+      "bountyforge/model_profiles.py": "42a2f4aeab95640161df1356bf4b241e10f3a5383f25260ed4cf6d5c0a728b53",
+      "bountyforge/native_qwen.py": "a990df9a4a9d6322dec3c0cdd7e280b65688bbc18c4a22d92f897c9737add323",
+      "bountyforge/owned_repair_queue.py": "10edcbdc41fc2cb8ef97df572f19ecbc389be032f7c6f25b69278f0ae19dc10e",
+      "bountyforge/phase8_evaluation.py": "c99d99987df89b32f542860e8f3eb8965e84c216a3fb0b1137505f70ad48a0a5",
+      "bountyforge/profiled_qwen.py": "fc8b987a1d4d7a0f61f9f5303927ef46edaadd396d5d3a5b639f11f2aa322f3f",
+      "bountyforge/qwen_statement_contract.py": "1cf4fcff49afdf4ff291f3ff5bc08e656b933d871f25d2795f7d2210ba3bebda",
+      "bountyforge/repair_engines.py": "84d19c90b620a524c50ecbef5fe86b4b36ba80737d15f42647e493a3e81c7a68",
+      "bountyforge/repair_intelligence.py": "7eb570b0975fc76abef356adb55e5e4ca1927ac1574cba239b05a8d12859e63a",
+      "bountyforge/repair_session.py": "b011ce262e9cba989afb02c69fbd2fd325345d9aaff76349378e7b674c65e8b3",
+      "bountyforge/statement_grammar.py": "90c16ac693cbcd0d5f6a231b07ac4819c81f6905b276e2b261b742b3b9e3ac0d",
+      "bountyforge/statements.py": "7ee92b1a794ce221042196ac7e5fedd97792691184f3d2709d182787ecfeb460",
+      "scripts/local_inference.py": "3d9a6f35eef7da70ad3e7f6699cdf806097d33571881867668f3f8bb81308b13",
+      "scripts/owned_queue.py": "2585e3e71cdefd32309dccdf9f9e1c7670da4cdae2c263deb64dcc9025c6fc7a",
+      "scripts/phase15_model_comparison.py": "fd7e721190876918318b0a48d3b33771900c631165baf093acf3a7e4f9ac9f04",
+      "scripts/repair_engine.py": "a2e882b62fdd49700ad5073b95e28c45d24f48ab070dd94a0336201d8dbc7930"
+    },
+    "development_reuse_disclosure": "These same three tasks were exposed in v1; this is a protocol comparison, never fresh unseen accuracy.",
+    "independent_evaluation": false,
+    "kind": "phase15_frozen_development_comparison_v2",
+    "model_profiles": [
+      "QWEN_1_5B",
+      "QWEN_7B"
+    ],
+    "order": "Sequential 1.5B then 7B; fresh bounded server per task; identical generation protocol/prompts/budgets.",
+    "previous_experiment_sha256": "02969e646c0a5fc5df1c34e2d4c484d38c1e02d2c4e095366d205224ac3b36b1",
+    "runtime_limits": {
+      "address_space_bytes": 10737418240,
+      "cpu_seconds_per_server": 180,
+      "log_bytes": 1048576,
+      "parallel_streams": 1,
+      "startup_seconds": 60,
+      "threads": 2,
+      "wall_seconds_per_server": 180
+    },
+    "verification": "Existing source/scope/binding/capability validators; targeted Docker plus fresh independent Docker replay."
+  },
+  "host": {
+    "disk_free_bytes": 86100717568,
+    "logical_cpus": 4,
+    "memory_kib": {
+      "MemAvailable": 15107528,
+      "MemTotal": 16372440
+    }
+  },
+  "independent_accuracy": null,
+  "independent_evaluation": false,
+  "inference_spending_usd": 0,
+  "kind": "phase15_local_model_comparison",
+  "models": [
+    {
+      "elapsed_seconds": 140.74,
+      "jobs": [
+        {
+          "case_id": "reserve-release",
+          "elapsed_seconds": 37.21,
+          "preparation": {
+            "attempts_remaining": 2,
+            "attempts_used": 0,
+            "batch_id": "phase15-qwen_1_5b",
+            "job_id": "b2317805957b4d33b8e6a1c1e6900243",
+            "lease_seconds": 180,
+            "lease_token": "fe41b8839621472cb524e49cf29061ba",
+            "previous_receipt": null,
+            "task": {
+              "approved_file": "subject.py",
+              "baseline_feedback": {
+                "assertions": [
+                  "AssertionError: {'held': 0, 'released': 3, 'seen': ['a']} != {'held': 0, 'released': 8, 'seen': ['a']}",
+                  "AssertionError: {'held': 10, 'released': 0, 'seen': ['a']} != {'held': 10, 'released': 7, 'seen': ['a']}",
+                  "AssertionError: {'held': 6, 'released': 3, 'seen': ['a']} != {'held': 9, 'released': 4, 'seen': []}"
+                ],
+                "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+                "failing_tests": [
+                  "test_clamp_and_duplicates",
+                  "test_invalid_amount_preserves_balance",
+                  "test_missing_status_ignored",
+                  "test_pending_can_later_settle",
+                  "test_settled_accumulates"
+                ],
+                "unseen_evaluation": false
+              },
+              "case_id": "reserve-release",
+              "classification": "OWNED_DEVELOPMENT",
+              "customer_execution_authorized": false,
+              "delivery_authorized": false,
+              "description": "Release reserved units only for settled events, once per event ID. Pending, cancelled and missing statuses are ignored without recording the ID. Clamp each accepted release to held units. Accumulate released units from the existing state; invalid amounts contribute zero. Return sorted seen IDs without mutating inputs.",
+              "edit_units": [
+                {
+                  "bindings": [
+                    "held"
+                  ],
+                  "end_line": 7,
+                  "kind": "statement",
+                  "line": 7
+                },
+                {
+                  "bindings": [
+                    "released"
+                  ],
+                  "end_line": 8,
+                  "kind": "statement",
+                  "line": 8
+                },
+                {
+                  "bindings": [
+                    "seen"
+                  ],
+                  "end_line": 9,
+                  "kind": "statement",
+                  "line": 9
+                },
+                {
+                  "bindings": [],
+                  "end_line": 19,
+                  "kind": "statement",
+                  "line": 19
+                },
+                {
+                  "bindings": [],
+                  "end_line": 11,
+                  "kind": "condition",
+                  "line": 11
+                },
+                {
+                  "bindings": [],
+                  "end_line": 13,
+                  "kind": "condition",
+                  "line": 13
+                },
+                {
+                  "bindings": [
+                    "amount"
+                  ],
+                  "end_line": 15,
+                  "kind": "statement",
+                  "line": 15
+                },
+                {
+                  "bindings": [
+                    "held"
+                  ],
+                  "end_line": 16,
+                  "kind": "statement",
+                  "line": 16
+                },
+                {
+                  "bindings": [
+                    "released"
+                  ],
+                  "end_line": 17,
+                  "kind": "statement",
+                  "line": 17
+                },
+                {
+                  "bindings": [],
+                  "end_line": 18,
+                  "kind": "statement",
+                  "line": 18
+                }
+              ],
+              "editable_lines": [
+                7,
+                8,
+                9,
+                11,
+                13,
+                15,
+                16,
+                17,
+                18,
+                19
+              ],
+              "engine": "QWEN_LOCAL",
+              "independent_evaluation": false,
+              "max_attempts": 2,
+              "model_profile": "QWEN_1_5B",
+              "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+              "proposal_protocol": "ast_statement_v1",
+              "revision": 0,
+              "source": "def release_amount(event):\n    amount = event.get('amount', 0)\n    return amount if type(amount) is int and amount > 0 else 0\n\n\ndef apply_release(state, events):\n    held = state['held']\n    released = state['released']\n    seen = set(state['seen'])\n    for event in events:\n        if event['id'] in seen:\n            continue\n        if event.get('status') == 'cancelled':\n            continue\n        amount = min(held, release_amount(event))\n        held -= amount\n        released = amount\n        seen.add(event['id'])\n    return {'held': held, 'released': released, 'seen': sorted(seen)}\n",
+              "source_context": {
+                "authorized_anchors": [
+                  7,
+                  8,
+                  9,
+                  11,
+                  13,
+                  15,
+                  16,
+                  17,
+                  18,
+                  19
+                ],
+                "called_helpers": [
+                  "release_amount"
+                ],
+                "prioritized_anchors": [
+                  17,
+                  9,
+                  8,
+                  7,
+                  15,
+                  19,
+                  11,
+                  13,
+                  16,
+                  18
+                ],
+                "scope_policy": "Only authorized anchors in the target function; helpers are context only",
+                "target_range": [
+                  6,
+                  19
+                ]
+              },
+              "source_sha256": "6680558010929ddbd5ddbc21280a10b2b4406fecc103b6520d8d9fdb4a35d766",
+              "state": "QWEN_PREPARED",
+              "target_symbol": "apply_release",
+              "task_id": "8803ce0d450a4812a6dc3336148965ab",
+              "tests_sha256": "e833bb513b5ebdb2cf5a1f699c2c135a83cb9c34466ef71a429b3d9541474921"
+            }
+          },
+          "result": {
+            "attempts_used": 2,
+            "delivery_authorized": false,
+            "independent_evaluation": false,
+            "job_id": "b2317805957b4d33b8e6a1c1e6900243",
+            "receipt": {
+              "additional_inference_cost_usd": 0,
+              "attempts": [
+                {
+                  "attempt": 1,
+                  "authorship_basis": "local_model_response",
+                  "authorship_identity_attested": false,
+                  "case_id": "reserve-release",
+                  "classification": "OWNED_DEVELOPMENT",
+                  "customer_execution_authorized": false,
+                  "delivery_authorized": false,
+                  "diagnostic": "Semantically ineffective proposal",
+                  "engine": "QWEN_LOCAL",
+                  "failure_stage": "source_validation",
+                  "generation": {
+                    "finish_reason": "eos",
+                    "prompt_sha256": "e66e07e97fdd468ef50b65e4ab21dfc0db93643c6caa899dae17abe2d6939cee",
+                    "raw_response_sha256": "ec627db573948de759a9406459419cf0d32ee17d624305f815011dcc83d735cb",
+                    "retained_anchors": [],
+                    "revision_strategy": "INITIAL_MINIMAL_REPAIR"
+                  },
+                  "image": "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                  "independent_evaluation": false,
+                  "independently_verified": false,
+                  "kind": "owned_dual_engine_verification",
+                  "model_profile": "QWEN_1_5B",
+                  "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+                  "outcome": "SOURCE_REJECTED",
+                  "paid_fallback": false,
+                  "previous_receipt_sha256": null,
+                  "proposal": "{\n  \"changes\": [\n    {\n      \"line\": 17,\n      \"new\": \"released = amount\"\n    },\n    {\n      \"line\": 19,\n      \"new\": \"return {'held': held, 'released': released, 'seen': sorted(seen)}\"\n    }\n  ]\n}",
+                  "proposal_sha256": "ec627db573948de759a9406459419cf0d32ee17d624305f815011dcc83d735cb",
+                  "receipt_sha256": "5440dbe1cb4019fd5d8e38acaead3fcab5ca2ada6358c0ab29de2d7a6f4e7441",
+                  "revision": 1,
+                  "runtime_admission": {
+                    "capabilities_empty": true,
+                    "cleanup_verified": true,
+                    "cpu_pressure_enforced": true,
+                    "cpu_quota_verified": true,
+                    "docker_socket_absent": true,
+                    "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                    "loopback_inference_unreachable": true,
+                    "memory_limit_enforced": true,
+                    "network_denied": true,
+                    "no_new_privileges": true,
+                    "output_bounded": true,
+                    "pid_limit_verified": true,
+                    "pid_pressure_enforced": true,
+                    "root_writes_denied": true,
+                    "seccomp_active": true,
+                    "secrets_absent": true,
+                    "source_writes_denied": true,
+                    "swap_disabled": true,
+                    "tmpfs_bounded_noexec": true,
+                    "uid_unprivileged": true,
+                    "untrusted_execution_certified": false,
+                    "wall_clock_enforced": true
+                  },
+                  "runtime_admission_sha256": "4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108",
+                  "schema": 1,
+                  "signature_verified": false,
+                  "source_sha256": "6680558010929ddbd5ddbc21280a10b2b4406fecc103b6520d8d9fdb4a35d766",
+                  "state": "REVISION_REQUIRED",
+                  "task_id": "8803ce0d450a4812a6dc3336148965ab",
+                  "tests_sha256": "e833bb513b5ebdb2cf5a1f699c2c135a83cb9c34466ef71a429b3d9541474921"
+                },
+                {
+                  "attempt": 2,
+                  "authorship_basis": "local_model_response",
+                  "authorship_identity_attested": false,
+                  "case_id": "reserve-release",
+                  "classification": "OWNED_DEVELOPMENT",
+                  "customer_execution_authorized": false,
+                  "delivery_authorized": false,
+                  "diagnostic": "Identical prior proposal; no test executed",
+                  "engine": "QWEN_LOCAL",
+                  "failure_stage": "source_validation",
+                  "generation": {
+                    "finish_reason": "eos",
+                    "prompt_sha256": "8dd307cb2575a5c94c2ea28b7cae8b600efa246a89a8b5062fd185dc2b45ed98",
+                    "raw_response_sha256": "ec627db573948de759a9406459419cf0d32ee17d624305f815011dcc83d735cb",
+                    "retained_anchors": [],
+                    "revision_strategy": "CORRECT_REJECTED_FORMAT_OR_SCOPE"
+                  },
+                  "image": "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                  "independent_evaluation": false,
+                  "independently_verified": false,
+                  "kind": "owned_dual_engine_verification",
+                  "model_profile": "QWEN_1_5B",
+                  "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+                  "outcome": "REPEATED_PROPOSAL",
+                  "paid_fallback": false,
+                  "previous_receipt_sha256": "5440dbe1cb4019fd5d8e38acaead3fcab5ca2ada6358c0ab29de2d7a6f4e7441",
+                  "proposal": "{\n  \"changes\": [\n    {\n      \"line\": 17,\n      \"new\": \"released = amount\"\n    },\n    {\n      \"line\": 19,\n      \"new\": \"return {'held': held, 'released': released, 'seen': sorted(seen)}\"\n    }\n  ]\n}",
+                  "proposal_sha256": "ec627db573948de759a9406459419cf0d32ee17d624305f815011dcc83d735cb",
+                  "receipt_sha256": "429e5c686583f19d6d51280706321272333de8a834032432b87aee6831945935",
+                  "revision": 2,
+                  "runtime_admission": {
+                    "capabilities_empty": true,
+                    "cleanup_verified": true,
+                    "cpu_pressure_enforced": true,
+                    "cpu_quota_verified": true,
+                    "docker_socket_absent": true,
+                    "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                    "loopback_inference_unreachable": true,
+                    "memory_limit_enforced": true,
+                    "network_denied": true,
+                    "no_new_privileges": true,
+                    "output_bounded": true,
+                    "pid_limit_verified": true,
+                    "pid_pressure_enforced": true,
+                    "root_writes_denied": true,
+                    "seccomp_active": true,
+                    "secrets_absent": true,
+                    "source_writes_denied": true,
+                    "swap_disabled": true,
+                    "tmpfs_bounded_noexec": true,
+                    "uid_unprivileged": true,
+                    "untrusted_execution_certified": false,
+                    "wall_clock_enforced": true
+                  },
+                  "runtime_admission_sha256": "4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108",
+                  "schema": 1,
+                  "signature_verified": false,
+                  "source_sha256": "6680558010929ddbd5ddbc21280a10b2b4406fecc103b6520d8d9fdb4a35d766",
+                  "state": "EXHAUSTED",
+                  "task_id": "8803ce0d450a4812a6dc3336148965ab",
+                  "tests_sha256": "e833bb513b5ebdb2cf5a1f699c2c135a83cb9c34466ef71a429b3d9541474921"
+                }
+              ],
+              "calls": [
+                {
+                  "effective_proposal": "{\n  \"changes\": [\n    {\n      \"line\": 17,\n      \"new\": \"released = amount\"\n    },\n    {\n      \"line\": 19,\n      \"new\": \"return {'held': held, 'released': released, 'seen': sorted(seen)}\"\n    }\n  ]\n}",
+                  "metadata": {
+                    "completion_requests": 1,
+                    "completion_tokens": 67,
+                    "constraint_kind": "json_safe_statement_grammar",
+                    "finish_reason": "eos",
+                    "prompt_tokens": 687,
+                    "tokenized_prompt_tokens": 687,
+                    "transport": "llama_native_completion_schema"
+                  },
+                  "prompt": {
+                    "description": "Release reserved units only for settled events, once per event ID. Pending, cancelled and missing statuses are ignored without recording the ID. Clamp each accepted release to held units. Accumulate released units from the existing state; invalid amounts contribute zero. Return sorted seen IDs without mutating inputs.",
+                    "edit_units": [
+                      {
+                        "end_line": 17,
+                        "kind": "statement",
+                        "line": 17
+                      },
+                      {
+                        "end_line": 9,
+                        "kind": "statement",
+                        "line": 9
+                      },
+                      {
+                        "end_line": 8,
+                        "kind": "statement",
+                        "line": 8
+                      },
+                      {
+                        "end_line": 7,
+                        "kind": "statement",
+                        "line": 7
+                      },
+                      {
+                        "end_line": 15,
+                        "kind": "statement",
+                        "line": 15
+                      },
+                      {
+                        "end_line": 19,
+                        "kind": "statement",
+                        "line": 19
+                      },
+                      {
+                        "end_line": 11,
+                        "kind": "condition",
+                        "line": 11
+                      },
+                      {
+                        "end_line": 13,
+                        "kind": "condition",
+                        "line": 13
+                      },
+                      {
+                        "end_line": 16,
+                        "kind": "statement",
+                        "line": 16
+                      },
+                      {
+                        "end_line": 18,
+                        "kind": "statement",
+                        "line": 18
+                      }
+                    ],
+                    "failure_feedback": {
+                      "assertions": [
+                        "AssertionError: {'held': 0, 'released': 3, 'seen': ['a']} != {'held': 0, 'released': 8, 'seen': ['a']}",
+                        "AssertionError: {'held': 10, 'released': 0, 'seen': ['a']} != {'held': 10, 'released': 7, 'seen': ['a']}",
+                        "AssertionError: {'held': 6, 'released': 3, 'seen': ['a']} != {'held': 9, 'released': 4, 'seen': []}"
+                      ],
+                      "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+                      "failing_tests": [
+                        "test_clamp_and_duplicates",
+                        "test_invalid_amount_preserves_balance",
+                        "test_missing_status_ignored",
+                        "test_pending_can_later_settle",
+                        "test_settled_accumulates"
+                      ],
+                      "unseen_evaluation": false
+                    },
+                    "revision_strategy": "INITIAL_MINIMAL_REPAIR",
+                    "source": "def release_amount(event):\n    amount = event.get('amount', 0)\n    return amount if type(amount) is int and amount > 0 else 0\n\n\ndef apply_release(state, events):\n    held = state['held']\n    released = state['released']\n    seen = set(state['seen'])\n    for event in events:\n        if event['id'] in seen:\n            continue\n        if event.get('status') == 'cancelled':\n            continue\n        amount = min(held, release_amount(event))\n        held -= amount\n        released = amount\n        seen.add(event['id'])\n    return {'held': held, 'released': released, 'seen': sorted(seen)}\n",
+                    "target_symbol": "apply_release"
+                  },
+                  "prompt_sha256": "e66e07e97fdd468ef50b65e4ab21dfc0db93643c6caa899dae17abe2d6939cee",
+                  "response": "{\n  \"changes\": [\n    {\n      \"line\": 17,\n      \"new\": \"released = amount\"\n    },\n    {\n      \"line\": 19,\n      \"new\": \"return {'held': held, 'released': released, 'seen': sorted(seen)}\"\n    }\n  ]\n}",
+                  "response_sha256": "ec627db573948de759a9406459419cf0d32ee17d624305f815011dcc83d735cb",
+                  "retained_anchors": [],
+                  "seconds": 12.24
+                },
+                {
+                  "effective_proposal": "{\n  \"changes\": [\n    {\n      \"line\": 17,\n      \"new\": \"released = amount\"\n    },\n    {\n      \"line\": 19,\n      \"new\": \"return {'held': held, 'released': released, 'seen': sorted(seen)}\"\n    }\n  ]\n}",
+                  "metadata": {
+                    "completion_requests": 1,
+                    "completion_tokens": 66,
+                    "constraint_kind": "json_safe_statement_grammar",
+                    "finish_reason": "eos",
+                    "prompt_tokens": 780,
+                    "tokenized_prompt_tokens": 780,
+                    "transport": "llama_native_completion_schema"
+                  },
+                  "prompt": {
+                    "description": "Release reserved units only for settled events, once per event ID. Pending, cancelled and missing statuses are ignored without recording the ID. Clamp each accepted release to held units. Accumulate released units from the existing state; invalid amounts contribute zero. Return sorted seen IDs without mutating inputs.",
+                    "edit_units": [
+                      {
+                        "end_line": 17,
+                        "kind": "statement",
+                        "line": 17
+                      },
+                      {
+                        "end_line": 9,
+                        "kind": "statement",
+                        "line": 9
+                      },
+                      {
+                        "end_line": 8,
+                        "kind": "statement",
+                        "line": 8
+                      },
+                      {
+                        "end_line": 7,
+                        "kind": "statement",
+                        "line": 7
+                      },
+                      {
+                        "end_line": 15,
+                        "kind": "statement",
+                        "line": 15
+                      },
+                      {
+                        "end_line": 19,
+                        "kind": "statement",
+                        "line": 19
+                      },
+                      {
+                        "end_line": 11,
+                        "kind": "condition",
+                        "line": 11
+                      },
+                      {
+                        "end_line": 13,
+                        "kind": "condition",
+                        "line": 13
+                      },
+                      {
+                        "end_line": 16,
+                        "kind": "statement",
+                        "line": 16
+                      },
+                      {
+                        "end_line": 18,
+                        "kind": "statement",
+                        "line": 18
+                      }
+                    ],
+                    "failure_feedback": {
+                      "assertions": [
+                        "AssertionError: {'held': 0, 'released': 3, 'seen': ['a']} != {'held': 0, 'released': 8, 'seen': ['a']}",
+                        "AssertionError: {'held': 10, 'released': 0, 'seen': ['a']} != {'held': 10, 'released': 7, 'seen': ['a']}",
+                        "AssertionError: {'held': 6, 'released': 3, 'seen': ['a']} != {'held': 9, 'released': 4, 'seen': []}"
+                      ],
+                      "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+                      "failing_tests": [
+                        "test_clamp_and_duplicates",
+                        "test_invalid_amount_preserves_balance",
+                        "test_missing_status_ignored",
+                        "test_pending_can_later_settle",
+                        "test_settled_accumulates"
+                      ],
+                      "unseen_evaluation": false
+                    },
+                    "previous_error": "Semantically ineffective proposal",
+                    "previous_proposal": "{\n  \"changes\": [\n    {\n      \"line\": 17,\n      \"new\": \"released = amount\"\n    },\n    {\n      \"line\": 19,\n      \"new\": \"return {'held': held, 'released': released, 'seen': sorted(seen)}\"\n    }\n  ]\n}",
+                    "revision_strategy": "CORRECT_REJECTED_FORMAT_OR_SCOPE",
+                    "source": "def release_amount(event):\n    amount = event.get('amount', 0)\n    return amount if type(amount) is int and amount > 0 else 0\n\n\ndef apply_release(state, events):\n    held = state['held']\n    released = state['released']\n    seen = set(state['seen'])\n    for event in events:\n        if event['id'] in seen:\n            continue\n        if event.get('status') == 'cancelled':\n            continue\n        amount = min(held, release_amount(event))\n        held -= amount\n        released = amount\n        seen.add(event['id'])\n    return {'held': held, 'released': released, 'seen': sorted(seen)}\n",
+                    "target_symbol": "apply_release"
+                  },
+                  "prompt_sha256": "8dd307cb2575a5c94c2ea28b7cae8b600efa246a89a8b5062fd185dc2b45ed98",
+                  "response": "{\n  \"changes\": [\n    {\n      \"line\": 17,\n      \"new\": \"released = amount\"\n    },\n    {\n      \"line\": 19,\n      \"new\": \"return {'held': held, 'released': released, 'seen': sorted(seen)}\"\n    }\n  ]\n}",
+                  "response_sha256": "ec627db573948de759a9406459419cf0d32ee17d624305f815011dcc83d735cb",
+                  "retained_anchors": [],
+                  "seconds": 13.421
+                }
+              ],
+              "elapsed_seconds": 25.668,
+              "engine": "QWEN_LOCAL",
+              "generation_protocol": "qwen_json_safe_grammar_v7_compact_context",
+              "independently_verified": false,
+              "model_calls": 2,
+              "model_profile": "QWEN_1_5B",
+              "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+              "outcome": "REPEATED_PROPOSAL",
+              "paid_fallback": false,
+              "state": "EXHAUSTED",
+              "verification_receipt": {
+                "attempt": 2,
+                "authorship_basis": "local_model_response",
+                "authorship_identity_attested": false,
+                "case_id": "reserve-release",
+                "classification": "OWNED_DEVELOPMENT",
+                "customer_execution_authorized": false,
+                "delivery_authorized": false,
+                "diagnostic": "Identical prior proposal; no test executed",
+                "engine": "QWEN_LOCAL",
+                "failure_stage": "source_validation",
+                "generation": {
+                  "finish_reason": "eos",
+                  "prompt_sha256": "8dd307cb2575a5c94c2ea28b7cae8b600efa246a89a8b5062fd185dc2b45ed98",
+                  "raw_response_sha256": "ec627db573948de759a9406459419cf0d32ee17d624305f815011dcc83d735cb",
+                  "retained_anchors": [],
+                  "revision_strategy": "CORRECT_REJECTED_FORMAT_OR_SCOPE"
+                },
+                "image": "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                "independent_evaluation": false,
+                "independently_verified": false,
+                "kind": "owned_dual_engine_verification",
+                "model_profile": "QWEN_1_5B",
+                "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+                "outcome": "REPEATED_PROPOSAL",
+                "paid_fallback": false,
+                "previous_receipt_sha256": "5440dbe1cb4019fd5d8e38acaead3fcab5ca2ada6358c0ab29de2d7a6f4e7441",
+                "proposal": "{\n  \"changes\": [\n    {\n      \"line\": 17,\n      \"new\": \"released = amount\"\n    },\n    {\n      \"line\": 19,\n      \"new\": \"return {'held': held, 'released': released, 'seen': sorted(seen)}\"\n    }\n  ]\n}",
+                "proposal_sha256": "ec627db573948de759a9406459419cf0d32ee17d624305f815011dcc83d735cb",
+                "receipt_sha256": "429e5c686583f19d6d51280706321272333de8a834032432b87aee6831945935",
+                "revision": 2,
+                "runtime_admission": {
+                  "capabilities_empty": true,
+                  "cleanup_verified": true,
+                  "cpu_pressure_enforced": true,
+                  "cpu_quota_verified": true,
+                  "docker_socket_absent": true,
+                  "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                  "loopback_inference_unreachable": true,
+                  "memory_limit_enforced": true,
+                  "network_denied": true,
+                  "no_new_privileges": true,
+                  "output_bounded": true,
+                  "pid_limit_verified": true,
+                  "pid_pressure_enforced": true,
+                  "root_writes_denied": true,
+                  "seccomp_active": true,
+                  "secrets_absent": true,
+                  "source_writes_denied": true,
+                  "swap_disabled": true,
+                  "tmpfs_bounded_noexec": true,
+                  "uid_unprivileged": true,
+                  "untrusted_execution_certified": false,
+                  "wall_clock_enforced": true
+                },
+                "runtime_admission_sha256": "4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108",
+                "schema": 1,
+                "signature_verified": false,
+                "source_sha256": "6680558010929ddbd5ddbc21280a10b2b4406fecc103b6520d8d9fdb4a35d766",
+                "state": "EXHAUSTED",
+                "task_id": "8803ce0d450a4812a6dc3336148965ab",
+                "tests_sha256": "e833bb513b5ebdb2cf5a1f699c2c135a83cb9c34466ef71a429b3d9541474921"
+              }
+            },
+            "state": "FAILED"
+          },
+          "runtime": {
+            "address_space_limit_bytes": 10737418240,
+            "context_tokens": 2048,
+            "cpu_limit_seconds": 180,
+            "cpu_observation": "Linux process counters at last sample before shutdown",
+            "load_seconds": 2.005,
+            "model_profile": "QWEN_1_5B",
+            "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+            "observed_cpu_seconds": 52.55,
+            "peak_address_kib": 2645428,
+            "peak_rss_kib": 1945652,
+            "server_elapsed_seconds": 29.042,
+            "server_exit_code": 0,
+            "server_stopped": true,
+            "threads": 2,
+            "unexpected_exit": false,
+            "wall_limit_reached": false,
+            "wall_limit_seconds": 180
+          }
+        },
+        {
+          "case_id": "response-normalize",
+          "elapsed_seconds": 40.92,
+          "preparation": {
+            "attempts_remaining": 2,
+            "attempts_used": 0,
+            "batch_id": "phase15-qwen_1_5b",
+            "job_id": "9bce796fe7f2445e83b85afa51d5e06a",
+            "lease_seconds": 180,
+            "lease_token": "acc09f963283491d925108eff1188e65",
+            "previous_receipt": null,
+            "task": {
+              "approved_file": "subject.py",
+              "baseline_feedback": {
+                "assertions": [
+                  "AssertionError: 'a' != ''",
+                  "AssertionError: {'ok': True, 'retry': True, 'delay': 0, 'items': [], 'cursor': 'a'} != {'ok': True, 'retry': False, 'delay': 0, 'items': [], 'cursor': None}",
+                  "AssertionError: {'ok': True, 'retry': True, 'delay': 0, 'items': ['x'], 'cursor': 'b'} != {'ok': True, 'retry': False, 'delay': 0, 'items': ['x'], 'cursor': 'b'}"
+                ],
+                "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+                "failing_tests": [
+                  "test_empty_cursor_preserved",
+                  "test_missing_cursor_is_terminal",
+                  "test_partial_is_success_not_transport_retry",
+                  "test_terminal_cursor"
+                ],
+                "unseen_evaluation": false
+              },
+              "case_id": "response-normalize",
+              "classification": "OWNED_DEVELOPMENT",
+              "customer_execution_authorized": false,
+              "delivery_authorized": false,
+              "description": "Normalize decoded 200 and 206 responses as successes with retry false. Trim and filter record IDs; preserve an explicit cursor including empty string or None, and use None when missing. Only 429/503 retry using the unchanged retry_seconds helper and previous cursor. Other errors retain the previous cursor without retry; do not mutate inputs.",
+              "edit_units": [
+                {
+                  "bindings": [],
+                  "end_line": 9,
+                  "kind": "condition",
+                  "line": 9
+                },
+                {
+                  "bindings": [],
+                  "end_line": 11,
+                  "kind": "condition",
+                  "line": 11
+                },
+                {
+                  "bindings": [
+                    "records"
+                  ],
+                  "end_line": 13,
+                  "kind": "statement",
+                  "line": 13
+                },
+                {
+                  "bindings": [
+                    "items"
+                  ],
+                  "end_line": 14,
+                  "kind": "statement",
+                  "line": 14
+                },
+                {
+                  "bindings": [
+                    "cursor"
+                  ],
+                  "end_line": 15,
+                  "kind": "statement",
+                  "line": 15
+                },
+                {
+                  "bindings": [
+                    "retry"
+                  ],
+                  "end_line": 16,
+                  "kind": "statement",
+                  "line": 16
+                },
+                {
+                  "bindings": [],
+                  "end_line": 17,
+                  "kind": "statement",
+                  "line": 17
+                },
+                {
+                  "bindings": [],
+                  "end_line": 10,
+                  "kind": "statement",
+                  "line": 10
+                },
+                {
+                  "bindings": [],
+                  "end_line": 12,
+                  "kind": "statement",
+                  "line": 12
+                }
+              ],
+              "editable_lines": [
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15,
+                16,
+                17
+              ],
+              "engine": "QWEN_LOCAL",
+              "independent_evaluation": false,
+              "max_attempts": 2,
+              "model_profile": "QWEN_1_5B",
+              "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+              "proposal_protocol": "ast_statement_v1",
+              "revision": 0,
+              "source": "def retry_seconds(headers):\n    try:\n        return max(0, float(headers.get('Retry-After', 1)))\n    except (TypeError, ValueError):\n        return 1\n\n\ndef normalize_response(status, payload, headers, previous_cursor):\n    if status in (429, 503):\n        return {'ok': False, 'retry': True, 'delay': retry_seconds(headers), 'items': [], 'cursor': previous_cursor}\n    if status not in (200, 206):\n        return {'ok': False, 'retry': False, 'delay': 0, 'items': [], 'cursor': previous_cursor}\n    records = payload.get('records', [])\n    items = [row['id'].strip() for row in records if isinstance(row.get('id'), str) and row['id'].strip()]\n    cursor = payload.get('cursor') or previous_cursor\n    retry = status == 206\n    return {'ok': True, 'retry': retry, 'delay': 0, 'items': items, 'cursor': cursor}\n",
+              "source_context": {
+                "authorized_anchors": [
+                  9,
+                  10,
+                  11,
+                  12,
+                  13,
+                  14,
+                  15,
+                  16,
+                  17
+                ],
+                "called_helpers": [
+                  "retry_seconds"
+                ],
+                "prioritized_anchors": [
+                  16,
+                  15,
+                  14,
+                  13,
+                  17,
+                  9,
+                  10,
+                  11,
+                  12
+                ],
+                "scope_policy": "Only authorized anchors in the target function; helpers are context only",
+                "target_range": [
+                  8,
+                  17
+                ]
+              },
+              "source_sha256": "16e9d683814425970670d886d9fdacbcbde0cc977a33b9371fd048bd6743bc7f",
+              "state": "QWEN_PREPARED",
+              "target_symbol": "normalize_response",
+              "task_id": "f759f7fa2582487da0cad9d262c30f68",
+              "tests_sha256": "459d30875f9e441425784062b97846d7e86507f1b27aa7a523c5cff0942d6d15"
+            }
+          },
+          "result": {
+            "attempts_used": 2,
+            "delivery_authorized": false,
+            "independent_evaluation": false,
+            "job_id": "9bce796fe7f2445e83b85afa51d5e06a",
+            "receipt": {
+              "additional_inference_cost_usd": 0,
+              "attempts": [
+                {
+                  "attempt": 1,
+                  "authorship_basis": "local_model_response",
+                  "authorship_identity_attested": false,
+                  "case_id": "response-normalize",
+                  "classification": "OWNED_DEVELOPMENT",
+                  "customer_execution_authorized": false,
+                  "delivery_authorized": false,
+                  "diagnostic": "Semantically ineffective proposal",
+                  "engine": "QWEN_LOCAL",
+                  "failure_stage": "source_validation",
+                  "generation": {
+                    "finish_reason": "eos",
+                    "prompt_sha256": "318f72fc4ee3b616558c9cef05b6c609fcc664f10f44a67f2d9d1cb0b0ca0114",
+                    "raw_response_sha256": "151f46ef572d15d9c3f6af14b042780592dec02b66df121e9c15cc4265edd209",
+                    "retained_anchors": [],
+                    "revision_strategy": "INITIAL_MINIMAL_REPAIR"
+                  },
+                  "image": "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                  "independent_evaluation": false,
+                  "independently_verified": false,
+                  "kind": "owned_dual_engine_verification",
+                  "model_profile": "QWEN_1_5B",
+                  "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+                  "outcome": "SOURCE_REJECTED",
+                  "paid_fallback": false,
+                  "previous_receipt_sha256": null,
+                  "proposal": "{\n  \"changes\": [\n    {\n      \"line\": 16,\n      \"new\": \"retry = status == 206\"\n    },\n    {\n      \"line\": 17,\n      \"new\": \"return {'ok': True, 'retry': retry, 'delay': 0, 'items': items, 'cursor': cursor}\"\n    }\n  ]\n}",
+                  "proposal_sha256": "151f46ef572d15d9c3f6af14b042780592dec02b66df121e9c15cc4265edd209",
+                  "receipt_sha256": "60e1785d9d5498fe43303de2fae92901819019566f700a7426a4402dff02490a",
+                  "revision": 1,
+                  "runtime_admission": {
+                    "capabilities_empty": true,
+                    "cleanup_verified": true,
+                    "cpu_pressure_enforced": true,
+                    "cpu_quota_verified": true,
+                    "docker_socket_absent": true,
+                    "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                    "loopback_inference_unreachable": true,
+                    "memory_limit_enforced": true,
+                    "network_denied": true,
+                    "no_new_privileges": true,
+                    "output_bounded": true,
+                    "pid_limit_verified": true,
+                    "pid_pressure_enforced": true,
+                    "root_writes_denied": true,
+                    "seccomp_active": true,
+                    "secrets_absent": true,
+                    "source_writes_denied": true,
+                    "swap_disabled": true,
+                    "tmpfs_bounded_noexec": true,
+                    "uid_unprivileged": true,
+                    "untrusted_execution_certified": false,
+                    "wall_clock_enforced": true
+                  },
+                  "runtime_admission_sha256": "4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108",
+                  "schema": 1,
+                  "signature_verified": false,
+                  "source_sha256": "16e9d683814425970670d886d9fdacbcbde0cc977a33b9371fd048bd6743bc7f",
+                  "state": "REVISION_REQUIRED",
+                  "task_id": "f759f7fa2582487da0cad9d262c30f68",
+                  "tests_sha256": "459d30875f9e441425784062b97846d7e86507f1b27aa7a523c5cff0942d6d15"
+                },
+                {
+                  "attempt": 2,
+                  "authorship_basis": "local_model_response",
+                  "authorship_identity_attested": false,
+                  "case_id": "response-normalize",
+                  "classification": "OWNED_DEVELOPMENT",
+                  "customer_execution_authorized": false,
+                  "delivery_authorized": false,
+                  "diagnostic": "Identical prior proposal; no test executed",
+                  "engine": "QWEN_LOCAL",
+                  "failure_stage": "source_validation",
+                  "generation": {
+                    "finish_reason": "eos",
+                    "prompt_sha256": "ef405e659a818208d7990f80565dfc22fefdb95b4e171f0be19e5c59bb1b92ad",
+                    "raw_response_sha256": "151f46ef572d15d9c3f6af14b042780592dec02b66df121e9c15cc4265edd209",
+                    "retained_anchors": [],
+                    "revision_strategy": "CORRECT_REJECTED_FORMAT_OR_SCOPE"
+                  },
+                  "image": "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                  "independent_evaluation": false,
+                  "independently_verified": false,
+                  "kind": "owned_dual_engine_verification",
+                  "model_profile": "QWEN_1_5B",
+                  "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+                  "outcome": "REPEATED_PROPOSAL",
+                  "paid_fallback": false,
+                  "previous_receipt_sha256": "60e1785d9d5498fe43303de2fae92901819019566f700a7426a4402dff02490a",
+                  "proposal": "{\n  \"changes\": [\n    {\n      \"line\": 16,\n      \"new\": \"retry = status == 206\"\n    },\n    {\n      \"line\": 17,\n      \"new\": \"return {'ok': True, 'retry': retry, 'delay': 0, 'items': items, 'cursor': cursor}\"\n    }\n  ]\n}",
+                  "proposal_sha256": "151f46ef572d15d9c3f6af14b042780592dec02b66df121e9c15cc4265edd209",
+                  "receipt_sha256": "0712b9eb402f6e86b19487fb0c1f860e40ae83fcd775a85aaf678fe8821d08d3",
+                  "revision": 2,
+                  "runtime_admission": {
+                    "capabilities_empty": true,
+                    "cleanup_verified": true,
+                    "cpu_pressure_enforced": true,
+                    "cpu_quota_verified": true,
+                    "docker_socket_absent": true,
+                    "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                    "loopback_inference_unreachable": true,
+                    "memory_limit_enforced": true,
+                    "network_denied": true,
+                    "no_new_privileges": true,
+                    "output_bounded": true,
+                    "pid_limit_verified": true,
+                    "pid_pressure_enforced": true,
+                    "root_writes_denied": true,
+                    "seccomp_active": true,
+                    "secrets_absent": true,
+                    "source_writes_denied": true,
+                    "swap_disabled": true,
+                    "tmpfs_bounded_noexec": true,
+                    "uid_unprivileged": true,
+                    "untrusted_execution_certified": false,
+                    "wall_clock_enforced": true
+                  },
+                  "runtime_admission_sha256": "4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108",
+                  "schema": 1,
+                  "signature_verified": false,
+                  "source_sha256": "16e9d683814425970670d886d9fdacbcbde0cc977a33b9371fd048bd6743bc7f",
+                  "state": "EXHAUSTED",
+                  "task_id": "f759f7fa2582487da0cad9d262c30f68",
+                  "tests_sha256": "459d30875f9e441425784062b97846d7e86507f1b27aa7a523c5cff0942d6d15"
+                }
+              ],
+              "calls": [
+                {
+                  "effective_proposal": "{\n  \"changes\": [\n    {\n      \"line\": 16,\n      \"new\": \"retry = status == 206\"\n    },\n    {\n      \"line\": 17,\n      \"new\": \"return {'ok': True, 'retry': retry, 'delay': 0, 'items': items, 'cursor': cursor}\"\n    }\n  ]\n}",
+                  "metadata": {
+                    "completion_requests": 1,
+                    "completion_tokens": 80,
+                    "constraint_kind": "json_safe_statement_grammar",
+                    "finish_reason": "eos",
+                    "prompt_tokens": 764,
+                    "tokenized_prompt_tokens": 764,
+                    "transport": "llama_native_completion_schema"
+                  },
+                  "prompt": {
+                    "description": "Normalize decoded 200 and 206 responses as successes with retry false. Trim and filter record IDs; preserve an explicit cursor including empty string or None, and use None when missing. Only 429/503 retry using the unchanged retry_seconds helper and previous cursor. Other errors retain the previous cursor without retry; do not mutate inputs.",
+                    "edit_units": [
+                      {
+                        "end_line": 16,
+                        "kind": "statement",
+                        "line": 16
+                      },
+                      {
+                        "end_line": 15,
+                        "kind": "statement",
+                        "line": 15
+                      },
+                      {
+                        "end_line": 14,
+                        "kind": "statement",
+                        "line": 14
+                      },
+                      {
+                        "end_line": 13,
+                        "kind": "statement",
+                        "line": 13
+                      },
+                      {
+                        "end_line": 17,
+                        "kind": "statement",
+                        "line": 17
+                      },
+                      {
+                        "end_line": 9,
+                        "kind": "condition",
+                        "line": 9
+                      },
+                      {
+                        "end_line": 10,
+                        "kind": "statement",
+                        "line": 10
+                      },
+                      {
+                        "end_line": 11,
+                        "kind": "condition",
+                        "line": 11
+                      },
+                      {
+                        "end_line": 12,
+                        "kind": "statement",
+                        "line": 12
+                      }
+                    ],
+                    "failure_feedback": {
+                      "assertions": [
+                        "AssertionError: 'a' != ''",
+                        "AssertionError: {'ok': True, 'retry': True, 'delay': 0, 'items': [], 'cursor': 'a'} != {'ok': True, 'retry': False, 'delay': 0, 'items': [], 'cursor': None}",
+                        "AssertionError: {'ok': True, 'retry': True, 'delay': 0, 'items': ['x'], 'cursor': 'b'} != {'ok': True, 'retry': False, 'delay': 0, 'items': ['x'], 'cursor': 'b'}"
+                      ],
+                      "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+                      "failing_tests": [
+                        "test_empty_cursor_preserved",
+                        "test_missing_cursor_is_terminal",
+                        "test_partial_is_success_not_transport_retry",
+                        "test_terminal_cursor"
+                      ],
+                      "unseen_evaluation": false
+                    },
+                    "revision_strategy": "INITIAL_MINIMAL_REPAIR",
+                    "source": "def retry_seconds(headers):\n    try:\n        return max(0, float(headers.get('Retry-After', 1)))\n    except (TypeError, ValueError):\n        return 1\n\n\ndef normalize_response(status, payload, headers, previous_cursor):\n    if status in (429, 503):\n        return {'ok': False, 'retry': True, 'delay': retry_seconds(headers), 'items': [], 'cursor': previous_cursor}\n    if status not in (200, 206):\n        return {'ok': False, 'retry': False, 'delay': 0, 'items': [], 'cursor': previous_cursor}\n    records = payload.get('records', [])\n    items = [row['id'].strip() for row in records if isinstance(row.get('id'), str) and row['id'].strip()]\n    cursor = payload.get('cursor') or previous_cursor\n    retry = status == 206\n    return {'ok': True, 'retry': retry, 'delay': 0, 'items': items, 'cursor': cursor}\n",
+                    "target_symbol": "normalize_response"
+                  },
+                  "prompt_sha256": "318f72fc4ee3b616558c9cef05b6c609fcc664f10f44a67f2d9d1cb0b0ca0114",
+                  "response": "{\n  \"changes\": [\n    {\n      \"line\": 16,\n      \"new\": \"retry = status == 206\"\n    },\n    {\n      \"line\": 17,\n      \"new\": \"return {'ok': True, 'retry': retry, 'delay': 0, 'items': items, 'cursor': cursor}\"\n    }\n  ]\n}",
+                  "response_sha256": "151f46ef572d15d9c3f6af14b042780592dec02b66df121e9c15cc4265edd209",
+                  "retained_anchors": [],
+                  "seconds": 14.085
+                },
+                {
+                  "effective_proposal": "{\n  \"changes\": [\n    {\n      \"line\": 16,\n      \"new\": \"retry = status == 206\"\n    },\n    {\n      \"line\": 17,\n      \"new\": \"return {'ok': True, 'retry': retry, 'delay': 0, 'items': items, 'cursor': cursor}\"\n    }\n  ]\n}",
+                  "metadata": {
+                    "completion_requests": 1,
+                    "completion_tokens": 80,
+                    "constraint_kind": "json_safe_statement_grammar",
+                    "finish_reason": "eos",
+                    "prompt_tokens": 871,
+                    "tokenized_prompt_tokens": 871,
+                    "transport": "llama_native_completion_schema"
+                  },
+                  "prompt": {
+                    "description": "Normalize decoded 200 and 206 responses as successes with retry false. Trim and filter record IDs; preserve an explicit cursor including empty string or None, and use None when missing. Only 429/503 retry using the unchanged retry_seconds helper and previous cursor. Other errors retain the previous cursor without retry; do not mutate inputs.",
+                    "edit_units": [
+                      {
+                        "end_line": 16,
+                        "kind": "statement",
+                        "line": 16
+                      },
+                      {
+                        "end_line": 15,
+                        "kind": "statement",
+                        "line": 15
+                      },
+                      {
+                        "end_line": 14,
+                        "kind": "statement",
+                        "line": 14
+                      },
+                      {
+                        "end_line": 13,
+                        "kind": "statement",
+                        "line": 13
+                      },
+                      {
+                        "end_line": 17,
+                        "kind": "statement",
+                        "line": 17
+                      },
+                      {
+                        "end_line": 9,
+                        "kind": "condition",
+                        "line": 9
+                      },
+                      {
+                        "end_line": 10,
+                        "kind": "statement",
+                        "line": 10
+                      },
+                      {
+                        "end_line": 11,
+                        "kind": "condition",
+                        "line": 11
+                      },
+                      {
+                        "end_line": 12,
+                        "kind": "statement",
+                        "line": 12
+                      }
+                    ],
+                    "failure_feedback": {
+                      "assertions": [
+                        "AssertionError: 'a' != ''",
+                        "AssertionError: {'ok': True, 'retry': True, 'delay': 0, 'items': [], 'cursor': 'a'} != {'ok': True, 'retry': False, 'delay': 0, 'items': [], 'cursor': None}",
+                        "AssertionError: {'ok': True, 'retry': True, 'delay': 0, 'items': ['x'], 'cursor': 'b'} != {'ok': True, 'retry': False, 'delay': 0, 'items': ['x'], 'cursor': 'b'}"
+                      ],
+                      "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+                      "failing_tests": [
+                        "test_empty_cursor_preserved",
+                        "test_missing_cursor_is_terminal",
+                        "test_partial_is_success_not_transport_retry",
+                        "test_terminal_cursor"
+                      ],
+                      "unseen_evaluation": false
+                    },
+                    "previous_error": "Semantically ineffective proposal",
+                    "previous_proposal": "{\n  \"changes\": [\n    {\n      \"line\": 16,\n      \"new\": \"retry = status == 206\"\n    },\n    {\n      \"line\": 17,\n      \"new\": \"return {'ok': True, 'retry': retry, 'delay': 0, 'items': items, 'cursor': cursor}\"\n    }\n  ]\n}",
+                    "revision_strategy": "CORRECT_REJECTED_FORMAT_OR_SCOPE",
+                    "source": "def retry_seconds(headers):\n    try:\n        return max(0, float(headers.get('Retry-After', 1)))\n    except (TypeError, ValueError):\n        return 1\n\n\ndef normalize_response(status, payload, headers, previous_cursor):\n    if status in (429, 503):\n        return {'ok': False, 'retry': True, 'delay': retry_seconds(headers), 'items': [], 'cursor': previous_cursor}\n    if status not in (200, 206):\n        return {'ok': False, 'retry': False, 'delay': 0, 'items': [], 'cursor': previous_cursor}\n    records = payload.get('records', [])\n    items = [row['id'].strip() for row in records if isinstance(row.get('id'), str) and row['id'].strip()]\n    cursor = payload.get('cursor') or previous_cursor\n    retry = status == 206\n    return {'ok': True, 'retry': retry, 'delay': 0, 'items': items, 'cursor': cursor}\n",
+                    "target_symbol": "normalize_response"
+                  },
+                  "prompt_sha256": "ef405e659a818208d7990f80565dfc22fefdb95b4e171f0be19e5c59bb1b92ad",
+                  "response": "{\n  \"changes\": [\n    {\n      \"line\": 16,\n      \"new\": \"retry = status == 206\"\n    },\n    {\n      \"line\": 17,\n      \"new\": \"return {'ok': True, 'retry': retry, 'delay': 0, 'items': items, 'cursor': cursor}\"\n    }\n  ]\n}",
+                  "response_sha256": "151f46ef572d15d9c3f6af14b042780592dec02b66df121e9c15cc4265edd209",
+                  "retained_anchors": [],
+                  "seconds": 15.449
+                }
+              ],
+              "elapsed_seconds": 29.541,
+              "engine": "QWEN_LOCAL",
+              "generation_protocol": "qwen_json_safe_grammar_v7_compact_context",
+              "independently_verified": false,
+              "model_calls": 2,
+              "model_profile": "QWEN_1_5B",
+              "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+              "outcome": "REPEATED_PROPOSAL",
+              "paid_fallback": false,
+              "state": "EXHAUSTED",
+              "verification_receipt": {
+                "attempt": 2,
+                "authorship_basis": "local_model_response",
+                "authorship_identity_attested": false,
+                "case_id": "response-normalize",
+                "classification": "OWNED_DEVELOPMENT",
+                "customer_execution_authorized": false,
+                "delivery_authorized": false,
+                "diagnostic": "Identical prior proposal; no test executed",
+                "engine": "QWEN_LOCAL",
+                "failure_stage": "source_validation",
+                "generation": {
+                  "finish_reason": "eos",
+                  "prompt_sha256": "ef405e659a818208d7990f80565dfc22fefdb95b4e171f0be19e5c59bb1b92ad",
+                  "raw_response_sha256": "151f46ef572d15d9c3f6af14b042780592dec02b66df121e9c15cc4265edd209",
+                  "retained_anchors": [],
+                  "revision_strategy": "CORRECT_REJECTED_FORMAT_OR_SCOPE"
+                },
+                "image": "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                "independent_evaluation": false,
+                "independently_verified": false,
+                "kind": "owned_dual_engine_verification",
+                "model_profile": "QWEN_1_5B",
+                "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+                "outcome": "REPEATED_PROPOSAL",
+                "paid_fallback": false,
+                "previous_receipt_sha256": "60e1785d9d5498fe43303de2fae92901819019566f700a7426a4402dff02490a",
+                "proposal": "{\n  \"changes\": [\n    {\n      \"line\": 16,\n      \"new\": \"retry = status == 206\"\n    },\n    {\n      \"line\": 17,\n      \"new\": \"return {'ok': True, 'retry': retry, 'delay': 0, 'items': items, 'cursor': cursor}\"\n    }\n  ]\n}",
+                "proposal_sha256": "151f46ef572d15d9c3f6af14b042780592dec02b66df121e9c15cc4265edd209",
+                "receipt_sha256": "0712b9eb402f6e86b19487fb0c1f860e40ae83fcd775a85aaf678fe8821d08d3",
+                "revision": 2,
+                "runtime_admission": {
+                  "capabilities_empty": true,
+                  "cleanup_verified": true,
+                  "cpu_pressure_enforced": true,
+                  "cpu_quota_verified": true,
+                  "docker_socket_absent": true,
+                  "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                  "loopback_inference_unreachable": true,
+                  "memory_limit_enforced": true,
+                  "network_denied": true,
+                  "no_new_privileges": true,
+                  "output_bounded": true,
+                  "pid_limit_verified": true,
+                  "pid_pressure_enforced": true,
+                  "root_writes_denied": true,
+                  "seccomp_active": true,
+                  "secrets_absent": true,
+                  "source_writes_denied": true,
+                  "swap_disabled": true,
+                  "tmpfs_bounded_noexec": true,
+                  "uid_unprivileged": true,
+                  "untrusted_execution_certified": false,
+                  "wall_clock_enforced": true
+                },
+                "runtime_admission_sha256": "4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108",
+                "schema": 1,
+                "signature_verified": false,
+                "source_sha256": "16e9d683814425970670d886d9fdacbcbde0cc977a33b9371fd048bd6743bc7f",
+                "state": "EXHAUSTED",
+                "task_id": "f759f7fa2582487da0cad9d262c30f68",
+                "tests_sha256": "459d30875f9e441425784062b97846d7e86507f1b27aa7a523c5cff0942d6d15"
+              }
+            },
+            "state": "FAILED"
+          },
+          "runtime": {
+            "address_space_limit_bytes": 10737418240,
+            "context_tokens": 2048,
+            "cpu_limit_seconds": 180,
+            "cpu_observation": "Linux process counters at last sample before shutdown",
+            "load_seconds": 2.005,
+            "model_profile": "QWEN_1_5B",
+            "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+            "observed_cpu_seconds": 60.31,
+            "peak_address_kib": 2647960,
+            "peak_rss_kib": 1948040,
+            "server_elapsed_seconds": 32.917,
+            "server_exit_code": 0,
+            "server_stopped": true,
+            "threads": 2,
+            "unexpected_exit": false,
+            "wall_limit_reached": false,
+            "wall_limit_seconds": 180
+          }
+        },
+        {
+          "case_id": "weighted-window",
+          "elapsed_seconds": 39.576,
+          "preparation": {
+            "attempts_remaining": 2,
+            "attempts_used": 0,
+            "batch_id": "phase15-qwen_1_5b",
+            "job_id": "3d0efe7074fe46f59db17fca2f9bb89b",
+            "lease_seconds": 180,
+            "lease_token": "5505f121bf1841bc9ddda771a37c5c14",
+            "previous_receipt": null,
+            "task": {
+              "approved_file": "subject.py",
+              "baseline_feedback": {
+                "assertions": [
+                  "AssertionError: 12.0 != 6",
+                  "AssertionError: 10.0 != 5",
+                  "AssertionError: 26.0 != 2"
+                ],
+                "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+                "failing_tests": [
+                  "test_lower_bound_included",
+                  "test_null_and_invalid_weights",
+                  "test_upper_bound_excluded",
+                  "test_weighted_mean",
+                  "test_zero_value_and_fractional_weight",
+                  "test_zero_width_is_empty"
+                ],
+                "unseen_evaluation": false
+              },
+              "case_id": "weighted-window",
+              "classification": "OWNED_DEVELOPMENT",
+              "customer_execution_authorized": false,
+              "delivery_authorized": false,
+              "description": "Return a weighted mean from rows in the half-open interval [start,end). Ignore None values and invalid/nonpositive weights as defined by row_weight; include numeric zero and fractional weights. Return None if no valid weight remains. Preserve input rows and helper behavior.",
+              "edit_units": [
+                {
+                  "bindings": [
+                    "numerator"
+                  ],
+                  "end_line": 7,
+                  "kind": "statement",
+                  "line": 7
+                },
+                {
+                  "bindings": [
+                    "denominator"
+                  ],
+                  "end_line": 8,
+                  "kind": "statement",
+                  "line": 8
+                },
+                {
+                  "bindings": [],
+                  "end_line": 17,
+                  "kind": "statement",
+                  "line": 17
+                },
+                {
+                  "bindings": [],
+                  "end_line": 10,
+                  "kind": "condition",
+                  "line": 10
+                },
+                {
+                  "bindings": [
+                    "weight"
+                  ],
+                  "end_line": 12,
+                  "kind": "statement",
+                  "line": 12
+                },
+                {
+                  "bindings": [],
+                  "end_line": 13,
+                  "kind": "condition",
+                  "line": 13
+                },
+                {
+                  "bindings": [
+                    "numerator"
+                  ],
+                  "end_line": 15,
+                  "kind": "statement",
+                  "line": 15
+                },
+                {
+                  "bindings": [
+                    "denominator"
+                  ],
+                  "end_line": 16,
+                  "kind": "statement",
+                  "line": 16
+                }
+              ],
+              "editable_lines": [
+                7,
+                8,
+                10,
+                12,
+                13,
+                15,
+                16,
+                17
+              ],
+              "engine": "QWEN_LOCAL",
+              "independent_evaluation": false,
+              "max_attempts": 2,
+              "model_profile": "QWEN_1_5B",
+              "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+              "proposal_protocol": "ast_statement_v1",
+              "revision": 0,
+              "source": "def row_weight(row):\n    weight = row.get('weight', 1)\n    return weight if type(weight) in (int, float) and weight > 0 else 0\n\n\ndef summarize_window(rows, start, end):\n    numerator = 0\n    denominator = 0\n    for row in rows:\n        if not start <= row['at'] <= end:\n            continue\n        weight = row_weight(row)\n        if row['value'] is None or not weight:\n            continue\n        numerator += row['value'] * weight\n        denominator += 1\n    return numerator / denominator if denominator else None\n",
+              "source_context": {
+                "authorized_anchors": [
+                  7,
+                  8,
+                  10,
+                  12,
+                  13,
+                  15,
+                  16,
+                  17
+                ],
+                "called_helpers": [
+                  "row_weight"
+                ],
+                "prioritized_anchors": [
+                  8,
+                  7,
+                  17,
+                  10,
+                  12,
+                  13,
+                  15,
+                  16
+                ],
+                "scope_policy": "Only authorized anchors in the target function; helpers are context only",
+                "target_range": [
+                  6,
+                  17
+                ]
+              },
+              "source_sha256": "532f6cf0a63013d4ccf1d36761f7e59ed5e08bfe5d7dbbe824ec7f3ca913b616",
+              "state": "QWEN_PREPARED",
+              "target_symbol": "summarize_window",
+              "task_id": "72cbce9b2cf34d7ca67ccf4d8472f706",
+              "tests_sha256": "9659c296d0aa671b7af65730d47c769dd6fbfd7a7afa900f8a00ddab91078c35"
+            }
+          },
+          "result": {
+            "attempts_used": 2,
+            "delivery_authorized": false,
+            "independent_evaluation": false,
+            "job_id": "3d0efe7074fe46f59db17fca2f9bb89b",
+            "receipt": {
+              "additional_inference_cost_usd": 0,
+              "attempts": [
+                {
+                  "attempt": 1,
+                  "authorship_basis": "local_model_response",
+                  "authorship_identity_attested": false,
+                  "case_id": "weighted-window",
+                  "classification": "OWNED_DEVELOPMENT",
+                  "customer_execution_authorized": false,
+                  "delivery_authorized": false,
+                  "diagnostic": "Condition requires one Python expression",
+                  "engine": "QWEN_LOCAL",
+                  "failure_stage": "source_validation",
+                  "generation": {
+                    "finish_reason": "eos",
+                    "prompt_sha256": "ece62c7f4d498698417f6170efd3864d253fc5197a4d7d338463da624b2baeb3",
+                    "raw_response_sha256": "d2cfc87990a5fba73c66c17ac08a65d5ad8a8f3b199f3157b58c5424db2cd80c",
+                    "retained_anchors": [],
+                    "revision_strategy": "INITIAL_MINIMAL_REPAIR"
+                  },
+                  "image": "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                  "independent_evaluation": false,
+                  "independently_verified": false,
+                  "kind": "owned_dual_engine_verification",
+                  "model_profile": "QWEN_1_5B",
+                  "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+                  "outcome": "SOURCE_REJECTED",
+                  "paid_fallback": false,
+                  "previous_receipt_sha256": null,
+                  "proposal": "{\n  \"changes\": [\n    {\n      \"line\": 10,\n      \"new\": \"if not start <= row['at'] <= end and row['value'] is None or not weight:\"\n    },\n    {\n      \"line\": 12,\n      \"new\": \"weight = row_weight(row) if weight is not None and weight > 0 else 0\"\n    },\n    {\n      \"line\": 13,\n      \"new\": \"if weight is not None and weight > 0:\"\n    }\n  ]\n}",
+                  "proposal_sha256": "d2cfc87990a5fba73c66c17ac08a65d5ad8a8f3b199f3157b58c5424db2cd80c",
+                  "receipt_sha256": "59b1ebcbab2b2ba7ab6a503c23730655f3fad50737feef3f1a806669b51ea0c8",
+                  "revision": 1,
+                  "runtime_admission": {
+                    "capabilities_empty": true,
+                    "cleanup_verified": true,
+                    "cpu_pressure_enforced": true,
+                    "cpu_quota_verified": true,
+                    "docker_socket_absent": true,
+                    "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                    "loopback_inference_unreachable": true,
+                    "memory_limit_enforced": true,
+                    "network_denied": true,
+                    "no_new_privileges": true,
+                    "output_bounded": true,
+                    "pid_limit_verified": true,
+                    "pid_pressure_enforced": true,
+                    "root_writes_denied": true,
+                    "seccomp_active": true,
+                    "secrets_absent": true,
+                    "source_writes_denied": true,
+                    "swap_disabled": true,
+                    "tmpfs_bounded_noexec": true,
+                    "uid_unprivileged": true,
+                    "untrusted_execution_certified": false,
+                    "wall_clock_enforced": true
+                  },
+                  "runtime_admission_sha256": "4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108",
+                  "schema": 1,
+                  "signature_verified": false,
+                  "source_sha256": "532f6cf0a63013d4ccf1d36761f7e59ed5e08bfe5d7dbbe824ec7f3ca913b616",
+                  "state": "REVISION_REQUIRED",
+                  "task_id": "72cbce9b2cf34d7ca67ccf4d8472f706",
+                  "tests_sha256": "9659c296d0aa671b7af65730d47c769dd6fbfd7a7afa900f8a00ddab91078c35"
+                },
+                {
+                  "attempt": 2,
+                  "authorship_basis": "local_model_response",
+                  "authorship_identity_attested": false,
+                  "case_id": "weighted-window",
+                  "classification": "OWNED_DEVELOPMENT",
+                  "customer_execution_authorized": false,
+                  "delivery_authorized": false,
+                  "diagnostic": "Identical prior proposal; no test executed",
+                  "engine": "QWEN_LOCAL",
+                  "failure_stage": "source_validation",
+                  "generation": {
+                    "finish_reason": "eos",
+                    "prompt_sha256": "4c5f43b674033a764427279867002686375fa516fc7ada3fd418456e1ffe38ac",
+                    "raw_response_sha256": "d2cfc87990a5fba73c66c17ac08a65d5ad8a8f3b199f3157b58c5424db2cd80c",
+                    "retained_anchors": [],
+                    "revision_strategy": "CORRECT_REJECTED_FORMAT_OR_SCOPE"
+                  },
+                  "image": "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                  "independent_evaluation": false,
+                  "independently_verified": false,
+                  "kind": "owned_dual_engine_verification",
+                  "model_profile": "QWEN_1_5B",
+                  "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+                  "outcome": "REPEATED_PROPOSAL",
+                  "paid_fallback": false,
+                  "previous_receipt_sha256": "59b1ebcbab2b2ba7ab6a503c23730655f3fad50737feef3f1a806669b51ea0c8",
+                  "proposal": "{\n  \"changes\": [\n    {\n      \"line\": 10,\n      \"new\": \"if not start <= row['at'] <= end and row['value'] is None or not weight:\"\n    },\n    {\n      \"line\": 12,\n      \"new\": \"weight = row_weight(row) if weight is not None and weight > 0 else 0\"\n    },\n    {\n      \"line\": 13,\n      \"new\": \"if weight is not None and weight > 0:\"\n    }\n  ]\n}",
+                  "proposal_sha256": "d2cfc87990a5fba73c66c17ac08a65d5ad8a8f3b199f3157b58c5424db2cd80c",
+                  "receipt_sha256": "ebf07a7dbc3f41ad25ee99142086f689d8a640dfb8e501f7a98d202052f77bd1",
+                  "revision": 2,
+                  "runtime_admission": {
+                    "capabilities_empty": true,
+                    "cleanup_verified": true,
+                    "cpu_pressure_enforced": true,
+                    "cpu_quota_verified": true,
+                    "docker_socket_absent": true,
+                    "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                    "loopback_inference_unreachable": true,
+                    "memory_limit_enforced": true,
+                    "network_denied": true,
+                    "no_new_privileges": true,
+                    "output_bounded": true,
+                    "pid_limit_verified": true,
+                    "pid_pressure_enforced": true,
+                    "root_writes_denied": true,
+                    "seccomp_active": true,
+                    "secrets_absent": true,
+                    "source_writes_denied": true,
+                    "swap_disabled": true,
+                    "tmpfs_bounded_noexec": true,
+                    "uid_unprivileged": true,
+                    "untrusted_execution_certified": false,
+                    "wall_clock_enforced": true
+                  },
+                  "runtime_admission_sha256": "4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108",
+                  "schema": 1,
+                  "signature_verified": false,
+                  "source_sha256": "532f6cf0a63013d4ccf1d36761f7e59ed5e08bfe5d7dbbe824ec7f3ca913b616",
+                  "state": "EXHAUSTED",
+                  "task_id": "72cbce9b2cf34d7ca67ccf4d8472f706",
+                  "tests_sha256": "9659c296d0aa671b7af65730d47c769dd6fbfd7a7afa900f8a00ddab91078c35"
+                }
+              ],
+              "calls": [
+                {
+                  "effective_proposal": "{\n  \"changes\": [\n    {\n      \"line\": 10,\n      \"new\": \"if not start <= row['at'] <= end and row['value'] is None or not weight:\"\n    },\n    {\n      \"line\": 12,\n      \"new\": \"weight = row_weight(row) if weight is not None and weight > 0 else 0\"\n    },\n    {\n      \"line\": 13,\n      \"new\": \"if weight is not None and weight > 0:\"\n    }\n  ]\n}",
+                  "metadata": {
+                    "completion_requests": 1,
+                    "completion_tokens": 113,
+                    "constraint_kind": "json_safe_statement_grammar",
+                    "finish_reason": "eos",
+                    "prompt_tokens": 545,
+                    "tokenized_prompt_tokens": 545,
+                    "transport": "llama_native_completion_schema"
+                  },
+                  "prompt": {
+                    "description": "Return a weighted mean from rows in the half-open interval [start,end). Ignore None values and invalid/nonpositive weights as defined by row_weight; include numeric zero and fractional weights. Return None if no valid weight remains. Preserve input rows and helper behavior.",
+                    "edit_units": [
+                      {
+                        "end_line": 8,
+                        "kind": "statement",
+                        "line": 8
+                      },
+                      {
+                        "end_line": 7,
+                        "kind": "statement",
+                        "line": 7
+                      },
+                      {
+                        "end_line": 17,
+                        "kind": "statement",
+                        "line": 17
+                      },
+                      {
+                        "end_line": 10,
+                        "kind": "condition",
+                        "line": 10
+                      },
+                      {
+                        "end_line": 12,
+                        "kind": "statement",
+                        "line": 12
+                      },
+                      {
+                        "end_line": 13,
+                        "kind": "condition",
+                        "line": 13
+                      },
+                      {
+                        "end_line": 15,
+                        "kind": "statement",
+                        "line": 15
+                      },
+                      {
+                        "end_line": 16,
+                        "kind": "statement",
+                        "line": 16
+                      }
+                    ],
+                    "failure_feedback": {
+                      "assertions": [
+                        "AssertionError: 12.0 != 6",
+                        "AssertionError: 10.0 != 5",
+                        "AssertionError: 26.0 != 2"
+                      ],
+                      "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+                      "failing_tests": [
+                        "test_lower_bound_included",
+                        "test_null_and_invalid_weights",
+                        "test_upper_bound_excluded",
+                        "test_weighted_mean",
+                        "test_zero_value_and_fractional_weight",
+                        "test_zero_width_is_empty"
+                      ],
+                      "unseen_evaluation": false
+                    },
+                    "revision_strategy": "INITIAL_MINIMAL_REPAIR",
+                    "source": "def row_weight(row):\n    weight = row.get('weight', 1)\n    return weight if type(weight) in (int, float) and weight > 0 else 0\n\n\ndef summarize_window(rows, start, end):\n    numerator = 0\n    denominator = 0\n    for row in rows:\n        if not start <= row['at'] <= end:\n            continue\n        weight = row_weight(row)\n        if row['value'] is None or not weight:\n            continue\n        numerator += row['value'] * weight\n        denominator += 1\n    return numerator / denominator if denominator else None\n",
+                    "target_symbol": "summarize_window"
+                  },
+                  "prompt_sha256": "ece62c7f4d498698417f6170efd3864d253fc5197a4d7d338463da624b2baeb3",
+                  "response": "{\n  \"changes\": [\n    {\n      \"line\": 10,\n      \"new\": \"if not start <= row['at'] <= end and row['value'] is None or not weight:\"\n    },\n    {\n      \"line\": 12,\n      \"new\": \"weight = row_weight(row) if weight is not None and weight > 0 else 0\"\n    },\n    {\n      \"line\": 13,\n      \"new\": \"if weight is not None and weight > 0:\"\n    }\n  ]\n}",
+                  "response_sha256": "d2cfc87990a5fba73c66c17ac08a65d5ad8a8f3b199f3157b58c5424db2cd80c",
+                  "retained_anchors": [],
+                  "seconds": 13.229
+                },
+                {
+                  "effective_proposal": "{\n  \"changes\": [\n    {\n      \"line\": 10,\n      \"new\": \"if not start <= row['at'] <= end and row['value'] is None or not weight:\"\n    },\n    {\n      \"line\": 12,\n      \"new\": \"weight = row_weight(row) if weight is not None and weight > 0 else 0\"\n    },\n    {\n      \"line\": 13,\n      \"new\": \"if weight is not None and weight > 0:\"\n    }\n  ]\n}",
+                  "metadata": {
+                    "completion_requests": 1,
+                    "completion_tokens": 113,
+                    "constraint_kind": "json_safe_statement_grammar",
+                    "finish_reason": "eos",
+                    "prompt_tokens": 692,
+                    "tokenized_prompt_tokens": 692,
+                    "transport": "llama_native_completion_schema"
+                  },
+                  "prompt": {
+                    "description": "Return a weighted mean from rows in the half-open interval [start,end). Ignore None values and invalid/nonpositive weights as defined by row_weight; include numeric zero and fractional weights. Return None if no valid weight remains. Preserve input rows and helper behavior.",
+                    "edit_units": [
+                      {
+                        "end_line": 8,
+                        "kind": "statement",
+                        "line": 8
+                      },
+                      {
+                        "end_line": 7,
+                        "kind": "statement",
+                        "line": 7
+                      },
+                      {
+                        "end_line": 17,
+                        "kind": "statement",
+                        "line": 17
+                      },
+                      {
+                        "end_line": 10,
+                        "kind": "condition",
+                        "line": 10
+                      },
+                      {
+                        "end_line": 12,
+                        "kind": "statement",
+                        "line": 12
+                      },
+                      {
+                        "end_line": 13,
+                        "kind": "condition",
+                        "line": 13
+                      },
+                      {
+                        "end_line": 15,
+                        "kind": "statement",
+                        "line": 15
+                      },
+                      {
+                        "end_line": 16,
+                        "kind": "statement",
+                        "line": 16
+                      }
+                    ],
+                    "failure_feedback": {
+                      "assertions": [
+                        "AssertionError: 12.0 != 6",
+                        "AssertionError: 10.0 != 5",
+                        "AssertionError: 26.0 != 2"
+                      ],
+                      "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+                      "failing_tests": [
+                        "test_lower_bound_included",
+                        "test_null_and_invalid_weights",
+                        "test_upper_bound_excluded",
+                        "test_weighted_mean",
+                        "test_zero_value_and_fractional_weight",
+                        "test_zero_width_is_empty"
+                      ],
+                      "unseen_evaluation": false
+                    },
+                    "previous_error": "Condition requires one Python expression",
+                    "previous_proposal": "{\n  \"changes\": [\n    {\n      \"line\": 10,\n      \"new\": \"if not start <= row['at'] <= end and row['value'] is None or not weight:\"\n    },\n    {\n      \"line\": 12,\n      \"new\": \"weight = row_weight(row) if weight is not None and weight > 0 else 0\"\n    },\n    {\n      \"line\": 13,\n      \"new\": \"if weight is not None and weight > 0:\"\n    }\n  ]\n}",
+                    "revision_strategy": "CORRECT_REJECTED_FORMAT_OR_SCOPE",
+                    "source": "def row_weight(row):\n    weight = row.get('weight', 1)\n    return weight if type(weight) in (int, float) and weight > 0 else 0\n\n\ndef summarize_window(rows, start, end):\n    numerator = 0\n    denominator = 0\n    for row in rows:\n        if not start <= row['at'] <= end:\n            continue\n        weight = row_weight(row)\n        if row['value'] is None or not weight:\n            continue\n        numerator += row['value'] * weight\n        denominator += 1\n    return numerator / denominator if denominator else None\n",
+                    "target_symbol": "summarize_window"
+                  },
+                  "prompt_sha256": "4c5f43b674033a764427279867002686375fa516fc7ada3fd418456e1ffe38ac",
+                  "response": "{\n  \"changes\": [\n    {\n      \"line\": 10,\n      \"new\": \"if not start <= row['at'] <= end and row['value'] is None or not weight:\"\n    },\n    {\n      \"line\": 12,\n      \"new\": \"weight = row_weight(row) if weight is not None and weight > 0 else 0\"\n    },\n    {\n      \"line\": 13,\n      \"new\": \"if weight is not None and weight > 0:\"\n    }\n  ]\n}",
+                  "response_sha256": "d2cfc87990a5fba73c66c17ac08a65d5ad8a8f3b199f3157b58c5424db2cd80c",
+                  "retained_anchors": [],
+                  "seconds": 14.951
+                }
+              ],
+              "elapsed_seconds": 28.184,
+              "engine": "QWEN_LOCAL",
+              "generation_protocol": "qwen_json_safe_grammar_v7_compact_context",
+              "independently_verified": false,
+              "model_calls": 2,
+              "model_profile": "QWEN_1_5B",
+              "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+              "outcome": "REPEATED_PROPOSAL",
+              "paid_fallback": false,
+              "state": "EXHAUSTED",
+              "verification_receipt": {
+                "attempt": 2,
+                "authorship_basis": "local_model_response",
+                "authorship_identity_attested": false,
+                "case_id": "weighted-window",
+                "classification": "OWNED_DEVELOPMENT",
+                "customer_execution_authorized": false,
+                "delivery_authorized": false,
+                "diagnostic": "Identical prior proposal; no test executed",
+                "engine": "QWEN_LOCAL",
+                "failure_stage": "source_validation",
+                "generation": {
+                  "finish_reason": "eos",
+                  "prompt_sha256": "4c5f43b674033a764427279867002686375fa516fc7ada3fd418456e1ffe38ac",
+                  "raw_response_sha256": "d2cfc87990a5fba73c66c17ac08a65d5ad8a8f3b199f3157b58c5424db2cd80c",
+                  "retained_anchors": [],
+                  "revision_strategy": "CORRECT_REJECTED_FORMAT_OR_SCOPE"
+                },
+                "image": "python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                "independent_evaluation": false,
+                "independently_verified": false,
+                "kind": "owned_dual_engine_verification",
+                "model_profile": "QWEN_1_5B",
+                "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+                "outcome": "REPEATED_PROPOSAL",
+                "paid_fallback": false,
+                "previous_receipt_sha256": "59b1ebcbab2b2ba7ab6a503c23730655f3fad50737feef3f1a806669b51ea0c8",
+                "proposal": "{\n  \"changes\": [\n    {\n      \"line\": 10,\n      \"new\": \"if not start <= row['at'] <= end and row['value'] is None or not weight:\"\n    },\n    {\n      \"line\": 12,\n      \"new\": \"weight = row_weight(row) if weight is not None and weight > 0 else 0\"\n    },\n    {\n      \"line\": 13,\n      \"new\": \"if weight is not None and weight > 0:\"\n    }\n  ]\n}",
+                "proposal_sha256": "d2cfc87990a5fba73c66c17ac08a65d5ad8a8f3b199f3157b58c5424db2cd80c",
+                "receipt_sha256": "ebf07a7dbc3f41ad25ee99142086f689d8a640dfb8e501f7a98d202052f77bd1",
+                "revision": 2,
+                "runtime_admission": {
+                  "capabilities_empty": true,
+                  "cleanup_verified": true,
+                  "cpu_pressure_enforced": true,
+                  "cpu_quota_verified": true,
+                  "docker_socket_absent": true,
+                  "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+                  "loopback_inference_unreachable": true,
+                  "memory_limit_enforced": true,
+                  "network_denied": true,
+                  "no_new_privileges": true,
+                  "output_bounded": true,
+                  "pid_limit_verified": true,
+                  "pid_pressure_enforced": true,
+                  "root_writes_denied": true,
+                  "seccomp_active": true,
+                  "secrets_absent": true,
+                  "source_writes_denied": true,
+                  "swap_disabled": true,
+                  "tmpfs_bounded_noexec": true,
+                  "uid_unprivileged": true,
+                  "untrusted_execution_certified": false,
+                  "wall_clock_enforced": true
+                },
+                "runtime_admission_sha256": "4dae188a5683d7942d4f759e693ef789b5b5fa6b4787247cf8c0a0f0fbeec108",
+                "schema": 1,
+                "signature_verified": false,
+                "source_sha256": "532f6cf0a63013d4ccf1d36761f7e59ed5e08bfe5d7dbbe824ec7f3ca913b616",
+                "state": "EXHAUSTED",
+                "task_id": "72cbce9b2cf34d7ca67ccf4d8472f706",
+                "tests_sha256": "9659c296d0aa671b7af65730d47c769dd6fbfd7a7afa900f8a00ddab91078c35"
+              }
+            },
+            "state": "FAILED"
+          },
+          "runtime": {
+            "address_space_limit_bytes": 10737418240,
+            "context_tokens": 2048,
+            "cpu_limit_seconds": 180,
+            "cpu_observation": "Linux process counters at last sample before shutdown",
+            "load_seconds": 2.005,
+            "model_profile": "QWEN_1_5B",
+            "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+            "observed_cpu_seconds": 57.61,
+            "peak_address_kib": 2647760,
+            "peak_rss_kib": 1952092,
+            "server_elapsed_seconds": 31.564,
+            "server_exit_code": 0,
+            "server_stopped": true,
+            "threads": 2,
+            "unexpected_exit": false,
+            "wall_limit_reached": false,
+            "wall_limit_seconds": 180
+          }
+        }
+      ],
+      "model_profile": "QWEN_1_5B",
+      "queue_status": {
+        "active_session_required": false,
+        "batch_id": "phase15-qwen_1_5b",
+        "cross_cloud_session_storage_verified": false,
+        "customer_execution_authorized": false,
+        "delivery_authorized": false,
+        "engine": "QWEN_LOCAL",
+        "independent_evaluation": false,
+        "jobs": [
+          {
+            "attempt_history": [
+              {
+                "entry_sha256": "c804ec4d43b8deb06ea332fbe4407ca66f1f33edd1364f2fc19267b91f445f20",
+                "outcome": "REPEATED_PROPOSAL",
+                "receipt_sha256": "429e5c686583f19d6d51280706321272333de8a834032432b87aee6831945935",
+                "reserved_through": 2
+              }
+            ],
+            "attempts": 2,
+            "case_id": "reserve-release",
+            "claims": 1,
+            "id": "b2317805957b4d33b8e6a1c1e6900243",
+            "outcome": "REPEATED_PROPOSAL",
+            "receipt_sha256": "4b8ba01415b88a8c6d780ddf9a94391f2001b72851fb1422ac5feede63a7effb",
+            "state": "FAILED"
+          },
+          {
+            "attempt_history": [
+              {
+                "entry_sha256": "8543d5d95c759562f0b9166a503fcad6140d9d58ceb5130bd66206a85d51d89e",
+                "outcome": "REPEATED_PROPOSAL",
+                "receipt_sha256": "0712b9eb402f6e86b19487fb0c1f860e40ae83fcd775a85aaf678fe8821d08d3",
+                "reserved_through": 2
+              }
+            ],
+            "attempts": 2,
+            "case_id": "response-normalize",
+            "claims": 1,
+            "id": "9bce796fe7f2445e83b85afa51d5e06a",
+            "outcome": "REPEATED_PROPOSAL",
+            "receipt_sha256": "4be6d8d4ede534852e98bfcbf4a4ee17c41a3af7ff9b89c907187bb33925c637",
+            "state": "FAILED"
+          },
+          {
+            "attempt_history": [
+              {
+                "entry_sha256": "baf7b17cb8c275fa32034f84c8cdf4f64565de7a4992cf82e02be859b6b62f4b",
+                "outcome": "REPEATED_PROPOSAL",
+                "receipt_sha256": "ebf07a7dbc3f41ad25ee99142086f689d8a640dfb8e501f7a98d202052f77bd1",
+                "reserved_through": 2
+              }
+            ],
+            "attempts": 2,
+            "case_id": "weighted-window",
+            "claims": 1,
+            "id": "3d0efe7074fe46f59db17fca2f9bb89b",
+            "outcome": "REPEATED_PROPOSAL",
+            "receipt_sha256": "14e23a4aff73e1255b9adb6296e02b063461a13bfdd616f8577c0ca239ad86c0",
+            "state": "FAILED"
+          }
+        ],
+        "model_profile": "QWEN_1_5B",
+        "paid_fallback": false,
+        "stopped": false
+      },
+      "resource_admitted": true,
+      "resource_probe": {
+        "inference_seconds": 13.84,
+        "metadata": {
+          "completion_requests": 1,
+          "completion_tokens": 69,
+          "constraint_kind": "json_safe_statement_grammar",
+          "finish_reason": "eos",
+          "prompt_tokens": 795,
+          "tokenized_prompt_tokens": 795,
+          "transport": "llama_native_completion_schema"
+        },
+        "prompt": {
+          "description": "Owned resource calibration only; aggregate entries without modifying caller data. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. ",
+          "edit_units": [
+            {
+              "end_line": 6,
+              "kind": "statement",
+              "line": 6
+            },
+            {
+              "end_line": 2,
+              "kind": "statement",
+              "line": 2
+            },
+            {
+              "end_line": 7,
+              "kind": "statement",
+              "line": 7
+            },
+            {
+              "end_line": 4,
+              "kind": "condition",
+              "line": 4
+            }
+          ],
+          "failure_feedback": {
+            "assertions": [],
+            "classification": "RESOURCE_PROBE_NO_TESTS_EXECUTED",
+            "failing_tests": []
+          },
+          "revision_strategy": "INITIAL_MINIMAL_REPAIR",
+          "source": "def fold_entries(entries, initial):\n    total = initial\n    for value in entries:\n        if value is None:\n            continue\n        total = value\n    return total\n",
+          "target_symbol": "fold_entries"
+        },
+        "prompt_sha256": "4d26a4985cbbc103d29b995188f4404a4a5cbcc7ad631ed11bcd853ca3b2ceb7",
+        "response": "{\n  \"changes\": [\n    {\n      \"line\": 6,\n      \"new\": \"total = initial\"\n    },\n    {\n      \"line\": 2,\n      \"new\": \"total = initial\"\n    },\n    {\n      \"line\": 7,\n      \"new\": \"return total\"\n    }\n  ]\n}",
+        "response_sha256": "e710498d3c7bf53e2332b033a197fb06c7fa91a2ab89adc4b6edebde0526c631",
+        "runtime": {
+          "address_space_limit_bytes": 10737418240,
+          "context_tokens": 2048,
+          "cpu_limit_seconds": 180,
+          "cpu_observation": "Linux process counters at last sample before shutdown",
+          "load_seconds": 2.009,
+          "model_profile": "QWEN_1_5B",
+          "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+          "observed_cpu_seconds": 28.98,
+          "peak_address_kib": 2629388,
+          "peak_rss_kib": 1934108,
+          "server_elapsed_seconds": 21.608,
+          "server_exit_code": 0,
+          "server_stopped": true,
+          "threads": 2,
+          "unexpected_exit": false,
+          "wall_limit_reached": false,
+          "wall_limit_seconds": 180
+        },
+        "unselected_profile_available": false
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "blocking_reason": "LOCAL_COMPLETION_UNAVAILABLE",
+      "elapsed_seconds": 60.302,
+      "jobs": [],
+      "model_profile": "QWEN_7B",
+      "resource_admitted": false,
+      "resource_probe": {
+        "inference_seconds": 45.049,
+        "metadata": {
+          "completion_requests": 1,
+          "tokenized_prompt_tokens": 795
+        },
+        "prompt": {
+          "description": "Owned resource calibration only; aggregate entries without modifying caller data. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. The caller retains ownership of entries; keep processing bounded and free of I/O. ",
+          "edit_units": [
+            {
+              "end_line": 6,
+              "kind": "statement",
+              "line": 6
+            },
+            {
+              "end_line": 2,
+              "kind": "statement",
+              "line": 2
+            },
+            {
+              "end_line": 7,
+              "kind": "statement",
+              "line": 7
+            },
+            {
+              "end_line": 4,
+              "kind": "condition",
+              "line": 4
+            }
+          ],
+          "failure_feedback": {
+            "assertions": [],
+            "classification": "RESOURCE_PROBE_NO_TESTS_EXECUTED",
+            "failing_tests": []
+          },
+          "revision_strategy": "INITIAL_MINIMAL_REPAIR",
+          "source": "def fold_entries(entries, initial):\n    total = initial\n    for value in entries:\n        if value is None:\n            continue\n        total = value\n    return total\n",
+          "target_symbol": "fold_entries"
+        },
+        "prompt_sha256": "4d26a4985cbbc103d29b995188f4404a4a5cbcc7ad631ed11bcd853ca3b2ceb7",
+        "runtime": {
+          "address_space_limit_bytes": 10737418240,
+          "context_tokens": 2048,
+          "cpu_limit_seconds": 180,
+          "cpu_observation": "Linux process counters at last sample before shutdown",
+          "load_seconds": 4.007,
+          "model_profile": "QWEN_7B",
+          "model_sha256": "509287f78cb4d4cf6b3843734733b914b2c158e43e22a7f4bf5e963800894d3c",
+          "observed_cpu_seconds": 94.36,
+          "peak_address_kib": 8711536,
+          "peak_rss_kib": 7976108,
+          "server_elapsed_seconds": 55.803,
+          "server_exit_code": 0,
+          "server_stopped": true,
+          "threads": 2,
+          "unexpected_exit": false,
+          "wall_limit_reached": false,
+          "wall_limit_seconds": 180
+        },
+        "unselected_profile_available": false
+      },
+      "status": "BLOCKED"
+    }
+  ],
+  "paid_fallback": false,
+  "receipt_sha256": "361328e033f5e2bb3a4b473f860038356f1736a6e5d8d26470407477450cf008",
+  "run_id": "40009784193",
+  "stage": "COMPARISON_FINISHED",
+  "status": "PARTIAL_BLOCKED"
+}

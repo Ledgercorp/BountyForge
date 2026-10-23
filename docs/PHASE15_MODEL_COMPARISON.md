@@ -156,3 +156,35 @@ check information preservation. CPU process counters are now sampled and
 unexpected exits block continuation. V2 is frozen separately before inference;
 reusing these now-exposed tasks remains developmental. No timeout, validator,
 resource limit or test was relaxed to obtain a score.
+
+## V2 actual result and final narrow-scope experiment
+
+At `c142cf4a04fd096bb2d21ca954040493e3e2e48a`, hosted comparison
+[40009784193](https://github.com/Ledgercorp/BountyForge/actions/runs/40009784193)
+finished PARTIAL_BLOCKED in 201.055s. 1.5B again completed three tasks with
+zero verified repairs, six requests and no passing targeted suite. It returned
+unchanged faulty statements for two cases and invalid if-headers for condition
+units on the third. All repeated revisions were rejected. 7B's 795-token
+resource request was unavailable after 45.049s, before any repair task was
+attempted. It consumed 94.36 observed CPU seconds and 7,976,108 KiB peak RSS,
+within existing limits. All servers stopped with no unexpected exit. Eight
+requests total were dispatched; the incomplete 7B response has unknown usage.
+This is not a 0/3 7B model score. Raw receipts and summaries are preserved.
+
+A final, explicitly smaller envelope selects only the unchanged weighted-window
+case (eight unchanged tests, two related defects). Both models receive an
+identical hard ceiling of 700 rendered input tokens, 150 completion tokens,
+two attempts and all previous resource/verification limits. Its initial prompt
+was 545 tokens in V2. JSON outside replacement strings is now compact by grammar;
+source statements and code-string whitespace are unaffected. Prior pinned-model
+startup/memory/runtime receipts are reused; each new server still verifies the
+assets, exact selected endpoint/process, host capacity, live tokenizer limit,
+resource caps and cleanup. There is no new unscored calibration inference.
+Maximum four completion requests total.
+
+This narrows admission instead of extending deadlines or reducing tests. It
+does not convert the broader failed resource admission into success. V3 is
+frozen separately and remains a one-case developmental microcomparison, never
+a new generalization estimate. The experimental owner 7B profile likewise now
+rejects rendered inputs above 700 tokens; 1.5B retains its existing full context
+ceiling outside this comparable experiment. No default replacement occurs.

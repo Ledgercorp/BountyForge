@@ -28,3 +28,10 @@ class ProfiledContextTests(unittest.TestCase):
             with self.assertRaisesRegex(ProfiledInferenceError,'LOCAL_APPLY_TEMPLATE_UNAVAILABLE'):
                 model._complete_bounded_schema('s','u',150,{},'probe')
             self.assertEqual(model.last_call['completion_requests'],0)
+
+    def test_narrow_model_profile_refuses_over_700_tokens_before_completion(self):
+        with patch.object(NativeStatementModel,'_post_native',side_effect=[{'prompt':'rendered'},{'tokens':[4]*701}]) as post:
+            model=ProfiledStatementModel(prompt_token_limit=700)
+            with self.assertRaisesRegex(ProfiledInferenceError,'CONTEXT_LIMIT_EXCEEDED'):
+                model._complete_bounded_schema('s','u',150,{},'probe')
+            self.assertEqual(post.call_count,2);self.assertEqual(model.last_call['completion_requests'],0)

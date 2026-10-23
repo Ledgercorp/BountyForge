@@ -56,7 +56,7 @@
       document.getElementById('configuration').textContent = JSON.stringify(config, null, 2);
       document.getElementById('availability').textContent = engine.value === 'CODEX_AGENT'
         ? 'Requires an active Codex session through MCP. Separate unattended Codex inference is unavailable.'
-        : 'Selected: ' + profile.value + '. Linux checks this exact model, runtime and required limits. No model fallback. Browser availability is unmeasured; 7B remains experimental.';
+        : 'Selected: ' + profile.value + '. Linux checks this exact model, runtime and required limits. No model fallback. Browser availability is unmeasured; 7B is experimental and rejects rendered prompts above 700 tokens.';
       document.getElementById('command').textContent = 'python -m scripts.repair_engine --config bountyforge-owned-engine.json';
     }
     engine.addEventListener('change', update);task.addEventListener('change', update);profile.addEventListener('change', update);update();

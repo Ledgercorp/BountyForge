@@ -395,7 +395,8 @@ class RepairService:
             task['public']['state']='BLOCKED'
             return {**identity,'engine':'QWEN_LOCAL','state':'BLOCKED','outcome':'QWEN_UNAVAILABLE',
                     'model_calls':0,'paid_fallback':False,'independently_verified':False}
-        model=(self.model_factory or LocalModel)(timeout_seconds=45)
+        model=(self.model_factory or LocalModel)(timeout_seconds=45,**(
+            {'prompt_token_limit':profile_spec(identity['model_profile'])['max_prompt_tokens']} if self.model_factory is None else {}))
         calls=[]; started=time.monotonic()
         while len(task['attempts'])<MAX_ATTEMPTS:
             previous=task['attempts'][-1] if task['attempts'] else None

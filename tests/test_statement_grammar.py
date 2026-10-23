@@ -27,3 +27,8 @@ class StatementGrammarTests(unittest.TestCase):
             if mutation=='prefix':item['properties']['new']['pattern']='^arbitrary() [^\\r\\n]+$'
             if mutation=='budget':changes['maxItems']=4
             with self.subTest(mutation=mutation),self.assertRaises(ValueError):statement_grammar(schema)
+
+    def test_compact_wire_changes_only_json_whitespace_not_scope_or_code_strings(self):
+        original=statement_grammar(self.schema());compact=statement_grammar(self.schema(),compact=True)
+        self.assertEqual(original.replace('ws ::= [ \\t\\n\\r]{0,8}','ws ::= ""'),compact)
+        self.assertIn('atom{1,160}',compact);self.assertIn('continuation{0,2}',compact)

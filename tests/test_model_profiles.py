@@ -61,3 +61,22 @@ class ProfileSelectionTests(unittest.TestCase):
         self.assertEqual(qwen['availability'],'AVAILABLE')
         self.assertEqual(qwen['default_model_profile'],'QWEN_1_5B')
         self.assertEqual(qwen['model_profiles'][0]['availability'],'PINNED_LOCAL_RUNTIME_UNAVAILABLE')
+
+    def test_legacy_sqlite_migration_keeps_jobs_stop_state_and_lifetime_budget(self):
+        from bountyforge.owned_repair_queue import OwnedRepairQueue
+        with tempfile.TemporaryDirectory() as d:
+            path=Path(d)/'private'/'queue.sqlite3';queue=OwnedRepairQueue(path)
+            for n in range(4):queue.create('legacy'+str(n),'QWEN_LOCAL',['weighted-mix'])
+            queue.stop('legacy0')
+            with queue._db() as db:
+                before=[tuple(r) for r in db.execute('SELECT id,engine,cases,stopped,created FROM batches ORDER BY id')]
+                jobs=[tuple(r) for r in db.execute('SELECT * FROM owned_jobs ORDER BY id')]
+                db.execute('ALTER TABLE batches DROP COLUMN model_profile')
+            restored=OwnedRepairQueue(path)
+            with restored._db() as db:
+                self.assertEqual(before,[tuple(r) for r in db.execute('SELECT id,engine,cases,stopped,created FROM batches ORDER BY id')])
+                self.assertEqual(jobs,[tuple(r) for r in db.execute('SELECT * FROM owned_jobs ORDER BY id')])
+            self.assertEqual(restored.status('legacy0')['model_profile'],'QWEN_1_5B')
+            self.assertTrue(restored.status('legacy0')['stopped'])
+            with self.assertRaisesRegex(ValueError,'QUEUE_BATCH_BUDGET_EXHAUSTED'):
+                restored.create('extra','QWEN_LOCAL',['weighted-mix'],model_profile='QWEN_7B')

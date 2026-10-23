@@ -8,7 +8,7 @@ import json
 import re
 
 
-def statement_grammar(schema):
+def statement_grammar(schema,*,compact=False):
     changes=schema['properties']['changes']
     alternatives=changes['items']['anyOf']
     if changes.get('minItems')!=1 or changes.get('maxItems')!=3 or not 1<=len(alternatives)<=30:
@@ -16,7 +16,7 @@ def statement_grammar(schema):
     literal=lambda value:json.dumps(value,ensure_ascii=True)
     rules=[
         'root ::= "{" ws '+literal('"changes"')+' ws ":" ws "[" ws edit (ws "," ws edit){0,2} ws "]" ws "}" ws',
-        'ws ::= [ \\t\\n\\r]{0,8}',
+        'ws ::= ""' if compact else 'ws ::= [ \\t\\n\\r]{0,8}',
         # Quotation marks and backslashes must be escaped as JSON. Newline is
         # separate to bound physical continuation lines in ordinary output.
         r'atom ::= [^"\\\x00-\x1f] | "\\" (["\\/bfrt] | "u" [0-9a-fA-F]{4})',

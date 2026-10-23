@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       confirm_zero_cost:
-        description: Three owned tasks per model; two attempts each; 14 completion requests maximum including resource probes
+        description: One unchanged owned task per model; 700-token input ceiling; four completion requests maximum
         type: boolean
         required: true
         default: false
@@ -64,7 +64,7 @@ jobs:
             GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_SHA="$GITHUB_SHA" RUNNER_OS=Linux RUNNER_ARCH=X64 \
             BOUNTYFORGE_PHASE15_FREE_ACK=true LD_LIBRARY_PATH="$pythonLocation/lib" \
             "$pythonLocation/bin/python" -m scripts.phase15_model_comparison \
-            --experiment v2 --experiment-sha256 d50f8f245536778f3638ec0ccb9a8f481873b15beea142c839ec5b26bdc34884 --output evidence-run/phase15_comparison.json
+            --experiment v3 --experiment-sha256 cb7151dcfcb139f99bfb90419b812b14162e79768c99f6c5ea6f7346f1333f3e --output evidence-run/phase15_comparison.json
       - if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:

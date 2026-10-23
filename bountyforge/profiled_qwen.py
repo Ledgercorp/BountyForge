@@ -15,7 +15,12 @@ class ProfiledInferenceError(RuntimeError):
 
 
 class ProfiledStatementModel(NativeStatementModel):
-    protocol='qwen_json_safe_grammar_v7_compact_context'
+    protocol='qwen_json_safe_grammar_v8_compact_wire'
+    compact_wire=True
+
+    def __init__(self,*,prompt_token_limit=1898,**kwargs):
+        if type(prompt_token_limit) is not int or not 1<=prompt_token_limit<=1898:raise ValueError('Bounded input-token ceiling required')
+        super().__init__(**kwargs);self.prompt_token_limit=prompt_token_limit
 
     def complete_line(self,system,user,max_tokens=150):
         if (type(user) is not str or len(user.encode())>3600 or type(max_tokens) is not int or not 1<=max_tokens<=150):
@@ -31,7 +36,7 @@ class ProfiledStatementModel(NativeStatementModel):
             if type(values) is not list or not values or not all(type(x) is int and x>=0 for x in values):
                 raise ProfiledInferenceError('TOKENIZER_RESPONSE_INVALID')
             self.tokenized_prompt_tokens=len(values)
-            if len(values)+body['n_predict']>2048:raise ProfiledInferenceError('CONTEXT_LIMIT_EXCEEDED')
+            if len(values)>self.prompt_token_limit or len(values)+body['n_predict']>2048:raise ProfiledInferenceError('CONTEXT_LIMIT_EXCEEDED')
             self.dispatched_completions=1
         self.failure_stage=path.strip('/').replace('-','_')
         return super()._post_native(path,body)
@@ -43,4 +48,5 @@ class ProfiledStatementModel(NativeStatementModel):
         except RuntimeError:raise ProfiledInferenceError('LOCAL_'+self.failure_stage.upper()+'_UNAVAILABLE') from None
         finally:
             self.last_call={**(self.last_call or {}),'completion_requests':self.dispatched_completions,
+                            'input_token_limit':self.prompt_token_limit,
                             'tokenized_prompt_tokens':self.tokenized_prompt_tokens}

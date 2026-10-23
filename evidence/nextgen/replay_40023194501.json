@@ -1,0 +1,57 @@
+{
+  "cases": [
+    {
+      "candidate_sha256": "3e8088a1d74105067ba81e6f773a939c00288c1b809e06de7667f68f364a6bf4",
+      "case_id": "retry-decision",
+      "model_profile": "GRANITE42_3B",
+      "original_claimed_success": false,
+      "original_receipt_sha256": "2939ab383faac311c0f05b06845329f0d9cb5a45062372b4fc1c584ad97b92b6",
+      "verification": {
+        "exit_code": 1,
+        "output_sha256": "48c200d97e02575d84e461b3bf3575efedf29ea503a5e1e7d6ba8ed48c31e626",
+        "passed": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+        "tests_run": 8
+      }
+    }
+  ],
+  "classification": "OWNED_DEVELOPMENT",
+  "failure_reproduction_matched": true,
+  "independent_evaluation": false,
+  "kind": "nextgen_separate_credential_free_replay",
+  "model_generation_calls": 0,
+  "receipt_sha256": "fd90b7441c6739531f0c1f25fd399c66c7f34d2b5718f0fdf09ff1f58017a81d",
+  "record_receipt_sha256": "be38c472c54833f71df0c509f7d26684ca6bf16d18de61623abb3494f5c6fcc3",
+  "replay_passed": null,
+  "runtime_admission": {
+    "capabilities_empty": true,
+    "cleanup_verified": true,
+    "cpu_pressure_enforced": true,
+    "cpu_pressure_used_seconds": 3.029,
+    "cpu_pressure_wall_seconds": 3.008,
+    "cpu_quota_verified": true,
+    "cpu_throttled_periods": 30,
+    "docker_socket_absent": true,
+    "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+    "loopback_inference_unreachable": true,
+    "memory_limit_enforced": true,
+    "network_denied": true,
+    "no_new_privileges": true,
+    "output_bounded": true,
+    "pid_current_at_denial": 64,
+    "pid_denial_events": 1,
+    "pid_limit_verified": true,
+    "pid_pressure_enforced": true,
+    "probe_threads": 63,
+    "root_writes_denied": true,
+    "seccomp_active": true,
+    "secrets_absent": true,
+    "source_writes_denied": true,
+    "swap_disabled": true,
+    "tmpfs_bounded_noexec": true,
+    "uid_unprivileged": true,
+    "untrusted_execution_certified": false,
+    "wall_clock_enforced": true
+  },
+  "verified_successes_replayed": 0
+}

@@ -194,3 +194,30 @@ absolute interpreter corrected it. Replay evidence records zero successes.
 The default remains QWEN_1_5B. No model has demonstrated commercial readiness.
 Qwen3.5-9B remains unmeasured/deferred: the smaller model's dominant failure was
 patch-contract adherence, so another large download is not justified yet.
+
+## Completed Granite continuation and final comparison
+
+Continuation [40023194501](https://github.com/Ledgercorp/BountyForge/actions/runs/40023194501)
+on `e578de96cff642a53d4b676bf8aed87955519876` completed the two unattempted tasks
+in 156.852s without heartbeat failure, cap exhaustion or unexpected server exit.
+Four real completion requests returned 2641 prompt
+and 509 output tokens. One candidate was
+source-valid but failed tests; repeated/invalid proposals remained rejected.
+Fresh credential-free replay reproduced that failed suite; zero successes.
+No model, prompt, task, test, validator, sampler or resource envelope changed.
+The original fourteen requests plus these four equal the frozen eighteen maximum.
+
+Final developmental scores: **Qwen2.5 Coder 1.5B 0/3, Qwen3.5 4B 0/3, IBM Granite
+4.2 3B 0/3**. Each model made six real requests. No new model demonstrates better
+verified repair ability under this protocol. Granite's invalid interval edit
+contained a whole block at an assignment anchor; its retry repeated it. Its retry
+policy edit used a truthy tuple for a condition and failed regression, then
+repeated the candidate. The exact raw calls and all rejected/failed outcomes are
+preserved; no manual correction entered a model result.
+
+Total new trial spending and confirmed revenue $0. Existing default, production,
+schedules and commercial/private admission are unchanged. All previous phase
+artifacts are intact. Hosted continuation regression
+[40023174946](https://github.com/Ledgercorp/BountyForge/actions/runs/40023174946)
+passed 727 tests (718 passed, nine existing skips), plus Node 8/8. These outcomes
+are preserved before continuing the separate Phase18 native-runtime investigation.

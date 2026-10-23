@@ -69,6 +69,27 @@ def run():
     else:
         raise AssertionError("Stale task handoff replay was accepted")
 
+    # Separate independently verified POSITIVE path using a hand-authored,
+    # public development correction. This is not a model-generated patch, is
+    # not unseen evaluation, and does not grant release/customer authority.
+    positive = RepairService()
+    good_task = positive.prepare(CASE_ID, "CODEX_AGENT")
+    manually_authored = '{"changes":[{"line":4,"new":"denominator = sum(weight for _, weight in pairs)"}]}'
+    accepted = verify_owned_harness_response(
+        positive, good_task, manually_authored, allow_owned_verification=True)
+    good_receipt = accepted["owned_verifier_receipt"]
+    assert good_receipt["outcome"] == "VERIFIED", good_receipt["outcome"]
+    assert good_receipt["state"] == "AWAITING_OWNER_APPROVAL"
+    assert good_receipt["independently_verified"] is True
+    assert good_receipt["targeted"]["passed"] is True
+    assert good_receipt["independent"]["passed"] is True
+    assert good_receipt["targeted"]["tests_run"] >= 1
+    assert good_receipt["independent"]["tests_run"] >= 1
+    assert good_receipt["delivery_authorized"] is False
+    assert good_receipt["customer_execution_authorized"] is False
+    assert accepted["commercial_admission"] == "NOT_ADMITTED"
+    assert accepted["candidate_origin"] == "UNATTESTED_EXTERNAL_HARNESS_OUTPUT"
+
     return {
         "kind": "DEEPSEEK_HARNESS_BRIDGE_REAL_DOCKER_REJECTION_SMOKE",
         "classification": "OWNED_DEVELOPMENT",
@@ -76,7 +97,11 @@ def run():
         "case_id": CASE_ID,
         "sandbox": receipt["targeted"]["sandbox"],
         "outcome": receipt["outcome"],
-        "verified_repairs": 0,
+        "verified_repairs_from_model": 0,
+        "manually_authored_owned_verified": True,
+        "manual_candidate_receipt_sha256": good_receipt["receipt_sha256"],
+        "manual_targeted_tests_run": good_receipt["targeted"]["tests_run"],
+        "manual_independent_tests_run": good_receipt["independent"]["tests_run"],
         "targeted_tests_run": receipt["targeted"]["tests_run"],
         "receipt_sha256": receipt["receipt_sha256"],
         "source_sha256": task["source_sha256"],

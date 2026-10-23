@@ -1,0 +1,75 @@
+name: Phase19 real hardened SDK acceptance (no inference)
+
+on:
+  pull_request:
+    branches: [engineering/phase18-sdk-startup-20261023]
+    paths:
+      - '**.py'
+      - '**.js'
+      - '**.mjs'
+      - '**.cjs'
+      - 'phase17/**'
+      - 'phase19/**'
+      - 'fixtures/**'
+      - 'benchmarks/**'
+      - 'isolation/**'
+      - 'evidence/phase19/qwen-owned-handoff.json'
+      - 'evidence/phase19/github-sdk-40040762452.json'
+      - '.github/workflows/phase19-native-binding.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase19-model-free-sdk
+  cancel-in-progress: false
+
+jobs:
+  sdk-acceptance:
+    if: ${{ github.repository == 'Ledgercorp/BountyForge' && github.event.repository.private == false && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'engineering/phase19-native-binding-20261023' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout without persistent credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Complete Python regression
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python3 -m unittest discover -s tests -v
+      - name: Owner console regression
+        run: node --test tests/dashboard_state.mjs tests/repair_console.cjs
+      - name: Existing digest-pinned runtime image
+        run: docker pull python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590
+      - name: Replay the recorded Qwen candidate twice without model assets or credentials
+        run: |
+          mkdir -p evidence-run
+          env -i PATH=/usr/local/bin:/usr/bin:/bin HOME="$HOME" PYTHONDONTWRITEBYTECODE=1 \
+            python3 -m phase19_qwen_replay --admit-recorded-owned-replay \
+            --output evidence-run/phase19-qwen-replay.json
+      - name: Stage public pinned wheels as inert data (no install or scripts)
+        run: |
+          mkdir -p "$RUNNER_TEMP/bf-p19-wheels" evidence-run
+          python3 -m pip download --only-binary=:all: --no-deps --no-cache-dir \
+            --dest "$RUNNER_TEMP/bf-p19-wheels" \
+            'deepseek-harness-sdk==0.2.1rc2' 'deepseek-harness-runtime-bin==0.2.1rc2'
+      - name: Live JSON-RPC, capability refusals, interruption, restart and cleanup
+        env:
+          BOUNTYFORGE_PHASE17_PROBE_ACK: '1'
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python3 -m phase19_sdk_acceptance --execution-host github-actions \
+            --wheel-directory "$RUNNER_TEMP/bf-p19-wheels" --admit-model-free-probe \
+            --output evidence-run/phase19-sdk.json
+      - name: Sanitized model-free receipt only
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: phase19-sdk-acceptance
+          path: evidence-run/*.json
+          retention-days: 1
+          if-no-files-found: ignore
+      - name: Remove disposable package data
+        if: always()
+        run: rm -rf -- "$RUNNER_TEMP/bf-p19-wheels"

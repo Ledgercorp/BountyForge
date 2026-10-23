@@ -123,11 +123,15 @@ def sdk_bootstrap_command(binary, workspace, container_name, native_root):
     if (not isinstance(native_root, Path) or not native_root.is_absolute()
             or native_root.is_symlink() or not (native_root / RUNTIME_BIN).is_file()):
         raise IsolationUnavailable("SDK_NATIVE_ROOT_REJECTED")
+    from phase19_native_binding import cache_admitted
+    if not cache_admitted(native_root):
+        raise IsolationUnavailable('SDK_IMMUTABLE_NATIVE_CACHE_REQUIRED')
     # Preserve all Phase17 whole-process Docker restrictions, no model/secret
     # or network grant; only add a second read-only immutable SDK payload mount.
     cmd.insert(-6, "--mount=type=bind,source=" + str(native_root)
                + ",target=/opt/harness,readonly")
     cmd.insert(-6, "--env=DSH_HOME=/tmp/dsh-home")
+    cmd.insert(-6, '--env=NARB_NATIVE_CACHE_DIR=/opt/harness/native-cache')
     cmd[-6:] = [
         IMAGE, "/opt/harness/" + RUNTIME_BIN, "--profile", "sdk-minimal",
         "--dump-default-config",
@@ -320,6 +324,9 @@ def sanitized_boot_diagnostic(raw):
         "kind": "PHASE18_SANITIZED_SDK_BOOT_DIAGNOSTIC",
         "signature": [k for k,p in signatures.items() if re.search(p, source)],
         "plugin_ids": [key for key in known if key in source],
+        "native_package_ids": [key for key in (
+            'node-addon-require-builtin-linux-x64-gnu',
+            'node-addon-internal-loader-linux-x64-gnu') if key in source],
         "redacted_excerpt": excerpts,
         "stderr_sha256": hashlib.sha256(raw[:32768]).hexdigest(),
         "stderr_bytes_captured": len(raw),
@@ -440,6 +447,8 @@ def run_bootstrap(wheel_dir):
         os.chmod(root, 0o755)
         native = root / "native"
         provenance = extract_offline_runtime(wheel_dir, native)
+        from phase19_native_binding import stage_native_cache
+        provenance['immutable_native_cache']=stage_native_cache(native)
         workspace = root / "workspace"
         workspace.mkdir(mode=0o755)
         (workspace / "owned.txt").write_text("owned-development-only\n")

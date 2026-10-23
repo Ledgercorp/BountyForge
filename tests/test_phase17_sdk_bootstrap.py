@@ -44,7 +44,10 @@ class Phase17NativeSDKTests(unittest.TestCase):
             p = Path(directory)
             (p / RUNTIME_BIN).parent.mkdir(parents=True)
             (p / RUNTIME_BIN).write_bytes(b"not executed")
-            args = sdk_bootstrap_command("/usr/bin/docker", p, "bf-p17-" + "a"*16, p)
+            # This is an argv-only unit test; real cache digests and process
+            # admission are exercised separately, never simulated as SDK proof.
+            with patch('phase19_native_binding.cache_admitted',return_value=True):
+                args = sdk_bootstrap_command("/usr/bin/docker", p, "bf-p17-" + "a"*16, p)
         self.assertEqual(args[-5:], [
             IMAGE, "/opt/harness/" + RUNTIME_BIN, "--profile", "sdk-minimal",
             "--dump-default-config",
@@ -54,6 +57,7 @@ class Phase17NativeSDKTests(unittest.TestCase):
         self.assertIn("--cap-drop=ALL", args)
         self.assertIn("--pull=never", args)
         self.assertIn("--env=DSH_HOME=/tmp/dsh-home", args)
+        self.assertIn('--env=NARB_NATIVE_CACHE_DIR=/opt/harness/native-cache',args)
         self.assertFalse(any("api_key" in item.lower() for item in args))
         self.assertEqual(len([x for x in args if x.startswith("--mount=")]), 2)
         self.assertTrue(all("readonly" in x for x in args if x.startswith("--mount=")))

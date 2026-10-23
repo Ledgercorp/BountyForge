@@ -1,0 +1,270 @@
+{
+  "actions_runs": [
+    {
+      "id": 40040762452,
+      "result": "success",
+      "scope": "Original real SDK runtime acceptance"
+    },
+    {
+      "id": 40042278923,
+      "result": "success",
+      "scope": "Full regression, real SDK acceptance, separate-host unchanged Qwen candidate replay"
+    }
+  ],
+  "additional_spending_usd": 0,
+  "base_pr": 6,
+  "branch": "engineering/phase19-native-binding-20261023",
+  "candidate_sha256": "003fbcb7f5d3f500d28cd9d9bed9dd254dbb02717222d015a1528a2013b65850",
+  "classification": "OWNED_DEVELOPMENT",
+  "commercial_admission": "NOT_ADMITTED",
+  "confirmed_revenue_usd": 0,
+  "deployment": false,
+  "draft_pr": 7,
+  "external_customer_actions": 0,
+  "financial_actions": 0,
+  "fix": "Exact embedded native binding staged in existing read-only payload; documented NARB_NATIVE_CACHE_DIR, original validation unchanged",
+  "hosted_replay": {
+    "docker_suites": {
+      "independent": {
+        "exit_code": 0,
+        "output_sha256": "e370c111a98df15085a51db84a4800db4905f4468cc42b60a06c44b78e22f3e1",
+        "passed": true,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+        "tests_run": 6
+      },
+      "targeted": {
+        "exit_code": 0,
+        "output_sha256": "e370c111a98df15085a51db84a4800db4905f4468cc42b60a06c44b78e22f3e1",
+        "passed": true,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+        "tests_run": 6
+      }
+    },
+    "new_model_generated_repairs": 0,
+    "new_model_requests": 0,
+    "receipt_sha256": "8b928fbf6702a7020ee9bd066a71ad7c7f37d8648f5933bd8ec330e8dd2eb228",
+    "same_candidate_sha256": true,
+    "status": "PASSED"
+  },
+  "hosted_verified_implementation_commit": "f91585a39d797ef9352a7aad8b220e8e5209bc35",
+  "inference_seconds": 4.341,
+  "infrastructure": [
+    "Existing authorized Codex Linux CPU and Docker",
+    "Public standard GitHub ubuntu-24.04 runner",
+    "Unchanged pinned Python image, Qwen 1.5B and llama.cpp b11750",
+    "Small sanitized artifacts retained one day"
+  ],
+  "invoice_audit_independently_available": false,
+  "kind": "PHASE19_ENGINEERING_ACCEPTANCE_LEDGER",
+  "model_controller_commit": "8385181dd96154ee9037bc2d6e10e460d019dac6",
+  "native_root_cause": "Native loader materialized its embedded binding onto noexec /tmp; opaque was diagnostic redaction",
+  "native_sdk_agent_inference_measured": false,
+  "next_milestone": "Bounded zero-egress local model transport for the SDK, then a real SDK-agent candidate with the same independent verifier",
+  "original_docker_suites": {
+    "independent": {
+      "exit_code": 0,
+      "output_sha256": "e370c111a98df15085a51db84a4800db4905f4468cc42b60a06c44b78e22f3e1",
+      "passed": true,
+      "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+      "tests_run": 6
+    },
+    "targeted": {
+      "exit_code": 0,
+      "output_sha256": "e370c111a98df15085a51db84a4800db4905f4468cc42b60a06c44b78e22f3e1",
+      "passed": true,
+      "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+      "tests_run": 6
+    }
+  },
+  "preserved_main": "22250921eb50b7a72e0f474b0f3ff329f81b55a8",
+  "preserved_revenue_head": "94213620dbbdbf113ff2f9914c717e280a5882d4",
+  "private_execution_admitted": false,
+  "qwen_development": {
+    "codex_generated_candidates": 0,
+    "completion_tokens": 24,
+    "elapsed_seconds": 26.341,
+    "independently_verified_owned_repairs": 1,
+    "model_requests": 1,
+    "native_sdk_model_requests": 0,
+    "prompt_tokens": 386,
+    "receipt_sha256": "d72a3a937c9595bee9f2c656cb238f20e23b4d1d0254cf0de6f08224f2c411ec",
+    "runtime": {
+      "address_space_limit_bytes": 10737418240,
+      "context_tokens": 2048,
+      "cpu_limit_seconds": 180,
+      "cpu_observation": "Linux process counters at last sample before shutdown",
+      "load_seconds": 2.014,
+      "model_profile": "QWEN_1_5B",
+      "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+      "observed_cpu_seconds": 9.77,
+      "peak_address_kib": 2574644,
+      "peak_rss_kib": 1896724,
+      "resource_envelope": "LEGACY",
+      "server_elapsed_seconds": 11.648,
+      "server_exit_code": 0,
+      "server_stopped": true,
+      "threads": 2,
+      "unexpected_exit": false,
+      "wall_limit_reached": false,
+      "wall_limit_seconds": 180
+    },
+    "valid_candidates": 1
+  },
+  "receipt_sha256": "39dd2e533a73b94ce092c6266043d3e68a7676fcb0919df08f6161c1aef4f674",
+  "reconciliation": [
+    "Clean earlier Harness research branch preserved at e578de96cff642a53d4b676bf8aed87955519876",
+    "Completed earlier model-comparison evidence published on revenue branch and linked from draft PR2",
+    "Phase16 bridge and Phase17 isolation reused; no merges, resets or force pushes"
+  ],
+  "remaining_blockers": [
+    "Native SDK local-provider transport not yet admitted inside network-none namespace; external Qwen handoff works",
+    "Groq secret metadata HTTP403; model access, free quota and billing constraints not independently verified",
+    "Nine existing namespace/rootfs checks skipped; private customer execution remains NOT_ADMITTED",
+    "Publisher/build provenance and customer/commercial rights/approval gates unresolved",
+    "One exposed owned case does not establish general repair reliability or unseen accuracy"
+  ],
+  "runtime_fix_commit": "e48d75e944e1cf01d12ea891bb7324fa5a67ae42",
+  "scheduling_activated": false,
+  "sdk_runtime": {
+    "actual_container_resources": {
+      "cpu.max": "100000 100000",
+      "cpu.stat": "usage_usec 600326\nuser_usec 538883\nsystem_usec 61442\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 7\nnr_throttled 5\nthrottled_usec 213352\nnr_bursts 0\nburst_usec 0",
+      "memory.max": "201326592",
+      "memory.peak": "58052608",
+      "pids.max": "32",
+      "pids.peak": "18"
+    },
+    "agent_turns": 0,
+    "boundary": {
+      "capabilities_dropped": true,
+      "cpu_limit_enforced": true,
+      "docker_socket_absent": true,
+      "external_connect_denied": true,
+      "memory_limit_enforced": true,
+      "no_new_privileges": true,
+      "nonloopback_network_absent": true,
+      "owned_canary_read": true,
+      "pids_limit_enforced": true,
+      "root_write_denied": true,
+      "schema": 1,
+      "seccomp_enabled": true,
+      "tmpfs_writable": true,
+      "uid_unprivileged": true,
+      "workspace_write_denied": true
+    },
+    "container_absent_after_cleanup": true,
+    "exit_code": 0,
+    "initialize_confirmed": true,
+    "lifecycle_probes": [
+      {
+        "container_absent_after_cleanup": true,
+        "exit_code": 137,
+        "initialize_confirmed": true,
+        "mode": "forced-termination",
+        "model_requests": 0
+      },
+      {
+        "container_absent_after_cleanup": true,
+        "exit_code": 0,
+        "initialize_confirmed": true,
+        "mode": "fresh-process-restart",
+        "model_requests": 0
+      }
+    ],
+    "model_requests": 0,
+    "receipt_sha256": "c198d1f1e8d82a8436165116957833cd411b8e5f66b7061b231c79cbbcecd618",
+    "runtime_audit": {
+      "kind": "BOUNTYFORGE_LIVE_SDK_CAPABILITY_AUDIT",
+      "mcp_resources_service_present": false,
+      "model_requests": 0,
+      "refusals": [
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "bash",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "pwsh",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "exec_command",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "write_stdin",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "write",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "edit",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "read",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "read_image",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "list_mcp_resources",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "list_mcp_resource_templates",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "read_mcp_resource",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "run_code",
+          "unknown_tool": true
+        }
+      ],
+      "tool_names": []
+    },
+    "shutdown_confirmed": true,
+    "status": "PASSED"
+  },
+  "starting_commit": "c8a772998e408243c7913754a24ba649e933d577",
+  "test_results": {
+    "focused_sdk_native_and_model_admission_passed": 21,
+    "node_passed": 8,
+    "python_failed": 0,
+    "python_passed": 793,
+    "python_skipped": 9,
+    "python_total": 802,
+    "subsequent_replay_admission_passed": 2
+  },
+  "unseen_accuracy_measured": false
+}

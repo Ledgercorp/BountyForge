@@ -16,6 +16,7 @@ from bountyforge.repair_engines import (RepairService, RepairRejected, RepairUna
     catalog, digest, encoded, strict_json, receipt_hash)
 from bountyforge.phase8_evaluation import validate_proof
 from bountyforge.curated_docker import IMAGE
+from bountyforge.model_profiles import DEFAULT_PROFILE, profile_spec, select_profile
 
 DEFAULT_PATH = Path(__file__).resolve().parents[1]/'.bountyforge-owned-queue/state.sqlite3'
 LEASE_SECONDS = 180
@@ -24,7 +25,7 @@ MAX_CLAIMS = 2
 MAX_ATTEMPTS = 2
 
 
-def valid_success(receipt,case_id,engine,task_id=None):
+def valid_success(receipt,case_id,engine,task_id=None,model_profile=None):
     """Checksums detect corruption, not malicious edits by the same trusted UID."""
     try:
         spec=next(item for item in catalog() if item['id']==case_id)
@@ -32,6 +33,12 @@ def valid_success(receipt,case_id,engine,task_id=None):
         observations=[receipt['targeted'],receipt['independent']]
         proposal=receipt['proposal']
         raw=proposal.encode() if type(proposal) is str else encoded(proposal)
+        if engine=='QWEN_LOCAL':
+            selected=receipt.get('model_profile',DEFAULT_PROFILE)
+            if model_profile is not None and selected!=model_profile:return False
+            if receipt.get('model_sha256',profile_spec(selected)['sha256'])!=profile_spec(selected)['sha256']:return False
+            if selected!='QWEN_1_5B' and 'model_sha256' not in receipt:return False
+        elif 'model_profile' in receipt:return False
         return (receipt.get('kind')=='owned_dual_engine_verification'
                 and receipt.get('receipt_sha256')==receipt_hash(receipt)
                 and receipt.get('runtime_admission_sha256')==digest(encoded(receipt['runtime_admission']))
@@ -64,6 +71,8 @@ class OwnedRepairQueue:
             with self._db() as db:
                 db.execute('CREATE TABLE IF NOT EXISTS batches (id TEXT PRIMARY KEY, engine TEXT, '
                            'cases TEXT, stopped INTEGER NOT NULL DEFAULT 0, created REAL)')
+                if 'model_profile' not in {r[1] for r in db.execute('PRAGMA table_info(batches)')}:
+                    db.execute('ALTER TABLE batches ADD COLUMN model_profile TEXT')
                 db.execute('CREATE TABLE IF NOT EXISTS owned_jobs (id TEXT PRIMARY KEY, batch TEXT, '
                            'case_id TEXT, state TEXT, claims INTEGER NOT NULL DEFAULT 0, '
                            'attempts INTEGER NOT NULL DEFAULT 0, token TEXT, expires REAL, '
@@ -113,8 +122,9 @@ class OwnedRepairQueue:
         if row is None:raise RepairRejected('UNKNOWN_OWNED_BATCH')
         return row
 
-    def create(self,batch_id,engine,case_ids):
+    def create(self,batch_id,engine,case_ids,model_profile=None):
         self._id(batch_id)
+        selected=select_profile(engine,model_profile)
         allowed={item['id'] for item in catalog()}
         if (engine not in ENGINES or type(case_ids) is not list or not 1<=len(case_ids)<=5
                 or any(type(x) is not str or x not in allowed for x in case_ids)
@@ -124,12 +134,13 @@ class OwnedRepairQueue:
         with self._db() as db:
             prior=db.execute('SELECT * FROM batches WHERE id=?',(batch_id,)).fetchone()
             if prior:
-                if (prior['engine'],prior['cases'])!=(engine,cases):raise RepairRejected('BATCH_ID_CONFLICT')
+                old=select_profile(prior['engine'],prior['model_profile'])
+                if (prior['engine'],prior['cases'],old)!=(engine,cases,selected):raise RepairRejected('BATCH_ID_CONFLICT')
                 return {'batch_id':batch_id,'created':False}
             if db.execute('SELECT COUNT(*) FROM batches').fetchone()[0]>=4:
                 raise RepairRejected('QUEUE_BATCH_BUDGET_EXHAUSTED')
-            db.execute('INSERT INTO batches(id,engine,cases,created) VALUES(?,?,?,?)',
-                       (batch_id,engine,cases,self.clock()))
+            db.execute('INSERT INTO batches(id,engine,cases,created,model_profile) VALUES(?,?,?,?,?)',
+                       (batch_id,engine,cases,self.clock(),selected))
             for case_id in case_ids:
                 db.execute('INSERT INTO owned_jobs(id,batch,case_id,state) VALUES(?,?,?,?)',
                            (uuid.uuid4().hex,batch_id,case_id,'QUEUED'))
@@ -154,7 +165,9 @@ class OwnedRepairQueue:
             db.execute("UPDATE owned_jobs SET state='LEASED',claims=claims+1,token=?,expires=?,deadline=? WHERE id=?",
                        (token,min(self.clock()+LEASE_SECONDS,deadline),deadline,row['id']))
         service=self.factory()
-        try:task=service.prepare(row['case_id'],batch['engine'])
+        try:
+            selected=select_profile(batch['engine'],batch['model_profile'])
+            task=service.prepare(row['case_id'],batch['engine'],**({'model_profile':selected} if selected=='QWEN_7B' else {}))
         except (ValueError,RuntimeError,OSError) as exc:
             outcome=(str(exc) if isinstance(exc,RepairUnavailable) and str(exc) in {
                 'SANDBOX_ADMISSION_UNAVAILABLE','BASELINE_OBSERVATION_UNAVAILABLE'}
@@ -216,7 +229,7 @@ class OwnedRepairQueue:
         receipt=result.get('verification_receipt',result)
         task=self.sessions[job_id]['task']
         claimed=(receipt.get('independently_verified') is True or receipt.get('outcome')=='VERIFIED')
-        verified=claimed and valid_success(receipt,task['case_id'],task['engine'],task['task_id'])
+        verified=claimed and valid_success(receipt,task['case_id'],task['engine'],task['task_id'],task.get('model_profile'))
         if claimed and not verified:
             result={'state':'BLOCKED','outcome':'VERIFICATION_RECEIPT_INVALID','independently_verified':False,
                     'rejected_result_sha256':digest(encoded(result))}
@@ -302,10 +315,12 @@ class OwnedRepairQueue:
             raw=job.pop('receipt')
             if job['state']=='VERIFIED':
                 value=strict_json(raw) if raw else {}
-                if not valid_success(value.get('verification_receipt',value),job['case_id'],batch['engine']):
+                if not valid_success(value.get('verification_receipt',value),job['case_id'],batch['engine'],
+                                     model_profile=select_profile(batch['engine'],batch['model_profile'])):
                     raise RepairRejected('QUEUE_RECEIPT_CORRUPT')
             job['receipt_sha256']=digest(raw.encode()) if raw else None
         return {'batch_id':batch_id,'engine':batch['engine'],'stopped':bool(batch['stopped']),
+                'model_profile':select_profile(batch['engine'],batch['model_profile']),
                 'jobs':jobs,'active_session_required':batch['engine']=='CODEX_AGENT',
                 'cross_cloud_session_storage_verified':False,'independent_evaluation':False,
                 'paid_fallback':False,'customer_execution_authorized':False,'delivery_authorized':False}

@@ -1,0 +1,20 @@
+{
+  "asset": {
+    "blobId": "2543d9eb4f39c19ea6b07e3854b561e96921c654",
+    "lfs": {
+      "pointerSize": 135,
+      "sha256": "509287f78cb4d4cf6b3843734733b914b2c158e43e22a7f4bf5e963800894d3c",
+      "size": 4683073536
+    },
+    "rfilename": "qwen2.5-coder-7b-instruct-q4_k_m.gguf",
+    "size": 4683073536
+  },
+  "gated": false,
+  "kind": "phase15_official_7b_asset_metadata",
+  "license": "Apache-2.0",
+  "license_sha256": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e",
+  "license_url": "https://huggingface.co/Qwen/Qwen2.5-Coder-7B-Instruct-GGUF/raw/13fb94bfda8c8cf22497dc57b78f391a9acb426a/LICENSE",
+  "paid_provider": false,
+  "revision": "13fb94bfda8c8cf22497dc57b78f391a9acb426a",
+  "weights_downloaded_in_this_metadata_check": false
+}

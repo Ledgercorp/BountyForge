@@ -2,6 +2,7 @@
 import argparse
 import json
 from bountyforge.owned_repair_queue import OwnedRepairQueue
+from bountyforge.model_profiles import PROFILES
 
 
 def main(argv=None):
@@ -9,12 +10,13 @@ def main(argv=None):
     parser.add_argument('action',choices=['create','status','stop','run-qwen'])
     parser.add_argument('--batch-id',required=True)
     parser.add_argument('--engine',choices=['QWEN_LOCAL','CODEX_AGENT'])
+    parser.add_argument('--model-profile',choices=PROFILES)
     parser.add_argument('--case-id',action='append',default=[])
     opts=parser.parse_args(argv)
     try:
         queue=OwnedRepairQueue()
-        if opts.action=='create':result=queue.create(opts.batch_id,opts.engine,opts.case_id)
-        elif opts.engine or opts.case_id:raise ValueError('Create arguments only')
+        if opts.action=='create':result=queue.create(opts.batch_id,opts.engine,opts.case_id,model_profile=opts.model_profile)
+        elif opts.engine or opts.case_id or opts.model_profile:raise ValueError('Create arguments only')
         elif opts.action=='status':result=queue.status(opts.batch_id)
         elif opts.action=='stop':result=queue.stop(opts.batch_id)
         else:

@@ -1,0 +1,547 @@
+{
+  "cases": [
+    {
+      "initial_prompt_bytes": 2664,
+      "runtime_admission": {
+        "capabilities_empty": true,
+        "cleanup_verified": true,
+        "cpu_pressure_enforced": true,
+        "cpu_pressure_used_seconds": 3.05,
+        "cpu_pressure_wall_seconds": 3.029,
+        "cpu_quota_verified": true,
+        "cpu_throttled_periods": 31,
+        "docker_socket_absent": true,
+        "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+        "loopback_inference_unreachable": true,
+        "memory_limit_enforced": true,
+        "network_denied": true,
+        "no_new_privileges": true,
+        "output_bounded": true,
+        "pid_current_at_denial": 64,
+        "pid_denial_events": 1,
+        "pid_limit_verified": true,
+        "pid_pressure_enforced": true,
+        "probe_threads": 63,
+        "root_writes_denied": true,
+        "seccomp_active": true,
+        "secrets_absent": true,
+        "source_writes_denied": true,
+        "swap_disabled": true,
+        "tmpfs_bounded_noexec": true,
+        "uid_unprivileged": true,
+        "untrusted_execution_certified": false,
+        "wall_clock_enforced": true
+      },
+      "task": {
+        "approved_file": "subject.py",
+        "baseline_feedback": {
+          "assertions": [
+            "AssertionError: {'held': 0, 'released': 3, 'seen': ['a']} != {'held': 0, 'released': 8, 'seen': ['a']}",
+            "AssertionError: {'held': 10, 'released': 0, 'seen': ['a']} != {'held': 10, 'released': 7, 'seen': ['a']}",
+            "AssertionError: {'held': 6, 'released': 3, 'seen': ['a']} != {'held': 9, 'released': 4, 'seen': []}"
+          ],
+          "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+          "failing_tests": [
+            "test_clamp_and_duplicates",
+            "test_invalid_amount_preserves_balance",
+            "test_missing_status_ignored",
+            "test_pending_can_later_settle",
+            "test_settled_accumulates"
+          ],
+          "unseen_evaluation": false
+        },
+        "case_id": "reserve-release",
+        "classification": "OWNED_DEVELOPMENT",
+        "customer_execution_authorized": false,
+        "delivery_authorized": false,
+        "description": "Release reserved units only for settled events, once per event ID. Pending, cancelled and missing statuses are ignored without recording the ID. Clamp each accepted release to held units. Accumulate released units from the existing state; invalid amounts contribute zero. Return sorted seen IDs without mutating inputs.",
+        "edit_units": [
+          {
+            "bindings": [
+              "held"
+            ],
+            "end_line": 7,
+            "kind": "statement",
+            "line": 7
+          },
+          {
+            "bindings": [
+              "released"
+            ],
+            "end_line": 8,
+            "kind": "statement",
+            "line": 8
+          },
+          {
+            "bindings": [
+              "seen"
+            ],
+            "end_line": 9,
+            "kind": "statement",
+            "line": 9
+          },
+          {
+            "bindings": [],
+            "end_line": 19,
+            "kind": "statement",
+            "line": 19
+          },
+          {
+            "bindings": [],
+            "end_line": 11,
+            "kind": "condition",
+            "line": 11
+          },
+          {
+            "bindings": [],
+            "end_line": 13,
+            "kind": "condition",
+            "line": 13
+          },
+          {
+            "bindings": [
+              "amount"
+            ],
+            "end_line": 15,
+            "kind": "statement",
+            "line": 15
+          },
+          {
+            "bindings": [
+              "held"
+            ],
+            "end_line": 16,
+            "kind": "statement",
+            "line": 16
+          },
+          {
+            "bindings": [
+              "released"
+            ],
+            "end_line": 17,
+            "kind": "statement",
+            "line": 17
+          },
+          {
+            "bindings": [],
+            "end_line": 18,
+            "kind": "statement",
+            "line": 18
+          }
+        ],
+        "editable_lines": [
+          7,
+          8,
+          9,
+          11,
+          13,
+          15,
+          16,
+          17,
+          18,
+          19
+        ],
+        "engine": "QWEN_LOCAL",
+        "independent_evaluation": false,
+        "max_attempts": 2,
+        "model_profile": "QWEN_1_5B",
+        "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+        "proposal_protocol": "ast_statement_v1",
+        "revision": 0,
+        "source": "def release_amount(event):\n    amount = event.get('amount', 0)\n    return amount if type(amount) is int and amount > 0 else 0\n\n\ndef apply_release(state, events):\n    held = state['held']\n    released = state['released']\n    seen = set(state['seen'])\n    for event in events:\n        if event['id'] in seen:\n            continue\n        if event.get('status') == 'cancelled':\n            continue\n        amount = min(held, release_amount(event))\n        held -= amount\n        released = amount\n        seen.add(event['id'])\n    return {'held': held, 'released': released, 'seen': sorted(seen)}\n",
+        "source_context": {
+          "authorized_anchors": [
+            7,
+            8,
+            9,
+            11,
+            13,
+            15,
+            16,
+            17,
+            18,
+            19
+          ],
+          "called_helpers": [
+            "release_amount"
+          ],
+          "prioritized_anchors": [
+            17,
+            9,
+            8,
+            7,
+            15,
+            19,
+            11,
+            13,
+            16,
+            18
+          ],
+          "scope_policy": "Only authorized anchors in the target function; helpers are context only",
+          "target_range": [
+            6,
+            19
+          ]
+        },
+        "source_sha256": "6680558010929ddbd5ddbc21280a10b2b4406fecc103b6520d8d9fdb4a35d766",
+        "state": "QWEN_PREPARED",
+        "target_symbol": "apply_release",
+        "task_id": "f7724f9dc580453c96bb1cbca1d19410",
+        "tests_sha256": "e833bb513b5ebdb2cf5a1f699c2c135a83cb9c34466ef71a429b3d9541474921"
+      }
+    },
+    {
+      "initial_prompt_bytes": 2844,
+      "runtime_admission": {
+        "capabilities_empty": true,
+        "cleanup_verified": true,
+        "cpu_pressure_enforced": true,
+        "cpu_pressure_used_seconds": 3.035,
+        "cpu_pressure_wall_seconds": 3.001,
+        "cpu_quota_verified": true,
+        "cpu_throttled_periods": 30,
+        "docker_socket_absent": true,
+        "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+        "loopback_inference_unreachable": true,
+        "memory_limit_enforced": true,
+        "network_denied": true,
+        "no_new_privileges": true,
+        "output_bounded": true,
+        "pid_current_at_denial": 64,
+        "pid_denial_events": 1,
+        "pid_limit_verified": true,
+        "pid_pressure_enforced": true,
+        "probe_threads": 63,
+        "root_writes_denied": true,
+        "seccomp_active": true,
+        "secrets_absent": true,
+        "source_writes_denied": true,
+        "swap_disabled": true,
+        "tmpfs_bounded_noexec": true,
+        "uid_unprivileged": true,
+        "untrusted_execution_certified": false,
+        "wall_clock_enforced": true
+      },
+      "task": {
+        "approved_file": "subject.py",
+        "baseline_feedback": {
+          "assertions": [
+            "AssertionError: 'a' != ''",
+            "AssertionError: {'ok': True, 'retry': True, 'delay': 0, 'items': [], 'cursor': 'a'} != {'ok': True, 'retry': False, 'delay': 0, 'items': [], 'cursor': None}",
+            "AssertionError: {'ok': True, 'retry': True, 'delay': 0, 'items': ['x'], 'cursor': 'b'} != {'ok': True, 'retry': False, 'delay': 0, 'items': ['x'], 'cursor': 'b'}"
+          ],
+          "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+          "failing_tests": [
+            "test_empty_cursor_preserved",
+            "test_missing_cursor_is_terminal",
+            "test_partial_is_success_not_transport_retry",
+            "test_terminal_cursor"
+          ],
+          "unseen_evaluation": false
+        },
+        "case_id": "response-normalize",
+        "classification": "OWNED_DEVELOPMENT",
+        "customer_execution_authorized": false,
+        "delivery_authorized": false,
+        "description": "Normalize decoded 200 and 206 responses as successes with retry false. Trim and filter record IDs; preserve an explicit cursor including empty string or None, and use None when missing. Only 429/503 retry using the unchanged retry_seconds helper and previous cursor. Other errors retain the previous cursor without retry; do not mutate inputs.",
+        "edit_units": [
+          {
+            "bindings": [],
+            "end_line": 9,
+            "kind": "condition",
+            "line": 9
+          },
+          {
+            "bindings": [],
+            "end_line": 11,
+            "kind": "condition",
+            "line": 11
+          },
+          {
+            "bindings": [
+              "records"
+            ],
+            "end_line": 13,
+            "kind": "statement",
+            "line": 13
+          },
+          {
+            "bindings": [
+              "items"
+            ],
+            "end_line": 14,
+            "kind": "statement",
+            "line": 14
+          },
+          {
+            "bindings": [
+              "cursor"
+            ],
+            "end_line": 15,
+            "kind": "statement",
+            "line": 15
+          },
+          {
+            "bindings": [
+              "retry"
+            ],
+            "end_line": 16,
+            "kind": "statement",
+            "line": 16
+          },
+          {
+            "bindings": [],
+            "end_line": 17,
+            "kind": "statement",
+            "line": 17
+          },
+          {
+            "bindings": [],
+            "end_line": 10,
+            "kind": "statement",
+            "line": 10
+          },
+          {
+            "bindings": [],
+            "end_line": 12,
+            "kind": "statement",
+            "line": 12
+          }
+        ],
+        "editable_lines": [
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17
+        ],
+        "engine": "QWEN_LOCAL",
+        "independent_evaluation": false,
+        "max_attempts": 2,
+        "model_profile": "QWEN_1_5B",
+        "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+        "proposal_protocol": "ast_statement_v1",
+        "revision": 0,
+        "source": "def retry_seconds(headers):\n    try:\n        return max(0, float(headers.get('Retry-After', 1)))\n    except (TypeError, ValueError):\n        return 1\n\n\ndef normalize_response(status, payload, headers, previous_cursor):\n    if status in (429, 503):\n        return {'ok': False, 'retry': True, 'delay': retry_seconds(headers), 'items': [], 'cursor': previous_cursor}\n    if status not in (200, 206):\n        return {'ok': False, 'retry': False, 'delay': 0, 'items': [], 'cursor': previous_cursor}\n    records = payload.get('records', [])\n    items = [row['id'].strip() for row in records if isinstance(row.get('id'), str) and row['id'].strip()]\n    cursor = payload.get('cursor') or previous_cursor\n    retry = status == 206\n    return {'ok': True, 'retry': retry, 'delay': 0, 'items': items, 'cursor': cursor}\n",
+        "source_context": {
+          "authorized_anchors": [
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17
+          ],
+          "called_helpers": [
+            "retry_seconds"
+          ],
+          "prioritized_anchors": [
+            16,
+            15,
+            14,
+            13,
+            17,
+            9,
+            10,
+            11,
+            12
+          ],
+          "scope_policy": "Only authorized anchors in the target function; helpers are context only",
+          "target_range": [
+            8,
+            17
+          ]
+        },
+        "source_sha256": "16e9d683814425970670d886d9fdacbcbde0cc977a33b9371fd048bd6743bc7f",
+        "state": "QWEN_PREPARED",
+        "target_symbol": "normalize_response",
+        "task_id": "64b703bf1cd7476abc8a9fd60f32ed5a",
+        "tests_sha256": "459d30875f9e441425784062b97846d7e86507f1b27aa7a523c5cff0942d6d15"
+      }
+    },
+    {
+      "initial_prompt_bytes": 2209,
+      "runtime_admission": {
+        "capabilities_empty": true,
+        "cleanup_verified": true,
+        "cpu_pressure_enforced": true,
+        "cpu_pressure_used_seconds": 3.05,
+        "cpu_pressure_wall_seconds": 3.035,
+        "cpu_quota_verified": true,
+        "cpu_throttled_periods": 31,
+        "docker_socket_absent": true,
+        "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+        "loopback_inference_unreachable": true,
+        "memory_limit_enforced": true,
+        "network_denied": true,
+        "no_new_privileges": true,
+        "output_bounded": true,
+        "pid_current_at_denial": 64,
+        "pid_denial_events": 1,
+        "pid_limit_verified": true,
+        "pid_pressure_enforced": true,
+        "probe_threads": 63,
+        "root_writes_denied": true,
+        "seccomp_active": true,
+        "secrets_absent": true,
+        "source_writes_denied": true,
+        "swap_disabled": true,
+        "tmpfs_bounded_noexec": true,
+        "uid_unprivileged": true,
+        "untrusted_execution_certified": false,
+        "wall_clock_enforced": true
+      },
+      "task": {
+        "approved_file": "subject.py",
+        "baseline_feedback": {
+          "assertions": [
+            "AssertionError: 12.0 != 6",
+            "AssertionError: 10.0 != 5",
+            "AssertionError: 26.0 != 2"
+          ],
+          "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+          "failing_tests": [
+            "test_lower_bound_included",
+            "test_null_and_invalid_weights",
+            "test_upper_bound_excluded",
+            "test_weighted_mean",
+            "test_zero_value_and_fractional_weight",
+            "test_zero_width_is_empty"
+          ],
+          "unseen_evaluation": false
+        },
+        "case_id": "weighted-window",
+        "classification": "OWNED_DEVELOPMENT",
+        "customer_execution_authorized": false,
+        "delivery_authorized": false,
+        "description": "Return a weighted mean from rows in the half-open interval [start,end). Ignore None values and invalid/nonpositive weights as defined by row_weight; include numeric zero and fractional weights. Return None if no valid weight remains. Preserve input rows and helper behavior.",
+        "edit_units": [
+          {
+            "bindings": [
+              "numerator"
+            ],
+            "end_line": 7,
+            "kind": "statement",
+            "line": 7
+          },
+          {
+            "bindings": [
+              "denominator"
+            ],
+            "end_line": 8,
+            "kind": "statement",
+            "line": 8
+          },
+          {
+            "bindings": [],
+            "end_line": 17,
+            "kind": "statement",
+            "line": 17
+          },
+          {
+            "bindings": [],
+            "end_line": 10,
+            "kind": "condition",
+            "line": 10
+          },
+          {
+            "bindings": [
+              "weight"
+            ],
+            "end_line": 12,
+            "kind": "statement",
+            "line": 12
+          },
+          {
+            "bindings": [],
+            "end_line": 13,
+            "kind": "condition",
+            "line": 13
+          },
+          {
+            "bindings": [
+              "numerator"
+            ],
+            "end_line": 15,
+            "kind": "statement",
+            "line": 15
+          },
+          {
+            "bindings": [
+              "denominator"
+            ],
+            "end_line": 16,
+            "kind": "statement",
+            "line": 16
+          }
+        ],
+        "editable_lines": [
+          7,
+          8,
+          10,
+          12,
+          13,
+          15,
+          16,
+          17
+        ],
+        "engine": "QWEN_LOCAL",
+        "independent_evaluation": false,
+        "max_attempts": 2,
+        "model_profile": "QWEN_1_5B",
+        "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+        "proposal_protocol": "ast_statement_v1",
+        "revision": 0,
+        "source": "def row_weight(row):\n    weight = row.get('weight', 1)\n    return weight if type(weight) in (int, float) and weight > 0 else 0\n\n\ndef summarize_window(rows, start, end):\n    numerator = 0\n    denominator = 0\n    for row in rows:\n        if not start <= row['at'] <= end:\n            continue\n        weight = row_weight(row)\n        if row['value'] is None or not weight:\n            continue\n        numerator += row['value'] * weight\n        denominator += 1\n    return numerator / denominator if denominator else None\n",
+        "source_context": {
+          "authorized_anchors": [
+            7,
+            8,
+            10,
+            12,
+            13,
+            15,
+            16,
+            17
+          ],
+          "called_helpers": [
+            "row_weight"
+          ],
+          "prioritized_anchors": [
+            8,
+            7,
+            17,
+            10,
+            12,
+            13,
+            15,
+            16
+          ],
+          "scope_policy": "Only authorized anchors in the target function; helpers are context only",
+          "target_range": [
+            6,
+            17
+          ]
+        },
+        "source_sha256": "532f6cf0a63013d4ccf1d36761f7e59ed5e08bfe5d7dbbe824ec7f3ca913b616",
+        "state": "QWEN_PREPARED",
+        "target_symbol": "summarize_window",
+        "task_id": "7b715a693cba4cecb9d4f3417da6471d",
+        "tests_sha256": "9659c296d0aa671b7af65730d47c769dd6fbfd7a7afa900f8a00ddab91078c35"
+      }
+    }
+  ],
+  "classification": "OWNED_DEVELOPMENT",
+  "elapsed_seconds": 42.946,
+  "independent_evaluation": false,
+  "kind": "phase15_owned_baselines",
+  "model_calls": 0,
+  "receipt_sha256": "7f2b3a7553cee7b511edee4ba00257e4be18857d2e1031132a48b0c99613aa54"
+}

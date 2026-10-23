@@ -1,0 +1,77 @@
+name: BountyForge Phase15 sequential local model comparison
+on:
+  push:
+    branches: [engineering/revenue-linux-scout-20261021]
+    paths: ['.github/workflows/phase15-model-comparison.yml']
+  workflow_dispatch:
+    inputs:
+      confirm_zero_cost:
+        description: Three owned tasks per model; two attempts each; 14 completion requests maximum including resource probes
+        type: boolean
+        required: true
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: bountyforge-repair-worker
+  cancel-in-progress: false
+jobs:
+  local-comparison:
+    if: >-
+      github.repository == 'Ledgercorp/BountyForge' && github.event.repository.private == false &&
+      github.ref == 'refs/heads/engineering/revenue-linux-scout-20261021' &&
+      ((github.event_name == 'workflow_dispatch' && inputs.confirm_zero_cost) ||
+       (github.event_name == 'push' && contains(github.event.head_commit.message, '[phase15-qwen-comparison]')))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Contract and isolation controls before inference
+        run: python -m unittest tests.test_model_profiles tests.test_profiled_qwen tests.test_local_model_runtime tests.test_phase15_comparison tests.test_repair_engines tests.test_owned_repair_queue tests.test_mcp_stdio_blackbox -q
+      - name: Capacity gate before model downloads
+        run: |
+          python - <<'PY'
+          import os,shutil
+          from pathlib import Path
+          available=int(next(r.split()[1] for r in Path('/proc/meminfo').read_text().splitlines() if r.startswith('MemAvailable:')))
+          assert (os.cpu_count() or 0)>=2 and available>=12*1024**2
+          assert shutil.disk_usage(Path.home()).free>=8*1024**3
+          print('Standard public Linux capacity gate passed; no paid runner or provider')
+          PY
+      - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: ~/.cache/bountyforge/models
+          key: bountyforge-public-qwen25-coder-1p5b-cc324af0-v1
+      - name: Existing pinned 1.5B model and runtime
+        run: bash scripts/bootstrap_actions_inference.sh --verify-only
+      - name: Download exact experimental 7B to disposable runner storage; no cache write
+        run: |
+          curl --fail --location --retry 1 --connect-timeout 20 --max-time 300 \
+            'https://huggingface.co/Qwen/Qwen2.5-Coder-7B-Instruct-GGUF/resolve/13fb94bfda8c8cf22497dc57b78f391a9acb426a/qwen2.5-coder-7b-instruct-q4_k_m.gguf' \
+            -o "$HOME/.cache/bountyforge/models/qwen2.5-coder-7b-instruct-q4_k_m.gguf"
+      - name: Pull existing exact owned Docker verification image
+        run: docker pull --platform linux/amd64 python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590
+      - name: Run frozen comparison without inherited credentials
+        run: |
+          env -i PATH=/usr/local/bin:/usr/bin:/bin HOME="$HOME" RUNNER_TEMP="$RUNNER_TEMP" \
+            GITHUB_ACTIONS=true GITHUB_REPOSITORY=Ledgercorp/BountyForge \
+            GITHUB_REF=refs/heads/engineering/revenue-linux-scout-20261021 \
+            GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_SHA="$GITHUB_SHA" RUNNER_OS=Linux RUNNER_ARCH=X64 \
+            BOUNTYFORGE_PHASE15_FREE_ACK=true LD_LIBRARY_PATH="$pythonLocation/lib" \
+            "$pythonLocation/bin/python" -m scripts.phase15_model_comparison \
+            --experiment-sha256 02969e646c0a5fc5df1c34e2d4c484d38c1e02d2c4e095366d205224ac3b36b1 --output evidence-run/phase15_comparison.json
+      - if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bountyforge-phase15-comparison-${{ github.run_id }}
+          path: evidence-run/phase15_comparison.json
+          if-no-files-found: ignore
+          retention-days: 1
+      - name: Delete only the disposable experimental weights
+        if: always()
+        run: rm -f -- "$HOME/.cache/bountyforge/models/qwen2.5-coder-7b-instruct-q4_k_m.gguf"

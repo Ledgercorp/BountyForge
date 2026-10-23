@@ -9,6 +9,7 @@ import copy
 import hashlib
 import json
 import re
+import resource
 import tarfile
 import tempfile
 import time
@@ -21,7 +22,8 @@ from bountyforge.curated_tasks import editable_scope
 from bountyforge.drafts import DraftRejected
 from bountyforge.line_scope import infer_editable_lines
 from bountyforge.model import _NoRedirect
-from bountyforge.native_qwen import NativeStatementModel as LocalModel
+from bountyforge.model_profiles import DEFAULT_PROFILE, PROFILES, profile_spec, select_profile, endpoint_matches
+from bountyforge.profiled_qwen import ProfiledStatementModel as LocalModel, ProfiledInferenceError
 from bountyforge.repair_intelligence import (failure_feedback, source_context, model_prompt,
     revision_proposal, validate_local_dependencies)
 from bountyforge.phase8_evaluation import CONTROLS, preflight, validate_proof, verify_core
@@ -36,6 +38,8 @@ DEVELOPMENT = ROOT / 'fixtures/phase13'
 DEVELOPMENT_SHA256 = '10a90ac0108d9269cd077f002a5212a1c9a39b7925db145eb367bb672900ef77'
 MAINTENANCE = ROOT / 'fixtures/phase14'
 MAINTENANCE_SHA256 = 'f698a6c04a000b8adc29508b74006bab331532979a2dd76c0a4517feb98e487a'
+COMPARISON = ROOT / 'fixtures/phase15'
+COMPARISON_SHA256 = '5a8332f4c052b7b0cd70b89c7ac097ad4c7d59391c3a0de1e0c9c0014ddd77c9'
 ENGINES = ('QWEN_LOCAL', 'CODEX_AGENT')
 MAX_ATTEMPTS = 2
 TASK_TTL = 600
@@ -80,7 +84,7 @@ def receipt_hash(receipt):
 def catalog():
     verify_core()  # Preserve every previously frozen source/security pin.
     return (_catalog(CATALOG, MANIFEST_SHA256) + _catalog(DEVELOPMENT, DEVELOPMENT_SHA256)
-            + _catalog(MAINTENANCE, MAINTENANCE_SHA256))
+            + _catalog(MAINTENANCE, MAINTENANCE_SHA256) + _catalog(COMPARISON, COMPARISON_SHA256))
 
 
 def _catalog(directory, expected):
@@ -107,7 +111,7 @@ def _catalog(directory, expected):
 def source_directory(spec):
     # The directory comes only from pinned manifest membership, never caller data.
     for directory, expected in ((CATALOG,MANIFEST_SHA256),(DEVELOPMENT,DEVELOPMENT_SHA256),
-                                (MAINTENANCE,MAINTENANCE_SHA256)):
+                                (MAINTENANCE,MAINTENANCE_SHA256),(COMPARISON,COMPARISON_SHA256)):
         if spec in _catalog(directory,expected):return directory/spec['id']
     raise RepairRejected('UNKNOWN_OWNED_SOURCE')
 
@@ -118,18 +122,19 @@ def task_inventory():
             for item in catalog()]
 
 
-def qwen_availability():
+def qwen_availability(model_profile=DEFAULT_PROFILE):
     """Admit only the existing pinned bootstrap's assets and loopback process.
 
     No downloads, process launches, remote requests or credential inspection.
     Health alone never establishes runtime/model identity.
     """
-    from bountyforge.phase8_live_qwen import MODEL_SHA256, RUNTIME_SHA256
+    try:selected=profile_spec(model_profile)
+    except ValueError:return False
     base = Path.home()/'.cache/bountyforge'
-    model = base/'models/qwen2.5-coder-1.5b-instruct-q4_k_m.gguf'
+    model = base/'models'/selected['filename']
     archive = base/'runtime/llama-b11750-bin-ubuntu-x64.tar.gz'
     try:
-        for file, sha in ((model, MODEL_SHA256), (archive, RUNTIME_SHA256)):
+        for file, sha in ((model, selected['sha256']), (archive, selected['runtime_sha256'])):
             if not file.is_file() or file.is_symlink():
                 return False
             with file.open('rb') as stream:
@@ -156,6 +161,14 @@ def qwen_availability():
                         and args[args.index('-np')+1] == '1'):
                     with (proc/'exe').open('rb') as stream:
                         found = hashlib.file_digest(stream, 'sha256').hexdigest() == binary_sha
+                    if found and model_profile=='QWEN_7B':
+                        # The experimental profile requires the measured resource envelope.
+                        limits={kind:resource.prlimit(int(proc.name),kind) for kind in
+                                (resource.RLIMIT_AS,resource.RLIMIT_CPU,resource.RLIMIT_CORE,resource.RLIMIT_FSIZE)}
+                        found=(args[args.index('-c')+1]=='2048' and args[args.index('-t')+1]=='2'
+                               and all(0<=limits[k][1]<=cap for k,cap in
+                                   ((resource.RLIMIT_AS,10*1024**3),(resource.RLIMIT_CPU,180),
+                                    (resource.RLIMIT_CORE,0),(resource.RLIMIT_FSIZE,1024*1024))))
                     if found:
                         break
             except (OSError, ValueError, IndexError, UnicodeError):
@@ -164,16 +177,25 @@ def qwen_availability():
             return False
         opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoRedirect())
         with opener.open('http://127.0.0.1:8080/health', timeout=1) as reply:
-            return strict_json(reply.read(256)).get('status') == 'ok'
+            health=strict_json(reply.read(256))
+            if type(health) is not dict or health.get('status')!='ok':return False
+        # Bind the endpoint's reported model to the inspected process/assets.
+        with opener.open('http://127.0.0.1:8080/props',timeout=1) as reply:
+            raw=reply.read(65537)
+            return len(raw)<=65536 and endpoint_matches(strict_json(raw),model)
     except (OSError, ValueError, KeyError, tarfile.TarError):
         return False
 
 
 def engine_inventory():
     # A session is not an account-independent unattended inference backend.
-    available=qwen_availability()
+    profiles=[{**profile_spec(p),'availability':'AVAILABLE' if qwen_availability(p)
+               else 'PINNED_LOCAL_RUNTIME_UNAVAILABLE'} for p in PROFILES]
+    available=any(p['availability']=='AVAILABLE' for p in profiles)
     return [{'id': 'QWEN_LOCAL', 'label': 'Autonomous Qwen',
              'availability': 'AVAILABLE' if available else 'PINNED_LOCAL_RUNTIME_UNAVAILABLE',
+             'default_model_profile':DEFAULT_PROFILE,
+             'model_profiles':profiles,
              'unattended_backend_available': available, 'autonomous_mode_supported':True, 'paid_fallback': False},
             {'id': 'CODEX_AGENT', 'label': 'Codex Agent',
              'availability': 'ACTIVE_CODEX_SESSION_REQUIRED',
@@ -231,9 +253,10 @@ class RepairService:
         self.model_factory = model_factory
         self.tasks = {}
 
-    def prepare(self, case_id, engine):
+    def prepare(self, case_id, engine, model_profile=None):
         if engine not in ENGINES or type(case_id) is not str:
             raise RepairRejected('UNKNOWN_ENGINE_OR_OWNED_TASK')
+        selected=select_profile(engine,model_profile)
         specs = catalog()
         spec = next((item for item in specs if item['id'] == case_id), None)
         if spec is None or len(self.tasks) >= 4:
@@ -269,6 +292,8 @@ class RepairService:
                 'classification':'OWNED_DEVELOPMENT','independent_evaluation':False,
                 'state':'AWAITING_CODEX_CANDIDATE' if engine=='CODEX_AGENT' else 'QWEN_PREPARED',
                 'customer_execution_authorized':False,'delivery_authorized':False}
+        if selected is not None:
+            public.update(model_profile=selected,model_sha256=profile_spec(selected)['sha256'])
         self.tasks[public['task_id']]={'public':public,'spec':spec,'scope':scope,
                                      'proof':proof,'created':time.monotonic(),
                                      'attempts':[],'seen':set(),'seen_semantics':set(),'model_calls':0}
@@ -314,6 +339,8 @@ class RepairService:
                 'authorship_basis':'local_model_response' if public['engine']=='QWEN_LOCAL' else 'session_submitted_candidate',
                 'customer_execution_authorized':False,'delivery_authorized':False,
                 'paid_fallback':False}
+        if public['engine']=='QWEN_LOCAL':
+            result.update(model_profile=public['model_profile'],model_sha256=public['model_sha256'])
         if generation is not None:result['generation']=copy.deepcopy(generation)
         if proposal_sha in task['seen']:
             result.update(outcome='REPEATED_PROPOSAL',diagnostic='Identical prior proposal; no test executed')
@@ -363,9 +390,10 @@ class RepairService:
 
     def run_qwen(self, task_id, revision):
         task=self._get(task_id,revision,'QWEN_LOCAL')
-        if not qwen_availability():
+        identity={k:task['public'][k] for k in ('model_profile','model_sha256')}
+        if not qwen_availability(identity['model_profile']):
             task['public']['state']='BLOCKED'
-            return {'engine':'QWEN_LOCAL','state':'BLOCKED','outcome':'QWEN_UNAVAILABLE',
+            return {**identity,'engine':'QWEN_LOCAL','state':'BLOCKED','outcome':'QWEN_UNAVAILABLE',
                     'model_calls':0,'paid_fallback':False,'independently_verified':False}
         model=(self.model_factory or LocalModel)(timeout_seconds=45)
         calls=[]; started=time.monotonic()
@@ -374,7 +402,7 @@ class RepairService:
             try:prompt=model_prompt(task['public'],previous)
             except ValueError:
                 task['public']['state']='BLOCKED'
-                return {'engine':'QWEN_LOCAL','state':'BLOCKED','outcome':'CONTEXT_BUDGET_EXHAUSTED',
+                return {**identity,'engine':'QWEN_LOCAL','state':'BLOCKED','outcome':'CONTEXT_BUDGET_EXHAUSTED',
                         'model_calls':len(calls),'calls':calls,'paid_fallback':False,'independently_verified':False}
             began=time.monotonic()
             call={'response':None,'prompt_sha256':digest(prompt.encode()),'prompt':strict_json(prompt)};calls.append(call)
@@ -384,11 +412,13 @@ class RepairService:
                     raise RuntimeError('Invalid bounded response')
                 call.update(response=response,response_sha256=digest(response.encode()),
                             metadata=copy.deepcopy(model.last_call))
-            except (RuntimeError,OSError,ValueError,TypeError):
-                call['error']='LOCAL_INFERENCE_OR_RESPONSE_UNAVAILABLE'
+            except (RuntimeError,OSError,ValueError,TypeError) as exc:
+                call['error']=str(exc) if isinstance(exc,ProfiledInferenceError) else 'LOCAL_INFERENCE_OR_RESPONSE_UNAVAILABLE'
+                call['metadata']=copy.deepcopy(model.last_call)
                 task['public']['state']='BLOCKED'
-                return {'engine':'QWEN_LOCAL','state':'BLOCKED','outcome':'INFERENCE_UNAVAILABLE',
-                        'model_calls':len(calls),'calls':calls,'paid_fallback':False,'independently_verified':False}
+                return {**identity,'engine':'QWEN_LOCAL','state':'BLOCKED','outcome':'INFERENCE_UNAVAILABLE',
+                        'model_calls':len(calls),'calls':calls,'attempts':copy.deepcopy(task['attempts']),
+                        'inference_failure':call['error'],'paid_fallback':False,'independently_verified':False}
             finally:
                 if calls:
                     calls[-1]['seconds']=round(time.monotonic()-began,3)
@@ -400,7 +430,7 @@ class RepairService:
                 'prompt_sha256':call['prompt_sha256'],'finish_reason':model.last_call.get('finish_reason') if model.last_call else None})
             if result['state'] in ('AWAITING_OWNER_APPROVAL','BLOCKED','EXHAUSTED'):
                 break
-        return {**{key:result[key] for key in ('engine','state','outcome','independently_verified')},
+        return {**identity,**{key:result[key] for key in ('engine','state','outcome','independently_verified')},
                 'model_calls':len(calls),'calls':calls,'attempts':copy.deepcopy(task['attempts']),
                 'generation_protocol':getattr(model,'protocol','legacy_line_schema'),
                 'elapsed_seconds':round(time.monotonic()-started,3),

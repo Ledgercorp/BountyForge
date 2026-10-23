@@ -25,6 +25,23 @@ test('owner selection exports the exact backend configuration consumed by the CL
   assert.equal(ui.buildConfig('QWEN_LOCAL','sparse-average').engine,'QWEN_LOCAL');
   assert.throws(()=>ui.buildConfig('PAID_API','sparse-average'));
   assert.throws(()=>ui.buildConfig('CODEX_AGENT','../../private'));
+  const experimental=ui.buildConfig('QWEN_LOCAL','weighted-window','QWEN_7B');
+  assert.equal(experimental.model_profile,'QWEN_7B');
+  assert.throws(()=>ui.buildConfig('CODEX_AGENT','weighted-mix','QWEN_7B'));
+  assert.throws(()=>ui.buildConfig('QWEN_LOCAL','weighted-mix','PAID'));
+});
+
+test('experimental console configuration selects exact profile in the real CLI',()=>{
+  const ui=require(path.join(root,'dashboard/repair-console.js'));
+  const dir=fs.mkdtempSync(path.join(require('node:os').tmpdir(),'bf15-console-'));
+  try{
+    const target=path.join(dir,'engine.json');
+    fs.writeFileSync(target,JSON.stringify(ui.buildConfig('QWEN_LOCAL','weighted-window','QWEN_7B')));
+    const p=spawnSync('python3',['-m','scripts.repair_engine','--config',target],{cwd:root,encoding:'utf8'});
+    assert.equal(p.status,2,p.stderr);const response=JSON.parse(p.stdout);
+    assert.equal(response.outcome,'QWEN_UNAVAILABLE');assert.equal(response.model_profile,'QWEN_7B');
+    assert.equal(response.additional_model_calls,0);
+  }finally{fs.rmSync(dir,{recursive:true,force:true});}
 });
 
 test('owner console verifies hash-bound real receipts and rejects tampered outcomes',async()=>{

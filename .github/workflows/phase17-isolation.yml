@@ -1,0 +1,35 @@
+name: BountyForge Phase17 isolated runtime admission (model-free)
+
+# One PR-triggered validation run on an existing public Linux runner. No SDK,
+# model weights, credentials, inference, persistent hosts or customer source.
+on:
+  pull_request:
+    branches: [engineering/deepseek-handoff-20261023]
+    paths:
+      - 'phase17_isolation.py'
+      - 'tests/test_phase17_isolation.py'
+      - '.github/workflows/phase17-isolation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  boundary-probe:
+    if: ${{ github.repository == 'Ledgercorp/BountyForge' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'engineering/phase17-isolation-20261023' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Trusted checkout without retained GitHub credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Focused model-free Docker policy contract
+        run: python3 -m unittest discover -s tests -p 'test_phase17_isolation.py' -v
+      - name: Existing full Python offline regression
+        run: python3 -m unittest discover -s tests -v
+      - name: Acquire only existing pinned no-network verifier image
+        run: docker pull python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067dfa907ceb30bb86d09da9ee558b19590
+      - name: Observe real whole-process Linux Docker restrictions without inference
+        env:
+          BOUNTYFORGE_PHASE17_PROBE_ACK: '1'
+        run: python3 -m phase17_isolation --admit-model-free-probe

@@ -32,7 +32,7 @@ and is excluded from this CPU-bound experiment.
 
 ## What the pilot actually implements
 
-bountyforge/deepseek_handoff.py:
+deepseek_harness_handoff.py:
 - Accepts a string in the shape of Harness Python SDK result.final_response.
 - Requires existing CODEX_AGENT session *public prepared-task* identity, exact
   source/test hashes, revision, owned-only subject.py scope, and original
@@ -47,7 +47,7 @@ bountyforge/deepseek_handoff.py:
 
 Example using deliberately synthetic prepared-task values (not a real session):
 
-    from bountyforge.deepseek_handoff import prepare_harness_handoff
+    from deepseek_harness_handoff import prepare_harness_handoff
     prepared = {
         "engine": "CODEX_AGENT", "proposal_protocol": "ast_statement_v1",
         "approved_file": "subject.py", "task_id": "a"*32,
@@ -68,6 +68,15 @@ would still need to separately submit candidate["proposal_json"] through the
 existing trusted, bounded owned-task submission and independent Docker verifier.
 Do not introduce a new public path or automatically map external authorship
 to CODEX_AGENT. A valid envelope can still contain invalid Python.
+
+## Frozen experiment preservation
+
+The adapter is located at repository root intentionally. The existing nextgen
+experiment binds a frozen file inventory of bountyforge/*.py and
+scripts/nextgen_comparison.py. Adding a new file under bountyforge/ would change
+that inventory and invalidate the frozen experiment even without altering its
+behavior. No frozen runtime bytes, manifests, evaluators or comparisons were
+changed on this handoff branch.
 
 ## Verification completed
 

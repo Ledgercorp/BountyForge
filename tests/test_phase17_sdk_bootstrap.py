@@ -1,5 +1,6 @@
 """Non-executing SDK wheel provenance, extraction and Docker argv tests."""
 import hashlib
+import os
 import json
 from pathlib import Path
 import tempfile
@@ -9,7 +10,7 @@ from unittest.mock import patch
 from phase17_isolation import IMAGE, IsolationUnavailable
 from phase17_sdk_bootstrap import (
     RUNTIME_BIN, RUNTIME_NAME, RUNTIME_SHA, SDK_NAME, SDK_SHA,
-    extract_offline_runtime, main, sdk_bootstrap_command, validate_hardened_profile,
+    extract_offline_runtime, main, sdk_bootstrap_command, validate_hardened_profile, _rpc_response,
 )
 
 
@@ -71,6 +72,34 @@ class Phase17NativeSDKTests(unittest.TestCase):
                                                        "- id: " + identity + "\n  disabled: false"))
         with self.assertRaisesRegex(IsolationUnavailable, "SDK_SESSION_LOG_UPLOAD"):
             validate_hardened_profile(good.replace("enabled: false", "enabled: true"))
+
+
+    def test_sdk_rpc_exact_request_id_required(self):
+        class FakeChild:
+            def __init__(self, data):
+                read_fd, write_fd = os.pipe()
+                os.write(write_fd, data)
+                os.close(write_fd)
+                self.stdout = os.fdopen(read_fd, "rb")
+            def poll(self):
+                return None
+        success = b'{"jsonrpc":"2.0","id":"phase17","result":{"serverInfo":{}}}\n'
+        child = FakeChild(success)
+        try:
+            self.assertEqual(_rpc_response(child, "phase17", timeout=1), {"serverInfo": {}})
+        finally:
+            child.stdout.close()
+        for invalid in (
+            b'{"jsonrpc":"2.0","id":"phase17","error":{"code":-1}}\n',
+            b'{"jsonrpc":"2.0","id":"wrong","result":{}}\n',
+            b'not a json message\n',
+        ):
+            child = FakeChild(invalid)
+            try:
+                with self.assertRaises(IsolationUnavailable):
+                    _rpc_response(child, "phase17", timeout=0.1)
+            finally:
+                child.stdout.close()
 
     def test_sdk_root_must_be_known(self):
         with tempfile.TemporaryDirectory() as directory:

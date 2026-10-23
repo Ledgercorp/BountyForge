@@ -25,8 +25,14 @@ jobs:
           persist-credentials: false
       - name: Focused pinned SDK admission contracts
         run: python3 -m unittest discover -s tests -p 'test_phase17_sdk_bootstrap.py' -v
+      - name: Existing complete Python regression suite
+        run: python3 -m unittest discover -s tests -v
       - name: Fetch fixed digest image (no model)
         run: docker pull python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590
+      - name: Re-observe real unprivileged and no-network Docker boundaries
+        env:
+          BOUNTYFORGE_PHASE17_PROBE_ACK: '1'
+        run: python3 -m phase17_isolation --admit-model-free-probe
       - name: Download pinned SDK distributions as inert files
         run: |
           set -euo pipefail

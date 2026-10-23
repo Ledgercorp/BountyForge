@@ -71,6 +71,20 @@ def _private_read(path, limit=8192):
         raise SimulationRejected('workspace_rejected') from None
 
 
+def _validate_workspace(root):
+    """Reject unsafe SQLite sidecars and artifacts using metadata, without reads."""
+    try:
+        for path in root.iterdir():
+            info = path.lstat()
+            limit = 1024*1024 if path.name in (DATABASE, DATABASE+'-journal') else 8192
+            if (path.name not in ALLOWED or not stat.S_ISREG(info.st_mode)
+                    or info.st_uid != os.getuid() or info.st_nlink != 1
+                    or info.st_mode & 0o077 or info.st_size > limit):
+                raise SimulationRejected('workspace_rejected')
+    except OSError:
+        raise SimulationRejected('workspace_rejected') from None
+
+
 def _write_exact(path, raw):
     if path.exists() or path.is_symlink():
         if _private_read(path) != raw: raise SimulationRejected('package_tampered')
@@ -223,8 +237,8 @@ class SyntheticOrder:
         if type(scope_ttl) is not int or not 1 <= scope_ttl <= 3600:
             raise SimulationRejected('invalid_scope_budget')
         self.root = require_private_directory(Path(root))
-        if (_private_read(self.root / MARKER) != IDENTITY
-                or any(p.name not in ALLOWED or p.is_symlink() for p in self.root.iterdir())):
+        _validate_workspace(self.root)
+        if _private_read(self.root / MARKER) != IDENTITY:
             raise SimulationRejected('workspace_rejected')
         lock = self.root / 'phase8.SIMULATION_ONLY.lock'
         self.lock = os.open(lock, os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600)
@@ -235,6 +249,7 @@ class SyntheticOrder:
             os.close(self.lock); raise SimulationRejected('worker_busy') from None
         self.ledger = None
         try:
+            _validate_workspace(self.root)
             path = self.root / DATABASE
             if path.exists():
                 _private_read(path, 1024*1024)

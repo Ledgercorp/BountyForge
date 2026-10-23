@@ -2,6 +2,8 @@
 import ast
 import hashlib
 import json
+import shutil
+import stat
 import tempfile
 import unittest
 from pathlib import Path
@@ -55,9 +57,10 @@ class EvaluationTests(unittest.TestCase):
 
     def test_context_failure_is_blocked_without_becoming_model_failure(self):
         with patch.object(evaluation, 'verify_runtime_boundary', return_value=self.proof()), \
-                patch.object(evaluation, '_execute', side_effect=self.failing), \
+                patch.object(evaluation, '_execute', side_effect=self.failing) as execute, \
                 patch.object(evaluation, 'make_prompt', side_effect=ValueError('cannot fit')):
             report = evaluation.prepare()
+        self.assertEqual(execute.call_count, 20)
         self.assertTrue(all(case['status'] == 'blocked' for case in report['cases']))
         self.assertTrue(all(case['reason'] == 'context_rejected' for case in report['cases']))
         self.assertEqual(report['inference_calls'], 0)
@@ -144,9 +147,58 @@ class EvaluationTests(unittest.TestCase):
         with patch.object(evaluation, 'verify_runtime_boundary', return_value=self.proof()), \
                 patch.object(evaluation, '_execute', side_effect=altered):
             report = evaluation.prepare()
-        self.assertEqual(report['baseline_invocations'], 20)
+        self.assertEqual(report['baseline_invocations'], 1)
         self.assertEqual(report['baseline_assertion_failures'], 0)
         self.assertEqual(report['status'], 'blocked')
+
+    def test_owned_staging_normalizes_only_admitted_copy_permissions(self):
+        catalog = evaluation.Catalog(); spec = catalog.tasks()[0]
+        original = evaluation.original_root(spec)
+        original_snapshot = {str(path.relative_to(original)): (
+            stat.S_IMODE(path.stat().st_mode),
+            evaluation.digest(path.read_bytes()) if path.is_file() else None)
+            for path in (original, *original.rglob('*'))}
+        with tempfile.TemporaryDirectory() as directory:
+            private = Path(directory)/'private'; shutil.copytree(original, private)
+            for path in (private, *private.rglob('*')):
+                path.chmod(0o700 if path.is_dir() else 0o600)
+            private_snapshot = {str(path.relative_to(private)): (
+                stat.S_IMODE(path.stat().st_mode),
+                evaluation.digest(path.read_bytes()) if path.is_file() else None)
+                for path in (private, *private.rglob('*'))}
+            staged = Path(directory)/'staged'
+            with patch.object(evaluation, 'original_root', return_value=private):
+                evaluation.materialize(catalog, spec, staged)
+            for path in (staged, *staged.rglob('*')):
+                self.assertEqual(stat.S_IMODE(path.stat().st_mode),
+                                 0o755 if path.is_dir() else 0o644)
+            evaluation.admit(catalog, spec, staged)
+            self.assertEqual(private_snapshot, {str(path.relative_to(private)): (
+                stat.S_IMODE(path.stat().st_mode),
+                evaluation.digest(path.read_bytes()) if path.is_file() else None)
+                for path in (private, *private.rglob('*'))})
+        self.assertEqual(original_snapshot, {str(path.relative_to(original)): (
+            stat.S_IMODE(path.stat().st_mode),
+            evaluation.digest(path.read_bytes()) if path.is_file() else None)
+            for path in (original, *original.rglob('*'))})
+
+    def test_runner_or_receipt_failure_disables_later_baseline_dispatches(self):
+        for result in ('exception', 'receipt'):
+            with self.subTest(result=result), \
+                    patch.object(evaluation, 'verify_runtime_boundary', return_value=self.proof()), \
+                    patch.object(evaluation, '_execute') as execute:
+                if result == 'exception': execute.side_effect = RuntimeError('runner unavailable')
+                else:
+                    execute.return_value = {'passed': False, 'returncode': 1, 'timeout': False,
+                                            'error': None, 'output': 'ImportError: tests inaccessible'}
+                report = evaluation.prepare()
+                self.assertEqual(execute.call_count, 1)
+                self.assertEqual(report['baseline_invocations'], 1)
+                self.assertEqual(report['baseline_receipts'], 0)
+                self.assertEqual(len(report['cases']), 20)
+                self.assertTrue(all(case['status'] == 'blocked' for case in report['cases']))
+                self.assertTrue(all(case['reason'] == 'runner_disabled_after_failure'
+                                    for case in report['cases'][1:]))
 
     def test_malformed_replay_record_is_blocked_without_uncaught_exception(self):
         for record in (None, [], 'untrusted'):

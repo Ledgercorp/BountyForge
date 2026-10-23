@@ -39,8 +39,12 @@ UID and bounded resources. No image download or host subject execution occurs.
 Each selected original is copied once and gets an exact `owned-phase8-<id>`
 marker. Admission checks the exact source/test/marker tree, exact directories,
 hashes, file sizes, hardlinks, symlinks and special objects before and after
-every test invocation. Extra files and empty directories are rejected. A strict
-unittest receipt must complete; only assertion-failure baselines count as
+every test invocation. Extra files and empty directories are rejected. The
+admitted disposable copy gets directories `0755` and files `0644` so Docker's
+unchanged unprivileged UID can read it, followed by another exact admission.
+Original checkout permissions and bytes stay unchanged; this normalization
+applies only to pinned public owned fixtures. A strict unittest receipt must
+complete; only assertion-failure baselines count as
 reproduced defects. The coordinator uses the same deterministic localization
 and `make_prompt` as the frozen session, retaining context failures as per-case
 blocked reasons. Counts record actual baseline invocations and receipts.
@@ -51,6 +55,9 @@ before each dispatch and after every case, keeping `baseline_pending` and
 `preparing` labels if interrupted. API callers can request the same durable
 checkpoints with `report_path=`. The CLI always writes a checkpoint file;
 `--output` defaults to `evidence/phase8/prepare.json`.
+Runner, custody or receipt failure disables subsequent baseline dispatches for
+that invocation; remaining cases are blocked as `runner_disabled_after_failure`.
+Context-fit rejections do not disable other original baseline observations.
 
 The prepared prompt is the session middleware's provider context. It differs
 from the frozen worker's internal prepared context. Preparation establishes

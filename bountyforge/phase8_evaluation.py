@@ -204,6 +204,12 @@ def materialize(catalog, spec, root):
     shutil.copytree(original_root(spec), root)
     (Path(root)/FIXTURE_MARKER).write_text('owned-phase8-'+spec['id'])
     admit(catalog, spec, root)
+    # Only this exact admitted disposable owned copy is made readable by the
+    # unchanged unprivileged Docker UID. Checkout/private source modes stay put.
+    root = Path(root)
+    for path in (root, *root.rglob('*')):
+        path.chmod(0o755 if path.is_dir() else 0o644)
+    admit(catalog, spec, root)
 
 
 def admit(catalog, spec, root, *, candidate=None):
@@ -302,6 +308,7 @@ def prepare(*, selection_file=None, selection_sha256=None, report_path=None):
         report['preflight'] = preflight()
         report['status'] = 'preparing'
         checkpoint()
+        runner_available = True
         for spec in tasks:
             case = {'case_id': spec['id'], 'status': 'blocked', 'reason': None,
                     'source_sha256': spec['sha256']['subject.py'],
@@ -309,6 +316,10 @@ def prepare(*, selection_file=None, selection_sha256=None, report_path=None):
                     'catalog': spec['catalog'],
                     'catalog_sha256': spec['catalog_sha256']}
             report['cases'].append(case)
+            if not runner_available:
+                case['reason'] = 'runner_disabled_after_failure'
+                checkpoint()
+                continue
             case['status'] = 'baseline_pending'
             checkpoint()
             try:
@@ -330,6 +341,8 @@ def prepare(*, selection_file=None, selection_sha256=None, report_path=None):
                                 prompt=json.loads(prompt))
             except (OSError, RuntimeError, ValueError, TypeError, KeyError):
                 case.update(status='blocked', reason='owned_baseline_or_custody_unavailable')
+                runner_available = False
+                report['runner_disabled_after_failure'] = True
             finally:
                 checkpoint()
         report['prepared_cases'] = sum(case['status'] == 'prepared' for case in report['cases'])

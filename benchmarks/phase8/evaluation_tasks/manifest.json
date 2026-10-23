@@ -1,0 +1,297 @@
+{
+  "schema": 1,
+  "kind": "sealed_owned_python_maintenance_evaluation",
+  "split": "held_out_until_phase8_session_freeze",
+  "provenance": {
+    "owner": "BountyForge / LeftSock Labs",
+    "author": "Independent sealed evaluation agent",
+    "origin": "Original owned maintenance fixtures; no historical, upstream or prior benchmark fixes",
+    "license": "MIT",
+    "authored_date": "2026-10-22",
+    "base_revision": "7bcbf5e3d7998bad965c2f00ff5756d0076ba0dc",
+    "reference_repairs_supplied": false,
+    "target_execution": "not_executed_before_admission"
+  },
+  "tasks": [
+    {
+      "id": "stock_admission",
+      "file": "subject.py",
+      "symbol": "can_reserve",
+      "category": "inventory",
+      "complexity": "small",
+      "description": "Report whether a nonnegative request fits available stock, including exact depletion. Reject negative quantities.",
+      "sha256": {
+        "subject.py": "8f8a0a61ef0ca4a5d62be5fb85570edd2e48fa56ebd3ee6a9b4c525ae9991547",
+        "tests/test_regression.py": "4ceafa08eb64da9d3ca51d029b17b2ac75791e505087ea61f56e12b777790068"
+      },
+      "provenance": "Original owned fixture, authored independently before Phase8 session freeze; no reference repair supplied.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "weighted_measurement",
+      "file": "subject.py",
+      "symbol": "weighted_mean",
+      "category": "statistics_weighting",
+      "complexity": "multiline",
+      "description": "Compute the weighted arithmetic mean without mutating inputs. Equal-length nonempty values and nonnegative weights with positive total weight are required.",
+      "sha256": {
+        "subject.py": "9ded96ad0ffabdeabeb840d56ae07bc7a05992b5516d5d9e2382e85c79787ea5",
+        "tests/test_regression.py": "66fbe1bc2d140b57143fa69c183c6ec0c20ece47bc3ebdaea68ca36d876a7979"
+      },
+      "provenance": "Original owned fixture, authored independently before Phase8 session freeze; no reference repair supplied.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "middle_observation",
+      "file": "subject.py",
+      "symbol": "sample_median",
+      "category": "statistics_order",
+      "complexity": "branching",
+      "description": "Return the numeric median of an unsorted nonempty sequence. For an even sample use its two middle observations. Do not mutate the input.",
+      "sha256": {
+        "subject.py": "61b4273694d80206f11fd42296f7259a6fd4130dd5227d975bfeab13f7c16f1c",
+        "tests/test_regression.py": "55c8cffcf4229a0b65ac2184baeba00786e77efa3e7a49ed48f6da25b47fd208"
+      },
+      "provenance": "Original owned fixture, authored independently before Phase8 session freeze; no reference repair supplied.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "booking_intersection",
+      "file": "subject.py",
+      "symbol": "intervals_overlap",
+      "category": "half_open_ranges",
+      "complexity": "multiline",
+      "description": "Determine overlap of half-open numeric intervals. Touching endpoints do not overlap; empty or inverted intervals never overlap.",
+      "sha256": {
+        "subject.py": "7120fb5ab214803579967ad0e38c6d9d039af0c108433e31c6aafd3ad7d4f18c",
+        "tests/test_regression.py": "a6e19233a0613d8569f3e5472f2ccc4dc29b3cf4e86d737834c0132cfb2b91a3"
+      },
+      "provenance": "Original owned fixture, authored independently before Phase8 session freeze; no reference repair supplied.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "query_accumulation",
+      "file": "subject.py",
+      "symbol": "collect_values",
+      "category": "mapping_order",
+      "complexity": "loop_binding",
+      "description": "Collect all values per key in encounter order, preserving key insertion order and input pairs. Each key gets a separate result list.",
+      "sha256": {
+        "subject.py": "8fc309fb4ab4ea1eb2715c984c52f2b89514b068024275e9a463074873a76d99",
+        "tests/test_regression.py": "6baf014675c672ccbfb777eadfde88b6bc51272dfaccd26a350e91ccbdba04cf"
+      },
+      "provenance": "Original owned fixture, authored independently before Phase8 session freeze; no reference repair supplied.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "literal_tail",
+      "file": "subject.py",
+      "symbol": "remove_suffix",
+      "category": "text_affixes",
+      "complexity": "branching",
+      "description": "Remove exactly one literal suffix when present, retaining earlier occurrences and returning unchanged text for an absent or empty suffix.",
+      "sha256": {
+        "subject.py": "5e14f2b63de94b21d138f40ddf52cad5b078b4df9799586a644947a6a5bcc6de",
+        "tests/test_regression.py": "00d8a0b047f7693784c7e4d63904772b0955ebf4794a6d9040d427324d412237"
+      },
+      "provenance": "Original owned fixture, authored independently before Phase8 session freeze; no reference repair supplied.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "line_termination",
+      "file": "subject.py",
+      "symbol": "terminate_line",
+      "category": "text_termination",
+      "complexity": "multiline",
+      "description": "Return text with exactly one trailing LF. Preserve all other characters, especially trailing spaces and tabs preceding existing LF characters.",
+      "sha256": {
+        "subject.py": "53c28c487310ec3a463ad20c28493b67954ed9fdfb465ac54bfc530874ac4491",
+        "tests/test_regression.py": "28c469dce99346d0c2b5ff3aa208d3e6ac77dd43f30a2599dc823aa968af7eac"
+      },
+      "provenance": "Original owned fixture, authored independently before Phase8 session freeze; no reference repair supplied.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "duration_label",
+      "file": "subject.py",
+      "symbol": "describe_seconds",
+      "category": "human_formatting",
+      "complexity": "small",
+      "description": "Format a nonnegative number as a quantity followed by second or seconds. The singular is used only for exactly one; reject negative durations.",
+      "sha256": {
+        "subject.py": "acdb51af4bdbc0efd8854a61fcc227f3b07e7deb2c90a5d6822878703910fb3e",
+        "tests/test_regression.py": "3f88584c1544c25de90549b764d18f9b838970aa54e93ac1251633defd47ef24"
+      },
+      "provenance": "Original owned fixture, authored independently before Phase8 session freeze; no reference repair supplied.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "shipping_cartons",
+      "file": "subject.py",
+      "symbol": "carton_count",
+      "category": "packing",
+      "complexity": "multiline",
+      "description": "Return the minimum number of whole cartons that hold a nonnegative integer item count at a positive integer capacity, including zero and partial final cartons.",
+      "sha256": {
+        "subject.py": "c96d2bda91c81eecb0089c1a535ccf7fda9e2a7bca4720dc315752e9c96bedc1",
+        "tests/test_regression.py": "d6efc6c252623a573807dfe017c2d212c1421650396cb1e121321c44f09e1722"
+      },
+      "provenance": "Original owned fixture, authored independently before Phase8 session freeze; no reference repair supplied.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "clock_normalization",
+      "file": "subject.py",
+      "symbol": "clock_parts",
+      "category": "time_normalization",
+      "complexity": "binding",
+      "description": "Normalize an integer minute offset to a 24-hour clock pair (hour, minute), with hours 0 through 23 and minutes 0 through 59, including negative offsets.",
+      "sha256": {
+        "subject.py": "5da8b8b7605ba8dfcddf5fec6650543ed14d0d0467b29a5a0f118dabe2e8935d",
+        "tests/test_regression.py": "07a64c9acb9b5976d3b37a05b75863a563f89176f3dc9ed467c8e15c85700646"
+      },
+      "provenance": "Original owned fixture, authored independently before Phase8 session freeze; no reference repair supplied.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "block_indentation",
+      "file": "subject.py",
+      "symbol": "indent_block",
+      "category": "text_layout",
+      "complexity": "multiline",
+      "description": "Prefix every real line of text, including blank interior lines. Preserve a final LF without creating a phantom prefixed line after it. Empty input stays empty.",
+      "sha256": {
+        "subject.py": "01156851c54d5bb0f6a449298e45b771b34ad66db7e3ea1dde46e6256d13b397",
+        "tests/test_regression.py": "ed4e4ff4cab26c3c626674e7fd1838ccce02c4492e9bc8028d85957c8d9dbec4"
+      },
+      "provenance": "Original owned fixture, authored independently before Phase8 session freeze; no reference repair supplied.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "redacted_mapping",
+      "file": "subject.py",
+      "symbol": "without_keys",
+      "category": "defensive_copy",
+      "complexity": "binding",
+      "description": "Return a shallow mapping copy excluding selected keys. Preserve the original mapping and retained value identities, and tolerate keys absent from the input.",
+      "sha256": {
+        "subject.py": "12adaffbc0652e332c3184500d346ff756185cb3c98b662c7515b0b9f9ec7f40",
+        "tests/test_regression.py": "6fd9c3fd01365c50c225bd0862382696ddfb0a9a7f50ea8fecaf255ac1cdf7fe"
+      },
+      "provenance": "Original owned fixture, authored independently before Phase8 session freeze; no reference repair supplied.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "running_measurements",
+      "file": "subject.py",
+      "symbol": "running_totals",
+      "category": "cumulative_aggregation",
+      "complexity": "loop_binding",
+      "description": "Return successive prefix sums of numeric values in order. Preserve the input and support empty sequences, negative numbers and fractional measurements.",
+      "sha256": {
+        "subject.py": "a0d86ef6308f83f33d9571b63bb929b8cb89d7bf52ab1ad49f549c83dff1e3a8",
+        "tests/test_regression.py": "8ec3cfd8263090badcfe9fd5f13c16fe43e5ee36fc3814021a3b9802d289158c"
+      },
+      "provenance": "Original owned fixture, authored independently before Phase8 session freeze; no reference repair supplied.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "encounter_unique",
+      "file": "subject.py",
+      "symbol": "stable_unique",
+      "category": "ordered_collections",
+      "complexity": "loop_return",
+      "description": "Deduplicate hashable items while preserving first encounter order and leaving the input unchanged. Return a new list and retain ordinary unhashable-item TypeError behavior.",
+      "sha256": {
+        "subject.py": "4d55a7244bf9df701212a5cd5b869c93f7f78c2fc548fc767face8d15c014ac4",
+        "tests/test_regression.py": "d6fd91a01f879c4a1d2c0da98f84006489f7ff95f32f16ebaedbeb6742393ea9"
+      },
+      "provenance": "Original owned fixture, authored independently before Phase8 session freeze; no reference repair supplied.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "endpoint_authority",
+      "file": "subject.py",
+      "symbol": "format_authority",
+      "category": "address_formatting",
+      "complexity": "branching",
+      "description": "Format a stripped nonempty host and port 1..65535 as an authority. IPv6 literals require exactly one bracket pair; IPv4 and ordinary hostnames remain unbracketed. No network operations.",
+      "sha256": {
+        "subject.py": "09f874fcefd95c5d0f754d22953f3f6e67ce03f0e1b69e70ee479968fba136d8",
+        "tests/test_regression.py": "aa58272e83335256ef6573479262d3c0adf259f3bb50c2c40388a8d72b45b56c"
+      },
+      "provenance": "Original owned fixture, authored independently before Phase8 session freeze; no reference repair supplied.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "archive_classification",
+      "file": "subject.py",
+      "symbol": "archive_suffix",
+      "category": "suffix_classification",
+      "complexity": "multiline",
+      "description": "Identify the longest supported archive suffix, case-insensitively, or return an empty string. Suffixes must match the end of the name.",
+      "sha256": {
+        "subject.py": "5d4e427025c1cf49c887ff54dea50a7ce8f241fac2ec3da13c3a7e68a7b41d49",
+        "tests/test_regression.py": "c1c1e62e7678032d74e5a50557ad206cac8c4eeebc91a2e567eb3d00dae6fc16"
+      },
+      "provenance": "Original owned fixture, authored independently before Phase8 session freeze; no reference repair supplied.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "markup_text",
+      "file": "subject.py",
+      "symbol": "escape_markup",
+      "category": "html_serialization",
+      "complexity": "multiline",
+      "description": "Escape ampersands and angle brackets in plain text for markup insertion. Preserve quotes and all other characters. Existing entity-looking text is still plain input.",
+      "sha256": {
+        "subject.py": "cb9b6063232a96a4a479e456299114ea08c0aa3903fa167aec002d45e0c9cd28",
+        "tests/test_regression.py": "61a57f540df623c1a26b6d09570d452125042e959adb21c4bbf46f3681a0e6b3"
+      },
+      "provenance": "Original owned fixture, authored independently before Phase8 session freeze; no reference repair supplied.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "csv_field_encoding",
+      "file": "subject.py",
+      "symbol": "quote_csv_field",
+      "category": "csv_serialization",
+      "complexity": "branching",
+      "description": "Encode a single text field with CSV double-quote rules: quote fields containing comma, CR, LF or double quote and double embedded quotes. Leave other fields unchanged.",
+      "sha256": {
+        "subject.py": "53c310bfda6cf5aaaa9ec4219135100ce0ffe1bbea6b9a0488462dbc4002be31",
+        "tests/test_regression.py": "a8ce2a07cd8b1513b4335862c13ff2ef79fa829eb218a2b940ee7803fa67d186"
+      },
+      "provenance": "Original owned fixture, authored independently before Phase8 session freeze; no reference repair supplied.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "cyclic_sequence",
+      "file": "subject.py",
+      "symbol": "rotate_left",
+      "category": "sequence_rotation",
+      "complexity": "binding",
+      "description": "Rotate a sequence left by a signed integer count with cyclic wraparound. Preserve sequence type and original contents; empty input returns an empty copy.",
+      "sha256": {
+        "subject.py": "29196a9c31129e2199d3476866da0c093c1a3c4493559effbced644f9641c184",
+        "tests/test_regression.py": "1db8f38dbf6c0df0219e5dbc780d5d691d807aa9aa1d65a4e9a0755b56cc67f3"
+      },
+      "provenance": "Original owned fixture, authored independently before Phase8 session freeze; no reference repair supplied.",
+      "baseline_intent": "assertion_failure_not_executed"
+    },
+    {
+      "id": "configuration_switch",
+      "file": "subject.py",
+      "symbol": "parse_switch",
+      "category": "configuration_flags",
+      "complexity": "branching",
+      "description": "Parse booleans and stripped case-insensitive textual switches. Accept true/yes/on/1 and false/no/off/0/empty; reject unsupported strings and non-boolean non-string inputs.",
+      "sha256": {
+        "subject.py": "db54999c89f785ef772907505e54a8bca2684ec96c53dec0a6f36e164ee42ec3",
+        "tests/test_regression.py": "5f3d14a5b069a425be7b4240a06aa2a4f053a94041a59d290cbb4e2cb15dfe23"
+      },
+      "provenance": "Original owned fixture, authored independently before Phase8 session freeze; no reference repair supplied.",
+      "baseline_intent": "assertion_failure_not_executed"
+    }
+  ]
+}

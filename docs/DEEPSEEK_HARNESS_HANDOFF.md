@@ -80,13 +80,13 @@ changed on this handoff branch.
 
 ## Verification completed
 
-Local isolated Python 3 unittest run: **18 tests passed, zero errors**, plus
+Local isolated Python 3 unittest run: **30 focused tests passed, zero errors**, plus
 bytecode compile of the new adapter. Tested: valid and canonical output,
 multiple edits, duplicate keys, extra payloads, scope violations, malformed
 numbers, byte budgets, Unicode edge cases, identity/hash/protocol refusal,
 non-string inputs, and preservation of caller data.
 
-This validates only the new offline adapter. It is not a full repository test,
+This validates only the new offline adapter and mocked verifier handoff. It is not a full repository test,
 hosted CI result, Harness SDK integration, generated repair, blind evaluation,
 or verified security sandbox. No performance or repair-accuracy improvement
 has been measured.
@@ -112,3 +112,22 @@ has been measured.
 integration and measurable repair-quality comparison **not completed**.
 Commercial admission remains false; no changes to main, existing drafts,
 scheduled workflows, production delivery, payments or customer execution.
+
+## Follow-on: opt-in trusted verification bridge
+
+`deepseek_owned_bridge.py` is a second **root-level** module. The trusted owner process can hand a previously obtained, bounded Harness `result.final_response` string to `verify_owned_harness_response(service, prepared_task, final_response, allow_owned_verification=True)`. Default flag `False` rejects. It requires:
+
+- The actual existing `bountyforge.repair_engines.RepairService` instance (not an attacker-supplied verifier or model backend).
+- A live, unexpired `CODEX_AGENT` task capability from `RepairService.prepare(...)`, checked via its current `_get` fence and revision.
+- Exact equality of the preprepared task snapshot and current authoritative task identity, source bytes and digest, test digest, editable scope, state and development-only authorization flags.
+- An untrusted output-only proposal accepted by `prepare_harness_handoff`.
+
+Only after all guards pass does it call the **existing** `RepairService.submit`, which applies the normal AST/source validators, owned-only Docker verifier and attempt budget. The bridge wraps the receipt with `UNATTESTED_EXTERNAL_HARNESS_OUTPUT`, preserves any original independent *owned-development* verification result and labels commercial admission `NOT_ADMITTED`. It does **not** attest the DeepSeek model identity. This interface is not an MCP tool, network service, customer API or permission to publish repairs. It deliberately does not instantiate the SDK or expose credentials.
+
+Unit tests additionally cover disabled-by-default handling, exact trusted service type, stale/forged task capabilities, source mutation, invalid candidate refusal, single submission and revision-bound second attempts. These use an instrumented **fake RepairService**; they do not establish live Docker execution or a production-ready Harness runtime.
+
+**Local focused command** (stdlib, no provider/network):
+
+    python -m unittest discover -s tests -p 'test_deepseek*.py' -v
+
+**Result:** 30/30 focused tests passed locally on Python 3, zero additional spending. The rest of the existing repository test suite and hosted CI were **not run** for these new PR #4 files. This bridge is a bounded connection into the trusted verifier, **not** proof of successful DeepSeek-powered repair or the admission of any SDK process. The upstream safety notice explicitly says Harness is developer-preview and unaudited: https://github.com/deepseek-ai/deepseek-harness/blob/master/SAFETY.md.

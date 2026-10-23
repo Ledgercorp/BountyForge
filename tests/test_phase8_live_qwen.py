@@ -14,6 +14,8 @@ class LiveQwenAdmissionTests(unittest.TestCase):
         workflow = (Path(__file__).resolve().parents[1] /
                     '.github/workflows/phase8-frozen-qwen-evaluation.yml').read_text()
         self.assertIn('workflow_dispatch:', workflow)
+        self.assertIn("paths: ['.github/workflows/phase8-frozen-qwen-evaluation.yml']", workflow)
+        self.assertIn('[qwen-frozen-eval]', workflow)
         self.assertIn('confirm_zero_cost:', workflow)
         self.assertIn("runs-on: ubuntu-24.04", workflow)
         self.assertIn('timeout-minutes: 70', workflow)
@@ -28,6 +30,7 @@ class LiveQwenAdmissionTests(unittest.TestCase):
         allowed = {
             'GITHUB_ACTIONS': 'true', 'GITHUB_REPOSITORY': 'Ledgercorp/BountyForge',
             'GITHUB_EVENT_NAME': 'workflow_dispatch',
+            'BOUNTYFORGE_QWEN_COST_ACK': 'true',
             'GITHUB_REF': 'refs/heads/engineering/revenue-linux-scout-20261021',
             'RUNNER_OS': 'Linux', 'RUNNER_ARCH': 'X64',
         }

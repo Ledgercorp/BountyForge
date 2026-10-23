@@ -2,6 +2,9 @@ name: BountyForge frozen 20-case local Qwen evaluation
 
 # Manual only. No credentials, remote model providers, customer input or writes.
 on:
+  push:
+    branches: [engineering/revenue-linux-scout-20261021]
+    paths: ['.github/workflows/phase8-frozen-qwen-evaluation.yml']
   workflow_dispatch:
     inputs:
       confirm_zero_cost:
@@ -19,7 +22,10 @@ concurrency:
 
 jobs:
   frozen-qwen:
-    if: ${{ github.ref == 'refs/heads/engineering/revenue-linux-scout-20261021' && inputs.confirm_zero_cost }}
+    if: >-
+      github.ref == 'refs/heads/engineering/revenue-linux-scout-20261021' &&
+      ((github.event_name == 'workflow_dispatch' && inputs.confirm_zero_cost) ||
+       (github.event_name == 'push' && contains(github.event.head_commit.message, '[qwen-frozen-eval]')))
     runs-on: ubuntu-24.04
     timeout-minutes: 70
     steps:
@@ -61,6 +67,9 @@ jobs:
           done
           [[ "$ready" == 1 ]] || { echo 'Pinned local Qwen did not become healthy'; exit 2; }
       - name: Run bounded frozen evaluation and independent Docker replay
+        env:
+          BOUNTYFORGE_QWEN_COST_ACK: ${{ inputs.confirm_zero_cost || (github.event_name == 'push' && contains(github.event.head_commit.message, '[qwen-frozen-eval]')) }}
+          BOUNTYFORGE_QWEN_PUSH_ACK: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[qwen-frozen-eval]') }}
         run: |
           set -euo pipefail
           mkdir -p evidence-run

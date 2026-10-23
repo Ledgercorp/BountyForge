@@ -30,10 +30,13 @@ RUNTIME_SHA256 = '152e33221c9c9d37816a8ee9943f8d87339199197c80cb692559c9756b2027
 
 def require_hosted_admission() -> None:
     """Prevent accidental local/other-repository use of the live evaluator."""
-    if (os.environ.get('GITHUB_ACTIONS') != 'true'
+    event = os.environ.get('GITHUB_EVENT_NAME')
+    explicit_gate = (event == 'workflow_dispatch'
+                     or (event == 'push' and os.environ.get('BOUNTYFORGE_QWEN_PUSH_ACK') == 'true'))
+    if (not explicit_gate or os.environ.get('GITHUB_ACTIONS') != 'true'
             or os.environ.get('GITHUB_REPOSITORY') != 'Ledgercorp/BountyForge'
-            or os.environ.get('GITHUB_EVENT_NAME') != 'workflow_dispatch'
             or os.environ.get('GITHUB_REF') != 'refs/heads/engineering/revenue-linux-scout-20261021'
+            or os.environ.get('BOUNTYFORGE_QWEN_COST_ACK') != 'true'
             or os.environ.get('RUNNER_OS') != 'Linux'
             or os.environ.get('RUNNER_ARCH') != 'X64'):
         raise EvaluationRejected('Live Qwen evaluation is admitted only on its manual public Linux workflow')

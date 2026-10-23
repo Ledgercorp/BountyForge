@@ -41,3 +41,24 @@ class StatementModel(LocalModel):
                      'Use the exact assigned name and spaces around = for assignments. '
                      'Do not include Markdown or explanation. ')
         return self._complete_bounded_schema(instruction+system,user,max_tokens,schema,self.protocol)
+
+
+class AdaptiveStatementModel(StatementModel):
+    """Still AST anchored; allow bounded continuation lines rather than functions."""
+    protocol='qwen_statement_schema_v3'
+
+    def complete_line(self,system,user,max_tokens=150):
+        self.last_call=None
+        if (type(system) is not str or type(user) is not str or len(user.encode())>3600
+                or type(max_tokens) is not int or not 1<=max_tokens<=150):
+            raise ValueError('Bounded statement request required')
+        task=json.loads(user);schema=statement_schema(task['source'],task['edit_units'])
+        for alternative in schema['properties']['changes']['items']['anyOf']:
+            spec=alternative['properties']['new'];pattern=spec['pattern']
+            # Preserve the trusted first-statement prefix and cap at three physical lines.
+            spec['pattern']=pattern[:-1]+r'(\n[^\r\n]{1,180}){0,2}$'
+        instruction=('JSON only. Patch the authorized statements, never the function definition. '
+                     'You may change up to three related anchors. Assignment names must remain bound. '
+                     'Condition units accept expressions only. Use exact failure feedback. '
+                     'On retry, prior validated edits at other anchors are retained and all edits revalidated. ')
+        return self._complete_bounded_schema(instruction+system,user,max_tokens,schema,self.protocol)

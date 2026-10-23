@@ -52,6 +52,16 @@ CODEX_AGENT still requires this active session; never recursively launch a turn.
 Phase13 source/tests are exposed development material. See
 docs/PHASE13_OWNED_ORCHESTRATION.md for evidence and exact limitations.
 
+Phase14 appends six pinned owned maintenance tasks, without changing the frozen
+earlier catalogs or validators. Existing MCP preparation now returns bounded
+development assertion feedback and read-only helper context. The autonomous
+Qwen retry loop retains only previously source-validated, test-failing sibling
+edits, records that transformation and revalidates the complete proposal.
+Its v3 grammar permits at most three physical replacement lines; the existing
+three-change, two-attempt, 150-token request limits remain intact. Codex stays
+session-driven. No independently controlled unseen verifier is configured.
+See docs/PHASE14_REPAIR_INTELLIGENCE.md; never call these public tasks unseen.
+
 Full details: docs/PHASE10_CODEX_BOOTSTRAP_AND_CHATGPT.md
 
 ## Invariants

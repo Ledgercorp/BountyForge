@@ -1,0 +1,143 @@
+{
+  "controller_admitted": false,
+  "execution_authorized": false,
+  "handoffs": [
+    {
+      "execution_authorized": false,
+      "handoff_sha256": "8c2f852494e14fd1a0ff67fa1db09ac3824173185563880d391b08d6ca692ac9",
+      "held_out_blindness_verified": false,
+      "independent_evaluation": false,
+      "public_task": {
+        "requirements": "Calculate an invoice for non-cancelled rows. Rates are fractions in [0,1]. Subtract the rounded discount from subtotal before tax; total equals discounted taxable amount plus rounded tax. Keep input rows unchanged and preserve helper behavior.",
+        "source": "def item_value(row):\n    return row[\"qty\"] * row[\"unit\"]\n\n\ndef invoice_summary(rows, discount_rate, tax_rate):\n    if not 0 <= discount_rate <= 1 or not 0 <= tax_rate <= 1:\n        raise ValueError(\"invalid rate\")\n    active = [row for row in rows if row[\"state\"] != \"cancelled\"]\n    subtotal = sum(item_value(row) for row in active)\n    discount = round(subtotal * discount_rate, 2)\n    taxable = subtotal\n    tax = round(taxable * tax_rate, 2)\n    total = round(subtotal + tax, 2)\n    return {\"subtotal\": subtotal, \"discount\": discount, \"tax\": tax, \"total\": total}\n",
+        "source_sha256": "89e12cec1df4a5cf88c691974e180fea2308319894bdb5f215c46c1c99785f41",
+        "task_id": "invoice-summary",
+        "verifier_commitment_sha256": "c139dc416501665c1985206c5a55cee9ae7e67c1d019e525bb9f3f16ed1cdaf6"
+      },
+      "requirements_for_independent_evaluation": [
+        "Tests and reference solutions controlled by a separate verifier identity",
+        "No agent filesystem, tool or network route to held-out material",
+        "Freeze public tasks and verifier commitments before generation",
+        "Record generation transcript, candidate hash and signed external replay",
+        "Audit the separation before classifying results as independent"
+      ],
+      "status": "EXTERNAL_CONTROLLER_NOT_ADMITTED"
+    },
+    {
+      "execution_authorized": false,
+      "handoff_sha256": "f21d326e876604fff3d3dcd8168f8e0d537ba0bb64fddd38e82fc5e89e8fd7a2",
+      "held_out_blindness_verified": false,
+      "independent_evaluation": false,
+      "public_task": {
+        "requirements": "Apply credits and debits to an opening balance, once per event ID. Ignore unsupported kinds without marking them seen. Return sorted seen IDs and a new state, leaving caller state/events unchanged. Multiple accepted events accumulate, including repeated calls.",
+        "source": "def signed_delta(event):\n    return -event[\"amount\"] if event[\"kind\"] == \"debit\" else event[\"amount\"]\n\n\ndef apply_events(state, events):\n    balance = state[\"balance\"]\n    seen = set(state[\"seen\"])\n    for event in events:\n        if event[\"id\"] in seen:\n            continue\n        if event[\"kind\"] not in (\"credit\", \"debit\"):\n            continue\n        balance = signed_delta(event)\n        seen.add(event[\"id\"])\n    return {\"balance\": balance, \"seen\": tuple(sorted(seen))}\n",
+        "source_sha256": "eafc2c262f2957fc64629969d400f181347bf62943bfa65694416ac40e190ba4",
+        "task_id": "event-reducer",
+        "verifier_commitment_sha256": "d2585d06fe37dad2da5e5593aa9268a6afe6a5dcd84814d7992e3f3ca095a369"
+      },
+      "requirements_for_independent_evaluation": [
+        "Tests and reference solutions controlled by a separate verifier identity",
+        "No agent filesystem, tool or network route to held-out material",
+        "Freeze public tasks and verifier commitments before generation",
+        "Record generation transcript, candidate hash and signed external replay",
+        "Audit the separation before classifying results as independent"
+      ],
+      "status": "EXTERNAL_CONTROLLER_NOT_ADMITTED"
+    },
+    {
+      "execution_authorized": false,
+      "handoff_sha256": "63e01a3b45995c6d7ed49ecc88dca26d92cf121ececaf0710559ffd9add6d125",
+      "held_out_blindness_verified": false,
+      "independent_evaluation": false,
+      "public_task": {
+        "requirements": "Adapt an already-decoded API response; no network calls. On status 200 return its items and exact next_cursor, including empty string or None, and mark complete iff next_cursor is empty or None. On 429 retain prior cursor, empty rows, retry true; other errors retain prior cursor with retry false. Never mutate inputs.",
+        "source": "def page_rows(response):\n    return response.get(\"items\", [])\n\n\ndef ingest_page(response, previous_cursor):\n    status = response.get(\"status\", 500)\n    if status == 429:\n        return {\"rows\": [], \"cursor\": previous_cursor, \"complete\": False, \"retry\": True}\n    if status != 200:\n        return {\"rows\": [], \"cursor\": previous_cursor, \"complete\": False, \"retry\": False}\n    rows = page_rows(response)\n    cursor = response.get(\"next_cursor\") or previous_cursor\n    complete = bool(cursor)\n    return {\"rows\": rows, \"cursor\": cursor, \"complete\": complete, \"retry\": False}\n",
+        "source_sha256": "8780135d429b2539852e872d5a66fbd9abfbfd92649c62177cb2b86cb6a332ee",
+        "task_id": "cursor-adapter",
+        "verifier_commitment_sha256": "c3e02040c60b24b7e74a995b0a8a225d250e5522e1ec98f1eaf22ca1265a092a"
+      },
+      "requirements_for_independent_evaluation": [
+        "Tests and reference solutions controlled by a separate verifier identity",
+        "No agent filesystem, tool or network route to held-out material",
+        "Freeze public tasks and verifier commitments before generation",
+        "Record generation transcript, candidate hash and signed external replay",
+        "Audit the separation before classifying results as independent"
+      ],
+      "status": "EXTERNAL_CONTROLLER_NOT_ADMITTED"
+    },
+    {
+      "execution_authorized": false,
+      "handoff_sha256": "48b80037db26c8a7448d46d1e35112c827d2a3601a5795851b58835ec205f44b",
+      "held_out_blindness_verified": false,
+      "independent_evaluation": false,
+      "public_task": {
+        "requirements": "Group readings by stripped case-insensitive sensor name. Ignore None readings but preserve numeric zero. Return each group mean from its valid readings only; groups with no valid readings map to None. Keep caller records unchanged.",
+        "source": "def sensor_key(name):\n    return name.strip().casefold()\n\n\ndef group_readings(records):\n    groups = {}\n    for name, value in records:\n        key = sensor_key(name)\n        groups.setdefault(key, []).append(value)\n    result = {}\n    for key, raw in groups.items():\n        valid = [value for value in raw if value]\n        result[key] = sum(valid) / len(raw) if valid else None\n    return result\n",
+        "source_sha256": "d258f010611b36528ebd6daf0decc7e03c6f9cb71f65fd269747aa82906a8363",
+        "task_id": "reading-groups",
+        "verifier_commitment_sha256": "27a7b7721b23156020eddf531a359363de88bd7895c6ef986d296e74ea9a2433"
+      },
+      "requirements_for_independent_evaluation": [
+        "Tests and reference solutions controlled by a separate verifier identity",
+        "No agent filesystem, tool or network route to held-out material",
+        "Freeze public tasks and verifier commitments before generation",
+        "Record generation transcript, candidate hash and signed external replay",
+        "Audit the separation before classifying results as independent"
+      ],
+      "status": "EXTERNAL_CONTROLLER_NOT_ADMITTED"
+    },
+    {
+      "execution_authorized": false,
+      "handoff_sha256": "f1c7b073166101685798bfa4ad7e4dfa03d73f4951cf6eb6007291c753ab487e",
+      "held_out_blindness_verified": false,
+      "independent_evaluation": false,
+      "public_task": {
+        "requirements": "Retry only HTTP 429 and 503. Use numeric Retry-After seconds when valid, otherwise base * 2**attempt. Clamp the delay to [0,max_delay]. Successful and permanent-failure statuses do not retry. This function does not sleep or perform I/O.",
+        "source": "def retry_decision(status, attempt, retry_after, base, max_delay):\n    if status not in (429, 503):\n        return (False, 0)\n    if retry_after is None:\n        delay = base * 2 ** attempt\n    else:\n        try:\n            delay = float(retry_after)\n        except (ValueError, TypeError):\n            delay = base * 2 ** attempt\n    delay = max(delay, max_delay)\n    return (True, delay)\n",
+        "source_sha256": "9cb690fc590e6aa0ff98cc06633348b8358b74e6743e2848a48c420446d5c301",
+        "task_id": "retry-policy",
+        "verifier_commitment_sha256": "e5ab8d497054fe3a637e9443052f2fe2b17f2cf591a65845dfa065b5096f9d3a"
+      },
+      "requirements_for_independent_evaluation": [
+        "Tests and reference solutions controlled by a separate verifier identity",
+        "No agent filesystem, tool or network route to held-out material",
+        "Freeze public tasks and verifier commitments before generation",
+        "Record generation transcript, candidate hash and signed external replay",
+        "Audit the separation before classifying results as independent"
+      ],
+      "status": "EXTERNAL_CONTROLLER_NOT_ADMITTED"
+    },
+    {
+      "execution_authorized": false,
+      "handoff_sha256": "0cdea947f4ab31a0568042b51b23d5739df28304065f2133e5f8467cd28b6e07",
+      "held_out_blindness_verified": false,
+      "independent_evaluation": false,
+      "public_task": {
+        "requirements": "Allocate stock to requests in order without overselling or using reserved stock. Nonpositive requests receive zero. Each allocation reduces remaining available units. Preserve input requests and the nonnegative available_units helper.",
+        "source": "def available_units(stock, reserved):\n    return max(stock - reserved, 0)\n\n\ndef allocate_orders(stock, reserved, requests):\n    available = available_units(stock, reserved)\n    allocations = []\n    for amount in requests:\n        if amount <= 0:\n            allocations.append(0)\n            continue\n        allocated = min(amount, available)\n        allocations.append(allocated)\n        available = stock - allocated\n    return allocations\n",
+        "source_sha256": "9f597f93e43959597b46483d18a5a65fd82f3b769a90682935fd66870b8a0277",
+        "task_id": "stock-allocation",
+        "verifier_commitment_sha256": "fdd124121d77e0d77672ec7fa08f08f988c9f49213d31c103c17812ce1476881"
+      },
+      "requirements_for_independent_evaluation": [
+        "Tests and reference solutions controlled by a separate verifier identity",
+        "No agent filesystem, tool or network route to held-out material",
+        "Freeze public tasks and verifier commitments before generation",
+        "Record generation transcript, candidate hash and signed external replay",
+        "Audit the separation before classifying results as independent"
+      ],
+      "status": "EXTERNAL_CONTROLLER_NOT_ADMITTED"
+    }
+  ],
+  "independent_evaluation": false,
+  "schema": 1,
+  "separation_assessment": {
+    "agent_can_read_development_tests": true,
+    "agent_generated_held_out_accuracy": null,
+    "blocker": "Agent has the same checkout, general filesystem tools and repository write access. MCP redaction is not inaccessible held-out control.",
+    "development_suite_only": true,
+    "enforceable_blind_boundary_available": false,
+    "independent_controller_identity_configured": false
+  },
+  "suite_sha256": "7a6957d13a9b3b2171ee644db61bd988cdf2ddcda5c58764ca478bd84591dd88"
+}

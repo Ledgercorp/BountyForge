@@ -179,7 +179,7 @@ class MCPBlackBoxTests(unittest.TestCase):
         self.assertEqual([x['id'] for x in payload['engines']],['QWEN_LOCAL','CODEX_AGENT'])
         self.assertFalse(payload['engines'][1]['unattended_backend_available'])
         tasks=json.loads(records[2]['result']['content'][0]['text'])
-        self.assertEqual(len(tasks['tasks']),6)
+        self.assertEqual(len(tasks['tasks']),12)
         self.assertFalse(tasks['independent_evaluation'])
         self.assertTrue(all(x['result']['isError'] for x in records[3:]))
         self.assertNotIn(b'private',p.stdout.splitlines()[-1])

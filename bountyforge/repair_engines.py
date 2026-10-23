@@ -21,7 +21,8 @@ from bountyforge.curated_tasks import editable_scope
 from bountyforge.drafts import DraftRejected
 from bountyforge.line_scope import infer_editable_lines
 from bountyforge.model import _NoRedirect
-from bountyforge.qwen_statement_contract import StatementModel as LocalModel
+from bountyforge.qwen_statement_contract import AdaptiveStatementModel as LocalModel
+from bountyforge.repair_intelligence import failure_feedback, source_context, model_prompt, revision_proposal
 from bountyforge.phase8_evaluation import CONTROLS, preflight, validate_proof, verify_core
 from bountyforge.repair_session import admit, check_receipt, validate_proposal_bindings
 from bountyforge.statements import SYSTEM, stage_statements, statement_catalog
@@ -32,6 +33,8 @@ CATALOG = ROOT / 'fixtures/phase12'
 MANIFEST_SHA256 = '4220ab13e3aae1e8cc688902795eae9a8e809c8a635a0838a6f9e52c4639729d'
 DEVELOPMENT = ROOT / 'fixtures/phase13'
 DEVELOPMENT_SHA256 = '10a90ac0108d9269cd077f002a5212a1c9a39b7925db145eb367bb672900ef77'
+MAINTENANCE = ROOT / 'fixtures/phase14'
+MAINTENANCE_SHA256 = 'f698a6c04a000b8adc29508b74006bab331532979a2dd76c0a4517feb98e487a'
 ENGINES = ('QWEN_LOCAL', 'CODEX_AGENT')
 MAX_ATTEMPTS = 2
 TASK_TTL = 600
@@ -75,7 +78,8 @@ def receipt_hash(receipt):
 
 def catalog():
     verify_core()  # Preserve every previously frozen source/security pin.
-    return _catalog(CATALOG, MANIFEST_SHA256) + _catalog(DEVELOPMENT, DEVELOPMENT_SHA256)
+    return (_catalog(CATALOG, MANIFEST_SHA256) + _catalog(DEVELOPMENT, DEVELOPMENT_SHA256)
+            + _catalog(MAINTENANCE, MAINTENANCE_SHA256))
 
 
 def _catalog(directory, expected):
@@ -101,7 +105,8 @@ def _catalog(directory, expected):
 
 def source_directory(spec):
     # The directory comes only from pinned manifest membership, never caller data.
-    for directory, expected in ((CATALOG,MANIFEST_SHA256),(DEVELOPMENT,DEVELOPMENT_SHA256)):
+    for directory, expected in ((CATALOG,MANIFEST_SHA256),(DEVELOPMENT,DEVELOPMENT_SHA256),
+                                (MAINTENANCE,MAINTENANCE_SHA256)):
         if spec in _catalog(directory,expected):return directory/spec['id']
     raise RepairRejected('UNKNOWN_OWNED_SOURCE')
 
@@ -258,6 +263,8 @@ class RepairService:
                 'edit_units':[{key:unit[key] for key in ('line','end_line','kind','bindings')}
                               for unit in units.values()],
                 'proposal_protocol':'ast_statement_v1','max_attempts':MAX_ATTEMPTS,
+                'source_context':source_context(source,spec['symbol'],sorted(units)),
+                'baseline_feedback':failure_feedback(baseline['output']),
                 'classification':'OWNED_DEVELOPMENT','independent_evaluation':False,
                 'state':'AWAITING_CODEX_CANDIDATE' if engine=='CODEX_AGENT' else 'QWEN_PREPARED',
                 'customer_execution_authorized':False,'delivery_authorized':False}
@@ -283,7 +290,7 @@ class RepairService:
         task=self._get(task_id,revision,'CODEX_AGENT')
         return self._submit(task,proposal)
 
-    def _submit(self, task, proposal):
+    def _submit(self, task, proposal, *, generation=None):
         public=task['public']; spec=task['spec']
         # Reject JSON ambiguity before existing statement/source validators.
         raw=proposal.encode() if type(proposal) is str else encoded(proposal)
@@ -306,6 +313,7 @@ class RepairService:
                 'authorship_basis':'local_model_response' if public['engine']=='QWEN_LOCAL' else 'session_submitted_candidate',
                 'customer_execution_authorized':False,'delivery_authorized':False,
                 'paid_fallback':False}
+        if generation is not None:result['generation']=copy.deepcopy(generation)
         if proposal_sha in task['seen']:
             result.update(outcome='REPEATED_PROPOSAL',diagnostic='Identical prior proposal; no test executed')
         else:
@@ -327,6 +335,7 @@ class RepairService:
                 result['failure_stage']='targeted_tests'
                 first=check_receipt(self.verifier.observe(spec,candidate['content']))
                 result['targeted']=observation_summary(first)
+                if not first['passed']:result['test_feedback']=failure_feedback(first['output'])
                 result.update(outcome='TEST_FAILED',diagnostic='Owned regression failed; follow the public repair contract')
                 if first['passed']:
                     result['failure_stage']='independent_replay'
@@ -359,18 +368,14 @@ class RepairService:
         model=(self.model_factory or LocalModel)(timeout_seconds=45)
         calls=[]; started=time.monotonic()
         while len(task['attempts'])<MAX_ATTEMPTS:
-            prompt={key:task['public'][key] for key in ('approved_file','source','target_symbol',
-                    'description','editable_lines','edit_units','proposal_protocol')}
-            if task['attempts']:
-                prompt['previous_proposal']=task['attempts'][-1]['proposal']
-                prompt['previous_error']=task['attempts'][-1]['diagnostic']
-            prompt=json.dumps(prompt)
-            if len(prompt.encode())>3600:
+            previous=task['attempts'][-1] if task['attempts'] else None
+            try:prompt=model_prompt(task['public'],previous)
+            except ValueError:
                 task['public']['state']='BLOCKED'
                 return {'engine':'QWEN_LOCAL','state':'BLOCKED','outcome':'CONTEXT_BUDGET_EXHAUSTED',
                         'model_calls':len(calls),'calls':calls,'paid_fallback':False,'independently_verified':False}
             began=time.monotonic()
-            call={'response':None};calls.append(call)
+            call={'response':None,'prompt_sha256':digest(prompt.encode()),'prompt':strict_json(prompt)};calls.append(call)
             try:
                 response=model.complete_line(SYSTEM,prompt,max_tokens=150)
                 if type(response) is not str or len(response.encode())>3000:
@@ -385,7 +390,12 @@ class RepairService:
             finally:
                 if calls:
                     calls[-1]['seconds']=round(time.monotonic()-began,3)
-            result=self._submit(task,response)
+            effective,retained=revision_proposal(previous,response)
+            call.update(effective_proposal=effective,retained_anchors=retained)
+            result=self._submit(task,effective,generation={
+                'raw_response_sha256':digest(response.encode()),'retained_anchors':retained,
+                'revision_strategy':strict_json(prompt)['revision_strategy'],
+                'prompt_sha256':call['prompt_sha256'],'finish_reason':model.last_call.get('finish_reason') if model.last_call else None})
             if result['state'] in ('AWAITING_OWNER_APPROVAL','BLOCKED','EXHAUSTED'):
                 break
         return {**{key:result[key] for key in ('engine','state','outcome','independently_verified')},

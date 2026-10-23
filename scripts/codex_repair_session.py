@@ -20,9 +20,12 @@ EVIDENCE=ROOT/'evidence/phase12/codex_session.json'
 def main():
     global EVIDENCE
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--phase13',action='store_true',help='Write Phase13 evidence without replacing Phase12 records')
+    phase=parser.add_mutually_exclusive_group()
+    phase.add_argument('--phase13',action='store_true',help='Write Phase13 evidence without replacing Phase12 records')
+    phase.add_argument('--phase14',action='store_true',help='Write only the new Phase14 development trace')
     opts=parser.parse_args()
     if opts.phase13:EVIDENCE=ROOT/'evidence/phase13/codex_queue_session.json'
+    if opts.phase14:EVIDENCE=ROOT/'evidence/phase14/codex_session.json'
     client=CodexClient(read_timeout=120); began=time.monotonic()
     report={'kind':'phase12_active_codex_session_mcp','client':'Codex app-server MCP client',
             'additional_agent_turns_started':0,'additional_provider_requests':0,
@@ -31,6 +34,7 @@ def main():
             'independent_evaluation':False,'classification':'OWNED_DEVELOPMENT',
             'additional_spending_usd':0,'delivery_authorized':False,'calls':[]}
     if opts.phase13:report['kind']='phase13_active_codex_queue_mcp'
+    if opts.phase14:report['kind']='phase14_active_codex_maintenance_mcp'
     def checkpoint():
         EVIDENCE.parent.mkdir(parents=True,exist_ok=True)
         raw=json.dumps(report,indent=2,sort_keys=True,allow_nan=False)+'\n'

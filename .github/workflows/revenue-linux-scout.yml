@@ -14,6 +14,7 @@ on:
       - 'benchmarks/**'
       - 'fixtures/phase12/**'
       - 'fixtures/phase13/**'
+      - 'fixtures/phase14/**'
       - 'dashboard/**'
   workflow_dispatch:
     inputs:

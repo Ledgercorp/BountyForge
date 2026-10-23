@@ -1,0 +1,83 @@
+{
+  "authorship_identity_attested": false,
+  "cases": [
+    {
+      "candidate_sha256": "ca22020f2bc0994073793786dd3fe7463ef8bfc78b0ee8a52f8332f946a06117",
+      "case_id": "invoice-summary",
+      "engine": "CODEX_AGENT",
+      "original_receipt_sha256": "efdedce2330facbbaff3083c3d35ac6bd83c430fc7765e7e9bbf780544b52eb2",
+      "verification": {
+        "exit_code": 0,
+        "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+        "passed": true,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+        "tests_run": 8
+      }
+    },
+    {
+      "candidate_sha256": "fc3ac7292f21af8316da0a01b14efdd8bcf1d1a74cb0615f4d7c999656b38eeb",
+      "case_id": "cursor-adapter",
+      "engine": "CODEX_AGENT",
+      "original_receipt_sha256": "f67e7e8d5cb94713acc692863cefeb75a48bd8b51c68232165e1aeab79bce833",
+      "verification": {
+        "exit_code": 0,
+        "output_sha256": "54ff4552b695f882276f4ff4ae0ca8c54b6ddd0138c674a0961ce3d3742f4054",
+        "passed": true,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+        "tests_run": 7
+      }
+    },
+    {
+      "candidate_sha256": "220c0e7039a1c7896c1e170c0d2859894da12cb25efe83f3e48ff5f00baec240",
+      "case_id": "retry-policy",
+      "engine": "CODEX_AGENT",
+      "original_receipt_sha256": "5232386d2e34e9e9aa7fcfa958c30bac9788e43b324c6e21faaded4ff6a50f99",
+      "verification": {
+        "exit_code": 0,
+        "output_sha256": "54ff4552b695f882276f4ff4ae0ca8c54b6ddd0138c674a0961ce3d3742f4054",
+        "passed": true,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+        "tests_run": 7
+      }
+    }
+  ],
+  "classification": "OWNED_DEVELOPMENT",
+  "delivery_authorized": false,
+  "independent_evaluation": false,
+  "kind": "phase14_recorded_codex_candidate_independent_replay",
+  "model_generation_calls": 0,
+  "private_execution_admitted": false,
+  "receipt_sha256": "5586283c4ee759ac72710adec13570908f61c165ae20d2fd0e7c34db152a198a",
+  "recording_sha256": "0ac58a876dd6d1eb7ab65633a1ec9c1f5f227a96638e7cba6aa41df2ed08fb96",
+  "replay_passed": true,
+  "runtime_admission": {
+    "capabilities_empty": true,
+    "cleanup_verified": true,
+    "cpu_pressure_enforced": true,
+    "cpu_pressure_used_seconds": 3.041,
+    "cpu_pressure_wall_seconds": 3.03,
+    "cpu_quota_verified": true,
+    "cpu_throttled_periods": 31,
+    "docker_socket_absent": true,
+    "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+    "loopback_inference_unreachable": true,
+    "memory_limit_enforced": true,
+    "network_denied": true,
+    "no_new_privileges": true,
+    "output_bounded": true,
+    "pid_current_at_denial": 64,
+    "pid_denial_events": 1,
+    "pid_limit_verified": true,
+    "pid_pressure_enforced": true,
+    "probe_threads": 63,
+    "root_writes_denied": true,
+    "seccomp_active": true,
+    "secrets_absent": true,
+    "source_writes_denied": true,
+    "swap_disabled": true,
+    "tmpfs_bounded_noexec": true,
+    "uid_unprivileged": true,
+    "untrusted_execution_certified": false,
+    "wall_clock_enforced": true
+  }
+}

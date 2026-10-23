@@ -1,0 +1,76 @@
+{
+  "additional_spending_usd": 0,
+  "checkpoint_commit": "85729c3bcf4693627d50196ab81af1d783b8d88f",
+  "codex": {
+    "active_session_model_calls": null,
+    "active_session_tokens": null,
+    "additional_agent_turns_started": 0,
+    "additional_model_provider_requests_started": 0,
+    "attempted_repairs": 3,
+    "bridge_elapsed_seconds": 564.838,
+    "candidate_attempts": [
+      1,
+      1,
+      1
+    ],
+    "classification": "OWNED_DEVELOPMENT",
+    "fresh_replay_test_methods_passed": 22,
+    "further_separate_process_test_methods_passed": 22,
+    "regressions_observed": 0,
+    "targeted_test_methods_passed": 22,
+    "unauthorized_changes": 0,
+    "valid_patches": 3,
+    "verified_repairs": 3
+  },
+  "commercial_launch_authorized": false,
+  "file_sha256": {
+    "baselines.json": "482655a00e8661edc023c23c618b4ae69ff01732d09808b967c6d21755c898f1",
+    "codex_independent_replay.json": "a57971d11b9bea5508a1458b9a7bb7abe514708afbb7b703ee154f063e237018",
+    "codex_session.json": "0ac58a876dd6d1eb7ab65633a1ec9c1f5f227a96638e7cba6aa41df2ed08fb96",
+    "legacy_mcp_acceptance.json": "58228364d1669dcac9f2ce65e8263568b9a3a1758315dcaa500bc7be3c58395b",
+    "model_candidate_metadata.json": "ae2b4703a7b72413086b6b16ddf667798431be9e46d996497d17c6a64059137f",
+    "public_suite_exchange.json": "2bb1530367d024e32a5b51f0f5aa2b2f25490d139bc6ff3bc2659b7f3e6587d0"
+  },
+  "frozen_core_and_prior_fixtures_unchanged": true,
+  "historical_harness": {
+    "executed": 10,
+    "failed": 0,
+    "passed": 10
+  },
+  "independent_unseen_accuracy": null,
+  "independent_verifier_admitted": false,
+  "kind": "phase14_engineering_acceptance",
+  "local_regression": {
+    "executed": 673,
+    "failed": 0,
+    "passed": 664,
+    "skipped": 9
+  },
+  "mcp_security": {
+    "excluded_from_repair_measurement": true,
+    "kill_reconnect_passed": true,
+    "manual_negative_proposals_rejected_before_tests": 2,
+    "original_authorization_refusals": 5,
+    "original_tool_calls_passed": 5,
+    "tool_inventory": 18
+  },
+  "node_regression": {
+    "executed": 7,
+    "failed": 0,
+    "passed": 7
+  },
+  "owned_baselines": {
+    "reference_repairs_used": 0,
+    "reproduced": 6,
+    "test_methods": 43
+  },
+  "private_execution_admitted": false,
+  "production_deployed": false,
+  "qwen": {
+    "max_calls": 6,
+    "owned_task_count": 3,
+    "status": "LIVE_QUEUE_PREPARED"
+  },
+  "revenue_usd": 0,
+  "scheduled_operation_active": false
+}

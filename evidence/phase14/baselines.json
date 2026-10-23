@@ -1,0 +1,307 @@
+{
+  "cases": [
+    {
+      "baseline_feedback": {
+        "assertions": [
+          "AssertionError: 120.0 != 108",
+          "AssertionError: {'subtotal': 100, 'discount': 10.0, 'tax': 20.0, 'total': 120.0} != {'subtotal': 100, 'discount': 10, 'tax': 18, 'total': 108}",
+          "AssertionError: 100 != 75"
+        ],
+        "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+        "failing_tests": [
+          "test_cancelled",
+          "test_discount_tax",
+          "test_discount_without_tax",
+          "test_full_discount",
+          "test_rounding"
+        ],
+        "unseen_evaluation": false
+      },
+      "case_id": "invoice-summary",
+      "editable_lines": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "seconds": 14.679,
+      "source_context": {
+        "authorized_anchors": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "called_helpers": [
+          "item_value"
+        ],
+        "scope_policy": "Only authorized anchors in the target function; helpers are context only",
+        "target_range": [
+          5,
+          14
+        ]
+      },
+      "source_sha256": "89e12cec1df4a5cf88c691974e180fea2308319894bdb5f215c46c1c99785f41",
+      "tests_sha256": "35246fff991d78b722d7e847a51fdfa4865b404c1221a88e665ba7f1afbef81d"
+    },
+    {
+      "baseline_feedback": {
+        "assertions": [
+          "AssertionError: -5 != 115",
+          "AssertionError: 3 != 13",
+          "AssertionError: 20 != 120"
+        ],
+        "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+        "failing_tests": [
+          "test_accumulate",
+          "test_duplicate",
+          "test_opening"
+        ],
+        "unseen_evaluation": false
+      },
+      "case_id": "event-reducer",
+      "editable_lines": [
+        6,
+        7,
+        9,
+        11,
+        13,
+        14,
+        15
+      ],
+      "seconds": 14.813,
+      "source_context": {
+        "authorized_anchors": [
+          6,
+          7,
+          9,
+          11,
+          13,
+          14,
+          15
+        ],
+        "called_helpers": [
+          "signed_delta"
+        ],
+        "scope_policy": "Only authorized anchors in the target function; helpers are context only",
+        "target_range": [
+          5,
+          15
+        ]
+      },
+      "source_sha256": "eafc2c262f2957fc64629969d400f181347bf62943bfa65694416ac40e190ba4",
+      "tests_sha256": "77d64f48944c874267f57be8fd3033602f9497c05a1e201c060ffc121f45b4d3"
+    },
+    {
+      "baseline_feedback": {
+        "assertions": [
+          "AssertionError: 'a' != ''",
+          "AssertionError: 'a' is not None",
+          "AssertionError: {'rows': [1], 'cursor': 'b', 'complete': True, 'retry': False} != {'rows': [1], 'cursor': 'b', 'complete': False, 'retry': False}"
+        ],
+        "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+        "failing_tests": [
+          "test_empty",
+          "test_missing",
+          "test_next"
+        ],
+        "unseen_evaluation": false
+      },
+      "case_id": "cursor-adapter",
+      "editable_lines": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "seconds": 13.838,
+      "source_context": {
+        "authorized_anchors": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "called_helpers": [
+          "page_rows"
+        ],
+        "scope_policy": "Only authorized anchors in the target function; helpers are context only",
+        "target_range": [
+          5,
+          14
+        ]
+      },
+      "source_sha256": "8780135d429b2539852e872d5a66fbd9abfbfd92649c62177cb2b86cb6a332ee",
+      "tests_sha256": "45f8b9da4e04fe6a70cfa71524e12f4163b032239fcb32e3acf50ede5dfaba8d"
+    },
+    {
+      "baseline_feedback": {
+        "assertions": [
+          "AssertionError: {'a': 2.0} != {'a': 4}",
+          "AssertionError: {'a': None} != {'a': 0}"
+        ],
+        "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+        "failing_tests": [
+          "test_missing",
+          "test_zero_only"
+        ],
+        "unseen_evaluation": false
+      },
+      "case_id": "reading-groups",
+      "editable_lines": [
+        6,
+        8,
+        9,
+        10,
+        12,
+        13,
+        14
+      ],
+      "seconds": 13.472,
+      "source_context": {
+        "authorized_anchors": [
+          6,
+          8,
+          9,
+          10,
+          12,
+          13,
+          14
+        ],
+        "called_helpers": [
+          "sensor_key"
+        ],
+        "scope_policy": "Only authorized anchors in the target function; helpers are context only",
+        "target_range": [
+          5,
+          14
+        ]
+      },
+      "source_sha256": "d258f010611b36528ebd6daf0decc7e03c6f9cb71f65fd269747aa82906a8363",
+      "tests_sha256": "bcc52b82badd51b517240a6f01a2285635e1dec679acb2bf643038455cb1da73"
+    },
+    {
+      "baseline_feedback": {
+        "assertions": [
+          "AssertionError: Tuples differ: (True, 30) != (True, 4)",
+          "AssertionError: Tuples differ: (True, 1024) != (True, 30)",
+          "AssertionError: Tuples differ: (True, 30) != (True, 2.5)"
+        ],
+        "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+        "failing_tests": [
+          "test_backoff",
+          "test_cap",
+          "test_header",
+          "test_malformed",
+          "test_negative"
+        ],
+        "unseen_evaluation": false
+      },
+      "case_id": "retry-policy",
+      "editable_lines": [
+        2,
+        3,
+        4,
+        5,
+        8,
+        10,
+        11,
+        12
+      ],
+      "seconds": 14.8,
+      "source_context": {
+        "authorized_anchors": [
+          2,
+          3,
+          4,
+          5,
+          8,
+          10,
+          11,
+          12
+        ],
+        "called_helpers": [],
+        "scope_policy": "Only authorized anchors in the target function; helpers are context only",
+        "target_range": [
+          1,
+          12
+        ]
+      },
+      "source_sha256": "9cb690fc590e6aa0ff98cc06633348b8358b74e6743e2848a48c420446d5c301",
+      "tests_sha256": "f7ee114bf2bcd0f7e59a5008d8788ae9da38e29f770bc227c871d39c0b5b9f4e"
+    },
+    {
+      "baseline_feedback": {
+        "assertions": [
+          "AssertionError: Lists differ: [4, 4, 4] != [4, 4, 2]",
+          "AssertionError: Lists differ: [3, 3, 3] != [3, 1, 0]"
+        ],
+        "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+        "failing_tests": [
+          "test_multiple",
+          "test_reserved"
+        ],
+        "unseen_evaluation": false
+      },
+      "case_id": "stock-allocation",
+      "editable_lines": [
+        6,
+        7,
+        9,
+        10,
+        12,
+        13,
+        14,
+        15
+      ],
+      "seconds": 12.366,
+      "source_context": {
+        "authorized_anchors": [
+          6,
+          7,
+          9,
+          10,
+          12,
+          13,
+          14,
+          15
+        ],
+        "called_helpers": [
+          "available_units"
+        ],
+        "scope_policy": "Only authorized anchors in the target function; helpers are context only",
+        "target_range": [
+          5,
+          15
+        ]
+      },
+      "source_sha256": "9f597f93e43959597b46483d18a5a65fd82f3b769a90682935fd66870b8a0277",
+      "tests_sha256": "fcd0363808dd7c4059defdad782ade1ba496ce5e4eb458cc2f6d4ac3e7d3f144"
+    }
+  ],
+  "classification": "OWNED_DEVELOPMENT",
+  "elapsed_seconds": 83.969,
+  "independent_evaluation": false,
+  "kind": "phase14_owned_baseline_reproduction",
+  "model_calls": 0
+}

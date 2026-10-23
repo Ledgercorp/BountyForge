@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import time
 from bountyforge.model import LocalModel
+from bountyforge.qwen_statement_contract import StatementModel
 from bountyforge.phase8_evaluation import require_credential_free_host
 from bountyforge.repair_engines import RepairService, receipt_hash
 
@@ -24,7 +25,7 @@ def main(argv=None):
         if any(os.environ.get(key)!=value for key,value in required.items()):
             raise ValueError('Explicit standard public Linux comparison required')
         require_credential_free_host()
-        for protocol,factory in [('legacy_line_schema',LocalModel),('qwen_statement_schema_v2',None)]:
+        for protocol,factory in [('legacy_line_schema',LocalModel),('qwen_statement_schema_v2',StatementModel)]:
             service=RepairService(model_factory=factory)
             task=service.prepare('optional-setting','QWEN_LOCAL')
             result=service.run_qwen(task['task_id'],0)

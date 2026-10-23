@@ -131,3 +131,13 @@ Unit tests additionally cover disabled-by-default handling, exact trusted servic
     python -m unittest discover -s tests -p 'test_deepseek*.py' -v
 
 **Result:** 30/30 focused tests passed locally on Python 3, zero additional spending. The rest of the existing repository test suite and hosted CI were **not run** for these new PR #4 files. This bridge is a bounded connection into the trusted verifier, **not** proof of successful DeepSeek-powered repair or the admission of any SDK process. The upstream safety notice explicitly says Harness is developer-preview and unaudited: https://github.com/deepseek-ai/deepseek-harness/blob/master/SAFETY.md.
+
+## Hosted offline regression evidence
+
+GitHub Actions check on this PR: [run 40030667610](https://github.com/Ledgercorp/BountyForge/actions/runs/40030667610) against commit `bbe2ee430db7a9f4cc1e010b7d79869725026c6e` completed successfully on `ubuntu-24.04`:
+
+- Focused bridge and handoff: **30/30 passed**, zero errors.
+- Entire Python unittest suite: **757 total, 748 passed, nine existing skips**, zero failures.
+- No DeepSeek SDK, model inference, Docker execution, provider credentials or deployments were run by this workflow.
+
+These verified results establish integration compatibility with the existing Python regression suite only. No real Harness process has been admitted. Commercial status remains NOT_ADMITTED.

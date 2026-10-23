@@ -34,7 +34,7 @@ that a pin makes it secure.**
 input-supplied command, image, sandbox, network endpoint, host mount or runtime
 path. It uses the repository's existing verifier image digest:
 
-\`python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067dfa907ceb30bb86d09da9ee558b19590\`
+\`python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590\`
 
 It admits only a public standard Linux GitHub runner for this repository after
 explicit \`BOUNTYFORGE_PHASE17_PROBE_ACK=1\` and

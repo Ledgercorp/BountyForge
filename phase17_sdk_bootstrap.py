@@ -133,6 +133,99 @@ def sdk_bootstrap_command(binary, workspace, container_name, native_root):
     return cmd
 
 
+
+DISABLED_TOOL_ROWS = (
+    "persistent-bash", "persistent-pwsh", "terminal-bash", "terminal-pwsh",
+    "tool-fs", "tool-working-directory", "mcp-resources",
+)
+
+
+def _profile_row(output, identity):
+    """Find one composed final profile row, not a comment or overlay fragment."""
+    lines = output.splitlines()
+    starts = []
+    for index, line in enumerate(lines):
+        if re.match(r"^\s*-\s+id:\s+" + re.escape(identity) + r"\s*$", line):
+            starts.append(index)
+    if len(starts) != 1:
+        raise IsolationUnavailable("SDK_PROFILE_ROW_IDENTITY_REJECTED")
+    start = starts[0]
+    depth = len(lines[start]) - len(lines[start].lstrip())
+    stop = next((i for i in range(start + 1, len(lines))
+                 if re.match(r"^\s*-\s+id:\s+", lines[i])
+                 and len(lines[i]) - len(lines[i].lstrip()) <= depth), len(lines))
+    return "\n".join(lines[start:stop])
+
+
+def validate_hardened_profile(text):
+    if type(text) is not str or len(text.encode("utf-8")) > 200_000:
+        raise IsolationUnavailable("SDK_HARDENED_OUTPUT_BUDGET")
+    if "sdk-jsonrpc-server" not in text:
+        raise IsolationUnavailable("SDK_PROFILE_UNRECOGNIZED")
+    for item in DISABLED_TOOL_ROWS:
+        row = _profile_row(text, item)
+        if not re.search(r"(?m)^\s+disabled:\s+true\s*$", row):
+            raise IsolationUnavailable("SDK_TOOL_NOT_DISABLED")
+    row = _profile_row(text, "session-log-deepseek")
+    if not re.search(r"(?m)^\s+enabled:\s+false\s*$", row):
+        raise IsolationUnavailable("SDK_SESSION_LOG_UPLOAD_NOT_DISABLED")
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def inspect_hardened_profile(docker, workspace, native):
+    """Inspect patched composition with a fresh *second* no-network container."""
+    patch = Path(__file__).resolve().parent / "phase17/hardened-sdk-minimal.patch.yml"
+    if patch.is_symlink() or not patch.is_file() or patch.stat().st_size > 4096:
+        raise IsolationUnavailable("SDK_HARDENING_PATCH_UNAVAILABLE")
+    raw = patch.read_bytes()
+    if (b"- insert:" in raw or b"danger-full-access" in raw
+            or any(("- id: " + name).encode() not in raw for name in (*DISABLED_TOOL_ROWS, "session-log-deepseek"))):
+        raise IsolationUnavailable("SDK_HARDENING_PATCH_SCOPE_REJECTED")
+    target = workspace / "hardened.patch.yml"
+    target.write_bytes(raw)
+    target.chmod(0o644)
+    name = "bf-p17-" + uuid.uuid4().hex[:16]
+    command = sdk_bootstrap_command(docker, workspace, name, native)
+    command[-5:] = [
+        IMAGE, "/opt/harness/" + RUNTIME_BIN, "--profile", "sdk-minimal",
+        "--patch", "/workspace/hardened.patch.yml", "--dump-config",
+    ]
+    try:
+        child = subprocess.Popen(
+            command, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE, text=True, errors="replace",
+            env={"HOME": "/tmp", "PATH": "/usr/local/bin:/usr/bin:/bin"},
+            start_new_session=True)
+    except OSError:
+        raise IsolationUnavailable("SDK_HARDENED_CONTAINER_LAUNCH_FAILED") from None
+    try:
+        try:
+            stdout, _ = child.communicate(timeout=PROBE_TIMEOUT_SECONDS)
+        except subprocess.TimeoutExpired:
+            child.kill()
+            child.communicate(timeout=5)
+            raise IsolationUnavailable("SDK_HARDENED_BOOTSTRAP_TIMED_OUT") from None
+        if child.returncode != 0:
+            raise IsolationUnavailable("SDK_HARDENED_COMPOSITION_FAILED")
+        return validate_hardened_profile(stdout)
+    except (OSError, subprocess.SubprocessError):
+        raise IsolationUnavailable("SDK_HARDENED_BOOTSTRAP_UNAVAILABLE") from None
+    finally:
+        if child.poll() is None:
+            child.kill()
+            try:
+                child.communicate(timeout=5)
+            except (OSError, subprocess.SubprocessError):
+                pass
+        try:
+            subprocess.run([docker, "rm", "-f", name], stdin=subprocess.DEVNULL,
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                           timeout=8, check=False,
+                           env={"HOME": "/tmp", "PATH": "/usr/local/bin:/usr/bin:/bin"})
+        except (OSError, subprocess.SubprocessError):
+            raise IsolationUnavailable("SDK_HARDENED_CLEANUP_UNCONFIRMED") from None
+
+
 def run_bootstrap(wheel_dir):
     host_gate()
     docker = shutil.which("docker")
@@ -189,7 +282,12 @@ def run_bootstrap(wheel_dir):
                                env={"HOME": "/tmp", "PATH": "/usr/local/bin:/usr/bin:/bin"})
             except (OSError, subprocess.SubprocessError):
                 raise IsolationUnavailable("SDK_CONTAINER_CLEANUP_UNCONFIRMED") from None
+        hardened_digest = inspect_hardened_profile(docker, workspace, native)
         return {
+            "sdk_hardened_profile_sha256": hardened_digest,
+            "hardened_profile_tools_disabled_by_composition": True,
+            "hardened_session_log_uploads_disabled_by_composition": True,
+            "hardened_agent_session_launched": False,
             "kind": "PHASE17_PINNED_SDK_NATIVE_BOOTSTRAP",
             "archive_provenance": provenance,
             "sdk_default_profile_sha256": output_digest,

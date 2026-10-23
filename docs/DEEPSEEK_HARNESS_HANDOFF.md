@@ -222,3 +222,51 @@ remain prerequisites to running an actual DeepSeek Harness process.
 implemented and CI-tested. Live DeepSeek Harness inference and autonomous
 repair are **not yet admitted or demonstrated**. `QWEN_1_5B` remains the
 default; commercial authorization and revenue remain unchanged.
+
+
+## Both Docker verification outcomes demonstrated, still zero model calls
+
+The follow-up **[hosted run 40032349849](https://github.com/Ledgercorp/BountyForge/actions/runs/40032349849)** on commit
+`ce1f1e5b53d761fdf3ec58a951bed8f22dc129f1` passed:
+
+- **43/43** focused tests passed;
+- **770 total Python tests, 761 passed, nine existing skips**, zero failures;
+- Real pinned, network-disabled Docker verifier rejected a deliberately incorrect
+  `weighted-mix` patch with `TEST_FAILED` after six targeted tests and refused
+  a stale task revision;
+- A **different, manually authored** owned-only correction,
+  `denominator = sum(weight for _, weight in pairs)`, was source-admitted and
+  independently verified by *two distinct real Docker observations*, six tests
+  each. The trusted receipt reported `VERIFIED` and
+  `AWAITING_OWNER_APPROVAL`, with `customer_execution_authorized=false`
+  and `delivery_authorized=false`;
+- **0 DeepSeek or other model calls, 0 model-generated verified repairs**.
+  This is a synthetic, exposed *developmental* success demonstrating the bridge
+  and verifier work end-to-end, **not** a model-quality measurement or unseen
+  test score.
+
+The positive receipt SHA-256 was
+`a8e08190b39f59d6280a9a5b6546622b37680f191a0c3b4a91018b3ac6c099bd`.
+This evidence does not alter the historical real-model 0/3 comparisons.
+
+### Remaining critical admission blockers
+
+1. Real DeepSeek Harness SDK must run **in a whole-process isolated,
+   least-privilege environment**; its shipped SDK minimal profile is not an
+   independently established sandbox and exposes a persistent shell by
+   default. Test disabled tools, network egress, filesystem boundaries,
+   subprocess limits and cancellation before passing any source.
+2. Pin and verify a concrete compatible SDK/runtime release and its
+   dependencies; upstream is experimental with breaking compatibility.
+3. Confirm a genuinely no-additional-charge, compatible model backend with
+   authorization and sufficient remaining allowance; the prior Groq 403
+   remains unresolved and no live DeepSeek inference is established.
+4. Evaluate newly generated model repairs against honest developmental
+   material, then a separately controlled unseen set. Preserve the
+   independent Docker verifier and frozen evaluation pins.
+5. No private customer, delivery, money movement or commercial execution
+   may be admitted solely based on the owned developmental results.
+
+**Current state:** reliable, CI-tested offline handoff and real Docker
+verification for manually supplied candidates, but **no running Harness
+agent or improved autonomous repair accuracy yet**.

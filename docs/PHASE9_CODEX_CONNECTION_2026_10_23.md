@@ -59,6 +59,10 @@ completed on standard Ubuntu 24.04. The full suite reported 597 tests in
 Codex or perform Codex-originated calls; those were separately verified in
 the managed Linux session above.
 
+The implementation and acceptance harness are committed at
+`60a3fbe256efa234d196e8e295af42b8b69aeb77`. The evidence and cumulative-ledger
+update are committed at `eb969bef49f6945e2c6a28b6361bf45c7e293131`.
+
 ## Compatibility correction
 
 The first Codex discovery attempt failed because Codex 0.163.0 sends the

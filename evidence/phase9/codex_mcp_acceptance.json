@@ -2,6 +2,7 @@
   "additional_spending_usd": 0,
   "app_server_shutdown_exit_code": 0,
   "authorization_refusals": 5,
+  "base_commit_at_connection_test": "aa0989beea682e16fabcd4c3c1d5ca96928dbfa0",
   "client_api": "codex_app_server_stdio_mcp_status_and_tool_call",
   "codex_cli_version": "0.163.0",
   "codex_environment": "managed_linux_execution_environment",
@@ -15,6 +16,7 @@
     "verify_owned_reference"
   ],
   "discovery_status": "connected",
+  "evidence_commit": "eb969bef49f6945e2c6a28b6361bf45c7e293131",
   "external_operations": [],
   "hosted_regression": {
     "commit": "60a3fbe256efa234d196e8e295af42b8b69aeb77",
@@ -27,6 +29,7 @@
     "url": "https://github.com/Ledgercorp/BountyForge/actions/runs/39892577941",
     "wall_seconds": 29.112
   },
+  "implementation_commit": "60a3fbe256efa234d196e8e295af42b8b69aeb77",
   "inference_calls": 0,
   "kind": "bountyforge_phase9_codex_mcp_connection_acceptance",
   "local_regression": {
@@ -46,7 +49,6 @@
   "private_execution_used": false,
   "reconnection": "successful on fresh ephemeral Codex thread, followed by status invocation",
   "registered_in_codex_home": "/run/codex-environment/codex-home",
-  "repository_head_at_connection_test": "aa0989beea682e16fabcd4c3c1d5ca96928dbfa0",
   "schema": 1,
   "source_sha256": {
     "bountyforge/mcp_server.py": "8a80dfc775345da92fb4ae70ffe38c87da5c0b9f31d62acf8ac3c079c6ad8c77",
@@ -84,5 +86,6 @@
       "authorship": "preauthored_reference_only",
       "case_id": "page-offset-boundary"
     }
-  }
+  },
+  "working_tree_had_uncommitted_connection_fix_during_first_test": true
 }

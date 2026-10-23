@@ -28,7 +28,7 @@ jobs:
       - name: Existing full Python offline regression
         run: python3 -m unittest discover -s tests -v
       - name: Acquire only existing pinned no-network verifier image
-        run: docker pull python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067dfa907ceb30bb86d09da9ee558b19590
+        run: docker pull python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590
       - name: Observe real whole-process Linux Docker restrictions without inference
         env:
           BOUNTYFORGE_PHASE17_PROBE_ACK: '1'

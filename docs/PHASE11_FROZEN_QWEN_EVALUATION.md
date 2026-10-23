@@ -62,14 +62,38 @@ it is not an end-to-end worker success and is excluded from the success count.
 The initial worker error is only recorded as the generic
 `model_or_runner_unavailable`, so its exact transient cause remains unknown.
 
-The workflow now resumes from the SHA-pinned partial report and skips those six
-cases entirely. It will use the unchanged model, prompt, source, tests and
-repair core for the remaining 14; aggregate calls stay within the original
-40-request cap. That produces a split-run fixed-suite measurement, with the
-first segment's failed/incomplete attempts preserved. These six exposed model
-responses must not be used for prompt tuning and the full catalog is no longer
-a fresh held-out set for future iterations. A new unseen suite is required for
-another independent accuracy claim.
+## Second measurement segment
+
+At commit `4df5b182cce04d8fb68b5a3bcd3b4f0e58d70f13`, hosted run
+[39934425118](https://github.com/Ledgercorp/BountyForge/actions/runs/39934425118)
+passed evaluator admission tests, restored the public cache, verified the
+pinned model and runtime, and again passed the 20-control Docker proof. Its
+SHA-pinned report is
+[`partial_qwen_39934425118.json`](../evidence/phase11/partial_qwen_39934425118.json)
+with SHA-256 `d217280a31a7dabd6e8bb03b9e64a588d7daa9abaf678a2a88b5442e7d01e47d`.
+It made **three additional local model calls** across the two new cases
+`block_indentation` and `running_measurements`; the accumulated total is 14
+calls over eight attempted cases. No patch was accepted or independently
+replayed. Twelve cases remain untouched. Full-suite accuracy remains **null**.
+
+`block_indentation` received two rejected proposals. Both replaced three
+required-binding statements with whitespace-only text, and the unchanged
+binding/source validator rejected them. `running_measurements` returned a
+single plausible but incomplete proposal; the worker stopped with the generic
+`model_or_runner_unavailable` error before a candidate test receipt existed.
+The exact cause of that worker error is not available in the report, so this
+case is blocked/unverified, not a targeted-test failure. The report records
+101.609 seconds summed across model-call timers and 46.622 seconds coordinator
+wall time; these fields do not reconcile, so the inference timing accumulator
+requires correction before reporting a reliable combined runtime.
+
+The workflow now resumes from this second SHA-pinned aggregate and skips all
+eight exposed cases. It keeps the same model, prompt, source, tests and repair
+core for the remaining 12, counting all 14 prior calls against the original
+40-call cap. This is still a split-run result on a fixed suite, not a fresh
+held-out evaluation. The full catalog is now exposed and must not be used for
+prompt tuning or another independent accuracy claim; a new unseen suite is
+required.
 
 Actual financial spend remains $0; local inference uses no model API. Customer
 execution, private source, payments, delivery, external submissions and

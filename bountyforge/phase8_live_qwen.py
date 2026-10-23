@@ -26,12 +26,13 @@ SELECTION = 'benchmarks/phase8/supplemental_tasks/selection.json'
 SELECTION_SHA256 = '55e7de2b2c59eaaea75a494315df5b95cea5eeabcaeb835309a517f43abb891e'
 MAX_ATTEMPTS = 2
 MAX_TOTAL_CALLS = 40
-RESUME_REPORT = 'evidence/phase11/partial_qwen_39896337388.json'
-RESUME_REPORT_SHA256 = 'b3bd0415afbc3a910e3de797e819c7f5c6a7b2cc190894b823b25811007d47c7'
-PREVIOUS_RUN_ID = 39896337388
-PREVIOUS_COMMIT = '777004ca60f0b3252c97112e851f22c89944f273'
+RESUME_REPORT = 'evidence/phase11/partial_qwen_39934425118.json'
+RESUME_REPORT_SHA256 = 'd217280a31a7dabd6e8bb03b9e64a588d7daa9abaf678a2a88b5442e7d01e47d'
+PREVIOUS_RUN_ID = 39934425118
+PREVIOUS_COMMIT = '4df5b182cce04d8fb68b5a3bcd3b4f0e58d70f13'
 EXPOSED_CASES = ('stock_admission', 'booking_intersection', 'literal_tail',
-                 'line_termination', 'duration_label', 'shipping_cartons')
+                 'line_termination', 'duration_label', 'shipping_cartons',
+                 'block_indentation', 'running_measurements')
 MODEL_SHA256 = 'cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046'
 RUNTIME_SHA256 = '152e33221c9c9d37816a8ee9943f8d87339199197c80cb692559c9756b2027d8'
 
@@ -92,8 +93,8 @@ def load_resume_report(catalog: Catalog, tasks: list[dict]) -> dict:
             or prior.get('selected_cases') != expected_ids
             or prior.get('attempted_cases') != len(EXPOSED_CASES)
             or [row.get('case_id') for row in prior.get('cases', [])] != list(EXPOSED_CASES)
-            or prior.get('inference_calls') != 11
-            or sum(row.get('model_calls', 0) for row in prior.get('cases', [])) != 11
+            or prior.get('inference_calls') != 14
+            or sum(row.get('model_calls', 0) for row in prior.get('cases', [])) != 14
             or prior.get('verified_successes') != 0
             or prior.get('independently_replayed_successes') != 0
             or prior.get('customer_execution_authorized') is not False
@@ -124,13 +125,21 @@ def load_resume_report(catalog: Catalog, tasks: list[dict]) -> dict:
         # carrying forward the first adapter's overly broad rejection label.
         row['failure_category'] = _category(session, row.get('independent_replay'))
         row['status'] = 'failed_or_unverified'
-    prior['run_segments'] = [
-        {'run_id': PREVIOUS_RUN_ID, 'commit': PREVIOUS_COMMIT,
-         'cases': list(EXPOSED_CASES), 'calls': 11,
-         'inference_seconds': prior.get('inference_seconds'),
-         'report_sha256': RESUME_REPORT_SHA256},
-    ]
-    prior['preflight_history'] = [{'run_id': PREVIOUS_RUN_ID, 'proof': copy.deepcopy(prior['preflight'])}]
+    segments = prior.get('run_segments')
+    if (not isinstance(segments, list) or len(segments) != 2
+            or [str(segment.get('run_id')) for segment in segments] != ['39896337388', str(PREVIOUS_RUN_ID)]
+            or [case_id for segment in segments for case_id in segment.get('cases', [])]
+               != list(EXPOSED_CASES)
+            or segments[0].get('commit') != '777004ca60f0b3252c97112e851f22c89944f273'
+            or segments[0].get('calls') != 11
+            or segments[0].get('report_sha256') != 'b3bd0415afbc3a910e3de797e819c7f5c6a7b2cc190894b823b25811007d47c7'
+            or segments[1].get('commit') != PREVIOUS_COMMIT
+            or segments[1].get('calls') != 3):
+        raise EvaluationRejected('Prior evaluation segments do not match the pinned continuation history')
+    history = prior.get('preflight_history')
+    if (not isinstance(history, list) or len(history) != 2
+            or [str(row.get('run_id')) for row in history] != ['39896337388', str(PREVIOUS_RUN_ID)]):
+        raise EvaluationRejected('Prior Docker admission history is incomplete')
     return prior
 
 

@@ -1,0 +1,17 @@
+{
+  "kind": "PHASE19_OWNED_EXTERNAL_MODEL_HANDOFF",
+  "classification": "OWNED_DEVELOPMENT",
+  "independent_evaluation": false,
+  "case_id": "weighted-mix",
+  "source_sha256": "42a1c42ac048e025d4366813d0ebb0e5ee322885e483324318200f2cab345409",
+  "tests_sha256": "01500a264434f3b2bb9639c56d052127d6a6bf90ccf6ca4ce0914d998bfb9210",
+  "model_profile": "QWEN_1_5B",
+  "resource_envelope": "LEGACY",
+  "maximum_requests": 2,
+  "maximum_output_tokens_per_request": 150,
+  "request_seconds": 45,
+  "context_tokens": 2048,
+  "threads": 2,
+  "paid_fallback": false,
+  "sdk_agent_inference": false
+}

@@ -116,8 +116,55 @@ passed, nine existing skips, zero failures** (27.584 seconds); **8/8 Node consol
 tests**; focused SDK/native contracts **16/16 passed**. Seven new tests cover
 sanitization, immutable-cache admission, unknown carrier rejection, real-audit
 receipt requirements and rejection of false cleanup evidence. Skipped security
-checks were not relabeled as passes. Hosted results will be appended after the
-new PR workflow executes.
+checks were not relabeled as passes. Hosted corroboration follows.
+
+### Hosted corroboration
+
+[Run 40040762452](https://github.com/Ledgercorp/BountyForge/actions/runs/40040762452)
+passed on exact implementation commit
+`e48d75e944e1cf01d12ea891bb7324fa5a67ae42` in draft PR #7.
+All 795 Python tests completed (786 passed, nine skipped), plus 8 Node tests.
+The **actual live SDK** acceptance passed, rather than merely classifying a
+startup refusal. Runtime/negative-tool/cleanup/restart results are preserved in
+`evidence/phase19/github-sdk-40040762452.json`; its hash-bound receipt is
+`29850a95ff5ae98538d6bc2416723d3bd212c9cbeb3b4fdf74d4be5eb13973a3`.
+Acceptance took **7.174 seconds**; the primary SDK cgroup peaked at
+57,643,008 bytes and 17 tasks, with sampled CPU usage 746,664 microseconds.
+There were zero model requests and no credentials supplied.
+
+### Bounded external-model continuation
+
+The existing local Qwen model is the only inferred-cost-free backend admitted
+for this continuation. Access to Actions secret **metadata** was refused with
+HTTP 403; Groq access/quota/billing authorization is therefore not established,
+and no Groq inference is attempted.
+
+`phase19/owned_qwen_experiment.json` freezes one previously public development
+case (`weighted-mix`), exact source/test digests, the original model/runtime,
+two completion requests maximum, the existing LEGACY resource envelope,
+150 output tokens/request, 45 seconds/request, two threads and 2,048 context
+tokens. Its SHA-256 is
+`9cbba663265a33043949f3e477d838f12791a7acfeb3d11233c73776a4b0db34`.
+`phase19_qwen_handoff.py` uses the existing compact prompt, grammar, local
+runtime, revision logic and Phase 16 bridge. It supplies no reference correction
+and preserves both Docker test passes as the success requirement.
+
+This is **external Qwen generation through the output-only bridge**, not a native
+SDK model-provider integration. The bridge's existing `CODEX_AGENT` submission
+capability is a transport/session label, **not** Codex patch authorship; the
+controller records `candidate_author=QWEN_LOCAL`, complete model-response hashes
+and observed request metadata. The underlying receipt continues to state that
+authorship is not attested. No Codex-authored candidate may be substituted.
+No model accuracy or successful repair is claimed before the real experiment.
+The script requires explicit opt-in, a hash-bound passed live SDK receipt,
+credential-free Linux, sufficient local CPU/memory/disk, and the exact existing
+model/runtime assets. It neither downloads assets nor selects a remote provider.
+Four additional admission regressions passed after reproducing their missing
+implementation failures locally; the expanded full suite completed **799 tests,
+790 passed and nine existing skips**, zero failures (26.049 seconds). The four
+tests establish default-off behavior, an immutable two-request/case budget,
+rejection of false SDK receipts and insufficient resource capacity. They do not
+simulate a successful model repair.
 
 ## Reproduce and rollback
 

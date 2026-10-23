@@ -141,3 +141,84 @@ GitHub Actions check on this PR: [run 40030667610](https://github.com/Ledgercorp
 - No DeepSeek SDK, model inference, Docker execution, provider credentials or deployments were run by this workflow.
 
 These verified results establish integration compatibility with the existing Python regression suite only. No real Harness process has been admitted. Commercial status remains NOT_ADMITTED.
+
+
+## Owner-operated file handoff and real Docker acceptance (October 23, 2026)
+
+The optional owner-only script `scripts/deepseek_owned_file.py` can accept an
+already-generated `result.final_response` JSON file from a **separately
+isolated** Harness process. It does **not** install, start or authenticate an
+SDK. The caller explicitly selects a member of the frozen LeftSock-owned
+development fixture catalog. Example:
+
+```sh
+# Candidate output created separately by an authorized, isolated model process.
+# Never place real customer source or credentials into this channel.
+chmod 600 /absolute/private/path/candidate.json
+python3 -m scripts.deepseek_owned_file \
+  --case-id weighted-mix \
+  --candidate-file /absolute/private/path/candidate.json \
+  --admit-owned-development-verification
+```
+
+The trusted owner process rejects execution by default without the explicit
+flag, then rejects relative/missing/symlink/hardlinked/special files,
+group/world-readable files, invalid UTF-8, zero-length or oversized responses,
+and changed file bytes. It opens a private regular file using
+`O_NOFOLLOW` and `O_NONBLOCK`. Input is not allowed to supply a source path,
+command, model, provider, test suite, sandbox, customer repository or worker
+executable. No file watcher, recurring schedule or automatic submission exists.
+
+With the explicit flag, `verify_owned_file` prepares a fresh task using the
+**real** BountyForge `RepairService` and invokes
+`deepseek_owned_bridge.verify_owned_harness_response`, reusing its
+authorization, AST statement-scope and independent Docker verifier. Only
+sanitized identity, SHA-256, outcome, state and commercial-denial fields are
+printed. The results are **owned developmental** observations, never unseen
+accuracy evidence or commercial admission. Only run this command on an
+authorized Linux Docker host with the existing pinned verifier image.
+
+Hosted validation:
+
+- [Run 40031849725](https://github.com/Ledgercorp/BountyForge/actions/runs/40031849725),
+  commit `b4361f7225b3caea8ab0b3063071b88f3d096ada`: real pinned,
+  no-network Docker verifier admitted the `weighted-mix` fixture, ran six
+  regression tests, correctly rejected a deliberately wrong **hardcoded**
+  candidate as `TEST_FAILED`, and refused a stale capability. **No
+  DeepSeek/other model call** occurred. 30/30 earlier focused tests and 757
+  total Python tests passed (nine skips).
+- [Run 40032115992](https://github.com/Ledgercorp/BountyForge/actions/runs/40032115992),
+  commit `e7c93bec3ecb937bc4d33cdb83ee9d4fe206f9e5`:
+  **43/43** focused handoff/bridge/file-intake tests passed.
+  Full suite: **770 total, 761 passed, nine existing skips, zero failures**.
+  Digest-pinned Docker rejected the same synthetic patch and ran six tests
+  again. CI includes no SDK download, model weight download, model inference,
+  customer code execution, external submission or payment.
+- The file intake is deliberately a *trusted owner* program. It is **not**
+  an untrusted network endpoint and is not itself a whole-process containment
+  mechanism for DeepSeek Harness.
+
+### Model/backend admission evidence
+
+A preceding BountyForge Groq trial attempted `openai/gpt-oss-120b` through
+the existing Free Plan adapter and got HTTP **403** again even after a
+reported permission adjustment
+([credential-free review](GROQ_CANARY_403_REVIEW_2026_10_21.md)).
+This did **not** measure model repair accuracy or prove the key/permissions
+currently work. The hosted provider and billing route remain unadmitted.
+Local next-generation Qwen/Granite trials produced 0/3 developmental repairs
+each, but that does not establish general accuracy rankings
+([study](NEXTGEN_MODEL_EVALUATION.md)).
+
+The upstream DeepSeek SDK's `sdk-minimal` profile still exposes an unrestricted
+persistent shell by default; the upstream
+[safety notice](https://github.com/deepseek-ai/deepseek-harness/blob/master/SAFETY.md)
+states it is unaudited. A verified whole-process isolation boundary, SDK
+version/dependency pins, confirmed model access, remaining zero-cost quota,
+strict egress/data-handling controls and an independent model-quality trial
+remain prerequisites to running an actual DeepSeek Harness process.
+
+**Summary:** Candidate output intake → real trusted Docker verification is
+implemented and CI-tested. Live DeepSeek Harness inference and autonomous
+repair are **not yet admitted or demonstrated**. `QWEN_1_5B` remains the
+default; commercial authorization and revenue remain unchanged.

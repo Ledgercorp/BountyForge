@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       confirm_zero_cost:
-        description: Three maintenance tasks, six repair calls and two schema-admission calls maximum
+        description: Three maintenance tasks, six repair calls and two JSON-safe constraint probes maximum
         type: boolean
         required: true
         default: false

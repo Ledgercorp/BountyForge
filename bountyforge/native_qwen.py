@@ -8,10 +8,11 @@ import urllib.parse
 import urllib.request
 from bountyforge.model import _NoRedirect
 from bountyforge.qwen_statement_contract import AdaptiveStatementModel
+from bountyforge.statement_grammar import statement_grammar
 
 
 class NativeStatementModel(AdaptiveStatementModel):
-    protocol='qwen_native_statement_schema_v4'
+    protocol='qwen_native_json_safe_grammar_v5'
 
     def _post_native(self,path,body):
         parsed=urllib.parse.urlsplit(self.endpoint)  # Constructor validates approved host/port.
@@ -38,14 +39,17 @@ class NativeStatementModel(AdaptiveStatementModel):
         if type(template) is not dict:raise RuntimeError('Invalid model template response')
         prompt=template.get('prompt')
         if type(prompt) is not str or len(prompt.encode())>16000:raise RuntimeError('Invalid model template response')
+        constraints=({'grammar':statement_grammar(schema)}
+                     if set(schema.get('properties',{}))=={'changes'} else {'json_schema':schema})
         value=self._post_native('/completion',{'prompt':prompt,'n_predict':max_tokens,
-              'temperature':0,'stream':False,'json_schema':schema,'cache_prompt':False})
+              'temperature':0,'stream':False,**constraints,'cache_prompt':False})
         if type(value) is not dict:raise RuntimeError('Invalid native model response')
         text=value.get('content')
         self.last_call={'prompt_tokens':value.get('tokens_evaluated'),
                         'completion_tokens':value.get('tokens_predicted'),
                         'finish_reason':'length' if value.get('stop_type')=='limit' else value.get('stop_type'),
-                        'transport':'llama_native_completion_schema'}
+                        'transport':'llama_native_completion_schema',
+                        'constraint_kind':'json_safe_statement_grammar' if 'grammar' in constraints else 'json_schema'}
         if type(text) is not str or not text.strip() or len(text.encode())>3000:
             raise RuntimeError('Invalid bounded native model response')
         return text.strip()

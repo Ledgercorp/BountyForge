@@ -159,3 +159,38 @@ Local checks before this second experiment: 680 tests, 671 passed, nine skipped,
 zero failures, plus a subsequent 16-test focused pass including non-object
 transport rejection. Node 7/7. The subsequent extra regression scenario adds one
 test to the next full count. No larger-model download or inference occurred.
+
+## Native-schema measurement and raw-pattern defect
+
+Commit `d9e6b088c8d8dbc7c007739f1f8d56a6cdae432b` passed hosted regression
+[40000319972](https://github.com/Ledgercorp/BountyForge/actions/runs/40000319972):
+681 tests, 672 passed, nine skips; Node 7/7.
+
+[Qwen run 40000312299](https://github.com/Ledgercorp/BountyForge/actions/runs/40000312299)
+completed: **0/3 verified repairs**, six repair calls plus two admission probes,
+75.221 seconds experiment time. Both simple constant-schema probes passed.
+Native repair responses still returned four changes on two first attempts.
+Two retries were semantic no-ops; one source-valid cursor candidate failed
+tests, and its equivalent retry was rejected without another Docker run.
+No new test failure was observed compared with that task's defective baseline.
+Switching transport did not improve measured repair success.
+
+Investigation of pinned llama.cpp b11750's common/json-schema-to-grammar.cpp
+found that pattern character classes are emitted over raw encoded text inside
+quotation marks. Our negated-newline string pattern permits quotation marks
+and JSON delimiters. An owned regression witness reproduces this mismatch:
+`return value"},{"line":3,"new":"return value` matches the old string pattern.
+The simple constant probe was insufficient to test the actual patch contract.
+This is a generation-constraint defect; independent source validators caught
+the invalid proposals and never admitted them as successful repairs.
+
+The correction uses a small owned GBNF emitter with explicit JSON escaping,
+fixed authorized numeric anchors, preserved assignment/return prefixes, at
+most three edits and bounded continuation lines. The runtime's raw string
+pattern conversion is not used for repairs. The v2/v3 interfaces and all
+source validators remain intact. A full-contract adversarial grammar probe
+now checks anchor and edit-count enforcement before any repair execution;
+a deliberately invalid probe is tested to block queue creation. No test
+solution is contained in the grammar or probe. A subsequent live run measures
+this changed implementation only as development, with the same six-call
+repair budget and two bounded admission calls.

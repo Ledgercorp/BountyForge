@@ -314,7 +314,7 @@ https://github.com/Ledgercorp/BountyForge/actions/runs/40098093481
 implementation commits, exact changed-file inventory, test counts, resource
 limitations, external operations and receipt/file hashes. The final publication
 commit adds only this ledger and hosted evidence; it does not change the tested
-implementation or dispatch more CI/model experiments. All previous draft PR
+implementation or dispatch more live model experiments. All previous draft PR
 heads and main remain unchanged. No active Phase20 container or llama process
 remains. One stale owned admission-probe container from this checkout was
 removed during recovery; the unrelated older Created container was preserved.
@@ -322,3 +322,14 @@ removed during recovery; the unrelated older Created container was preserved.
 The real SDK-to-Qwen-to-verifier integration is ENGINEERING_READY_FOR_REVIEW for
 these defined owned development checks. It is experimental, not the new default.
 PRIVATE_EXECUTION_ADMITTED and COMMERCIALLY_AUTHORIZED remain false.
+
+GitHub evaluated the cumulative PR path diff and automatically ran acceptance
+again for the ledger-only publication `b421f22d2b090bbc0a9e6c393f2ec7173e0ddf91`.
+That second routine run also passed:
+https://github.com/Ledgercorp/BountyForge/actions/runs/40098544639
+It repeated the same 824 Python tests (815 passed / 9 skipped), eight Node tests,
+recorded candidate replay and explicitly simulated SDK protocol checks. No new
+real inference occurred. The final documentation/metadata correction uses the
+supported `[skip ci]` commit marker to avoid another identical run; implementation
+and test code are unchanged from the twice-validated source. This is not a
+waiver of any safety test.

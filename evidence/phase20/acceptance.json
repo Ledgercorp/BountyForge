@@ -1,4 +1,16 @@
 {
+  "additional_routine_github_run": {
+    "conclusion": "success",
+    "event": "pull_request",
+    "head_branch": "engineering/phase20-native-qwen-20261024",
+    "head_sha": "b421f22d2b090bbc0a9e6c393f2ec7173e0ddf91",
+    "html_url": "https://github.com/Ledgercorp/BountyForge/actions/runs/40098544639",
+    "id": 40098544639,
+    "run_attempt": 1,
+    "run_started_at": "2026-10-24T13:32:01Z",
+    "status": "completed",
+    "updated_at": "2026-10-24T13:33:15Z"
+  },
   "additional_spending_usd": 0,
   "branch": "engineering/phase20-native-qwen-20261024",
   "commercial_admission": "NOT_ADMITTED",
@@ -31,7 +43,7 @@
   "external_operations": [
     "Pushed isolated authorized engineering branch",
     "Opened draft PR8",
-    "One standard public GitHub Actions acceptance run",
+    "Two passing standard public GitHub Actions acceptance runs; the ledger update automatically triggered the second",
     "Read public SDK/package metadata and downloaded bounded verified public assets"
   ],
   "github_python": {
@@ -135,6 +147,7 @@
   },
   "private_execution_admitted": false,
   "production_deployed": false,
+  "publication_ci_note": "Final documentation/metadata-only correction uses [skip ci]; the tested implementation remains bd984f277d946f4c39e23cdc73697f676eb44435. No source or safety test is omitted.",
   "real_model_requests": {
     "completion_tokens": 270,
     "external_control": 3,
@@ -155,7 +168,7 @@
     "simulated_requests": 2,
     "third_completion_denied_before_backend": true
   },
-  "receipt_sha256": "2b03d4aa4ad2000de2660c431d0d72793a1de2fd5bbb33b4de71cfc2e293b72a",
+  "receipt_sha256": "a7436ccf581c323497daddfd20c4a47e1d6fd778a539f98ffed2ed7859f7c253",
   "remaining_blockers": [
     "No demonstrated Harness repair-quality improvement",
     "All tasks are exposed development material; no inaccessible unseen controller",

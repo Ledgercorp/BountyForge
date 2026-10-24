@@ -1,0 +1,16 @@
+{
+  "actual_model_requests": 0,
+  "capacity_artifact_sha256": "67d77673d5848fc394609f82599556d00f1f708b941ffe21a618e9ac5c2e2657",
+  "kind": "PHASE21_RESOURCE_PORTABILITY_DIAGNOSIS",
+  "no_inference_on_prior_run": true,
+  "official_document_sha256": "b478c1bae99899df476d6b4989cbb516f7ca93c5f009cdff64b802bbc24f3d4b",
+  "official_document_url": "https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v2.html",
+  "previous_run": 40108608162,
+  "previous_source_commit": "2576e2f96422c072a7097b01825c2090447b1f40",
+  "prompts_unchanged": true,
+  "receipt_sha256": "5d2d9922b806fbd13d5d15387b77c968c50a6436033f4a9b0f882c8476973822",
+  "request_budget_unchanged": true,
+  "root_cause": "Reader assumed cgroup hierarchy root was the process limit location. Linux v2 cpu.max/memory.max exist on non-root cgroups; process and ancestor limits must be resolved.",
+  "source_grounded_fix": "Validate v2 controller/process identity, read process and visible ancestors, take minimum headroom and CPU quota plus host availability/affinity; reject unknown/unreadable layouts.",
+  "tests_unchanged": true
+}

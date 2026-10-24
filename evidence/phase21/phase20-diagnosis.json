@@ -1,0 +1,249 @@
+{
+  "classification": "POSTHOC_HISTORICAL_DIAGNOSIS",
+  "new_model_calls": 0,
+  "records": [
+    {
+      "case_id": "optional-setting",
+      "arm": "native",
+      "origin_receipt_sha256": "c83c05ab0ea78d27746c5bb746a189860cf2afe9261691d0327612aaddc7a0bd",
+      "proposal": "{\"changes\":[{\"line\":2,\"new\":\"selected = value or fallback if value is not None else fallback\"}]}",
+      "outcome": "TEST_FAILED",
+      "source_valid": true,
+      "completion_tokens": 24,
+      "finish_reason": "stop",
+      "baseline_feedback": {
+        "assertions": [
+          "AssertionError: 'auto' != ''",
+          "AssertionError: True is not False",
+          "AssertionError: [1] is not []"
+        ],
+        "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+        "failing_tests": [
+          "test_empty",
+          "test_false",
+          "test_identity",
+          "test_zero"
+        ],
+        "unseen_evaluation": false
+      },
+      "candidate_feedback": {
+        "assertions": [
+          "AssertionError: 'auto' != ''",
+          "AssertionError: True is not False",
+          "AssertionError: [1] is not []"
+        ],
+        "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+        "failing_tests": [
+          "test_empty",
+          "test_false",
+          "test_identity",
+          "test_zero"
+        ],
+        "unseen_evaluation": false
+      },
+      "context_extra_tokens_native": 26
+    },
+    {
+      "case_id": "optional-setting",
+      "arm": "external",
+      "origin_receipt_sha256": "ab4d933b86ee30a020ff584aa4da50834f0d3e0e370fab9cd0f83e5dfd225c3e",
+      "proposal": "{\"changes\":[{\"line\":2,\"new\":\"selected = value if value is not None else fallback\"},{\"line\":3,\"new\":\"return selected\"}]}",
+      "outcome": "VERIFIED",
+      "source_valid": true,
+      "completion_tokens": 31,
+      "finish_reason": "stop",
+      "baseline_feedback": {
+        "assertions": [
+          "AssertionError: 'auto' != ''",
+          "AssertionError: True is not False",
+          "AssertionError: [1] is not []"
+        ],
+        "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+        "failing_tests": [
+          "test_empty",
+          "test_false",
+          "test_identity",
+          "test_zero"
+        ],
+        "unseen_evaluation": false
+      },
+      "candidate_feedback": null,
+      "context_extra_tokens_native": 26
+    },
+    {
+      "case_id": "reading-groups",
+      "arm": "native",
+      "origin_receipt_sha256": "669924c01bfe160109e12f4286c2804407e609556532dc7afb02c87d973dfc60",
+      "proposal": "{\"changes\":[{\"line\":13,\"new\":\"result[key] = sum(valid) / len(valid) if valid else None\"},{\"line\":10,\"new\":\"result = {}\"},{\"line\":12,\"new\":\"valid = [value for value in raw if value] if value else None\"}]}",
+      "outcome": "TEST_FAILED",
+      "source_valid": true,
+      "completion_tokens": 62,
+      "finish_reason": "stop",
+      "baseline_feedback": {
+        "assertions": [
+          "AssertionError: {'a': 2.0} != {'a': 4}",
+          "AssertionError: {'a': None} != {'a': 0}"
+        ],
+        "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+        "failing_tests": [
+          "test_missing",
+          "test_zero_only"
+        ],
+        "unseen_evaluation": false
+      },
+      "candidate_feedback": {
+        "assertions": [
+          "AssertionError: {'a': None} != {'a': 4}",
+          "AssertionError: {'a': 4.0} != {'a': 2}",
+          "AssertionError: {'a': None} != {'a': 0}"
+        ],
+        "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+        "failing_tests": [
+          "test_missing",
+          "test_zero",
+          "test_zero_only"
+        ],
+        "unseen_evaluation": false
+      },
+      "context_extra_tokens_native": 26
+    },
+    {
+      "case_id": "reading-groups",
+      "arm": "external",
+      "origin_receipt_sha256": "c56670f78436da7fed1494cf1f5df1ec2fdabf62bea5fe3e7b854673dd56e151",
+      "proposal": "{\"changes\":[{\"line\":13,\"new\":\"result[key] = sum(valid) / len(valid) if valid else None\"},{\"line\":10,\"new\":\"result = {key: None for key in groups if not groups[key]}\"},{\"line\":12,\"new\":\"valid = [value for value in raw if value is not None and value != 0]\"}]}",
+      "outcome": "TEST_FAILED",
+      "source_valid": true,
+      "completion_tokens": 78,
+      "finish_reason": "stop",
+      "baseline_feedback": {
+        "assertions": [
+          "AssertionError: {'a': 2.0} != {'a': 4}",
+          "AssertionError: {'a': None} != {'a': 0}"
+        ],
+        "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+        "failing_tests": [
+          "test_missing",
+          "test_zero_only"
+        ],
+        "unseen_evaluation": false
+      },
+      "candidate_feedback": {
+        "assertions": [
+          "AssertionError: {'a': 4.0} != {'a': 2}",
+          "AssertionError: {'a': None} != {'a': 0}"
+        ],
+        "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+        "failing_tests": [
+          "test_zero",
+          "test_zero_only"
+        ],
+        "unseen_evaluation": false
+      },
+      "context_extra_tokens_native": 26
+    },
+    {
+      "case_id": "reserve-release",
+      "arm": "native",
+      "origin_receipt_sha256": "d353300feb3e23052c9c5a8e5ed5ca68a3156cebab2254e7919e4e10329f6311",
+      "proposal": "{\"changes\":[{\"line\":17,\"new\":\"released = amount\\nreleased += amount\\nreleased += amount\"}]}",
+      "outcome": "TEST_FAILED",
+      "source_valid": true,
+      "completion_tokens": 24,
+      "finish_reason": "stop",
+      "baseline_feedback": {
+        "assertions": [
+          "AssertionError: {'held': 0, 'released': 3, 'seen': ['a']} != {'held': 0, 'released': 8, 'seen': ['a']}",
+          "AssertionError: {'held': 10, 'released': 0, 'seen': ['a']} != {'held': 10, 'released': 7, 'seen': ['a']}",
+          "AssertionError: {'held': 6, 'released': 3, 'seen': ['a']} != {'held': 9, 'released': 4, 'seen': []}"
+        ],
+        "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+        "failing_tests": [
+          "test_clamp_and_duplicates",
+          "test_invalid_amount_preserves_balance",
+          "test_missing_status_ignored",
+          "test_pending_can_later_settle",
+          "test_settled_accumulates"
+        ],
+        "unseen_evaluation": false
+      },
+      "candidate_feedback": {
+        "assertions": [
+          "AssertionError: {'held': 0, 'released': 9, 'seen': ['a']} != {'held': 0, 'released': 8, 'seen': ['a']}",
+          "AssertionError: {'held': 10, 'released': 0, 'seen': ['a']} != {'held': 10, 'released': 7, 'seen': ['a']}",
+          "AssertionError: {'held': 6, 'released': 9, 'seen': ['a']} != {'held': 9, 'released': 4, 'seen': []}"
+        ],
+        "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+        "failing_tests": [
+          "test_clamp_and_duplicates",
+          "test_invalid_amount_preserves_balance",
+          "test_missing_status_ignored",
+          "test_pending_can_later_settle",
+          "test_settled_accumulates"
+        ],
+        "unseen_evaluation": false
+      },
+      "context_extra_tokens_native": 26
+    },
+    {
+      "case_id": "reserve-release",
+      "arm": "external",
+      "origin_receipt_sha256": "ad06456caf4d7b3e23f62365c5d70d9fca7888ffff2567e655db179f0d3bb7fb",
+      "proposal": "{\"changes\":[{\"line\":17,\"new\":\"released = amount\\nreleased += amount\\nreleased += amount\"}]}",
+      "outcome": "TEST_FAILED",
+      "source_valid": true,
+      "completion_tokens": 24,
+      "finish_reason": "stop",
+      "baseline_feedback": {
+        "assertions": [
+          "AssertionError: {'held': 0, 'released': 3, 'seen': ['a']} != {'held': 0, 'released': 8, 'seen': ['a']}",
+          "AssertionError: {'held': 10, 'released': 0, 'seen': ['a']} != {'held': 10, 'released': 7, 'seen': ['a']}",
+          "AssertionError: {'held': 6, 'released': 3, 'seen': ['a']} != {'held': 9, 'released': 4, 'seen': []}"
+        ],
+        "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+        "failing_tests": [
+          "test_clamp_and_duplicates",
+          "test_invalid_amount_preserves_balance",
+          "test_missing_status_ignored",
+          "test_pending_can_later_settle",
+          "test_settled_accumulates"
+        ],
+        "unseen_evaluation": false
+      },
+      "candidate_feedback": {
+        "assertions": [
+          "AssertionError: {'held': 0, 'released': 9, 'seen': ['a']} != {'held': 0, 'released': 8, 'seen': ['a']}",
+          "AssertionError: {'held': 10, 'released': 0, 'seen': ['a']} != {'held': 10, 'released': 7, 'seen': ['a']}",
+          "AssertionError: {'held': 6, 'released': 9, 'seen': ['a']} != {'held': 9, 'released': 4, 'seen': []}"
+        ],
+        "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+        "failing_tests": [
+          "test_clamp_and_duplicates",
+          "test_invalid_amount_preserves_balance",
+          "test_missing_status_ignored",
+          "test_pending_can_later_settle",
+          "test_settled_accumulates"
+        ],
+        "unseen_evaluation": false
+      },
+      "context_extra_tokens_native": 26
+    }
+  ],
+  "established_causes": [
+    "Falsey values still use fallback despite an added None conditional",
+    "Numeric zero remains excluded from aggregation",
+    "A comprehension-local name was used outside its local scope/against an unrelated outer value",
+    "Release guard was left unchanged and cumulative state replaced by repeated assignment/increments"
+  ],
+  "not_established": [
+    "No completion-token exhaustion in these six comparisons",
+    "No evidence source context was missing: complete approved files and helpers were present",
+    "No causal attribution to the 26 extra SDK context tokens from a one-sample comparison",
+    "Source-valid means capability/scope admission, not correct program behavior"
+  ],
+  "hypotheses_to_test": [
+    "Compact explicit diagnosis before changes",
+    "Earliest faulty dependency plus related anchors",
+    "Retry feedback separates persistent baseline failures from newly reported failures"
+  ]
+}

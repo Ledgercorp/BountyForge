@@ -1,0 +1,12 @@
+{
+  "actual_model_requests": 0,
+  "arm_claims_created": 0,
+  "diagnostic_receipt_sha256": "39a014caad7c920a2bd973ee51a2c02e07834e978fc84f14cc8f2488e04cb0de",
+  "failed_stage": "POST_STAGING_OUTER_CGROUP_HEADROOM",
+  "ineffective_hypothesis_rejected": "fsync plus advice did not recover sufficient file-cache headroom; no workaround applied",
+  "initial_source_commit": "8c44500",
+  "kind": "PHASE21_CLOUD_ADMISSION_BLOCKED_BEFORE_MODEL",
+  "model_containers_started": 0,
+  "next_route": "Same bounded experiments on explicitly eligible free public standard GitHub Ubuntu runner; check capacity before acquiring model assets",
+  "receipt_sha256": "2c93ad56697fd2374c05b497c2a9feb80be0bcff1997bc5fccd0fc608cc616b6"
+}

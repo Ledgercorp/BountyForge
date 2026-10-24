@@ -1,0 +1,106 @@
+{
+  "generation_source_commit": "112d53842814d26d7b63ec6021869640f144697f",
+  "github_run": 40109689533,
+  "kind": "PHASE21_RECORDED_ORIGINS",
+  "model_calls_total": 32,
+  "new_calls_from_replay": 0,
+  "receipt_sha256": "536bddd1fddc00fc108c7631c03d54c0da0ad9fa944a05e0f45d962cf17e8868",
+  "records": [
+    {
+      "arm": "EXTERNAL_BASE",
+      "case_id": "cache-refresh",
+      "file_sha256": "955527f6d6296d24907fc172df5eb8cce0cc07c59a709385e9e255591547ff12",
+      "receipt_sha256": "c865e0eee9d66244129f83a83f4b5b6fca5e1a27f362607d49e909fd0d7818cc"
+    },
+    {
+      "arm": "GRANITE_DIAG",
+      "case_id": "cache-refresh",
+      "file_sha256": "e6f6a02431553ce38d69c3ecba8aa7a3492d7870b6bcc9267dad510b145fbc1c",
+      "receipt_sha256": "429f52917a9d6ae3bfbcfcff08fc104193685b8c37412a2af920961778ea7d47"
+    },
+    {
+      "arm": "SDK_BASE",
+      "case_id": "cache-refresh",
+      "file_sha256": "c4cabc7c00b08e9ded9280b80f58e3a8e4b65bd2fb5777348e2edd159058dd65",
+      "receipt_sha256": "b1569da3173eb4cf5f2c01ee7dfdba05e11f51d723a5d7fa4dac0a2d5d1e982d"
+    },
+    {
+      "arm": "SDK_DIAG",
+      "case_id": "cache-refresh",
+      "file_sha256": "80aca6373b33712c2a89f43c59d4bae1e7e75c60fc14a98ebb85db364d609d5d",
+      "receipt_sha256": "78337a799a3affec94dc6f060a3317c18f7c80491355d4bba10323d818a7f4d1"
+    },
+    {
+      "arm": "EXTERNAL_BASE",
+      "case_id": "inventory-adjustments",
+      "file_sha256": "718b29840a32a5e3de398757658e70e4f06df99d7cc004bbd85dc03fc842e7fd",
+      "receipt_sha256": "44abe8cb4631b5406a8c4f554c5ce64ee89f0886aa2591c1c91a3193161e77e5"
+    },
+    {
+      "arm": "GRANITE_DIAG",
+      "case_id": "inventory-adjustments",
+      "file_sha256": "0a29c634ac0a2086da8000aeb271112dbe6edc8e5d3d4f723e335cdcb0547e97",
+      "receipt_sha256": "12d1e6a483c8aac1297eb1141ad3808200cf57f284581b068ef7fec632089a55"
+    },
+    {
+      "arm": "SDK_BASE",
+      "case_id": "inventory-adjustments",
+      "file_sha256": "346ed9bcc0b9575e968c675faac8b94bbab9ad8dee1c04bdc3cbed28a46db25d",
+      "receipt_sha256": "67660fee5541972c301d5fe16c162df4c7be2c777266e57c4eb2d57cd020a265"
+    },
+    {
+      "arm": "SDK_DIAG",
+      "case_id": "inventory-adjustments",
+      "file_sha256": "5148679bb6181142339e7ed62ca95d9872ecade5ac232a4498bc0bce2db32d03",
+      "receipt_sha256": "9720db2e5ffb0bfe14707bebb0d96dee3fa4d507f5b0d8b6766d6ddc992c879c"
+    },
+    {
+      "arm": "EXTERNAL_BASE",
+      "case_id": "parameter-pairs",
+      "file_sha256": "da0f242f8bb2a25ba2655f948cf7d93497bdd846db08cf289f0875f4acefdb11",
+      "receipt_sha256": "b2b08937b4c84b198bffdf0faf7cee4c16f213cd88492cf5c8c4d33d239c3aa8"
+    },
+    {
+      "arm": "GRANITE_DIAG",
+      "case_id": "parameter-pairs",
+      "file_sha256": "4af1f75f0d14e6b05bd3d77a18af94cf940c78690dcb6e48cf78b7f886e583a3",
+      "receipt_sha256": "0e9748bfa92e3218e8d022d4461bf1d36d50f57ea47b68a44407550ad460044a"
+    },
+    {
+      "arm": "SDK_BASE",
+      "case_id": "parameter-pairs",
+      "file_sha256": "e9e004394341a1b0c4682b7d0e5fbf0caf24f9a1496ec19c22c577d00c1ddf16",
+      "receipt_sha256": "aa7a144aeb0d69eb6f13cdfd88cb8fac253b111e95be53037172b93730baccda"
+    },
+    {
+      "arm": "SDK_DIAG",
+      "case_id": "parameter-pairs",
+      "file_sha256": "91642e96983a3a734d72e1d27fc2f2f8dd2c365e8f84a6e784b17e8701f17d6c",
+      "receipt_sha256": "5d10b60c0810ef84c2cfb7999bc23e3c08b420b031588e7cb74c164e58b3b820"
+    },
+    {
+      "arm": "EXTERNAL_BASE",
+      "case_id": "shipment-total",
+      "file_sha256": "25f852ecf1c2d8780e6de173b2771b52350215e97a695c18bd2de4e4a2c35695",
+      "receipt_sha256": "c8d9e5a04315fb1f56d29363713aa1cf9fa7871ad10e792ba8e91fbcd0e16d9b"
+    },
+    {
+      "arm": "GRANITE_DIAG",
+      "case_id": "shipment-total",
+      "file_sha256": "25a9a6d73db0cff127cbd5eb3c169d2a897d1cf711bf3bd6c1fbffb91c647031",
+      "receipt_sha256": "d62816a92946155acd7de8fe2f88275761ae56ba5c0d94c2726feae456305cbc"
+    },
+    {
+      "arm": "SDK_BASE",
+      "case_id": "shipment-total",
+      "file_sha256": "020cc6cf68d200e2e13a604aedb846782376fe811def999b0faef7e4473efed3",
+      "receipt_sha256": "0756718371131e42f356b589d9d72cd2e0a8b5aed198b3a3f820388c7fc899dc"
+    },
+    {
+      "arm": "SDK_DIAG",
+      "case_id": "shipment-total",
+      "file_sha256": "d5a81ebab4ad5a67d8b804bf1648dd2f6985d44bed2d0a83202dc5ff2a45c24a",
+      "receipt_sha256": "db2f67b6541ee8d800512faa10fcd68c65cb71a597fff94419f7d8edf3d96cea"
+    }
+  ]
+}

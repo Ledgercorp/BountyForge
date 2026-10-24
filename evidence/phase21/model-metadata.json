@@ -1,0 +1,46 @@
+{
+  "ibm-granite/granite-4.2-3b-GGUF": {
+    "revision": "c40945d71cd90f249a56985e8155551a9188dc30",
+    "license": "apache-2.0",
+    "selected_files": [
+      {
+        "rfilename": "README.md",
+        "blobId": "a08faed3119ee5d92fdf0f0e07438c65de8c91dc",
+        "size": 368
+      },
+      {
+        "rfilename": "granite-4.2-3b-Q4_K_M.gguf",
+        "blobId": "76152e8b5ee8e6e8c67a1bfa17648c540c473418",
+        "size": 2244011552,
+        "lfs": {
+          "sha256": "e0406663965846ae22a403456eb826ccce5f450840491f71952f18a7cb78e7d5",
+          "size": 2244011552,
+          "pointerSize": 135
+        }
+      }
+    ],
+    "metadata_sha256": "85bc980b2d1b97eafb8c11922caeabccc83d2b825cef5807664e9fc2787945e5"
+  },
+  "Qwen/Qwen3.5-4B": {
+    "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "license": "apache-2.0",
+    "selected_files": [
+      {
+        "rfilename": "LICENSE",
+        "blobId": "f938136e3adacfd92be087f6e113b5d6d97f678f",
+        "size": 11544
+      },
+      {
+        "rfilename": "README.md",
+        "blobId": "7950a3aadf378cd13758097bc52f0ed849a59007",
+        "size": 77661
+      },
+      {
+        "rfilename": "config.json",
+        "blobId": "557d961b205319c6a7da5f757f565b69b3967b7d",
+        "size": 3161
+      }
+    ],
+    "metadata_sha256": "98c84f79f222fff645f12c7bb8652ee982e260315655986194b55586a90108fc"
+  }
+}

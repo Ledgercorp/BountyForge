@@ -12,6 +12,7 @@ MODEL_ID='bountyforge-qwen-1.5b'
 PROVIDER_ID='bountyforge-local-qwen'
 MODEL_NAME=re.compile(r'bf-p20-model-[0-9a-f]{16}\Z')
 MODEL_PROBE=PROBE.replace('201326592','3221225472').replace('pids<=32','pids<=64').replace('quota<=period','quota<=2*period')
+PROFILE_MODELS={'QWEN_1_5B':MODEL_ID,'GRANITE42_3B':'bountyforge-granite-3b'}
 
 
 def file_hash(path):
@@ -19,8 +20,9 @@ def file_hash(path):
     with path.open('rb') as stream:return hashlib.file_digest(stream,'sha256').hexdigest()
 
 
-def stage_assets(destination,cache):
-    spec=profile_spec('QWEN_1_5B')
+def stage_assets(destination,cache,*,profile='QWEN_1_5B'):
+    if profile not in PROFILE_MODELS:raise ValueError('EXPLICIT_ADMITTED_MODEL_PROFILE_REQUIRED')
+    spec=profile_spec(profile)
     archive=cache/'runtime/llama-b11750-bin-ubuntu-x64.tar.gz'
     if file_hash(archive)!=spec['runtime_sha256']:raise ValueError('RUNTIME_DIGEST_REJECTED')
     model=cache/'models'/spec['filename']
@@ -45,10 +47,11 @@ def stage_assets(destination,cache):
     destination.chmod(0o555)
     return {'model_sha256':spec['sha256'],'runtime_archive_sha256':spec['runtime_sha256'],
         'runtime_binary_sha256':file_hash(destination/'llama-b11750/llama-server'),
-        'model_id':MODEL_ID,'license':'Apache-2.0','new_model_downloads':0,'dependency':dependency}
+        'model_id':PROFILE_MODELS[profile],'license':'Apache-2.0','new_model_downloads':0,'dependency':dependency}
 
 
-def model_command(docker,workspace,name,assets):
+def model_command(docker,workspace,name,assets,*,profile='QWEN_1_5B'):
+    if profile not in PROFILE_MODELS:raise ValueError('EXPLICIT_ADMITTED_MODEL_PROFILE_REQUIRED')
     if type(name) is not str or not MODEL_NAME.fullmatch(name):raise ValueError('OWNED_MODEL_NAMESPACE_REQUIRED')
     if not assets.is_absolute() or assets.is_symlink() or any(c in str(assets) for c in ',\n'):
         raise ValueError('MODEL_ASSET_PATH_REJECTED')
@@ -56,6 +59,8 @@ def model_command(docker,workspace,name,assets):
     changes={'--name=bf-p17-'+name[-16:]:'--name='+name,'--memory=192m':'--memory=3g',
         '--memory-swap=192m':'--memory-swap=3g','--cpus=1':'--cpus=2','--pids-limit=32':'--pids-limit=64'}
     base=[changes.get(arg,arg) for arg in base]
+    if profile=='GRANITE42_3B':
+        base=[{'--memory=3g':'--memory=5g','--memory-swap=3g':'--memory-swap=5g'}.get(arg,arg) for arg in base]
     index=base.index(IMAGE)
     base[index:index]=['--mount=type=bind,source='+str(assets)+',target=/opt/qwen,readonly',
         '--env=LD_LIBRARY_PATH=/opt/qwen/deps:/opt/qwen/llama-b11750','--ulimit=cpu=180:180',

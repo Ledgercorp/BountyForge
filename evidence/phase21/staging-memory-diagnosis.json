@@ -1,0 +1,59 @@
+{
+  "actual_model_requests": 0,
+  "after_advice_only": {
+    "admission": {
+      "admitted": false,
+      "reason": "INDEPENDENT_CGROUP_CAPACITY_UNAVAILABLE"
+    },
+    "anon": 69525504,
+    "current_bytes": 5229105152,
+    "file": 4987465728,
+    "file_dirty": 28672,
+    "file_writeback": 0,
+    "max_bytes": 8589934592
+  },
+  "after_fsync_and_advice": {
+    "admission": {
+      "admitted": false,
+      "reason": "INDEPENDENT_CGROUP_CAPACITY_UNAVAILABLE"
+    },
+    "anon": 69525504,
+    "current_bytes": 5229105152,
+    "file": 4987465728,
+    "file_dirty": 28672,
+    "file_writeback": 0,
+    "max_bytes": 8589934592
+  },
+  "after_staging": {
+    "admission": {
+      "admitted": false,
+      "reason": "INDEPENDENT_CGROUP_CAPACITY_UNAVAILABLE"
+    },
+    "anon": 69525504,
+    "current_bytes": 5229105152,
+    "file": 4987465728,
+    "file_dirty": 28672,
+    "file_writeback": 0,
+    "max_bytes": 8589934592
+  },
+  "before": {
+    "admission": {
+      "admitted": true,
+      "cpu_max": "200000 100000",
+      "headroom_basis": "OUTER_CGROUP_LIMIT_MINUS_CURRENT",
+      "memory_current": 3717570560,
+      "memory_max": 8589934592,
+      "model_limit": 3221225472,
+      "required_headroom": 3959422976
+    },
+    "anon": 58208256,
+    "current_bytes": 3717570560,
+    "file": 3490791424,
+    "file_dirty": 28672,
+    "file_writeback": 0,
+    "max_bytes": 8589934592
+  },
+  "containers_started": 0,
+  "kind": "PHASE21_MODEL_FREE_STAGING_DIAGNOSIS",
+  "receipt_sha256": "39a014caad7c920a2bd973ee51a2c02e07834e978fc84f14cc8f2488e04cb0de"
+}

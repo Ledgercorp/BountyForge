@@ -1,0 +1,35 @@
+{
+  "actual_model_requests": 0,
+  "spending_usd": 0,
+  "runner": "standard public ubuntu-24.04",
+  "inference_admitted": true,
+  "capacity": {
+    "admitted": true,
+    "model_limit": 5368709120,
+    "required_headroom": 6106906624,
+    "observation": {
+      "process_cgroup": "/system.slice/hosted-compute-agent.service",
+      "available_memory_bytes": 15255166976,
+      "available_cpu_count": 4,
+      "headroom_basis": "MINIMUM_HOST_AVAILABLE_AND_VISIBLE_V2_ANCESTOR_LIMITS",
+      "ancestors": [
+        {
+          "relative_path": "system.slice/hosted-compute-agent.service",
+          "memory_max": "max",
+          "memory_current": 351006720,
+          "cpu_max": "max 100000"
+        },
+        {
+          "relative_path": "system.slice",
+          "memory_max": "max",
+          "memory_current": 2922532864,
+          "cpu_max": "max 100000"
+        },
+        {
+          "relative_path": "."
+        }
+      ]
+    }
+  },
+  "disk_free_bytes": 92088340480
+}

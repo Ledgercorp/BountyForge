@@ -1,0 +1,45 @@
+{
+  "arms": {
+    "EXTERNAL_BASE": {
+      "known_model_cgroup_cpu_seconds": 183.823287,
+      "known_sdk_cgroup_cpu_seconds": 0,
+      "maximum_observed_model_cgroup_memory_peak_bytes": 2066710528,
+      "maximum_observed_model_process_peak_rss_bytes": 2045005824,
+      "maximum_observed_sdk_process_peak_rss_bytes": null,
+      "missing_model_resource_cases": 0,
+      "observed_model_resource_cases": 4
+    },
+    "GRANITE_DIAG": {
+      "known_model_cgroup_cpu_seconds": 150.441389,
+      "known_sdk_cgroup_cpu_seconds": 1.947533,
+      "maximum_observed_model_cgroup_memory_peak_bytes": 4107673600,
+      "maximum_observed_model_process_peak_rss_bytes": 4076965888,
+      "maximum_observed_sdk_process_peak_rss_bytes": 159027200,
+      "missing_model_resource_cases": 3,
+      "observed_model_resource_cases": 1
+    },
+    "SDK_BASE": {
+      "known_model_cgroup_cpu_seconds": 196.825523,
+      "known_sdk_cgroup_cpu_seconds": 7.523725,
+      "maximum_observed_model_cgroup_memory_peak_bytes": 2052878336,
+      "maximum_observed_model_process_peak_rss_bytes": 2034769920,
+      "maximum_observed_sdk_process_peak_rss_bytes": 162701312,
+      "missing_model_resource_cases": 0,
+      "observed_model_resource_cases": 4
+    },
+    "SDK_DIAG": {
+      "known_model_cgroup_cpu_seconds": 236.110216,
+      "known_sdk_cgroup_cpu_seconds": 7.643002,
+      "maximum_observed_model_cgroup_memory_peak_bytes": 2051502080,
+      "maximum_observed_model_process_peak_rss_bytes": 2033496064,
+      "maximum_observed_sdk_process_peak_rss_bytes": 160292864,
+      "missing_model_resource_cases": 0,
+      "observed_model_resource_cases": 4
+    }
+  },
+  "kind": "PHASE21_RESOURCE_SUMMARY",
+  "note": "Missing resources on three blocked Granite cases remain unknown. CPU excludes the trusted host verifier and includes contained observation processes. Cgroup peaks and process RSS differ.",
+  "receipt_sha256": "6e7805ac1063edf7c74c275393e7f7287c9cbc777ab2cf6a8b70db6c93c41dce",
+  "total_case_wall_seconds": 809.394,
+  "total_gateway_seconds": 575.36
+}

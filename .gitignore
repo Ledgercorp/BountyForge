@@ -11,3 +11,5 @@ reports/
 .bountyforge-owned-queue/
 .bountyforge-phase20/
 !*.example
+
+.bountyforge-phase21/

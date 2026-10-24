@@ -1,0 +1,7 @@
+{
+  "actual_model_requests": 0,
+  "spending_usd": 0,
+  "runner": "standard public ubuntu-24.04",
+  "inference_admitted": false,
+  "blocked_reason": "[Errno 2] No such file or directory: '/sys/fs/cgroup/memory.max'"
+}

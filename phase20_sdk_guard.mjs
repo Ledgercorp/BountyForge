@@ -5,6 +5,12 @@ export const inject=['tools','systemPrompt'];
 export function apply(ctx) {
   const policy=JSON.parse(readFileSync('/workspace/agent-policy.json','utf8'));
   if (![1,2].includes(policy.request_limit) || typeof policy.system!=='string') throw Error('Invalid owned policy');
+  const provider=policy.provider??'bountyforge-local-qwen', model=policy.model??'bountyforge-qwen-1.5b';
+  if (!((provider==='bountyforge-local-qwen' && model==='bountyforge-qwen-1.5b') ||
+        (provider==='bountyforge-local-granite' && model==='bountyforge-granite-3b')))
+    throw Error('Unapproved owned local model identity');
+  // Independent container lifetime bound also applies if the host controller dies.
+  setTimeout(()=>process.exit(124),180000).unref();
   ctx.systemPrompt.section({name:'bountyforge-bounded-repair',order:0,complete:true,
     interpolate:false,text:policy.system});
   ctx.systemPrompt.suppressRuntimeContext();
@@ -42,7 +48,7 @@ export function apply(ctx) {
       if (++count>policy.request_limit) throw Error('Owned inference request budget exhausted');
       if (tools.schemas(agent).length) throw Error('Tool surface changed');
       const config=await next();
-      if (config.provider!=='bountyforge-local-qwen' || config.model!=='bountyforge-qwen-1.5b' || config.maxTokens!==150)
+      if (config.provider!==provider || config.model!==model || config.maxTokens!==150)
         throw Error('Owned local provider identity or budget changed');
       process.stderr.write('BOUNTYFORGE_SDK_REQUEST '+JSON.stringify({count,provider:config.provider,
         model:config.model,maxTokens:config.maxTokens})+'\n');

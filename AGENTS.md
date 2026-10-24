@@ -104,3 +104,19 @@ and <=1200 input tokens, two attempts/task, <=18 completion requests total.
 Legacy runtime/request defaults remain intact. No runtime replacement is allowed.
 Keep the frozen nextgen config/source/test bytes intact after inference. See
 /docs/NEXTGEN_MODEL_EVALUATION.md for provenance limitations and measured results.
+
+
+Phase21 is an experimental repair-quality branch, not production admission.
+See docs/PHASE21_REPAIR_INTELLIGENCE.md and evidence/phase21/acceptance.json.
+The four owned quality cases require explicit trusted owned_quality=True; default
+CLI/MCP inventory remains the original 18 tasks. All frozen Phase21 inference
+budgets are spent: 24 Qwen requests plus eight Granite, no verified repairs.
+Do not rerun those plans, reset claims or count blocked Granite sessions as
+completed model accuracy. Published per-arm receipts fence fresh checkouts.
+The linked/printable diagnosis grammar is independently tested with the pinned
+native vocabulary-only sampler, but its live repair accuracy is unmeasured.
+Do not reinterpret these format tests or the separately labeled post-hoc manual
+satisfiability controls as autonomous model successes. No control was supplied
+to the measured models; these cases are now fully exposed development material.
+Keep QWEN_1_5B as default, experimental diagnosis off by default, all PRs draft,
+main unchanged, no private/customer execution or commercial activation.

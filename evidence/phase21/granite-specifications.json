@@ -1,0 +1,29 @@
+{
+  "architecture": {
+    "architectures": [
+      "GraniteForCausalLM"
+    ],
+    "hidden_size": 2560,
+    "max_position_embeddings": 131072,
+    "model_type": "granite",
+    "num_hidden_layers": 40,
+    "vocab_size": 100352
+  },
+  "documents": {
+    "README.md": {
+      "bytes": 35640,
+      "sha256": "8f22ddce440f0c15ecb58fc9f8501b882baf5f2b7ab0d13872fe77d88c1ad792"
+    },
+    "config.json": {
+      "bytes": 905,
+      "sha256": "e4f44b9c6924a283f1d1d36057a89f1a04404bf1561fc2c0b64cf98180e72915"
+    },
+    "tokenizer_config.json": {
+      "bytes": 17677,
+      "sha256": "2007f26df166ed10a2d6fa881c1c8f3cdd151e451469f59b274897f14449835f"
+    }
+  },
+  "kind": "PHASE21_READ_ONLY_MODEL_SPECIFICATIONS",
+  "repo": "ibm-granite/granite-4.2-3b",
+  "revision": "4e9c275e232f10211ec88644d106a1f6a1b60e06"
+}

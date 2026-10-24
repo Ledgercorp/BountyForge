@@ -117,3 +117,34 @@ Focused Phase20+21 checks: 33 passed (11 new Phase21 tests). Full regression:
 PASS using explicitly simulated responses, zero real model requests and zero
 repair successes. The SDK and provider boundaries/tools stayed restricted.
 Historical fixtures, frozen partitions and receipts were not changed.
+
+## Cloud launch admission and alternate execution route
+
+The first launch at `8c44500` was denied after staging and before any model
+container or arm claim. Actual requests: zero. Staging raised outer cgroup use
+from 3,717,570,560 to 5,229,105,152 bytes against an 8,589,934,592-byte limit.
+The unchanged required reserve is 3,959,422,976 bytes (3 GiB model + 192 MiB SDK +
+512 MiB headroom), more than remained. A model-free real-file experiment found
+both advice-only and fsync-plus-advice ineffective; no such workaround was added.
+The original plans and the failed resource hypothesis are preserved under
+`evidence/phase21/pre-inference-v1/`, `cloud-admission.json` and
+`staging-memory-diagnosis.json`. This is not a 0/4 model result.
+
+Before any inference, V2 adds only explicit acquisition of the existing baseline
+GGUF to the trusted inert downloader, for an eligible standard public GitHub
+runner. Model prompts, tasks, scopes, validators and inference budgets are unchanged.
+Qwen's official revision is f86cb2c1fa58255f8052cc32aeede1b7482d4361 and its existing
+1,117,320,768-byte artifact SHA remains cc324af0…bb046. No local model is replaced.
+
+The final frozen Qwen plan SHA256 is
+`fb5543a918246dc5f1ab723366393a16c56f60fde92760bb664586c68fc17f3a`;
+the separate Granite plan SHA256 is
+`cf4fe0e37f8958ca6147036b7efe8f4cec31607a57d1f77e81e8ccb7a510d480`.
+Each binds 46 exact implementation/task files. On the authorized draft PR's first
+opened event only, after model-free regression and actual CPU/memory/disk admission,
+a standard Ubuntu 24.04 runner may execute the two fixed experiments sequentially.
+The job has read-only GitHub permissions, no persistent checkout credentials,
+no provider secrets, no cache writes, a 25-minute timeout and at most one active
+inference process. Synchronize/reopen/rerun events cannot launch fresh inference.
+Small sanitized JSON artifacts have one-day retention; newly acquired weights
+are removed. If capacity or public asset access fails, preserve a blocked result.

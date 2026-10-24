@@ -19,6 +19,7 @@
   ],
   "context_tokens": 2048,
   "cpu_seconds_per_process": 180,
+  "execution_revision": "V2 before any inference: official baseline asset acquisition added for eligible GitHub runner; no prompt, task, verifier or request-budget change",
   "frozen_files": {
     "bountyforge/curated_docker.py": "0beb01183867f514029f466274e641f5e9e2860de7a56d34fe725a12b61dfa2f",
     "bountyforge/curated_tasks.py": "048bf0efe8e44278d4fb5a34ebc951b1d27c7034fb28a77da94f6990b965d48f",
@@ -61,7 +62,7 @@
     "phase20_native_agent.py": "492a77dc68f15d3191f4392b8c030d2395d9fb9ac8ad70ac2cbac4d322b10473",
     "phase20_sdk_guard.mjs": "599981fb99007b5f5c544486eb30fc70ffb4bf60780ec19adf1e9d330f633388",
     "phase20_transport.py": "87a0fe6d8c3135a16149853858375165600ffdae5eeee71dd6d3540829929692",
-    "phase21_assets.py": "a64e82993521d4e4d63099d685ac669116da2fd2e92a5aede75687820fa6bb80",
+    "phase21_assets.py": "f4dc10aa9f087f59c4d3ed86c2d84ebec78f57e0a88b8e09ab61f31011570b74",
     "phase21_granite_provider.patch.yml": "2ded5f1f88d11f8ed1757e495146493d67999d062a93a42dfaa9de017a16119b",
     "phase21_model_service.py": "0cb9a3806e480111713838d103c0bb49b56610042927f3cb4443a267b12c60ec",
     "phase21_reasoning.py": "21c391fa347c70f128ba0d037b4edcc46873562a34c85a2e1d04301f7991ea54",

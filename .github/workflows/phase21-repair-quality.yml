@@ -1,0 +1,175 @@
+name: Phase21 owned repair quality and regression
+
+on:
+  pull_request:
+    branches: [engineering/phase20-native-qwen-20261024]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase21-owned-quality
+  cancel-in-progress: false
+
+jobs:
+  regression:
+    if: ${{ github.repository == 'Ledgercorp/BountyForge' && github.event.repository.private == false && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'engineering/phase21-repair-intelligence-20261024' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Python and preserved MCP/queue/validator regression
+        run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v
+      - name: Owner console regression
+        run: node --test tests/dashboard_state.mjs tests/repair_console.cjs
+      - name: Existing pinned owned runtime
+        run: docker pull python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590
+      - name: Stage public SDK wheels as inert data only
+        run: |
+          mkdir -p "$RUNNER_TEMP/bf21-wheels" evidence-run
+          python3 -m pip download --only-binary=:all: --no-deps --no-cache-dir \
+            --dest "$RUNNER_TEMP/bf21-wheels" 'deepseek-harness-sdk==0.2.1rc2' 'deepseek-harness-runtime-bin==0.2.1rc2'
+      - name: Real SDK/gateway negative QA with labeled simulated responses, no inference
+        run: |
+          env -i PATH=/usr/local/bin:/usr/bin:/bin HOME="$HOME" PYTHONDONTWRITEBYTECODE=1 \
+            python3 -m phase20_protocol_acceptance --admit-protocol-replay \
+            --wheel-directory "$RUNNER_TEMP/bf21-wheels" --output evidence-run/protocol.json
+      - name: Previously recorded model candidate replay, no inference
+        run: |
+          env -i PATH=/usr/local/bin:/usr/bin:/bin HOME="$HOME" PYTHONDONTWRITEBYTECODE=1 \
+            python3 -m phase20_replay --admit-recorded-owned-replay --output evidence-run/phase20-replay.json
+      - name: Small sanitized regression evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: phase21-regression
+          path: evidence-run/*.json
+          retention-days: 1
+          if-no-files-found: ignore
+      - name: Remove disposable wheel bytes
+        if: always()
+        run: rm -rf -- "$RUNNER_TEMP/bf21-wheels"
+
+  frozen-experiment-once:
+    needs: regression
+    # No inference on synchronize/reopen/rerun. Budgets were frozen before any
+    # requests; do not reset this condition to repeat exposed experiments.
+    if: ${{ github.event.action == 'opened' && github.run_attempt == 1 }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Actual free standard-runner CPU, memory, disk and frozen-source admission
+        id: capacity
+        run: |
+          mkdir -p evidence-run
+          PYTHONDONTWRITEBYTECODE=1 python3 - <<'PY'
+          import json,os,shutil
+          from pathlib import Path
+          from phase21_runner import capacity,load_plan
+          result={'actual_model_requests':0,'spending_usd':0,'runner':'standard public ubuntu-24.04','inference_admitted':False}
+          try:
+              load_plan('fb5543a918246dc5f1ab723366393a16c56f60fde92760bb664586c68fc17f3a')
+              load_plan('cf4fe0e37f8958ca6147036b7efe8f4cec31607a57d1f77e81e8ccb7a510d480','GRANITE_TRIAL')
+              result['capacity']=capacity(5*1024**3)
+              result['disk_free_bytes']=shutil.disk_usage(Path.home()).free
+              if result['disk_free_bytes']<8*1024**3:raise ValueError('BOUNDED_ASSET_STORAGE_UNAVAILABLE')
+              result['inference_admitted']=True
+          except (ValueError,OSError) as error:result['blocked_reason']=str(error)
+          Path('evidence-run/capacity.json').write_text(json.dumps(result,indent=2)+'\n')
+          with open(os.environ['GITHUB_OUTPUT'],'a') as out:out.write('admitted='+str(result['inference_admitted']).lower()+'\n')
+          print(json.dumps(result))
+          PY
+      - name: Existing pinned owned runtime
+        if: steps.capacity.outputs.admitted == 'true'
+        run: docker pull python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590
+      - name: Restore only the existing nonsecret public Qwen cache
+        if: steps.capacity.outputs.admitted == 'true'
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: ~/.cache/bountyforge/models
+          key: bountyforge-public-qwen25-coder-1p5b-cc324af0-v1
+      - name: Stage pinned SDK wheels, without installation or scripts
+        if: steps.capacity.outputs.admitted == 'true'
+        run: |
+          mkdir -p "$RUNNER_TEMP/bf21-wheels"
+          python3 -m pip download --only-binary=:all: --no-deps --no-cache-dir \
+            --dest "$RUNNER_TEMP/bf21-wheels" 'deepseek-harness-sdk==0.2.1rc2' 'deepseek-harness-runtime-bin==0.2.1rc2'
+      - name: Verify/acquire original Qwen and small runtime assets as inert bytes
+        if: steps.capacity.outputs.admitted == 'true'
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 python3 -m phase21_assets --admit-inert-public-assets \
+            --model-profile QWEN_1_5B --output evidence-run/qwen-assets.json
+      - name: Three-arm Qwen comparison, max 24 requests total and two per engine/task
+        id: qwen_experiment
+        continue-on-error: true
+        if: steps.capacity.outputs.admitted == 'true'
+        run: |
+          env -i PATH=/usr/local/bin:/usr/bin:/bin HOME="$HOME" PYTHONDONTWRITEBYTECODE=1 \
+            python3 -m phase21_runner --admit-owned-evaluation \
+            --experiment-sha256 fb5543a918246dc5f1ab723366393a16c56f60fde92760bb664586c68fc17f3a \
+            --wheel-directory "$RUNNER_TEMP/bf21-wheels"
+      - name: Verify/acquire only the admitted official Granite artifact
+        if: steps.capacity.outputs.admitted == 'true'
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 python3 -m phase21_assets --admit-inert-public-assets \
+            --model-profile GRANITE42_3B --output evidence-run/granite-assets.json
+      - name: Same frozen tasks and improved protocol, max eight actual Granite requests
+        id: granite_experiment
+        continue-on-error: true
+        if: steps.capacity.outputs.admitted == 'true'
+        run: |
+          env -i PATH=/usr/local/bin:/usr/bin:/bin HOME="$HOME" PYTHONDONTWRITEBYTECODE=1 \
+            python3 -m phase21_runner --admit-owned-evaluation --selection GRANITE_TRIAL \
+            --experiment-sha256 cf4fe0e37f8958ca6147036b7efe8f4cec31607a57d1f77e81e8ccb7a510d480 \
+            --wheel-directory "$RUNNER_TEMP/bf21-wheels"
+      - name: Report infrastructure completeness separately from repair accuracy
+        if: steps.capacity.outputs.admitted == 'true'
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from phase21_runner import CASES,ALL_ARMS
+          from bountyforge.repair_engines import receipt_hash
+          rows=[]
+          for case in CASES:
+              for arm in ALL_ARMS:
+                  path=Path('evidence/phase21/results')/(case+'--'+arm+'.json')
+                  if not path.exists():
+                      rows.append({'case_id':case,'arm':arm,'status':'NOT_RECORDED','actual_requests':None})
+                      continue
+                  r=json.loads(path.read_text())
+                  if receipt_hash(r)!=r['receipt_sha256']:raise ValueError('RESULT_HASH_REJECTED')
+                  rows.append({'case_id':case,'arm':arm,'status':r['status'],'actual_requests':r['actual_model_requests'],'verified':r['independently_verified']})
+          complete=all(r['status']=='COMPLETED' for r in rows)
+          result={'kind':'PHASE21_EXPERIMENT_INFRASTRUCTURE_STATUS','complete':complete,'cases':rows,
+                  'repair_accuracy_is_not_ci_status':True,'maximum_authorized_requests':32}
+          Path('evidence-run/infrastructure.json').write_text(json.dumps(result,indent=2)+'\n')
+          print(json.dumps(result))
+          raise SystemExit(0 if complete else 1)
+          PY
+      - name: Hash-bound owned model evidence, including failures
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: phase21-frozen-owned-results
+          path: |
+            evidence-run/*.json
+            evidence/phase21/results/*.json
+          retention-days: 1
+          if-no-files-found: ignore
+      - name: Remove only this disposable runner's fixed public assets
+        if: always()
+        run: |
+          rm -rf -- "$RUNNER_TEMP/bf21-wheels"
+          rm -f -- "$HOME/.cache/bountyforge/models/granite-4.2-3b-Q4_K_M.gguf" \
+            "$HOME/.cache/bountyforge/models/granite-4.2-3b-Q4_K_M.gguf.phase21-part" \
+            "$HOME/.cache/bountyforge/models/qwen2.5-coder-1.5b-instruct-q4_k_m.gguf" \
+            "$HOME/.cache/bountyforge/models/qwen2.5-coder-1.5b-instruct-q4_k_m.gguf.phase21-part" \
+            "$HOME/.cache/bountyforge/runtime/llama-b11750-bin-ubuntu-x64.tar.gz" \
+            "$HOME/.cache/bountyforge/runtime/libgomp1_12.2.0-14+deb12u1_amd64.deb"

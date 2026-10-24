@@ -1,4 +1,9 @@
 # Additive to the unchanged Phase17 forbidden-tool/log-upload profile.
+# Disposable SDK agents keep memory-only sessions. BountyForge owns durable
+# custody/evidence outside the agent; do not materialize the unused JSONL
+# flock addon's enormous pkg cache inside the fixed 16 MiB temporary storage.
+- id: sessions
+  disabled: true
 - insert:
     - id: bountyforge-local-provider
       name: '@deepseek-ai/dsh-llm-pi-ai'

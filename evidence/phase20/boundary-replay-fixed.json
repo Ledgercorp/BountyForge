@@ -1,0 +1,137 @@
+{
+  "actual_model_requests": 0,
+  "containers_absent_after_cleanup": true,
+  "kind": "SDK_PROVIDER_REPLAY_DIAGNOSTIC",
+  "probes": [
+    {
+      "capabilities_dropped": true,
+      "cpu_limit_enforced": true,
+      "docker_socket_absent": true,
+      "external_connect_denied": true,
+      "label": "before",
+      "memory_limit_enforced": true,
+      "no_new_privileges": true,
+      "nonloopback_network_absent": true,
+      "owned_canary_read": true,
+      "pids_limit_enforced": true,
+      "root_write_denied": true,
+      "schema": 1,
+      "seccomp_enabled": true,
+      "tmp_usage": {
+        "files": 4,
+        "free_bytes": 16760832,
+        "largest": [
+          [
+            "dsh-home/profiles/sdk-minimal/cordis.yml",
+            223
+          ],
+          [
+            "dsh-home/profiles/sdk-minimal/cordis.patch.yml",
+            217
+          ],
+          [
+            "dsh-home/profiles/sdk-minimal/package.json",
+            186
+          ],
+          [
+            "dsh-home/profiles/sdk-minimal/pnpm-workspace.yaml",
+            61
+          ]
+        ]
+      },
+      "tmpfs_writable": true,
+      "uid_unprivileged": true,
+      "workspace_write_denied": true
+    },
+    {
+      "capabilities_dropped": true,
+      "cpu_limit_enforced": true,
+      "docker_socket_absent": true,
+      "external_connect_denied": true,
+      "label": "after-turn-1",
+      "memory_limit_enforced": true,
+      "no_new_privileges": true,
+      "nonloopback_network_absent": true,
+      "owned_canary_read": true,
+      "pids_limit_enforced": true,
+      "root_write_denied": true,
+      "schema": 1,
+      "seccomp_enabled": true,
+      "tmp_usage": {
+        "files": 4,
+        "free_bytes": 16760832,
+        "largest": [
+          [
+            "dsh-home/profiles/sdk-minimal/cordis.yml",
+            223
+          ],
+          [
+            "dsh-home/profiles/sdk-minimal/cordis.patch.yml",
+            217
+          ],
+          [
+            "dsh-home/profiles/sdk-minimal/package.json",
+            186
+          ],
+          [
+            "dsh-home/profiles/sdk-minimal/pnpm-workspace.yaml",
+            61
+          ]
+        ]
+      },
+      "tmpfs_writable": true,
+      "uid_unprivileged": true,
+      "workspace_write_denied": true
+    },
+    {
+      "capabilities_dropped": true,
+      "cpu_limit_enforced": true,
+      "docker_socket_absent": true,
+      "external_connect_denied": true,
+      "label": "after-turn-2",
+      "memory_limit_enforced": true,
+      "no_new_privileges": true,
+      "nonloopback_network_absent": true,
+      "owned_canary_read": true,
+      "pids_limit_enforced": true,
+      "root_write_denied": true,
+      "schema": 1,
+      "seccomp_enabled": true,
+      "tmp_usage": {
+        "files": 4,
+        "free_bytes": 16760832,
+        "largest": [
+          [
+            "dsh-home/profiles/sdk-minimal/cordis.yml",
+            223
+          ],
+          [
+            "dsh-home/profiles/sdk-minimal/cordis.patch.yml",
+            217
+          ],
+          [
+            "dsh-home/profiles/sdk-minimal/package.json",
+            186
+          ],
+          [
+            "dsh-home/profiles/sdk-minimal/pnpm-workspace.yaml",
+            61
+          ]
+        ]
+      },
+      "tmpfs_writable": true,
+      "uid_unprivileged": true,
+      "workspace_write_denied": true
+    }
+  ],
+  "repairs_measured": 0,
+  "sdk_exit_code": 0,
+  "sdk_resources": {
+    "cpu.max": "100000 100000",
+    "cpu.stat": "usage_usec 1505619\nuser_usec 1255704\nsystem_usec 249914\nnice_usec 0\nnr_periods 18\nnr_throttled 8\nthrottled_usec 233688\nnr_bursts 0\nburst_usec 0",
+    "memory.max": "201326592",
+    "memory.peak": "68141056",
+    "pids.max": "32",
+    "pids.peak": "17"
+  }
+}

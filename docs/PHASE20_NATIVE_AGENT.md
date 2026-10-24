@@ -72,3 +72,48 @@ Initial focused admission/transport tests: 12 passed after their missing-feature
 failures were observed locally. Node console regression: 8 passed. Full Python
 regression and actual SDK inference results are recorded as they execute; no
 Phase20 model success is claimed by this initial checkpoint.
+
+### First actual native attempt and diagnosed compatibility failures
+
+The frozen `weighted-mix` budget is exhausted: two genuine native-SDK-initiated
+Qwen requests, each one completion token, produced truncated `{"` responses.
+Both were consumed by real SDK assistant events and rejected by the handoff
+validator. No reference patch was substituted and no successful repair is
+claimed. `evidence/phase20/native-demo-v1.json` preserves this original failure.
+
+The pinned pi-ai `dist/api/simple-options.js` subtracts a **4,096-token safety
+reserve** before computing output allowance. With a 2,048-token local context,
+this always clamps the SDK's authorized 150-token request to one token. The
+explicit gateway compatibility correction restores **150**, only when the
+actual llama tokenizer confirms input <=1,898 tokens and input+output <=2,048.
+It records both the unmodified SDK wire request and the admitted token count.
+This does not change the frozen output/context budget or weaken a validator.
+
+The post-turn probe also correctly detected a full temporary filesystem.
+Model-free replay of the two actual truncated answers reproduced the failure:
+the JSONL session backend lazily loads `node-addon-system` for POSIX flock, and
+the carrier's pkg `process.dlopen` implementation copies the entire scoped
+package tree into `/tmp/.cache/pkg/<binding-hash>/`. After one turn, 467 files
+filled the 16 MiB mount and shutdown failed. The source-grounded correction is
+to disable the SDK profile's optional **JSONL persistence plugin**, ID `sessions`,
+and use its supported in-memory session store. There is no disk writer to lock;
+no lock or native-binding check is bypassed. These per-container logs were never
+durable across job teardown. BountyForge retains evidence and coordination
+outside the agent. No temporary-storage, memory, filesystem-write or network
+allowance was enlarged.
+
+The separate replay diagnostic is explicitly simulated provider traffic, **zero
+real model requests and zero repair measurements**. After the configuration
+correction, two actual SDK turns consuming the recorded partial answers retained
+16,760,832 free temporary bytes, all fourteen boundary checks passed before and
+after each turn, and shutdown returned exit 0. See
+`boundary-replay-before.log` and `boundary-replay-fixed.json` under the evidence
+directory. Real model generation is measured separately.
+
+Exclusive private per-arm reservation files now prevent duplicate/restarted
+experiments from obtaining another inference allowance. Interrupted arms remain
+reserved; automatic budget refunds/retries are prohibited. The hash-bound prior
+demo receipt prevents resetting its spent two-request allocation. These local
+claims survive process restart in this checkout; continuity on a new Cloud
+workspace is **not established**. All six remaining comparison-arm requests
+are still limited to one each under the original eight-request experiment.

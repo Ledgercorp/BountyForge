@@ -3,6 +3,15 @@ import unittest
 
 
 class ModelGatewayTests(unittest.TestCase):
+    def test_opt_in_adapter_headroom_correction_restores_only_the_authorized_150_tokens(self):
+        from phase20_model_service import restore_output_budget
+        request={'max_tokens':1}
+        self.assertEqual(restore_output_budget(request,412,compat=False)['max_tokens'],1)
+        self.assertEqual(restore_output_budget(request,412,compat=True)['max_tokens'],150)
+        self.assertEqual(request['max_tokens'],1)
+        with self.assertRaisesRegex(ValueError,'CONTEXT_LIMIT'):
+            restore_output_budget(request,1899,compat=True)
+
     def request(self,**extra):
         return json.dumps({'model':'bountyforge-qwen-1.5b','messages':[{'role':'user','content':'owned defect'}],
                            'stream':True,'max_tokens':150,**extra}).encode()

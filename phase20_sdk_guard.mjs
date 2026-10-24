@@ -12,6 +12,7 @@ export function apply(ctx) {
   ctx.on('agent/created',async ({agent})=>{
     if (++agents!==1) throw Error('One owned agent only');
     const tools=ctx.get('tools');
+    const audit=async ()=>{
     const forbidden=['bash','pwsh','exec_command','write_stdin','write','edit','read','read_image',
       'list_mcp_resources','list_mcp_resource_templates','read_mcp_resource','run_code'];
     const names=tools.schemas(agent).map(x=>x.name).sort(),refusals=[];
@@ -27,8 +28,15 @@ export function apply(ctx) {
     const credentialNames=['GH_TOKEN','GITHUB_TOKEN','GROQ_API_KEY','OPENAI_API_KEY','DEEPSEEK_API_KEY',
       'STRIPE_SECRET_KEY','AWS_SECRET_ACCESS_KEY','ANTHROPIC_API_KEY'].filter(n=>process.env[n]);
     if (credentialNames.length) throw Error('Credentials forbidden');
-    process.stderr.write('BOUNTYFORGE_LIVE_AUDIT '+JSON.stringify({tool_names:names,refusals,
-      mcp_resources_service_present:false,credential_names_present:credentialNames})+'\n');
+    if (ctx.get('sessionPersistence')!==undefined) throw Error('Ephemeral SDK session policy changed');
+    return {tool_names:names,refusals,
+      mcp_resources_service_present:false,credential_names_present:credentialNames,
+      sdk_session_persistence:'MEMORY_ONLY'};
+    };
+    process.stderr.write('BOUNTYFORGE_LIVE_AUDIT '+JSON.stringify(await audit())+'\n');
+    agent.ctx.on('agent/turn-stopping',async ()=>{
+      process.stderr.write('BOUNTYFORGE_POST_TURN_AUDIT '+JSON.stringify(await audit())+'\n');
+    });
     let count=0;
     agent.ctx.on('agent/request',async (_payload,next)=>{
       if (++count>policy.request_limit) throw Error('Owned inference request budget exhausted');

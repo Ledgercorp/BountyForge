@@ -1,7 +1,24 @@
 import unittest
+import tempfile
+from pathlib import Path
 
 
 class NativeAgentEvidenceTests(unittest.TestCase):
+    def test_crashed_or_completed_arm_cannot_claim_its_inference_budget_again(self):
+        from phase20_native_agent import claim_arm
+        with tempfile.TemporaryDirectory() as temp:
+            p=Path(temp)/'claims'
+            self.assertEqual(claim_arm('optional-setting','NATIVE_SDK',root=p),1)
+            with self.assertRaisesRegex(ValueError,'ARM_ALREADY_RESERVED'):
+                claim_arm('optional-setting','NATIVE_SDK',root=p)
+            self.assertEqual(claim_arm('optional-setting','EXTERNAL_CONTROL',root=p),1)
+
+    def test_completed_two_request_demo_never_gets_a_new_budget(self):
+        from phase20_native_agent import claim_arm
+        with tempfile.TemporaryDirectory() as temp:
+            with self.assertRaisesRegex(ValueError,'ARM_ALREADY_COMPLETED'):
+                claim_arm('weighted-mix','NATIVE_SDK',root=Path(temp)/'claims')
+
     def test_absent_sdk_assistant_event_is_not_replaced_by_an_external_model_answer(self):
         from phase20_native_agent import assistant_response
         self.assertEqual(assistant_response([{'method':'session.status','params':{'status':'idle'}}]),'')

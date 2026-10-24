@@ -58,6 +58,19 @@ class RequestBudget:
             self.dispatched+=1
 
 
+def restore_output_budget(request,prompt_tokens,*,compat=False):
+    output=dict(request)
+    # Pinned pi-ai reserves 4096 context tokens, clamping every 2048-context
+    # route to one output token. This explicit shim restores the SDK's verified
+    # 150-token contract only after the actual model tokenizer confirms room.
+    # The model context, maximum output, validator and source scope never grow.
+    if compat and max(output.get('max_tokens',0),output.get('max_completion_tokens',0))==1:
+        if prompt_tokens>1898:raise ValueError('CONTEXT_LIMIT_EXCEEDED')
+        for key in ('max_tokens','max_completion_tokens'):
+            if key in output:output[key]=150
+    return output
+
+
 def native_json(path,body):
     connection=http.client.HTTPConnection('127.0.0.1',8080,timeout=45)
     try:
@@ -95,11 +108,14 @@ class Gateway(BaseHTTPRequestHandler):
             length=int(self.headers.get('Content-Length','-1'))
             if not 1<=length<=12288:raise ValueError('BODY_LIMIT')
             raw=self.rfile.read(length);body=admit_request(self.path,raw)
-            row.update(sdk_request=body,sdk_request_sha256=hashlib.sha256(raw).hexdigest())
+            row.update(sdk_request=json.loads(raw),sdk_request_sha256=hashlib.sha256(raw).hexdigest())
             rendered=native_json('/apply-template',{'messages':body['messages'],'add_generation_prompt':True})
             prompt=rendered['prompt']
             tokens=native_json('/tokenize',{'content':prompt,'add_special':False,'parse_special':True})['tokens']
             row['rendered_prompt_tokens']=len(tokens)
+            body=restore_output_budget(body,len(tokens),compat=self.server.config['pi_ai_context_guard_compat'])
+            row['admitted_output_tokens']=max(body.get('max_tokens',0),body.get('max_completion_tokens',0))
+            row['pi_ai_context_guard_compat']=self.server.config['pi_ai_context_guard_compat']
             if len(tokens)>1898 or len(tokens)+max(body.get('max_tokens',0),body.get('max_completion_tokens',0))>2048:
                 raise ValueError('CONTEXT_LIMIT_EXCEEDED')
             self.server.budget.reserve()
@@ -150,7 +166,8 @@ class Gateway(BaseHTTPRequestHandler):
 
 def main():
     config=json.loads(Path('/workspace/model-config.json').read_text())
-    if set(config)!={'grammar','request_limit'} or type(config['grammar']) is not str or len(config['grammar'])>50000:
+    if (set(config)!={'grammar','request_limit','pi_ai_context_guard_compat'} or type(config['grammar']) is not str
+            or len(config['grammar'])>50000 or type(config['pi_ai_context_guard_compat']) is not bool):
         raise ValueError('FIXED_MODEL_CONFIG_REQUIRED')
     resource.setrlimit(resource.RLIMIT_AS,(10*1024**3,10*1024**3))
     budget=RequestBudget(config['request_limit']);began=time.monotonic()

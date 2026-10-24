@@ -9,4 +9,5 @@ reports/
 .env
 .env.*
 .bountyforge-owned-queue/
+.bountyforge-phase20/
 !*.example

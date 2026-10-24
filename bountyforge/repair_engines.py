@@ -43,6 +43,8 @@ COMPARISON = ROOT / 'fixtures/phase15'
 COMPARISON_SHA256 = '5a8332f4c052b7b0cd70b89c7ac097ad4c7d59391c3a0de1e0c9c0014ddd77c9'
 NEXTGEN=ROOT/'fixtures/nextgen'
 NEXTGEN_SHA256='f35fba899e532cd4ac48599b8eb4536f01892bfcf87dd1fb853b07ee2364035c'
+QUALITY=ROOT/'fixtures/phase21'
+QUALITY_SHA256='e0b16fa3a54fe0c73454a7b0d7b22fb46feae58360065a39500e2e8dd0a9a857'
 ENGINES = ('QWEN_LOCAL', 'CODEX_AGENT')
 MAX_ATTEMPTS = 2
 TASK_TTL = 600
@@ -84,11 +86,12 @@ def receipt_hash(receipt):
     return digest(encoded({key: value for key, value in receipt.items() if key != 'receipt_sha256'}))
 
 
-def catalog():
+def catalog(*,include_quality=False):
+    if type(include_quality) is not bool:raise RepairRejected('BOOLEAN_OWNED_QUALITY_SELECTION_REQUIRED')
     verify_core()  # Preserve every previously frozen source/security pin.
     return (_catalog(CATALOG, MANIFEST_SHA256) + _catalog(DEVELOPMENT, DEVELOPMENT_SHA256)
             + _catalog(MAINTENANCE, MAINTENANCE_SHA256) + _catalog(COMPARISON, COMPARISON_SHA256)
-            + _catalog(NEXTGEN,NEXTGEN_SHA256))
+            + _catalog(NEXTGEN,NEXTGEN_SHA256) + (_catalog(QUALITY,QUALITY_SHA256) if include_quality else []))
 
 
 def _catalog(directory, expected):
@@ -116,7 +119,7 @@ def source_directory(spec):
     # The directory comes only from pinned manifest membership, never caller data.
     for directory, expected in ((CATALOG,MANIFEST_SHA256),(DEVELOPMENT,DEVELOPMENT_SHA256),
                                 (MAINTENANCE,MAINTENANCE_SHA256),(COMPARISON,COMPARISON_SHA256),
-                                (NEXTGEN,NEXTGEN_SHA256)):
+                                (NEXTGEN,NEXTGEN_SHA256),(QUALITY,QUALITY_SHA256)):
         if spec in _catalog(directory,expected):return directory/spec['id']
     raise RepairRejected('UNKNOWN_OWNED_SOURCE')
 
@@ -253,7 +256,9 @@ def observation_summary(value):
 
 class RepairService:
     """Process-local capability store. MCP callers cannot inject its verifier."""
-    def __init__(self, *, verifier=None, model_factory=None,prompt_factory=None,resource_envelope='LEGACY'):
+    def __init__(self, *, verifier=None, model_factory=None,prompt_factory=None,resource_envelope='LEGACY',owned_quality=False):
+        if type(owned_quality) is not bool:raise RepairRejected('BOOLEAN_OWNED_QUALITY_SELECTION_REQUIRED')
+        self.owned_quality=owned_quality
         self.verifier = verifier if verifier is not None else OwnedVerifier()
         self.model_factory = model_factory
         self.prompt_factory=prompt_factory or model_prompt
@@ -264,7 +269,7 @@ class RepairService:
         if engine not in ENGINES or type(case_id) is not str:
             raise RepairRejected('UNKNOWN_ENGINE_OR_OWNED_TASK')
         selected=select_profile(engine,model_profile)
-        specs = catalog()
+        specs = catalog(include_quality=self.owned_quality)
         spec = next((item for item in specs if item['id'] == case_id), None)
         if spec is None or len(self.tasks) >= 4:
             raise RepairRejected('UNKNOWN_OWNED_TASK_OR_SESSION_BUDGET')

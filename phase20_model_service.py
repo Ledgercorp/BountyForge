@@ -27,10 +27,11 @@ def _unique(pairs):
     return result
 
 
-def admit_request(path,raw):
+def admit_request(path,raw,*,expected_model=MODEL):
+    if expected_model not in (MODEL,'bountyforge-granite-3b'):raise ValueError('UNAPPROVED_MODEL_IDENTITY')
     if path!='/v1/chat/completions' or not 1<=len(raw)<=12288:raise ValueError('REQUEST_SCOPE')
     request=json.loads(raw,object_pairs_hook=_unique,parse_constant=lambda _:(_ for _ in ()).throw(ValueError('NONFINITE')))
-    if type(request) is not dict or request.get('model')!=MODEL or request.get('stream') is not True:
+    if type(request) is not dict or request.get('model')!=expected_model or request.get('stream') is not True:
         raise ValueError('MODEL_OR_STREAM_SCOPE')
     if request.get('tools') or request.get('tool_choice') not in (None,'none','auto'):
         raise ValueError('MODEL_TOOLS_FORBIDDEN')
@@ -97,19 +98,22 @@ class Gateway(BaseHTTPRequestHandler):
 
     def do_GET(self):
         if self.path!='/v1/models':self.fail('FIXED_ROUTE_ONLY');return
-        raw=json.dumps({'object':'list','data':[{'id':MODEL,'object':'model','owned_by':'local-qwen'}]}).encode()
+        raw=json.dumps({'object':'list','data':[{'id':getattr(self.server,'model_id',MODEL),'object':'model','owned_by':'local-qwen' if getattr(self.server,'model_id',MODEL)==MODEL else 'local-granite'}]}).encode()
         self.send_response(200);self.send_header('Content-Type','application/json');self.send_header('Content-Length',str(len(raw)))
         self.end_headers();self.wfile.write(raw)
 
     def do_POST(self):
-        connection=None;started=time.monotonic();row={'model':MODEL,'completion_forwarded':False}
+        identity=getattr(self.server,'model_id',MODEL)
+        connection=None;started=time.monotonic();row={'model':identity,'completion_forwarded':False}
         try:
             if self.headers.get('Authorization')!='Bearer local-no-credential':raise ValueError('NO_PROVIDER_CREDENTIAL_ALLOWED')
             length=int(self.headers.get('Content-Length','-1'))
             if not 1<=length<=12288:raise ValueError('BODY_LIMIT')
-            raw=self.rfile.read(length);body=admit_request(self.path,raw)
+            raw=self.rfile.read(length);body=admit_request(self.path,raw,expected_model=identity)
             row.update(sdk_request=json.loads(raw),sdk_request_sha256=hashlib.sha256(raw).hexdigest())
-            rendered=native_json('/apply-template',{'messages':body['messages'],'add_generation_prompt':True})
+            template={'messages':body['messages'],'add_generation_prompt':True}
+            if getattr(self.server,'disable_thinking',False):template['chat_template_kwargs']={'enable_thinking':False}
+            rendered=native_json('/apply-template',template)
             prompt=rendered['prompt']
             tokens=native_json('/tokenize',{'content':prompt,'add_special':False,'parse_special':True})['tokens']
             row['rendered_prompt_tokens']=len(tokens)
@@ -120,6 +124,7 @@ class Gateway(BaseHTTPRequestHandler):
                 raise ValueError('CONTEXT_LIMIT_EXCEEDED')
             self.server.budget.reserve()
             body['grammar']=self.server.config['grammar']
+            if getattr(self.server,'disable_thinking',False):body['chat_template_kwargs']={'enable_thinking':False}
             connection=http.client.HTTPConnection('127.0.0.1',8080,timeout=45)
             row['completion_forwarded']=True
             connection.request('POST','/v1/chat/completions',json.dumps(body),{'Content-Type':'application/json'})
@@ -169,11 +174,19 @@ def main():
     if (set(config)!={'grammar','request_limit','pi_ai_context_guard_compat'} or type(config['grammar']) is not str
             or len(config['grammar'])>50000 or type(config['pi_ai_context_guard_compat']) is not bool):
         raise ValueError('FIXED_MODEL_CONFIG_REQUIRED')
+    serve(config)
+
+
+def serve(config,*,model_id=MODEL,disable_thinking=False):
+    if ((model_id,disable_thinking) not in ((MODEL,False),('bountyforge-granite-3b',True))):
+        raise ValueError('EXPLICIT_MODEL_EXECUTION_PROFILE_REQUIRED')
     resource.setrlimit(resource.RLIMIT_AS,(10*1024**3,10*1024**3))
     budget=RequestBudget(config['request_limit']);began=time.monotonic()
     log=open('/tmp/llama.log','wb')
-    child=subprocess.Popen(['/opt/qwen/llama-b11750/llama-server','-m','/opt/qwen/model.gguf',
-        '--host','127.0.0.1','--port','8080','--alias',MODEL,'-t','2','-c','2048','-np','1','--no-webui'],
+    command=['/opt/qwen/llama-b11750/llama-server','-m','/opt/qwen/model.gguf',
+        '--host','127.0.0.1','--port','8080','--alias',model_id,'-t','2','-c','2048','-np','1','--no-webui']
+    if disable_thinking:command+=['--chat-template-kwargs','{"enable_thinking":false}']
+    child=subprocess.Popen(command,
         stdout=log,stderr=log,env={'PATH':'/usr/local/bin:/usr/bin:/bin','LD_LIBRARY_PATH':'/opt/qwen/deps:/opt/qwen/llama-b11750'})
     server=None
     def terminate(*_):raise SystemExit(0)
@@ -194,7 +207,7 @@ def main():
             time.sleep(.5)
         else:raise RuntimeError('MODEL_LOAD_TIMEOUT')
         server=HTTPServer(('127.0.0.1',8081),Gateway);server.timeout=.5
-        server.budget=budget;server.config=config;server.rows=[]
+        server.budget=budget;server.config=config;server.rows=[];server.model_id=model_id;server.disable_thinking=disable_thinking
         while child.poll() is None and time.monotonic()-began<180:server.handle_request()
     finally:
         if server:server.server_close()

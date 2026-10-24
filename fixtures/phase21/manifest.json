@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "classification": "OWNED_DEVELOPMENT",
+  "independent_evaluation": false,
+  "provenance": "LeftSock-authored Phase21 maintenance contracts, no reference patches. Visible to the engineering agent; never unseen. Frozen before model inference.",
+  "cases": [
+    {
+      "id": "shipment-total",
+      "symbol": "shipment_total",
+      "description": "Compute goods from non-cancelled items with positive integer quantities. Shipping is the standard fee only for a nonempty goods subtotal strictly below the positive free-shipping threshold. Empty orders and orders at or above the threshold ship free. Total includes goods and shipping. Preserve caller data and helper behavior.",
+      "sha256": {
+        "subject.py": "5c09d7843e9b14a5e17bfe1eab6b54c161a4e541c24fa590c9f3ec7b6cae4c78",
+        "tests/test_regression.py": "23593004ff340043040de02f59170a96ddea3110997f8cf5dd4c0d23672689dd"
+      }
+    },
+    {
+      "id": "cache-refresh",
+      "symbol": "refresh_cache",
+      "description": "Apply an HTTP response to a copied cache. Status 200 replaces value and updates the etag when supplied, then resets failed attempts to zero. Status 304 preserves cached value and etag and resets attempts to zero. Other statuses preserve value/etag and increment existing failed attempts once. Preserve the input mappings, including explicit false/zero cached values.",
+      "sha256": {
+        "subject.py": "923c475257bdb9e8efa80a59f8ba832ad95ec2c011c563b4212c835718c52956",
+        "tests/test_regression.py": "406de1538f5d25bbaf33f862d5e208e78501bc8c329fd54b69d092a666731558"
+      }
+    },
+    {
+      "id": "parameter-pairs",
+      "symbol": "parse_pairs",
+      "description": "Parse semicolon-separated key=value fields. Strip whitespace from keys and values, preserve equals signs within the value, accept empty values, ignore fragments without an equals sign or with an empty key, and preserve the first occurrence of each stripped key. Key matching is case sensitive.",
+      "sha256": {
+        "subject.py": "313e62ac1e62bfa278e069e4185eeb05acbaee9962cc88d0ace532280916e608",
+        "tests/test_regression.py": "4401b0f2cd7bfdbf17f66062cca874cb82e411d75beaaa709e26272f2a1c9b39"
+      }
+    },
+    {
+      "id": "inventory-adjustments",
+      "symbol": "reconcile_inventory",
+      "description": "Apply only adjustments whose approved field is exactly True. Start from a copy of stock. For each accepted row, add its integer delta to the latest stock for that SKU and clamp that step to zero. Unknown SKUs start at zero. Ignore missing/false/non-boolean approvals. Preserve caller stock, rows and helper behavior.",
+      "sha256": {
+        "subject.py": "db70dd4df33f55b5fd7e75a4e4585a6af464f531f18b13dbed33ffcbd265ba8e",
+        "tests/test_regression.py": "a3eacbbc04b978f6de4dc53173bb5de644a84d96e95fb04261a93f3fe83081bf"
+      }
+    }
+  ]
+}

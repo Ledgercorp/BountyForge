@@ -289,3 +289,36 @@ runtime/dependency provenance and vulnerability review, stronger customer
 isolation/recovery evidence, fresh payment checks and explicit launch/delivery
 authorization. Memory-only SDK conversations are not durable session recovery;
 BountyForge's external claims and receipts provide fail-closed experiment custody.
+
+## Hosted acceptance and final publication
+
+Draft PR **#8**: https://github.com/Ledgercorp/BountyForge/pull/8
+
+Hosted run **40098093481** succeeded on implementation commit
+`bd984f277d946f4c39e23cdc73697f676eb44435`:
+https://github.com/Ledgercorp/BountyForge/actions/runs/40098093481
+
+- Python: **824 executed, 815 passed, 9 existing skips, zero failures** (34.398 s).
+- Node: **8 passed, zero failures**.
+- Exact candidate replay: native chunk-count and external optional-setting
+  each passed 6/6 targeted plus 6/6 fresh Docker tests; native reading-groups
+  retained its expected TEST_FAILED outcome with the identical candidate hash.
+- Actual hardened SDK protocol acceptance: PASS, shutdown exit 0, cleanup
+  confirmed, all pre/post tool and OS controls passed; 5.512 s. Provider traffic
+  is explicitly simulated and contributes zero model requests/repairs.
+- Artifact ID 12561851617, 5,077 bytes, one-day retention. Both original JSON
+  receipts were downloaded, hash-validated and committed as
+  `github-protocol-40098093481.json` / `github-replay-40098093481.json`.
+
+`evidence/phase20/acceptance.json` records the starting commit, all four
+implementation commits, exact changed-file inventory, test counts, resource
+limitations, external operations and receipt/file hashes. The final publication
+commit adds only this ledger and hosted evidence; it does not change the tested
+implementation or dispatch more CI/model experiments. All previous draft PR
+heads and main remain unchanged. No active Phase20 container or llama process
+remains. One stale owned admission-probe container from this checkout was
+removed during recovery; the unrelated older Created container was preserved.
+
+The real SDK-to-Qwen-to-verifier integration is ENGINEERING_READY_FOR_REVIEW for
+these defined owned development checks. It is experimental, not the new default.
+PRIVATE_EXECUTION_ADMITTED and COMMERCIALLY_AUTHORIZED remain false.

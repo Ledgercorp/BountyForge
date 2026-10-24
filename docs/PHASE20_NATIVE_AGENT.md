@@ -115,8 +115,10 @@ experiments from obtaining another inference allowance. Interrupted arms remain
 reserved; automatic budget refunds/retries are prohibited. The hash-bound prior
 demo receipt prevents resetting its spent two-request allocation. These local
 claims survive process restart in this checkout; continuity on a new Cloud
-workspace is **not established**. All six remaining comparison-arm requests
-are still limited to one each under the original eight-request experiment.
+workspace is **not established**. All six comparison-arm requests were limited to one each under the original
+eight-request experiment; their completed results follow below. Published,
+hash-validated per-arm receipts now also fence completed arms on a fresh checkout,
+even when private reservation files are absent.
 
 ### Completed original comparison and separate integration supplement
 
@@ -130,13 +132,19 @@ context: exactly **26 more input tokens per task**. The observed result does not
 establish that this context difference caused the accuracy difference. No
 superiority or commercial-readiness claim is warranted.
 
-The task-only V3 policy removes only `working-directory:current` through the
-documented scoped system-prompt assembly hook, while retaining other required
-context and every capability restriction. That filesystem context is irrelevant
-when filesystem tools are unavailable and approved source is supplied in the
-prompt. It also reuses BountyForge's existing validated-sibling retention for
-failed-test retries; all effective proposals are revalidated by the same bridge.
-These changes are **not** retroactively applied to the original results.
+The proposed task-only V3 assembly hook did **not** remove the required working-
+directory context. Real protocol QA caught this before final acceptance. Pinned
+SDK `systemPrompt.refreshContext()` restores missing required registrations after
+assembly; the successful supplement's actual wire receipt also contains the
+26-token context. The ineffective hook was removed. The frozen supplement still
+records the original intended prompt revision; this is an explicit experiment
+variance, not evidence of task-only execution. No task was rerun and no result
+is attributed to context removal. Required SDK context remains intact.
+
+The controller reuses BountyForge's existing source-validated sibling retention
+for failed-test retries, then revalidates the complete effective proposal. The
+successful supplement needed no retry, so live effectiveness of that mechanism
+is unmeasured. These changes are not retroactively applied to earlier results.
 
 `phase20_supplement.json`, SHA256
 `fd231562a7cb38fa2fe9c3fd8d5c1e212a366cf476fd973ed4142e5519fcf208`,
@@ -148,3 +156,136 @@ two per distinct task including both arms of each original comparison case.
 The supplement is developmental integration testing, not a fresh accuracy
 benchmark or a basis for hiding the failed original tasks. No authored solution
 is placed in either prompt or proposal.
+
+## Verified native repair and measured comparison
+
+The supplement ran against the implementation published in `7ef69c3` and used
+**one** genuine SDK-driven Qwen completion. The native SDK initialized the local
+provider, initiated the SSE inference request, consumed the identical response
+in an actual assistant event, and handed its bounded JSON to the existing
+trusted verifier. Qwen independently generated the candidate; Codex supplied no
+repair output. `chunk-count` passed **6/6 targeted tests and 6/6 tests in a fresh
+independent Docker execution**. Final state is AWAITING_OWNER_APPROVAL, with no
+delivery or customer authorization.
+
+- Origin receipt: `8be66779f8399b0fff483d610dfa127eb0838177b559a476a935603b5fcb6e2d`.
+- Candidate source: `db84da77718bd0119616f572255d96712b90acf15b894ab62c9285cbc82ea5b2`.
+- Verifier receipt: `f9c145306334a747459b2d96d7a321e8bf3f06cb2be9b0ecca8c4580bc76e925`.
+- Tokens: 321 input / 25 completion. Inference: **3.939 s**; complete case: **26.996 s**.
+- SDK cgroup peak: 71,000,064 bytes; model cgroup peak: 834,781,184 bytes.
+- Observed SDK/model cgroup CPU: 1.189648 / 10.457613 seconds.
+- Normal SDK shutdown: exit 0; both created containers absent after cleanup.
+
+The six original comparison proposals were source-valid. Their actual results:
+
+| Case | Native SDK / Qwen | External Qwen control | Cause |
+|---|---|---|---|
+| optional-setting | Failed tests | Verified, 6/6 twice | SDK retained truthiness fallback for explicit false values |
+| reading-groups | Failed tests | Failed tests | SDK retained truthy filtering and an outer-value dependency; external excluded zero |
+| reserve-release | Failed tests | Failed tests | Both tripled the release counter increment |
+
+| Original matched comparison | SDK | External control |
+|---|---:|---:|
+| Tasks / valid candidates | 3 / 3 | 3 / 3 |
+| Targeted and independently verified repairs | 0 | 1 |
+| Actual completion requests | 3 | 3 |
+| Prompt / completion tokens | 1,500 / 110 | 1,422 / 133 |
+| Inference seconds | 18.178 | 17.857 |
+| Sum of complete-case seconds | 87.719 | 83.847 |
+
+Together with the two initial truncated requests and the separate supplement,
+Phase20 used **9 actual completions: 6 SDK-driven and 3 external**, 4,365 prompt
+and 270 completion tokens, 46.944 inference seconds and 229.388 summed case wall
+seconds. The one unused supplemental allowance is closed by its completed claim
+and published receipt. Nothing automatically refunds a crashed/unknown request.
+The initial demo had one resource/protocol interruption and failed shutdown;
+this original failure remains recorded. The post-fix cases completed cleanup.
+
+`model-comparison.json` is reproducible with `python -m phase20_measurements`.
+It binds all eight original records and separates the paired comparison from
+the supplement. Source/test/candidate and response hashes remain in their
+original receipts. Both reading-groups candidates introduced the additionally
+reported `test_zero` failure. Bounded feedback is not an exhaustive regression
+count. No failing candidate was promoted to review-ready.
+
+Memory above is **cgroup memory.peak, not process RSS**. Shared read-only model
+pages can be charged outside the observed cgroup. Do not compare these figures
+to Phase19 process RSS as if they were the same measure. CPU includes contained
+observation subprocesses through the last probe; trusted host-verifier CPU was
+not separately instrumented. Complete-case time includes setup, reproduction,
+inference and verification; separate verification latency is unavailable.
+Initial-failure CPU/memory were not captured. Hash binding is not an authenticated
+runtime signature or cryptographic authorship attestation.
+
+## Black Box and independent replay
+
+The real SDK/gateway protocol acceptance uses an explicitly **simulated**
+provider, empty model-asset mount and no model execution. Two actual SDK turns
+consume the recorded rejected fragment, preserve required context/history, and
+shut down cleanly. All twelve forbidden tools are actually invoked and refused
+before the first and after both turns. Seven malformed/unauthorized HTTP requests
+are rejected; a third otherwise-valid completion is denied before backend
+forwarding. The simulator counter remains two. Unknown SDK RPC is rejected.
+All fourteen SDK and fourteen provider OS-boundary checks pass, including actual
+external TCP denial and loopback-only interfaces. No model or repair success is
+counted from these tests. See `local-protocol-acceptance.json`.
+
+The real model sessions have the same pre/post fourteen-control observations
+and twelve-tool refusals. Zero tools are exposed, MCP resources are absent,
+credentials are absent and optional session persistence is memory-only. The
+sidecar and SDK share only the network namespace, not PID/filesystem/cgroups.
+The local raw model and gateway ports are private loopback services; this does
+not certify the native runtime against arbitrary malicious code or admit
+customer workloads. The gateway/SDK guards and independent verifier remain
+separate controls.
+
+`python -m phase20_replay --admit-recorded-owned-replay --output <receipt.json>`
+replays the exact native chunk-count and external optional-setting successes,
+each through targeted plus fresh verification, and confirms the recorded native
+reading-groups candidate still fails tests. Origins and candidate hashes are
+checked; it makes **zero** model requests and claims **zero** new repairs.
+Local replay passed; see `local-recorded-replay.json`. Default-off CLI behavior,
+unknown arguments, modified receipts, missing SDK assistant events, tool access,
+invalid scope, provider identity and restart budget fences have focused tests.
+
+## Acceptance, operation and limitations
+
+Local final regression: **824 tests, 815 passed, 9 existing namespace/rootfs
+skips, zero failures** (31.157 s). The 22 Phase20 focused tests passed; all eight
+Node console tests passed. The full suite preserves MCP, SQLite recovery,
+queue/cancellation, source validators, historical and frozen evaluation checks.
+The skipped checks are not completed security verification.
+
+The new single PR-triggered workflow uses the public standard Ubuntu 24.04
+runner, read-only GitHub permissions, nonpersistent checkout credentials, a
+10-minute timeout and one concurrency group. It runs full regression, the real
+recorded Docker replay and the real SDK with the labeled protocol simulator.
+It downloads only the two hash-pinned public SDK wheels as inert data, not models
+or installers; receipts expire after one day. There is no schedule, provider
+secret or live inference in CI. Hosted results are appended after observation.
+
+Use `python -m phase20_native_agent --help` for explicit admission and frozen task
+selection. Current experimental arms are completed and fail closed on reuse;
+new experiments require separately reviewed frozen input/budget material.
+Existing QWEN_LOCAL defaults, CODEX_AGENT session-driven behavior, console, all
+original MCP operations and production settings are unchanged. This optional
+native path is **off by default**. Rollback is simply not invoking it; the existing
+external/local engine remains available without a framework replacement or
+hidden provider fallback.
+
+Private execution and commercial status remain **NOT_ADMITTED**. Deployment and
+scheduling are inactive. Additional spending and confirmed revenue are **$0**.
+No customer code, payments, external submissions, customer communications, paid
+inference, GPU, Mac access, production writes or merges occurred. The only
+external writes are the authorized engineering branch, draft PR and CI artifacts.
+
+The integration works, but the paired sample shows no repair-quality benefit;
+retain the existing default and keep Harness experimental. A high-value next
+milestone is a separately frozen, bounded comparison of stronger admitted local
+models or better diagnosis/feedback on new owned development tasks. A genuinely
+unseen quality claim still needs an independently controlled inaccessible test
+store. Commercial use additionally needs source/model-sharing rights, privacy,
+runtime/dependency provenance and vulnerability review, stronger customer
+isolation/recovery evidence, fresh payment checks and explicit launch/delivery
+authorization. Memory-only SDK conversations are not durable session recovery;
+BountyForge's external claims and receipts provide fail-closed experiment custody.

@@ -20,6 +20,7 @@ from phase19_sdk_acceptance import remove_container,FORBIDDEN
 from phase20_transport import (stage_assets,model_command,sdk_command,MODEL_PROBE,validate_model_boundary,MODEL_ID,PROVIDER_ID)
 
 ROOT=Path(__file__).resolve().parent
+HISTORY_ROOT=ROOT/'evidence/phase20'
 CONFIG_SHA='f0d86f4b3123709c9da432844e7f84eea0da30b8779a08f5abc873e6b903c040'
 SUPPLEMENT_SHA='fd231562a7cb38fa2fe9c3fd8d5c1e212a366cf476fd973ed4142e5519fcf208'
 ENV={'PATH':'/usr/local/bin:/usr/bin:/bin','HOME':'/tmp'}
@@ -41,6 +42,16 @@ def claim_arm(case_id,arm,*,root=None):
         history=json.loads((ROOT/'evidence/phase20/native-demo-v1.json').read_text())
         if (history.get('receipt_sha256')!='a6f8d04a1dc94680040b47b7f78f6e41f7bd81cef3e2c89e992982a3f99cd7f8'
                 or receipt_hash(history)!=history['receipt_sha256']):raise ValueError('PRIOR_USAGE_IDENTITY_CHANGED')
+        raise ValueError('FROZEN_ARM_ALREADY_COMPLETED')
+    recorded=HISTORY_ROOT/(case_id+('-native.json' if arm=='NATIVE_SDK' else '-external.json'))
+    if recorded.exists():
+        if recorded.is_symlink() or recorded.stat().st_size>128*1024:raise ValueError('RECORDED_ARM_IDENTITY_REJECTED')
+        record=json.loads(recorded.read_text())
+        if record.get('receipt_sha256')!=receipt_hash(record):raise ValueError('RECORDED_ARM_IDENTITY_REJECTED')
+        case=record['cases'][0] if 'cases' in record else record
+        if (case.get('case_id')!=case_id or case.get('arm')!=arm
+                or any(case.get('task',{}).get(k)!=spec[k] for k in ('source_sha256','tests_sha256'))):
+            raise ValueError('RECORDED_ARM_IDENTITY_REJECTED')
         raise ValueError('FROZEN_ARM_ALREADY_COMPLETED')
     root=ROOT/'.bountyforge-phase20' if root is None else root
     if root.is_symlink():raise ValueError('CLAIM_STORE_REJECTED')

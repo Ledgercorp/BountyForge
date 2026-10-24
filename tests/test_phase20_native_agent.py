@@ -1,6 +1,7 @@
 import unittest
 import tempfile
 from pathlib import Path
+from unittest.mock import patch
 
 
 class NativeAgentEvidenceTests(unittest.TestCase):
@@ -12,7 +13,7 @@ class NativeAgentEvidenceTests(unittest.TestCase):
 
     def test_crashed_or_completed_arm_cannot_claim_its_inference_budget_again(self):
         from phase20_native_agent import claim_arm
-        with tempfile.TemporaryDirectory() as temp:
+        with tempfile.TemporaryDirectory() as temp,patch('phase20_native_agent.HISTORY_ROOT',Path(temp)/'empty-history'):
             p=Path(temp)/'claims'
             self.assertEqual(claim_arm('optional-setting','NATIVE_SDK',root=p),1)
             with self.assertRaisesRegex(ValueError,'ARM_ALREADY_RESERVED'):
@@ -27,11 +28,19 @@ class NativeAgentEvidenceTests(unittest.TestCase):
 
     def test_supplement_is_explicit_and_cannot_allocate_an_external_or_third_attempt(self):
         from phase20_native_agent import claim_arm
-        with tempfile.TemporaryDirectory() as temp:
+        with tempfile.TemporaryDirectory() as temp,patch('phase20_native_agent.HISTORY_ROOT',Path(temp)/'empty-history'):
             root=Path(temp)/'claims'
             self.assertEqual(claim_arm('chunk-count','NATIVE_SDK',root=root),2)
             with self.assertRaisesRegex(ValueError,'ARM_ALREADY_RESERVED'):claim_arm('chunk-count','NATIVE_SDK',root=root)
             with self.assertRaisesRegex(ValueError,'FROZEN_ARM_NOT_SELECTED'):claim_arm('chunk-count','EXTERNAL_CONTROL',root=root)
+
+    def test_recorded_result_blocks_new_inference_even_with_a_fresh_private_store(self):
+        from phase20_native_agent import claim_arm
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)/'new-claims'
+            with self.assertRaisesRegex(ValueError,'ARM_ALREADY_COMPLETED'):
+                claim_arm('optional-setting','NATIVE_SDK',root=root)
+            self.assertFalse(root.exists())
 
     def test_absent_sdk_assistant_event_is_not_replaced_by_an_external_model_answer(self):
         from phase20_native_agent import assistant_response

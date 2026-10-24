@@ -1,0 +1,393 @@
+{
+  "actual_model_requests": 0,
+  "additional_spending_usd": 0,
+  "commercial_admission": "NOT_ADMITTED",
+  "containers_absent_after_cleanup": true,
+  "elapsed_seconds": 7.586,
+  "gateway_negative_requests": [
+    {
+      "error": "{\"error\": {\"message\": \"MODEL_OR_STREAM_SCOPE\", \"type\": \"bountyforge_boundary\"}}",
+      "status": 400
+    },
+    {
+      "error": "{\"error\": {\"message\": \"MODEL_TOOLS_FORBIDDEN\", \"type\": \"bountyforge_boundary\"}}",
+      "status": 400
+    },
+    {
+      "error": "{\"error\": {\"message\": \"OUTPUT_TOKEN_LIMIT\", \"type\": \"bountyforge_boundary\"}}",
+      "status": 400
+    },
+    {
+      "error": "{\"error\": {\"message\": \"REQUEST_SCOPE\", \"type\": \"bountyforge_boundary\"}}",
+      "status": 400
+    },
+    {
+      "error": "{\"error\": {\"message\": \"NO_PROVIDER_CREDENTIAL_ALLOWED\", \"type\": \"bountyforge_boundary\"}}",
+      "status": 400
+    },
+    {
+      "error": "{\"error\": {\"message\": \"DUPLICATE_JSON_KEY\", \"type\": \"bountyforge_boundary\"}}",
+      "status": 400
+    },
+    {
+      "error": "{\"error\": {\"message\": \"BODY_LIMIT\", \"type\": \"bountyforge_boundary\"}}",
+      "status": 400
+    }
+  ],
+  "initialize": {
+    "serverInfo": {
+      "name": "deepseek-harness-sdk-runtime",
+      "version": "0.0.1"
+    }
+  },
+  "kind": "PHASE20_RECORDED_RESPONSE_PROTOCOL_QA",
+  "model_generated_repairs": 0,
+  "private_execution_admitted": false,
+  "provider_boundary": {
+    "capabilities_dropped": true,
+    "cpu_limit_enforced": true,
+    "docker_socket_absent": true,
+    "external_connect_denied": true,
+    "memory_limit_enforced": true,
+    "no_new_privileges": true,
+    "nonloopback_network_absent": true,
+    "owned_canary_read": true,
+    "pids_limit_enforced": true,
+    "root_write_denied": true,
+    "schema": 1,
+    "seccomp_enabled": true,
+    "tmpfs_writable": true,
+    "uid_unprivileged": true,
+    "workspace_write_denied": true
+  },
+  "provider_mode": "SIMULATOR",
+  "provider_resources": {
+    "cpu.max": "200000 100000",
+    "cpu.stat": "usage_usec 1173897\nuser_usec 1058271\nsystem_usec 115625\nnice_usec 0\nnr_periods 23\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+    "memory.max": "3221225472",
+    "memory.peak": "27803648",
+    "pids.max": "64",
+    "pids.peak": "9"
+  },
+  "receipt_sha256": "9af6631e5cb15f41c05f9a2cf83afd2db8dd06e6cd54bb0130a4affe6566c644",
+  "request_message_counts": [
+    3,
+    5
+  ],
+  "required_runtime_context_preserved": true,
+  "sdk_boundary_before": {
+    "capabilities_dropped": true,
+    "cpu_limit_enforced": true,
+    "docker_socket_absent": true,
+    "external_connect_denied": true,
+    "memory_limit_enforced": true,
+    "no_new_privileges": true,
+    "nonloopback_network_absent": true,
+    "owned_canary_read": true,
+    "pids_limit_enforced": true,
+    "root_write_denied": true,
+    "schema": 1,
+    "seccomp_enabled": true,
+    "tmpfs_writable": true,
+    "uid_unprivileged": true,
+    "workspace_write_denied": true
+  },
+  "sdk_resources": {
+    "cpu.max": "100000 100000",
+    "cpu.stat": "usage_usec 1227688\nuser_usec 1058703\nsystem_usec 168984\nnice_usec 0\nnr_periods 15\nnr_throttled 7\nthrottled_usec 251301\nnr_bursts 0\nburst_usec 0",
+    "memory.max": "201326592",
+    "memory.peak": "68534272",
+    "pids.max": "32",
+    "pids.peak": "18"
+  },
+  "sdk_stderr_sha256": "28aa24492ee61c972b22c533bc86d4908ac5a7aa8da12657f4a9cc632508b12d",
+  "shutdown_exit_code": 0,
+  "simulated_provider_requests": 2,
+  "status": "PASSED",
+  "third_request_denied_before_backend": true,
+  "tool_audits": [
+    {
+      "credential_names_present": [],
+      "mcp_resources_service_present": false,
+      "refusals": [
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "bash",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "pwsh",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "exec_command",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "write_stdin",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "write",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "edit",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "read",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "read_image",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "list_mcp_resources",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "list_mcp_resource_templates",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "read_mcp_resource",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "run_code",
+          "unknown_tool": true
+        }
+      ],
+      "sdk_session_persistence": "MEMORY_ONLY",
+      "tool_names": []
+    },
+    {
+      "credential_names_present": [],
+      "mcp_resources_service_present": false,
+      "refusals": [
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "bash",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "pwsh",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "exec_command",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "write_stdin",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "write",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "edit",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "read",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "read_image",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "list_mcp_resources",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "list_mcp_resource_templates",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "read_mcp_resource",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "run_code",
+          "unknown_tool": true
+        }
+      ],
+      "sdk_session_persistence": "MEMORY_ONLY",
+      "tool_names": []
+    },
+    {
+      "credential_names_present": [],
+      "mcp_resources_service_present": false,
+      "refusals": [
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "bash",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "pwsh",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "exec_command",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "write_stdin",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "write",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "edit",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "read",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "read_image",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "list_mcp_resources",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "list_mcp_resource_templates",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "read_mcp_resource",
+          "unknown_tool": true
+        },
+        {
+          "available": false,
+          "invoked": true,
+          "tool": "run_code",
+          "unknown_tool": true
+        }
+      ],
+      "sdk_session_persistence": "MEMORY_ONLY",
+      "tool_names": []
+    }
+  ],
+  "turns": [
+    {
+      "boundary": {
+        "capabilities_dropped": true,
+        "cpu_limit_enforced": true,
+        "docker_socket_absent": true,
+        "external_connect_denied": true,
+        "memory_limit_enforced": true,
+        "no_new_privileges": true,
+        "nonloopback_network_absent": true,
+        "owned_canary_read": true,
+        "pids_limit_enforced": true,
+        "root_write_denied": true,
+        "schema": 1,
+        "seccomp_enabled": true,
+        "tmpfs_writable": true,
+        "uid_unprivileged": true,
+        "workspace_write_denied": true
+      },
+      "recorded_response_consumed": true
+    },
+    {
+      "boundary": {
+        "capabilities_dropped": true,
+        "cpu_limit_enforced": true,
+        "docker_socket_absent": true,
+        "external_connect_denied": true,
+        "memory_limit_enforced": true,
+        "no_new_privileges": true,
+        "nonloopback_network_absent": true,
+        "owned_canary_read": true,
+        "pids_limit_enforced": true,
+        "root_write_denied": true,
+        "schema": 1,
+        "seccomp_enabled": true,
+        "tmpfs_writable": true,
+        "uid_unprivileged": true,
+        "workspace_write_denied": true
+      },
+      "recorded_response_consumed": true
+    }
+  ],
+  "unauthorized_method_rejected": "SDK_RPC_ERROR_-32603"
+}

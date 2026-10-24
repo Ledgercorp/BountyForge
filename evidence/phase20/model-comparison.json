@@ -1,0 +1,323 @@
+{
+  "actual_model_requests": 9,
+  "additional_spending_usd": 0,
+  "cases": [
+    {
+      "arm": "NATIVE_SDK",
+      "candidate_sha256": [],
+      "case_id": "weighted-mix",
+      "cleanup_confirmed": true,
+      "completion_tokens": 2,
+      "cycle_wall_seconds": 30.826,
+      "failure_category": "OUTPUT_BUDGET_PROTOCOL_CLAMP_AND_POST_TURN_TMPFS_FULL",
+      "file": "native-demo-v1.json",
+      "independently_verified_repairs": 0,
+      "inference_seconds": 6.97,
+      "model_requests": 2,
+      "model_resources": null,
+      "newly_reported_failing_tests": [],
+      "origin_receipt_sha256": "a6f8d04a1dc94680040b47b7f78f6e41f7bd81cef3e2c89e992982a3f99cd7f8",
+      "prompt_tokens": 1122,
+      "rejected_handoffs": 2,
+      "retry_count": 1,
+      "runtime_interruption": true,
+      "sdk_resources": null,
+      "shutdown_confirmed": null,
+      "source_sha256": "42a1c42ac048e025d4366813d0ebb0e5ee322885e483324318200f2cab345409",
+      "targeted_test_suites_passed": 0,
+      "tests_sha256": "01500a264434f3b2bb9639c56d052127d6a6bf90ccf6ca4ce0914d998bfb9210",
+      "valid_candidates": 0
+    },
+    {
+      "arm": "NATIVE_SDK",
+      "candidate_sha256": [
+        "d5632213fd81d447a72b688a91902b68400593b39502ebf1f42147792c0ed57c"
+      ],
+      "case_id": "optional-setting",
+      "cleanup_confirmed": true,
+      "completion_tokens": 24,
+      "cycle_wall_seconds": 29.645,
+      "failure_category": "WRONG_LOGIC_FALSE_VALUES_STILL_FALL_BACK",
+      "file": "optional-setting-native.json",
+      "independently_verified_repairs": 0,
+      "inference_seconds": 3.665,
+      "model_requests": 1,
+      "model_resources": {
+        "cgroup_cpu_usage_seconds": 9.859356,
+        "cgroup_memory_peak_bytes": 832528384,
+        "pids_peak": 19
+      },
+      "newly_reported_failing_tests": [],
+      "origin_receipt_sha256": "c83c05ab0ea78d27746c5bb746a189860cf2afe9261691d0327612aaddc7a0bd",
+      "prompt_tokens": 305,
+      "rejected_handoffs": 0,
+      "retry_count": 0,
+      "runtime_interruption": false,
+      "sdk_resources": {
+        "cgroup_cpu_usage_seconds": 1.249338,
+        "cgroup_memory_peak_bytes": 71585792,
+        "pids_peak": 17
+      },
+      "shutdown_confirmed": true,
+      "source_sha256": "da0c303cb3e23bf5c9f4b9e011a8e9d64c983cc114b45e9c3ae6b45bcc6c544c",
+      "targeted_test_suites_passed": 0,
+      "tests_sha256": "d224e154be27910dc19463b0e138181a68dff0d5c37dc7cfd740263210a292a0",
+      "valid_candidates": 1
+    },
+    {
+      "arm": "NATIVE_SDK",
+      "candidate_sha256": [
+        "3a100c7a8b1929f88d046b47f38f3c52b7c7727d1a646974013f18c409accfb7"
+      ],
+      "case_id": "reading-groups",
+      "cleanup_confirmed": true,
+      "completion_tokens": 62,
+      "cycle_wall_seconds": 28.598,
+      "failure_category": "WRONG_LOGIC_TRUTHY_FILTER_AND_OUTER_VALUE_DEPENDENCE",
+      "file": "reading-groups-native.json",
+      "independently_verified_repairs": 0,
+      "inference_seconds": 6.713,
+      "model_requests": 1,
+      "model_resources": {
+        "cgroup_cpu_usage_seconds": 16.166038,
+        "cgroup_memory_peak_bytes": 921952256,
+        "pids_peak": 20
+      },
+      "newly_reported_failing_tests": [
+        "test_zero"
+      ],
+      "origin_receipt_sha256": "669924c01bfe160109e12f4286c2804407e609556532dc7afb02c87d973dfc60",
+      "prompt_tokens": 482,
+      "rejected_handoffs": 0,
+      "retry_count": 0,
+      "runtime_interruption": false,
+      "sdk_resources": {
+        "cgroup_cpu_usage_seconds": 1.242194,
+        "cgroup_memory_peak_bytes": 80379904,
+        "pids_peak": 18
+      },
+      "shutdown_confirmed": true,
+      "source_sha256": "d258f010611b36528ebd6daf0decc7e03c6f9cb71f65fd269747aa82906a8363",
+      "targeted_test_suites_passed": 0,
+      "tests_sha256": "bcc52b82badd51b517240a6f01a2285635e1dec679acb2bf643038455cb1da73",
+      "valid_candidates": 1
+    },
+    {
+      "arm": "NATIVE_SDK",
+      "candidate_sha256": [
+        "797f57ed55fd3012a2d43066772bee67a554c9eb9fe7edda9bbd07c9aeb5a8ef"
+      ],
+      "case_id": "reserve-release",
+      "cleanup_confirmed": true,
+      "completion_tokens": 24,
+      "cycle_wall_seconds": 29.476,
+      "failure_category": "WRONG_STATE_TRANSITION_RELEASE_COUNT_INCREMENTED_THREE_TIMES",
+      "file": "reserve-release-native.json",
+      "independently_verified_repairs": 0,
+      "inference_seconds": 7.8,
+      "model_requests": 1,
+      "model_resources": {
+        "cgroup_cpu_usage_seconds": 18.053015,
+        "cgroup_memory_peak_bytes": 931512320,
+        "pids_peak": 20
+      },
+      "newly_reported_failing_tests": [],
+      "origin_receipt_sha256": "d353300feb3e23052c9c5a8e5ed5ca68a3156cebab2254e7919e4e10329f6311",
+      "prompt_tokens": 713,
+      "rejected_handoffs": 0,
+      "retry_count": 0,
+      "runtime_interruption": false,
+      "sdk_resources": {
+        "cgroup_cpu_usage_seconds": 1.118934,
+        "cgroup_memory_peak_bytes": 71168000,
+        "pids_peak": 18
+      },
+      "shutdown_confirmed": true,
+      "source_sha256": "6680558010929ddbd5ddbc21280a10b2b4406fecc103b6520d8d9fdb4a35d766",
+      "targeted_test_suites_passed": 0,
+      "tests_sha256": "e833bb513b5ebdb2cf5a1f699c2c135a83cb9c34466ef71a429b3d9541474921",
+      "valid_candidates": 1
+    },
+    {
+      "arm": "EXTERNAL_CONTROL",
+      "candidate_sha256": [
+        "ce625dc2d90a8d15ce3513f0821e4940f773007b2c372b081db3ba08a8714e3e"
+      ],
+      "case_id": "optional-setting",
+      "cleanup_confirmed": true,
+      "completion_tokens": 31,
+      "cycle_wall_seconds": 30.014,
+      "failure_category": null,
+      "file": "optional-setting-external.json",
+      "independently_verified_repairs": 1,
+      "inference_seconds": 3.685,
+      "model_requests": 1,
+      "model_resources": {
+        "cgroup_cpu_usage_seconds": 10.509106,
+        "cgroup_memory_peak_bytes": 832143360,
+        "pids_peak": 20
+      },
+      "newly_reported_failing_tests": [],
+      "origin_receipt_sha256": "ab4d933b86ee30a020ff584aa4da50834f0d3e0e370fab9cd0f83e5dfd225c3e",
+      "prompt_tokens": 279,
+      "rejected_handoffs": 0,
+      "retry_count": 0,
+      "runtime_interruption": false,
+      "sdk_resources": null,
+      "shutdown_confirmed": null,
+      "source_sha256": "da0c303cb3e23bf5c9f4b9e011a8e9d64c983cc114b45e9c3ae6b45bcc6c544c",
+      "targeted_test_suites_passed": 1,
+      "tests_sha256": "d224e154be27910dc19463b0e138181a68dff0d5c37dc7cfd740263210a292a0",
+      "valid_candidates": 1
+    },
+    {
+      "arm": "EXTERNAL_CONTROL",
+      "candidate_sha256": [
+        "0ec23d2a41505e9bc76db661d661927086849b322c6aceca43d9fd96c9c72e2a"
+      ],
+      "case_id": "reading-groups",
+      "cleanup_confirmed": true,
+      "completion_tokens": 78,
+      "cycle_wall_seconds": 26.503,
+      "failure_category": "WRONG_LOGIC_ZERO_IS_EXCLUDED",
+      "file": "reading-groups-external.json",
+      "independently_verified_repairs": 0,
+      "inference_seconds": 6.781,
+      "model_requests": 1,
+      "model_resources": {
+        "cgroup_cpu_usage_seconds": 15.829135,
+        "cgroup_memory_peak_bytes": 920154112,
+        "pids_peak": 19
+      },
+      "newly_reported_failing_tests": [
+        "test_zero"
+      ],
+      "origin_receipt_sha256": "c56670f78436da7fed1494cf1f5df1ec2fdabf62bea5fe3e7b854673dd56e151",
+      "prompt_tokens": 456,
+      "rejected_handoffs": 0,
+      "retry_count": 0,
+      "runtime_interruption": false,
+      "sdk_resources": null,
+      "shutdown_confirmed": null,
+      "source_sha256": "d258f010611b36528ebd6daf0decc7e03c6f9cb71f65fd269747aa82906a8363",
+      "targeted_test_suites_passed": 0,
+      "tests_sha256": "bcc52b82badd51b517240a6f01a2285635e1dec679acb2bf643038455cb1da73",
+      "valid_candidates": 1
+    },
+    {
+      "arm": "EXTERNAL_CONTROL",
+      "candidate_sha256": [
+        "797f57ed55fd3012a2d43066772bee67a554c9eb9fe7edda9bbd07c9aeb5a8ef"
+      ],
+      "case_id": "reserve-release",
+      "cleanup_confirmed": true,
+      "completion_tokens": 24,
+      "cycle_wall_seconds": 27.33,
+      "failure_category": "WRONG_STATE_TRANSITION_RELEASE_COUNT_INCREMENTED_THREE_TIMES",
+      "file": "reserve-release-external.json",
+      "independently_verified_repairs": 0,
+      "inference_seconds": 7.391,
+      "model_requests": 1,
+      "model_resources": {
+        "cgroup_cpu_usage_seconds": 17.122731,
+        "cgroup_memory_peak_bytes": 934387712,
+        "pids_peak": 20
+      },
+      "newly_reported_failing_tests": [],
+      "origin_receipt_sha256": "ad06456caf4d7b3e23f62365c5d70d9fca7888ffff2567e655db179f0d3bb7fb",
+      "prompt_tokens": 687,
+      "rejected_handoffs": 0,
+      "retry_count": 0,
+      "runtime_interruption": false,
+      "sdk_resources": null,
+      "shutdown_confirmed": null,
+      "source_sha256": "6680558010929ddbd5ddbc21280a10b2b4406fecc103b6520d8d9fdb4a35d766",
+      "targeted_test_suites_passed": 0,
+      "tests_sha256": "e833bb513b5ebdb2cf5a1f699c2c135a83cb9c34466ef71a429b3d9541474921",
+      "valid_candidates": 1
+    },
+    {
+      "arm": "NATIVE_SDK",
+      "candidate_sha256": [
+        "db84da77718bd0119616f572255d96712b90acf15b894ab62c9285cbc82ea5b2"
+      ],
+      "case_id": "chunk-count",
+      "cleanup_confirmed": true,
+      "completion_tokens": 25,
+      "cycle_wall_seconds": 26.996,
+      "failure_category": null,
+      "file": "chunk-count-native.json",
+      "independently_verified_repairs": 1,
+      "inference_seconds": 3.939,
+      "model_requests": 1,
+      "model_resources": {
+        "cgroup_cpu_usage_seconds": 10.457613,
+        "cgroup_memory_peak_bytes": 834781184,
+        "pids_peak": 19
+      },
+      "newly_reported_failing_tests": [],
+      "origin_receipt_sha256": "8be66779f8399b0fff483d610dfa127eb0838177b559a476a935603b5fcb6e2d",
+      "prompt_tokens": 321,
+      "rejected_handoffs": 0,
+      "retry_count": 0,
+      "runtime_interruption": false,
+      "sdk_resources": {
+        "cgroup_cpu_usage_seconds": 1.189648,
+        "cgroup_memory_peak_bytes": 71000064,
+        "pids_peak": 17
+      },
+      "shutdown_confirmed": true,
+      "source_sha256": "c3c646c84eb283dad12c1dbe142ab29a80a5b492a82357f3f152ef32525be1af",
+      "targeted_test_suites_passed": 1,
+      "tests_sha256": "d009d0d85f0ee63cbe82f9e479b043d451488323eb48468030944c6f72f47b96",
+      "valid_candidates": 1
+    }
+  ],
+  "classification": "EXPOSED_OWNED_DEVELOPMENT",
+  "commercial_admission": "NOT_ADMITTED",
+  "completion_tokens": 270,
+  "confirmed_revenue_usd": 0,
+  "external_control_requests": 3,
+  "independent_unseen_evaluation": false,
+  "kind": "PHASE20_REAL_INFERENCE_MEASUREMENTS",
+  "limitations": [
+    "Paired SDK prompts contained 26 additional required working-directory tokens; prompt equivalence is incomplete.",
+    "The attempted task-only hook in the frozen supplement was ineffective: required SDK context was restored. No task-only accuracy measurement exists.",
+    "Memory is cgroup memory.peak, not process RSS. Shared file-backed model pages can be charged outside the observed cgroup.",
+    "CPU covers observed containers through the final probe, including observation subprocesses; host verifier CPU is not measured.",
+    "Case wall includes setup, reproduction, inference and verification. Isolated verification wall time was not separately instrumented.",
+    "New failing test names are from bounded development feedback, not an exhaustive regression count.",
+    "The initial failure lacks post-run memory/CPU metrics. Null denotes unavailable, not zero.",
+    "Protocol replay/simulated responses, hosted candidate replays and previous Phase19 inference are excluded.",
+    "Receipts bind recorded bytes by SHA256; signatures and cryptographic authorship identity are not attested."
+  ],
+  "native_sdk_requests": 6,
+  "paired_comparison": {
+    "EXTERNAL_CONTROL": {
+      "completion_tokens": 133,
+      "cycle_wall_seconds": 83.847,
+      "independently_verified_repairs": 1,
+      "inference_seconds": 17.857,
+      "model_requests": 3,
+      "prompt_tokens": 1422,
+      "targeted_test_suites_passed": 1,
+      "tasks_attempted": 3,
+      "valid_candidates": 3
+    },
+    "NATIVE_SDK": {
+      "completion_tokens": 110,
+      "cycle_wall_seconds": 87.719,
+      "independently_verified_repairs": 0,
+      "inference_seconds": 18.178,
+      "model_requests": 3,
+      "prompt_tokens": 1500,
+      "targeted_test_suites_passed": 0,
+      "tasks_attempted": 3,
+      "valid_candidates": 3
+    }
+  },
+  "prompt_tokens": 4365,
+  "receipt_sha256": "43ae305760922d84bf9bf8a0d4faa67e5587f3937e7de61d04a95958228cbaf1",
+  "total_inference_seconds": 46.944,
+  "total_measured_case_wall_seconds": 229.388
+}

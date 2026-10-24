@@ -1,0 +1,193 @@
+{
+  "additional_routine_github_run": {
+    "conclusion": "success",
+    "event": "pull_request",
+    "head_branch": "engineering/phase20-native-qwen-20261024",
+    "head_sha": "b421f22d2b090bbc0a9e6c393f2ec7173e0ddf91",
+    "html_url": "https://github.com/Ledgercorp/BountyForge/actions/runs/40098544639",
+    "id": 40098544639,
+    "run_attempt": 1,
+    "run_started_at": "2026-10-24T13:32:01Z",
+    "status": "completed",
+    "updated_at": "2026-10-24T13:33:15Z"
+  },
+  "additional_spending_usd": 0,
+  "branch": "engineering/phase20-native-qwen-20261024",
+  "commercial_admission": "NOT_ADMITTED",
+  "confirmed_revenue_usd": 0,
+  "customer_execution": false,
+  "default_engine_changed": false,
+  "draft_pr": "https://github.com/Ledgercorp/BountyForge/pull/8",
+  "evidence": {
+    "github-protocol-40098093481.json": {
+      "file_sha256": "570b8219cb112759d129e4269b279da724914aedb95c78aa7c5e8dc8b511b45b",
+      "receipt_sha256": "00e1983426aef7441a1c41017eb2d3587018278e1bf04a0454bb271432835dbf"
+    },
+    "github-replay-40098093481.json": {
+      "file_sha256": "11addfa514e091c710afc1f8b35717e3af80f6f733d49c703c315f4c3aea1f38",
+      "receipt_sha256": "65f77f1df1af8ffb84c01d73fb485c0e66714db515c774001d963e9134c197d2"
+    },
+    "local-protocol-acceptance.json": {
+      "file_sha256": "aba3ffbd5ddd20df5cd0917c8a4ff8a6230efa54ce3698bf7974324f2aec3693",
+      "receipt_sha256": "9af6631e5cb15f41c05f9a2cf83afd2db8dd06e6cd54bb0130a4affe6566c644"
+    },
+    "local-recorded-replay.json": {
+      "file_sha256": "edaa3d41db8dcc11ee097936d965ff56152bc06e9fbc2e4984259e9594bffed9",
+      "receipt_sha256": "affc5d8988394d232ae6699c2a8d2e735acaeca04cc75e49fe36d4368720da08"
+    },
+    "model-comparison.json": {
+      "file_sha256": "1bb89101ec5935105e2b7ec25dcb1bd13a53a22b51b5c6eb4ab66eb917da01e0",
+      "receipt_sha256": "43ae305760922d84bf9bf8a0d4faa67e5587f3937e7de61d04a95958228cbaf1"
+    }
+  },
+  "external_operations": [
+    "Pushed isolated authorized engineering branch",
+    "Opened draft PR8",
+    "Two passing standard public GitHub Actions acceptance runs; the ledger update automatically triggered the second",
+    "Read public SDK/package metadata and downloaded bounded verified public assets"
+  ],
+  "github_python": {
+    "executed": 824,
+    "failed": 0,
+    "passed": 815,
+    "seconds": 34.398,
+    "skipped": 9
+  },
+  "github_run": {
+    "conclusion": "success",
+    "event": "pull_request",
+    "head_branch": "engineering/phase20-native-qwen-20261024",
+    "head_sha": "bd984f277d946f4c39e23cdc73697f676eb44435",
+    "html_url": "https://github.com/Ledgercorp/BountyForge/actions/runs/40098093481",
+    "id": 40098093481,
+    "run_attempt": 1,
+    "run_started_at": "2026-10-24T13:25:47Z",
+    "status": "completed",
+    "updated_at": "2026-10-24T13:27:06Z"
+  },
+  "hosted_recorded_replay": {
+    "new_model_calls": 0,
+    "new_model_repairs": 0,
+    "same_hash_successes": 2,
+    "same_hash_test_failures": 1
+  },
+  "implementation_and_measured_evidence_files": [
+    ".github/workflows/phase20-native-qwen.yml",
+    ".gitignore",
+    "docs/PHASE20_NATIVE_AGENT.md",
+    "evidence/phase20/boundary-replay-before.log",
+    "evidence/phase20/boundary-replay-fixed.json",
+    "evidence/phase20/chunk-count-native.json",
+    "evidence/phase20/libgomp-provenance.json",
+    "evidence/phase20/local-protocol-acceptance.json",
+    "evidence/phase20/local-recorded-replay.json",
+    "evidence/phase20/model-comparison.json",
+    "evidence/phase20/model-free-boundary-diagnosis.json",
+    "evidence/phase20/native-demo-v1.json",
+    "evidence/phase20/optional-setting-external.json",
+    "evidence/phase20/optional-setting-native.json",
+    "evidence/phase20/reading-groups-external.json",
+    "evidence/phase20/reading-groups-native.json",
+    "evidence/phase20/reserve-release-external.json",
+    "evidence/phase20/reserve-release-native.json",
+    "phase20_control.py",
+    "phase20_dependency.py",
+    "phase20_experiment.json",
+    "phase20_external_client.py",
+    "phase20_local_provider.patch.yml",
+    "phase20_measurements.py",
+    "phase20_model_service.py",
+    "phase20_native_agent.py",
+    "phase20_protocol_acceptance.py",
+    "phase20_protocol_provider.py",
+    "phase20_replay.py",
+    "phase20_sdk_guard.mjs",
+    "phase20_supplement.json",
+    "phase20_transport.py",
+    "tests/test_phase20_external_control.py",
+    "tests/test_phase20_model_service.py",
+    "tests/test_phase20_native_agent.py",
+    "tests/test_phase20_replay.py",
+    "tests/test_phase20_transport.py"
+  ],
+  "implementation_commits": [
+    "3298845deaabd277ae594cef3a0b00738a8e9fe3",
+    "3160052f7db740702028e1157fbd096b2415f59e",
+    "7ef69c3f0a2579a58c66dafd7c3532e5784bbf0c",
+    "bd984f277d946f4c39e23cdc73697f676eb44435"
+  ],
+  "initial_failed_demo_preserved": true,
+  "kind": "PHASE20_ENGINEERING_ACCEPTANCE",
+  "local_python": {
+    "executed": 824,
+    "failed": 0,
+    "passed": 815,
+    "seconds": 31.157,
+    "skipped": 9
+  },
+  "native_integration_enabled_by_default": false,
+  "next_milestone": "Separately freeze new development tasks and measure diagnosis/feedback or a stronger admitted local model without changing defaults",
+  "node_tests": {
+    "executed": 8,
+    "failed": 0,
+    "passed": 8
+  },
+  "original_and_supplemental_frozen_inputs_unchanged": true,
+  "original_three_task_comparison": {
+    "attempted_per_arm": 3,
+    "developmental": true,
+    "external_verified": 1,
+    "sdk_verified": 0
+  },
+  "paid_inference_requests": 0,
+  "phase20_focused_tests": {
+    "executed": 22,
+    "failed": 0,
+    "passed": 22
+  },
+  "private_execution_admitted": false,
+  "production_deployed": false,
+  "publication_ci_note": "Final documentation/metadata-only correction uses [skip ci]; the tested implementation remains bd984f277d946f4c39e23cdc73697f676eb44435. No source or safety test is omitted.",
+  "real_model_requests": {
+    "completion_tokens": 270,
+    "external_control": 3,
+    "prompt_tokens": 4365,
+    "sdk": 6,
+    "total": 9
+  },
+  "real_sdk_simulated_protocol_qa": {
+    "audits": 3,
+    "cleanup_confirmed": true,
+    "forbidden_tool_names_refused_per_audit": 12,
+    "invalid_gateway_requests_denied": 7,
+    "os_controls_per_container": 14,
+    "passed": true,
+    "real_model_requests": 0,
+    "repairs": 0,
+    "shutdown_exit_code": 0,
+    "simulated_requests": 2,
+    "third_completion_denied_before_backend": true
+  },
+  "receipt_sha256": "a7436ccf581c323497daddfd20c4a47e1d6fd778a539f98ffed2ed7859f7c253",
+  "remaining_blockers": [
+    "No demonstrated Harness repair-quality improvement",
+    "All tasks are exposed development material; no inaccessible unseen controller",
+    "Nine namespace/rootfs checks remain skipped",
+    "Native memory-only conversations are not durable restart recovery",
+    "Private/customer execution, commercial launch, delivery and financial authorization remain absent",
+    "Runtime signatures/SBOM/current vulnerability review and customer workload threat model not admitted"
+  ],
+  "schedule_active": false,
+  "separate_chunk_count_integration": {
+    "attempted": 1,
+    "developmental": true,
+    "independent_tests_passed": 6,
+    "requests": 1,
+    "sdk_verified": 1,
+    "targeted_tests_passed": 6
+  },
+  "starting_commit": "36ac19e2be9a03838a0da05e21d99b6c4aa222a1",
+  "status": "ENGINEERING_READY_FOR_REVIEW",
+  "task_only_prompt_not_achieved": true,
+  "tested_source_commit": "bd984f277d946f4c39e23cdc73697f676eb44435"
+}

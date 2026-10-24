@@ -1,0 +1,73 @@
+name: Phase20 native protocol and recorded repair acceptance (no inference)
+
+on:
+  pull_request:
+    branches: [engineering/phase19-native-binding-20261023]
+    paths:
+      - '**.py'
+      - '**.mjs'
+      - '**.cjs'
+      - 'phase17/**'
+      - 'phase20_*.yml'
+      - 'phase20*.json'
+      - 'fixtures/**'
+      - 'benchmarks/**'
+      - 'isolation/**'
+      - 'evidence/phase20/chunk-count-native.json'
+      - 'evidence/phase20/optional-setting-external.json'
+      - 'evidence/phase20/reading-groups-native.json'
+      - '.github/workflows/phase20-native-qwen.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase20-owned-repair-acceptance
+  cancel-in-progress: false
+
+jobs:
+  acceptance:
+    if: ${{ github.repository == 'Ledgercorp/BountyForge' && github.event.repository.private == false && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'engineering/phase20-native-qwen-20261024' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout without persistent credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Complete Python regression
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python3 -m unittest discover -s tests -v
+      - name: Owner console regression
+        run: node --test tests/dashboard_state.mjs tests/repair_console.cjs
+      - name: Existing digest-pinned owned runtime
+        run: docker pull python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590
+      - name: Replay successful and unsuccessful recorded candidates without inference
+        run: |
+          mkdir -p evidence-run
+          env -i PATH=/usr/local/bin:/usr/bin:/bin HOME="$HOME" PYTHONDONTWRITEBYTECODE=1 \
+            python3 -m phase20_replay --admit-recorded-owned-replay \
+            --output evidence-run/phase20-replay.json
+      - name: Stage hash-verified public SDK wheels as inert data
+        run: |
+          mkdir -p "$RUNNER_TEMP/bf-p20-wheels"
+          python3 -m pip download --only-binary=:all: --no-deps --no-cache-dir \
+            --dest "$RUNNER_TEMP/bf-p20-wheels" \
+            'deepseek-harness-sdk==0.2.1rc2' 'deepseek-harness-runtime-bin==0.2.1rc2'
+      - name: Real isolated SDK with explicitly simulated protocol responses (zero model requests)
+        run: |
+          env -i PATH=/usr/local/bin:/usr/bin:/bin HOME="$HOME" PYTHONDONTWRITEBYTECODE=1 \
+            python3 -m phase20_protocol_acceptance --admit-protocol-replay \
+            --wheel-directory "$RUNNER_TEMP/bf-p20-wheels" --output evidence-run/phase20-protocol.json
+      - name: Small sanitized acceptance receipts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: phase20-owned-acceptance
+          path: evidence-run/*.json
+          retention-days: 1
+          if-no-files-found: ignore
+      - name: Remove disposable package data
+        if: always()
+        run: rm -rf -- "$RUNNER_TEMP/bf-p20-wheels"

@@ -4,6 +4,12 @@ from pathlib import Path
 
 
 class NativeAgentEvidenceTests(unittest.TestCase):
+    def test_owner_task_selection_never_silently_runs_a_different_frozen_case(self):
+        from phase20_native_agent import select_experiment
+        with self.assertRaisesRegex(ValueError,'TASK_SELECTION'):select_experiment('supplemental','optional-setting')
+        with self.assertRaisesRegex(ValueError,'TASK_SELECTION'):select_experiment('sdk-case',None)
+        self.assertEqual(select_experiment('supplemental',None)[2]['case_id'],'chunk-count')
+
     def test_crashed_or_completed_arm_cannot_claim_its_inference_budget_again(self):
         from phase20_native_agent import claim_arm
         with tempfile.TemporaryDirectory() as temp:
@@ -18,6 +24,14 @@ class NativeAgentEvidenceTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             with self.assertRaisesRegex(ValueError,'ARM_ALREADY_COMPLETED'):
                 claim_arm('weighted-mix','NATIVE_SDK',root=Path(temp)/'claims')
+
+    def test_supplement_is_explicit_and_cannot_allocate_an_external_or_third_attempt(self):
+        from phase20_native_agent import claim_arm
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)/'claims'
+            self.assertEqual(claim_arm('chunk-count','NATIVE_SDK',root=root),2)
+            with self.assertRaisesRegex(ValueError,'ARM_ALREADY_RESERVED'):claim_arm('chunk-count','NATIVE_SDK',root=root)
+            with self.assertRaisesRegex(ValueError,'FROZEN_ARM_NOT_SELECTED'):claim_arm('chunk-count','EXTERNAL_CONTROL',root=root)
 
     def test_absent_sdk_assistant_event_is_not_replaced_by_an_external_model_answer(self):
         from phase20_native_agent import assistant_response

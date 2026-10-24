@@ -34,6 +34,12 @@ export function apply(ctx) {
       sdk_session_persistence:'MEMORY_ONLY'};
     };
     process.stderr.write('BOUNTYFORGE_LIVE_AUDIT '+JSON.stringify(await audit())+'\n');
+    agent.ctx.on('system-prompt/assemble',async (_assembly,_context,next)=>{
+      const assembled=await next();
+      // No filesystem tools exist in this profile. Keep all other required
+      // context, but omit the irrelevant working-directory message.
+      return {...assembled,contexts:assembled.contexts.filter(c=>c.name!=='working-directory:current')};
+    });
     agent.ctx.on('agent/turn-stopping',async ()=>{
       process.stderr.write('BOUNTYFORGE_POST_TURN_AUDIT '+JSON.stringify(await audit())+'\n');
     });

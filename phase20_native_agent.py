@@ -21,6 +21,7 @@ from phase20_transport import (stage_assets,model_command,sdk_command,MODEL_PROB
 
 ROOT=Path(__file__).resolve().parent
 CONFIG_SHA='f0d86f4b3123709c9da432844e7f84eea0da30b8779a08f5abc873e6b903c040'
+SUPPLEMENT_SHA='fd231562a7cb38fa2fe9c3fd8d5c1e212a366cf476fd973ed4142e5519fcf208'
 ENV={'PATH':'/usr/local/bin:/usr/bin:/bin','HOME':'/tmp'}
 
 
@@ -30,6 +31,11 @@ def claim_arm(case_id,arm,*,root=None):
     raw=(ROOT/'phase20_experiment.json').read_bytes()
     if hashlib.sha256(raw).hexdigest()!=CONFIG_SHA:raise ValueError('FROZEN_EXPERIMENT_CHANGED')
     spec=next((x for x in json.loads(raw)['tasks'] if x['case_id']==case_id),None)
+    claim_sha=CONFIG_SHA
+    if spec is None:
+        supplement=(ROOT/'phase20_supplement.json').read_bytes()
+        if hashlib.sha256(supplement).hexdigest()!=SUPPLEMENT_SHA:raise ValueError('FROZEN_SUPPLEMENT_CHANGED')
+        spec=next((x for x in json.loads(supplement)['tasks'] if x['case_id']==case_id),None);claim_sha=SUPPLEMENT_SHA
     if spec is None or arm not in spec['arms']:raise ValueError('FROZEN_ARM_NOT_SELECTED')
     if case_id=='weighted-mix':
         history=json.loads((ROOT/'evidence/phase20/native-demo-v1.json').read_text())
@@ -44,7 +50,7 @@ def claim_arm(case_id,arm,*,root=None):
     try:fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
     except FileExistsError:raise ValueError('FROZEN_ARM_ALREADY_RESERVED') from None
     try:
-        os.write(fd,json.dumps({'experiment_sha256':CONFIG_SHA,'case_id':case_id,'arm':arm,'reserved':spec['arms'][arm]}).encode())
+        os.write(fd,json.dumps({'experiment_sha256':claim_sha,'case_id':case_id,'arm':arm,'reserved':spec['arms'][arm]}).encode())
         os.fsync(fd)
     finally:os.close(fd)
     return spec['arms'][arm]
@@ -119,7 +125,7 @@ def model_trace(docker,name):
 
 def run_case(spec,assets,native,workroot,docker,*,model_free=False):
     from bountyforge.repair_engines import RepairService,receipt_hash
-    from bountyforge.repair_intelligence import compact_model_prompt
+    from bountyforge.repair_intelligence import compact_model_prompt,revision_proposal
     from bountyforge.profiled_qwen import COMPACT_SYSTEM
     from bountyforge.qwen_statement_contract import statement_schema
     from bountyforge.statement_grammar import statement_grammar
@@ -203,8 +209,10 @@ def run_case(spec,assets,native,workroot,docker,*,model_free=False):
                     'sdk_events':[n['params']['event'] for n in notifications if n.get('method')=='session.event'
                         and n.get('params',{}).get('event',{}).get('type') in ('assistant/message','request/header','request/context','turn/end')]}
                 record['attempts'].append(attempt)
+                effective,retained=revision_proposal(previous,response)
+                attempt.update(effective_proposal=effective,retained_anchors=retained)
                 try:
-                    attempt['verification']=verify_owned_harness_response(service,task,response,allow_owned_verification=True)
+                    attempt['verification']=verify_owned_harness_response(service,task,effective,allow_owned_verification=True)
                 except HarnessHandoffRejected as error:
                     attempt['handoff_rejection']=str(error)
                     previous={'proposal':response,'outcome':'SOURCE_REJECTED','diagnostic':str(error)}
@@ -241,18 +249,25 @@ def run_case(spec,assets,native,workroot,docker,*,model_free=False):
     return record
 
 
+def select_experiment(stage,case_id):
+    if stage not in ('demo','sdk-case','supplemental'):raise ValueError('EXPERIMENT_STAGE_NOT_ADMITTED')
+    if (stage=='sdk-case')!=(case_id is not None):raise ValueError('EXPLICIT_TASK_SELECTION_REQUIRED')
+    config=(ROOT/('phase20_supplement.json' if stage=='supplemental' else 'phase20_experiment.json')).read_bytes()
+    selected_sha=SUPPLEMENT_SHA if stage=='supplemental' else CONFIG_SHA
+    if hashlib.sha256(config).hexdigest()!=selected_sha:raise ValueError('FROZEN_EXPERIMENT_CHANGED')
+    plan=json.loads(config)
+    spec=plan['tasks'][0] if stage in ('demo','supplemental') else next((x for x in plan['tasks'][1:] if x['case_id']==case_id),None)
+    if spec is None:raise ValueError('FROZEN_TASK_NOT_SELECTED')
+    return plan,selected_sha,spec
+
+
 def run_experiment(admitted=False,*,wheels=None,stage='demo',case_id=None):
     if admitted is not True:raise ValueError('EXPLICIT_NATIVE_QWEN_ADMISSION_REQUIRED')
     from bountyforge.phase8_evaluation import require_credential_free_host
     from bountyforge.repair_engines import receipt_hash
     require_credential_free_host()
     if platform.system()!='Linux' or platform.machine() not in ('x86_64','amd64'):raise ValueError('LINUX_X64_REQUIRED')
-    config=(ROOT/'phase20_experiment.json').read_bytes()
-    if hashlib.sha256(config).hexdigest()!=CONFIG_SHA:raise ValueError('FROZEN_EXPERIMENT_CHANGED')
-    plan=json.loads(config)
-    if stage not in ('demo','sdk-case'):raise ValueError('EXPERIMENT_STAGE_NOT_ADMITTED')
-    spec=plan['tasks'][0] if stage=='demo' else next((x for x in plan['tasks'][1:] if x['case_id']==case_id),None)
-    if spec is None:raise ValueError('FROZEN_TASK_NOT_SELECTED')
+    plan,selected_sha,spec=select_experiment(stage,case_id)
     cpus=os.cpu_count() or 0
     memory=int(next(r.split()[1] for r in Path('/proc/meminfo').read_text().splitlines() if r.startswith('MemAvailable:')))
     if cpus<2 or memory<4*1024**2 or shutil.disk_usage(Path.home()).free<2*1024**3:raise ValueError('NATIVE_PAIR_CAPACITY_UNAVAILABLE')
@@ -265,7 +280,7 @@ def run_experiment(admitted=False,*,wheels=None,stage='demo',case_id=None):
         native=root/'native';archives=extract_offline_runtime(wheels,native);stage_native_cache(native)
         work=root/'case';work.mkdir();work.chmod(0o755)
         case=run_case(spec,assets,native,work,docker)
-        result={'kind':plan['kind'],'stage':stage,'experiment_sha256':CONFIG_SHA,'assets':asset_proof,'sdk_archives':archives,
+        result={'kind':plan['kind'],'stage':stage,'experiment_sha256':selected_sha,'assets':asset_proof,'sdk_archives':archives,
             'cases':[case],'status':'PASSED' if case['status']=='COMPLETED' and case['verified_repairs']==1 else 'NOT_VERIFIED',
             'independent_evaluation':False,'elapsed_seconds':round(time.monotonic()-began,3),'commercial_admission':'NOT_ADMITTED',
             'additional_spending_usd':0,'provider_credentials_supplied':False}
@@ -276,7 +291,7 @@ def run_experiment(admitted=False,*,wheels=None,stage='demo',case_id=None):
 def main(argv=None):
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--admit-native-qwen',action='store_true');parser.add_argument('--wheel-directory',type=Path,required=True)
-    parser.add_argument('--stage',choices=('demo','sdk-case'),default='demo')
+    parser.add_argument('--stage',choices=('demo','sdk-case','supplemental'),default='demo')
     parser.add_argument('--case-id',choices=('optional-setting','reading-groups','reserve-release'))
     parser.add_argument('--output',type=Path,required=True);args=parser.parse_args(argv)
     if not args.admit_native_qwen:parser.error('Explicit native local inference admission required')

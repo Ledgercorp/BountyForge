@@ -1,0 +1,20 @@
+{
+  "context_tokens": 2048,
+  "independent_evaluation": false,
+  "kind": "PHASE20_SUPPLEMENTAL_NATIVE_INTEGRATION",
+  "maximum_completion_requests_entire_experiment": 2,
+  "output_tokens": 150,
+  "prompt_revision": "Task-only V3: omit filesystem working-directory context while filesystem tools remain disabled",
+  "purpose": "Separate integration acceptance after the completed original comparison; public developmental fixture, no unseen claim",
+  "request_seconds": 45,
+  "tasks": [
+    {
+      "arms": {
+        "NATIVE_SDK": 2
+      },
+      "case_id": "chunk-count",
+      "source_sha256": "c3c646c84eb283dad12c1dbe142ab29a80a5b492a82357f3f152ef32525be1af",
+      "tests_sha256": "d009d0d85f0ee63cbe82f9e479b043d451488323eb48468030944c6f72f47b96"
+    }
+  ]
+}

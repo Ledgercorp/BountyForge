@@ -117,3 +117,34 @@ demo receipt prevents resetting its spent two-request allocation. These local
 claims survive process restart in this checkout; continuity on a new Cloud
 workspace is **not established**. All six remaining comparison-arm requests
 are still limited to one each under the original eight-request experiment.
+
+### Completed original comparison and separate integration supplement
+
+The original eight-completion plan is complete: two truncated demo responses,
+then three SDK and three external-control completions. On the three matched
+tasks the SDK verified **0/3** repairs, external Qwen **1/3**. All six produced
+source-valid proposals; five failed their owned regression suites. The model,
+sidecar resource limits, temperature, grammar, maximum context and 150-token
+output cap matched. The SDK supplied an additional required working-directory
+context: exactly **26 more input tokens per task**. The observed result does not
+establish that this context difference caused the accuracy difference. No
+superiority or commercial-readiness claim is warranted.
+
+The task-only V3 policy removes only `working-directory:current` through the
+documented scoped system-prompt assembly hook, while retaining other required
+context and every capability restriction. That filesystem context is irrelevant
+when filesystem tools are unavailable and approved source is supplied in the
+prompt. It also reuses BountyForge's existing validated-sibling retention for
+failed-test retries; all effective proposals are revalidated by the same bridge.
+These changes are **not** retroactively applied to the original results.
+
+`phase20_supplement.json`, SHA256
+`fd231562a7cb38fa2fe9c3fd8d5c1e212a366cf476fd973ed4142e5519fcf208`,
+separately freezes one existing exposed boundary-maintenance case,
+`chunk-count`, and a two-completion maximum for native integration acceptance.
+The original eight-call plan and all original task/test bytes remain intact.
+The total Phase20 limit is therefore **ten actual model completions**, at most
+two per distinct task including both arms of each original comparison case.
+The supplement is developmental integration testing, not a fresh accuracy
+benchmark or a basis for hiding the failed original tasks. No authored solution
+is placed in either prompt or proposal.

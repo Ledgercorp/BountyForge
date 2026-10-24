@@ -1,0 +1,52 @@
+{
+  "context_tokens": 2048,
+  "independent_evaluation": false,
+  "kind": "PHASE20_NATIVE_QWEN_DEVELOPMENT",
+  "maximum_completion_requests_entire_experiment": 8,
+  "model_memory_bytes": 3221225472,
+  "model_profile": "QWEN_1_5B",
+  "model_sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+  "model_threads": 2,
+  "novelty": "Public previously exposed owned development material. No independent unseen accuracy claim.",
+  "output_tokens": 150,
+  "request_seconds": 45,
+  "runtime_sha256": "152e33221c9c9d37816a8ee9943f8d87339199197c80cb692559c9756b2027d8",
+  "sdk_memory_bytes": 201326592,
+  "tasks": [
+    {
+      "arms": {
+        "NATIVE_SDK": 2
+      },
+      "case_id": "weighted-mix",
+      "source_sha256": "42a1c42ac048e025d4366813d0ebb0e5ee322885e483324318200f2cab345409",
+      "tests_sha256": "01500a264434f3b2bb9639c56d052127d6a6bf90ccf6ca4ce0914d998bfb9210"
+    },
+    {
+      "arms": {
+        "EXTERNAL_CONTROL": 1,
+        "NATIVE_SDK": 1
+      },
+      "case_id": "optional-setting",
+      "source_sha256": "da0c303cb3e23bf5c9f4b9e011a8e9d64c983cc114b45e9c3ae6b45bcc6c544c",
+      "tests_sha256": "d224e154be27910dc19463b0e138181a68dff0d5c37dc7cfd740263210a292a0"
+    },
+    {
+      "arms": {
+        "EXTERNAL_CONTROL": 1,
+        "NATIVE_SDK": 1
+      },
+      "case_id": "reading-groups",
+      "source_sha256": "d258f010611b36528ebd6daf0decc7e03c6f9cb71f65fd269747aa82906a8363",
+      "tests_sha256": "bcc52b82badd51b517240a6f01a2285635e1dec679acb2bf643038455cb1da73"
+    },
+    {
+      "arms": {
+        "EXTERNAL_CONTROL": 1,
+        "NATIVE_SDK": 1
+      },
+      "case_id": "reserve-release",
+      "source_sha256": "6680558010929ddbd5ddbc21280a10b2b4406fecc103b6520d8d9fdb4a35d766",
+      "tests_sha256": "e833bb513b5ebdb2cf5a1f699c2c135a83cb9c34466ef71a429b3d9541474921"
+    }
+  ]
+}

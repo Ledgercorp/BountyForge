@@ -18,6 +18,10 @@
     "evidence/phase21/github-run-40109689533/infrastructure.json",
     "evidence/phase21/github-run-40109689533/qwen-assets.json",
     "evidence/phase21/github-run-40109689533/run.json",
+    "evidence/phase21/github-run-40118367940/phase20-replay.json",
+    "evidence/phase21/github-run-40118367940/phase21-replay.json",
+    "evidence/phase21/github-run-40118367940/protocol.json",
+    "evidence/phase21/github-run-40118367940/run.json",
     "evidence/phase21/granite-specifications.json",
     "evidence/phase21/json-compliance.json",
     "evidence/phase21/local-recorded-replay.json",
@@ -91,6 +95,9 @@
   "engineering_status": "ENGINEERING_READY_FOR_REVIEW",
   "evidence_receipts": {
     "failure-analysis.json": "4732fe11b64de8a96bc01375b9a9c8990d68284f00056cbc48a75b2ecf732b5d",
+    "github-run-40118367940/phase20-replay.json": "df2aaf380fb598c516a45e3a3cbd6074ae20c8c4a64f4760f5b607141c1b1310",
+    "github-run-40118367940/phase21-replay.json": "81ce8d573175fc7b7d1de469abd5f1d69e5c8e2e5061c8f939f2ea4d1037a5fa",
+    "github-run-40118367940/protocol.json": "507d773d0846a1354ad568643222d09087e647184fba5fe7e85bfb9992b5bc7c",
     "local-recorded-replay.json": "da261304627c962ac4577afadfd4abd1af503b0496235c9e7a7ec7cccf892915",
     "manual-satisfiability-controls.json": "f528b49ce54d34470f4343f644267cac89078704a316a35cf33e224dca4a5a01",
     "model-comparison.json": "987fc944e87f3773c605bfe8a0ebec4c3f81c9568b9af85b9a844c3d928d3bbe",
@@ -221,15 +228,35 @@
   },
   "external_operations": [
     "Authorized isolated engineering branch pushes and draft PR9",
-    "Two hosted workflows so far: initial model-free admission and one 32-request fixed experiment",
+    "Three hosted workflows: initial zero-call admission, one fixed 32-request experiment, and final model-free regression/recorded replay",
     "Public official documentation/model metadata reads",
     "Bounded inert public artifact acquisition",
     "Small sanitized GitHub artifacts, one-day retention"
   ],
   "external_submissions": 0,
+  "final_hosted_regression": {
+    "conclusion": "success",
+    "executed": 845,
+    "failed": 0,
+    "fresh_model_requests": 0,
+    "frozen_experiment_job": "skipped",
+    "node_passed": 8,
+    "passed": 836,
+    "python_seconds": 37.596,
+    "recorded_replay_seconds": 76.522,
+    "recorded_verifier_receipts_matched": 21,
+    "run": "https://github.com/Ledgercorp/BountyForge/actions/runs/40118367940",
+    "skipped": 9
+  },
   "financial_actions": false,
   "generation_frozen_files_unchanged_after_inference": true,
   "generation_source_commit": "112d53842814d26d7b63ec6021869640f144697f",
+  "hosted_evidence_file_sha256": {
+    "github-run-40118367940/phase20-replay.json": "a1e04f6aaf25689f2c6d5b4dadee6756298beb8b22b288c4345df3c8e3f65056",
+    "github-run-40118367940/phase21-replay.json": "bafdaae30ab046c6ade6f6850001eb80351d94c1d5ad8306d251276f9b6b277f",
+    "github-run-40118367940/protocol.json": "af2b1dfbabdbf6f6a66d5359c70f72d8d71969127fb15e8d560e28af805d6136",
+    "github-run-40118367940/run.json": "fe5604138d73d507f300a1d479033e66398365014458e0b2488dea722db2bac5"
+  },
   "hosted_generation_regression": {
     "executed": 838,
     "failed": 0,
@@ -274,7 +301,7 @@
   },
   "production_deployed": false,
   "quality_target_achieved": false,
-  "receipt_sha256": "92917e515fe0d61d043a4d187f0dee43655514e1c0c7283b6f6d60c74867de74",
+  "receipt_sha256": "e61ec4a123f7ea134a39d1a4ea1b35fb5efeee1f8c6a84a956e412f351ae3055",
   "recorded_replay": {
     "duplicate_rejections_reproduced": 8,
     "failed_targeted_suites_reproduced": 6,
@@ -304,5 +331,6 @@
     "qwen_memory_limit_bytes": 3221225472,
     "sdk_memory_limit_bytes": 201326592
   },
-  "starting_commit": "c21d6c7e0500e27995804e69ae74f1ed9e1c9ad5"
+  "starting_commit": "c21d6c7e0500e27995804e69ae74f1ed9e1c9ad5",
+  "verified_implementation_commit": "33f052ae319d15a567585b2ca672f9a17a4d6696"
 }

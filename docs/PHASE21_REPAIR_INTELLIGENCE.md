@@ -373,3 +373,30 @@ Qwen returned syntactically valid JSON in 23/24 responses (external 7/8,
 SDK baseline 8/8, diagnosis 8/8); Granite in 2/5 returned responses. This
 formatting rate is distinct from six source-valid failed proposals and zero
 verified repairs. All these counts exclude timed-out requests with no response.
+
+## Final hosted verification and publication
+
+Verified implementation commit: `33f052ae319d15a567585b2ca672f9a17a4d6696`.
+[Final model-free hosted CI](https://github.com/Ledgercorp/BountyForge/actions/runs/40118367940)
+completed successfully: **845 Python tests, 836 passed / nine existing skips,
+zero failures**, 37.596s; **eight Node tests passed**. The actual isolated SDK
+protocol QA and previously recorded Phase20 replay passed. Phase21 fresh Docker
+replay matched **all 21 original verifier outcomes** in 76.522s, including the
+source rejections and failed targeted suites. This proves reproducibility of
+those outcomes and adds **zero repairs**.
+
+The frozen experiment job was **skipped**: this final workflow made **zero fresh
+inference requests**. The failed/incomplete 32-request experimental run remains
+unchanged and published separately. All three hosted runs used standard public
+Linux runners; no larger runners, paid API, paid service or additional spending.
+
+Final hosted JSON receipts and run metadata are preserved under
+`evidence/phase21/github-run-40118367940/`; acceptance records canonical receipt
+hashes separately from file-byte SHA256 hashes. Both frozen generation plans and
+all referenced generation/task files were revalidated without changes. All
+existing PRs remain draft; main remains
+`22250921eb50b7a72e0f474b0f3ff329f81b55a8`. No active Phase21 containers remain.
+
+The final follow-up commit only publishes these observed hosted receipts and
+documentation, using `[skip ci]` to avoid duplicating unchanged model-free tests.
+It makes no generation, validator, task or test changes.

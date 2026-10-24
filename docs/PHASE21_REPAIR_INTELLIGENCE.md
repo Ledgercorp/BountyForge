@@ -148,3 +148,33 @@ no provider secrets, no cache writes, a 25-minute timeout and at most one active
 inference process. Synchronize/reopen/rerun events cannot launch fresh inference.
 Small sanitized JSON artifacts have one-day retention; newly acquired weights
 are removed. If capacity or public asset access fails, preserve a blocked result.
+
+## Hosted root-cgroup portability correction before inference
+
+Draft PR9: https://github.com/Ledgercorp/BountyForge/pull/9
+Initial run https://github.com/Ledgercorp/BountyForge/actions/runs/40108608162
+passed model-free regression (835 tests: 826 passes / nine skips), Node and real
+isolated SDK protocol QA/replay. Its model gate was BLOCKED, not successful
+inference: `/sys/fs/cgroup/memory.max` was absent and every model step was skipped.
+The downloaded capacity artifact confirms **zero model requests and no model assets
+acquired**. No repair score is assigned. The raw JSON and diagnosis are preserved.
+
+Official Linux cgroup-v2 documentation specifies cpu.max and memory.max on
+**non-root** cgroups. The previous reader incorrectly assumed the mount root was
+the process's effective location. The fix resolves `/proc/self/cgroup`, validates
+the v2 controller layout, reads every visible ancestor, and takes the strictest
+numeric limit/headroom together with host MemAvailable and CPU affinity. Unknown,
+unreadable, escaping or missing process layouts fail closed. Root-level absent
+max files are distinguished from unknown state using kernel v2 identity; no
+container resource limit or verifier security check is removed. Three new tests
+cover inherited limits, legitimate root layout and invalid observations.
+
+This source-grounded V3 is frozen **before any model response**. Both V2 plans
+remain under `pre-inference-v2/`. Final Qwen plan SHA256:
+`6ff122f2d457bbe1cac42d843ab82f6ae711c2036cf6e0aa6d0e64ad24fe84fe`.
+Final Granite plan SHA256:
+`dcdedf899f342d9e1c96d2cec3a2b88c1392517d3b5f1863416205b9ac852912`.
+Prompts, tasks, tests, verifier and the 24+8 request ceiling are unchanged. The
+workflow permits exactly one synchronize continuation directly from the verified
+zero-inference head 2576e2f, run attempt 1 only. Later updates/reopens/reruns cannot
+start inference. It never reclaims a spent arm or infers a free provider quota.

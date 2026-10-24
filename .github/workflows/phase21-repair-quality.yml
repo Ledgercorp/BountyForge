@@ -55,9 +55,10 @@ jobs:
 
   frozen-experiment-once:
     needs: regression
-    # No inference on synchronize/reopen/rerun. Budgets were frozen before any
-    # requests; do not reset this condition to repeat exposed experiments.
-    if: ${{ github.event.action == 'opened' && github.run_attempt == 1 }}
+    # One explicit synchronize continuation from the hash-bound zero-inference
+    # admission failure at 2576e2f. No later synchronize/reopen/rerun inference.
+    # This changes no request budget; do not repeat exposed experiments.
+    if: ${{ github.run_attempt == 1 && (github.event.action == 'opened' || (github.event.action == 'synchronize' && github.event.before == '2576e2f96422c072a7097b01825c2090447b1f40')) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
@@ -74,8 +75,8 @@ jobs:
           from phase21_runner import capacity,load_plan
           result={'actual_model_requests':0,'spending_usd':0,'runner':'standard public ubuntu-24.04','inference_admitted':False}
           try:
-              load_plan('fb5543a918246dc5f1ab723366393a16c56f60fde92760bb664586c68fc17f3a')
-              load_plan('cf4fe0e37f8958ca6147036b7efe8f4cec31607a57d1f77e81e8ccb7a510d480','GRANITE_TRIAL')
+              load_plan('6ff122f2d457bbe1cac42d843ab82f6ae711c2036cf6e0aa6d0e64ad24fe84fe')
+              load_plan('dcdedf899f342d9e1c96d2cec3a2b88c1392517d3b5f1863416205b9ac852912','GRANITE_TRIAL')
               result['capacity']=capacity(5*1024**3)
               result['disk_free_bytes']=shutil.disk_usage(Path.home()).free
               if result['disk_free_bytes']<8*1024**3:raise ValueError('BOUNDED_ASSET_STORAGE_UNAVAILABLE')
@@ -112,7 +113,7 @@ jobs:
         run: |
           env -i PATH=/usr/local/bin:/usr/bin:/bin HOME="$HOME" PYTHONDONTWRITEBYTECODE=1 \
             python3 -m phase21_runner --admit-owned-evaluation \
-            --experiment-sha256 fb5543a918246dc5f1ab723366393a16c56f60fde92760bb664586c68fc17f3a \
+            --experiment-sha256 6ff122f2d457bbe1cac42d843ab82f6ae711c2036cf6e0aa6d0e64ad24fe84fe \
             --wheel-directory "$RUNNER_TEMP/bf21-wheels"
       - name: Verify/acquire only the admitted official Granite artifact
         if: steps.capacity.outputs.admitted == 'true'
@@ -126,7 +127,7 @@ jobs:
         run: |
           env -i PATH=/usr/local/bin:/usr/bin:/bin HOME="$HOME" PYTHONDONTWRITEBYTECODE=1 \
             python3 -m phase21_runner --admit-owned-evaluation --selection GRANITE_TRIAL \
-            --experiment-sha256 cf4fe0e37f8958ca6147036b7efe8f4cec31607a57d1f77e81e8ccb7a510d480 \
+            --experiment-sha256 dcdedf899f342d9e1c96d2cec3a2b88c1392517d3b5f1863416205b9ac852912 \
             --wheel-directory "$RUNNER_TEMP/bf21-wheels"
       - name: Report infrastructure completeness separately from repair accuracy
         if: steps.capacity.outputs.admitted == 'true'

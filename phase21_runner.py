@@ -72,17 +72,50 @@ def admit_capacity(cpu_max,memory_max,memory_current,model_bytes):
         'memory_current':memory_current,'model_limit':model_bytes,'required_headroom':required}
 
 
+def observe_capacity(group,proc,*,affinity_cpus):
+    """Read effective v2 ancestor limits; the kernel root lacks max files.
+
+    No permission/read/unknown-layout error is interpreted as unlimited.
+    Host available memory and CPU affinity are always additional ceilings.
+    """
+    if not group.is_dir() or group.is_symlink():raise ValueError('CGROUP_V2_LAYOUT_REQUIRED')
+    controllers=(group/'cgroup.controllers').read_text().split()
+    if not {'cpu','memory'}<=set(controllers):raise ValueError('CGROUP_V2_CONTROLLERS_REQUIRED')
+    entries=(proc/'self/cgroup').read_text().splitlines()
+    if len(entries)!=1 or not entries[0].startswith('0::/'):raise ValueError('CGROUP_V2_IDENTITY_REQUIRED')
+    path=entries[0][3:]
+    if '..' in Path(path).parts:raise ValueError('CGROUP_PATH_REJECTED')
+    leaf=group/path.lstrip('/')
+    if not leaf.is_dir():raise ValueError('PROCESS_CGROUP_UNAVAILABLE')
+    available=int(next(line.split()[1] for line in (proc/'meminfo').read_text().splitlines() if line.startswith('MemAvailable:')))*1024
+    cpu=affinity_cpus;observations=[];node=leaf
+    while True:
+        if node.is_symlink():raise ValueError('CGROUP_PATH_REJECTED')
+        row={'relative_path':str(node.relative_to(group))}
+        memory=node/'memory.max'
+        if memory.exists():
+            maximum=memory.read_text().strip();current=int((node/'memory.current').read_text())
+            row.update(memory_max=maximum,memory_current=current)
+            if maximum!='max':available=min(available,int(maximum)-current)
+        quota_file=node/'cpu.max'
+        if quota_file.exists():
+            raw=quota_file.read_text().strip();quota,period=raw.split();period=int(period)
+            if period<=0:raise ValueError('CGROUP_CPU_PERIOD_INVALID')
+            row['cpu_max']=raw
+            if quota!='max':cpu=min(cpu,int(quota)/period)
+        observations.append(row)
+        if node==group:break
+        node=node.parent
+    return {'process_cgroup':path,'available_memory_bytes':available,'available_cpu_count':cpu,
+        'headroom_basis':'MINIMUM_HOST_AVAILABLE_AND_VISIBLE_V2_ANCESTOR_LIMITS','ancestors':observations}
+
+
 def capacity(model_bytes):
-    group=Path('/sys/fs/cgroup')
-    maximum=(group/'memory.max').read_text().strip();current=int((group/'memory.current').read_text())
-    if maximum=='max':
-        available=int(next(line.split()[1] for line in Path('/proc/meminfo').read_text().splitlines() if line.startswith('MemAvailable:')))*1024
-        result=admit_capacity((group/'cpu.max').read_text().strip(),available,0,model_bytes)
-        result['headroom_basis']='HOST_MEM_AVAILABLE_WITHOUT_OUTER_CGROUP_LIMIT'
-        return result
-    result=admit_capacity((group/'cpu.max').read_text().strip(),int(maximum),current,model_bytes)
-    result['headroom_basis']='OUTER_CGROUP_LIMIT_MINUS_CURRENT'
-    return result
+    observation=observe_capacity(Path('/sys/fs/cgroup'),Path('/proc'),affinity_cpus=len(os.sched_getaffinity(0)))
+    required=model_bytes+192*1024**2+512*1024**2
+    if observation['available_cpu_count']<2 or observation['available_memory_bytes']<required:
+        raise ValueError('INDEPENDENT_CGROUP_CAPACITY_UNAVAILABLE')
+    return {'admitted':True,'model_limit':model_bytes,'required_headroom':required,'observation':observation}
 
 
 def process_memory(docker,name):

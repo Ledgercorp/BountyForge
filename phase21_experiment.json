@@ -21,7 +21,7 @@
   ],
   "context_tokens": 2048,
   "cpu_seconds_per_process": 180,
-  "execution_revision": "V2 before any inference: official baseline asset acquisition added for eligible GitHub runner; no prompt, task, verifier or request-budget change",
+  "execution_revision": "V3 before any inference: resolve the process cgroup and visible ancestors; kernel v2 root max files are absent by design. No prompt/task/verifier/budget change.",
   "frozen_files": {
     "bountyforge/curated_docker.py": "0beb01183867f514029f466274e641f5e9e2860de7a56d34fe725a12b61dfa2f",
     "bountyforge/curated_tasks.py": "048bf0efe8e44278d4fb5a34ebc951b1d27c7034fb28a77da94f6990b965d48f",
@@ -68,7 +68,7 @@
     "phase21_granite_provider.patch.yml": "2ded5f1f88d11f8ed1757e495146493d67999d062a93a42dfaa9de017a16119b",
     "phase21_model_service.py": "0cb9a3806e480111713838d103c0bb49b56610042927f3cb4443a267b12c60ec",
     "phase21_reasoning.py": "21c391fa347c70f128ba0d037b4edcc46873562a34c85a2e1d04301f7991ea54",
-    "phase21_runner.py": "b367123f003a0a89e2ad3eaaef7678c75ff9bcdbd136c25f6915d3f2b78d2535"
+    "phase21_runner.py": "24bf32748e4bd3df60fd461f90f261230b00b2d67d94321495896abe7854302d"
   },
   "independent_evaluation": false,
   "kind": "PHASE21_FROZEN_OWNED_DEVELOPMENT",

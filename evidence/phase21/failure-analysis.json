@@ -1,0 +1,423 @@
+{
+  "inference_limits": [
+    "Timeouts are observed at the native completion route; cached-token evidence is consistent with cold-prefill cost, but detailed server-stage timings were not retained.",
+    "Blocked SDK sessions did not preserve complete per-turn audit/resource snapshots; post-turn safety checks for those three runs are unverified, not passed.",
+    "Qwen SDK_DIAG replies did not hit output length or context admission limits; larger budgets alone do not explain their invalid/ineffective edits.",
+    "Treatment also changed anchor presentation order relative to the baseline prioritized packet; no causal diagnosis-only ablation was performed."
+  ],
+  "kind": "PHASE21_POSTHOC_FAILURE_CLASSIFICATION",
+  "new_linked_wire_contract_accuracy": "UNMEASURED",
+  "new_model_requests": 0,
+  "quality_improvement_established": false,
+  "receipt_sha256": "4732fe11b64de8a96bc01375b9a9c8990d68284f00056cbc48a75b2ecf732b5d",
+  "records": [
+    {
+      "arm": "EXTERNAL_BASE",
+      "attempts": [
+        {
+          "established_tags": [
+            "SOURCE_VALID_BUT_WRONG_BEHAVIOR"
+          ],
+          "generation_attempt": 1,
+          "outcome": "TEST_FAILED",
+          "rejection": null,
+          "response_sha256": "28a9c2d7c79daa04c7a8b2c5708087c4407dbe0f5a25c187dbf85b8ed8bd4691"
+        },
+        {
+          "established_tags": [
+            "INCOMPLETE_OR_INVALID_STRUCTURED_JSON"
+          ],
+          "generation_attempt": 2,
+          "outcome": null,
+          "rejection": "STRUCTURED_JSON_REQUIRED",
+          "response_sha256": "7bd0011024350bcaab3bbc036e05d1f7e1081117427792040200501e80e74cda"
+        }
+      ],
+      "case_id": "cache-refresh",
+      "origin_receipt_sha256": "c865e0eee9d66244129f83a83f4b5b6fca5e1a27f362607d49e909fd0d7818cc",
+      "runtime_tags": [
+        "OUTPUT_LIMIT_REACHED"
+      ],
+      "status": "COMPLETED"
+    },
+    {
+      "arm": "GRANITE_DIAG",
+      "attempts": [],
+      "case_id": "cache-refresh",
+      "origin_receipt_sha256": "429f52917a9d6ae3bfbcfcff08fc104193685b8c37412a2af920961778ea7d47",
+      "runtime_tags": [
+        "TWO_COMPLETION_REQUESTS_CONSUMED_DURING_FIRST_CONTROLLER_TURN_AFTER_TIMEOUT",
+        "OUTPUT_LIMIT_REACHED"
+      ],
+      "status": "BLOCKED"
+    },
+    {
+      "arm": "SDK_BASE",
+      "attempts": [
+        {
+          "established_tags": [
+            "SOURCE_VALID_BUT_WRONG_BEHAVIOR"
+          ],
+          "generation_attempt": 1,
+          "outcome": "TEST_FAILED",
+          "rejection": null,
+          "response_sha256": "28a9c2d7c79daa04c7a8b2c5708087c4407dbe0f5a25c187dbf85b8ed8bd4691"
+        },
+        {
+          "established_tags": [
+            "REPEATED_INEFFECTIVE_PROPOSAL"
+          ],
+          "generation_attempt": 2,
+          "outcome": "REPEATED_PROPOSAL",
+          "rejection": null,
+          "response_sha256": "28a9c2d7c79daa04c7a8b2c5708087c4407dbe0f5a25c187dbf85b8ed8bd4691"
+        }
+      ],
+      "case_id": "cache-refresh",
+      "origin_receipt_sha256": "b1569da3173eb4cf5f2c01ee7dfdba05e11f51d723a5d7fa4dac0a2d5d1e982d",
+      "runtime_tags": [],
+      "status": "COMPLETED"
+    },
+    {
+      "arm": "SDK_DIAG",
+      "attempts": [
+        {
+          "established_tags": [
+            "SOURCE_CONTROL_CHARACTER_ENCODING"
+          ],
+          "generation_attempt": 1,
+          "outcome": null,
+          "rejection": "UNSAFE_REPLACEMENT",
+          "response_sha256": "6a8edf1c29816c0a77580f054b03654544bac8174d06c59b0d1d8260a163d40e"
+        },
+        {
+          "established_tags": [
+            "SOURCE_CONTROL_CHARACTER_ENCODING"
+          ],
+          "generation_attempt": 2,
+          "outcome": null,
+          "rejection": "UNSAFE_REPLACEMENT",
+          "response_sha256": "6a8edf1c29816c0a77580f054b03654544bac8174d06c59b0d1d8260a163d40e"
+        }
+      ],
+      "case_id": "cache-refresh",
+      "origin_receipt_sha256": "78337a799a3affec94dc6f060a3317c18f7c80491355d4bba10323d818a7f4d1",
+      "runtime_tags": [],
+      "status": "COMPLETED"
+    },
+    {
+      "arm": "EXTERNAL_BASE",
+      "attempts": [
+        {
+          "established_tags": [
+            "BASELINE_EQUIVALENT_SOURCE_REJECTED",
+            "SOURCE_VALIDATOR_REJECTION"
+          ],
+          "generation_attempt": 1,
+          "outcome": "SOURCE_REJECTED",
+          "rejection": null,
+          "response_sha256": "0c8c56aa29466838f421bc8717726cc718ed80a3e8b3afc024405afef141153f"
+        },
+        {
+          "established_tags": [
+            "REPEATED_INEFFECTIVE_PROPOSAL"
+          ],
+          "generation_attempt": 2,
+          "outcome": "REPEATED_PROPOSAL",
+          "rejection": null,
+          "response_sha256": "0c8c56aa29466838f421bc8717726cc718ed80a3e8b3afc024405afef141153f"
+        }
+      ],
+      "case_id": "inventory-adjustments",
+      "origin_receipt_sha256": "44abe8cb4631b5406a8c4f554c5ce64ee89f0886aa2591c1c91a3193161e77e5",
+      "runtime_tags": [],
+      "status": "COMPLETED"
+    },
+    {
+      "arm": "GRANITE_DIAG",
+      "attempts": [
+        {
+          "established_tags": [
+            "SOURCE_VALIDATOR_REJECTION",
+            "SOURCE_CONTROL_CHARACTER_ENCODING",
+            "EMBEDDED_CONTROL_FLOW_AT_STATEMENT_ANCHOR"
+          ],
+          "generation_attempt": 1,
+          "outcome": "SOURCE_REJECTED",
+          "rejection": null,
+          "response_sha256": "aea9912b00757b3c404999cfeac5095e9223ac9090bd6d0f6471cd7c7683ccf8"
+        },
+        {
+          "established_tags": [
+            "REPEATED_INEFFECTIVE_PROPOSAL",
+            "SOURCE_CONTROL_CHARACTER_ENCODING",
+            "EMBEDDED_CONTROL_FLOW_AT_STATEMENT_ANCHOR"
+          ],
+          "generation_attempt": 2,
+          "outcome": "REPEATED_PROPOSAL",
+          "rejection": null,
+          "response_sha256": "aea9912b00757b3c404999cfeac5095e9223ac9090bd6d0f6471cd7c7683ccf8"
+        }
+      ],
+      "case_id": "inventory-adjustments",
+      "origin_receipt_sha256": "12d1e6a483c8aac1297eb1141ad3808200cf57f284581b068ef7fec632089a55",
+      "runtime_tags": [],
+      "status": "COMPLETED"
+    },
+    {
+      "arm": "SDK_BASE",
+      "attempts": [
+        {
+          "established_tags": [
+            "BASELINE_EQUIVALENT_SOURCE_REJECTED",
+            "SOURCE_VALIDATOR_REJECTION"
+          ],
+          "generation_attempt": 1,
+          "outcome": "SOURCE_REJECTED",
+          "rejection": null,
+          "response_sha256": "0c8c56aa29466838f421bc8717726cc718ed80a3e8b3afc024405afef141153f"
+        },
+        {
+          "established_tags": [
+            "BASELINE_EQUIVALENT_SOURCE_REJECTED",
+            "SOURCE_VALIDATOR_REJECTION"
+          ],
+          "generation_attempt": 2,
+          "outcome": "SOURCE_REJECTED",
+          "rejection": null,
+          "response_sha256": "eab30e4419bf9d98c6f808a6c63b9a6a5a2e832c51c0b3e354e71a93c315e55a"
+        }
+      ],
+      "case_id": "inventory-adjustments",
+      "origin_receipt_sha256": "67660fee5541972c301d5fe16c162df4c7be2c777266e57c4eb2d57cd020a265",
+      "runtime_tags": [],
+      "status": "COMPLETED"
+    },
+    {
+      "arm": "SDK_DIAG",
+      "attempts": [
+        {
+          "established_tags": [
+            "SOURCE_VALIDATOR_REJECTION",
+            "SOURCE_CONTROL_CHARACTER_ENCODING",
+            "EMBEDDED_CONTROL_FLOW_AT_STATEMENT_ANCHOR"
+          ],
+          "generation_attempt": 1,
+          "outcome": "SOURCE_REJECTED",
+          "rejection": null,
+          "response_sha256": "1fb534eb8fd9faa5056387fd087a049a558b8e86adc0b0757715a7e4cdae8c6a"
+        },
+        {
+          "established_tags": [
+            "REPEATED_INEFFECTIVE_PROPOSAL",
+            "SOURCE_CONTROL_CHARACTER_ENCODING",
+            "EMBEDDED_CONTROL_FLOW_AT_STATEMENT_ANCHOR"
+          ],
+          "generation_attempt": 2,
+          "outcome": "REPEATED_PROPOSAL",
+          "rejection": null,
+          "response_sha256": "1fb534eb8fd9faa5056387fd087a049a558b8e86adc0b0757715a7e4cdae8c6a"
+        }
+      ],
+      "case_id": "inventory-adjustments",
+      "origin_receipt_sha256": "9720db2e5ffb0bfe14707bebb0d96dee3fa4d507f5b0d8b6766d6ddc992c879c",
+      "runtime_tags": [],
+      "status": "COMPLETED"
+    },
+    {
+      "arm": "EXTERNAL_BASE",
+      "attempts": [
+        {
+          "established_tags": [
+            "SOURCE_VALID_BUT_WRONG_BEHAVIOR"
+          ],
+          "generation_attempt": 1,
+          "outcome": "TEST_FAILED",
+          "rejection": null,
+          "response_sha256": "fcfbe681c8e4cf702e8a4c510c19f1d4645d49ef8f32080596a497734a9ac3c3"
+        },
+        {
+          "established_tags": [
+            "SOURCE_VALIDATOR_REJECTION"
+          ],
+          "generation_attempt": 2,
+          "outcome": "SOURCE_REJECTED",
+          "rejection": null,
+          "response_sha256": "3a2c752dc76a8d10a6fb4daa147683c10ae52213384ce977514b9872ea448f82"
+        }
+      ],
+      "case_id": "parameter-pairs",
+      "origin_receipt_sha256": "b2b08937b4c84b198bffdf0faf7cee4c16f213cd88492cf5c8c4d33d239c3aa8",
+      "runtime_tags": [],
+      "status": "COMPLETED"
+    },
+    {
+      "arm": "GRANITE_DIAG",
+      "attempts": [
+        {
+          "established_tags": [
+            "INCOMPLETE_OR_INVALID_STRUCTURED_JSON"
+          ],
+          "generation_attempt": 1,
+          "outcome": null,
+          "rejection": "Unterminated string starting at: line 1 column 170 (char 169)",
+          "response_sha256": "96d3fd3931d669fdd4f944367d8c2c1055a9447619a2a0105af87d0d4d6a65f0"
+        }
+      ],
+      "case_id": "parameter-pairs",
+      "origin_receipt_sha256": "0e9748bfa92e3218e8d022d4461bf1d36d50f57ea47b68a44407550ad460044a",
+      "runtime_tags": [
+        "COMPLETION_TIMEOUT_WITHOUT_CONFIRMED_SDK_RESPONSE",
+        "OUTPUT_LIMIT_REACHED"
+      ],
+      "status": "BLOCKED"
+    },
+    {
+      "arm": "SDK_BASE",
+      "attempts": [
+        {
+          "established_tags": [
+            "SOURCE_VALID_BUT_WRONG_BEHAVIOR"
+          ],
+          "generation_attempt": 1,
+          "outcome": "TEST_FAILED",
+          "rejection": null,
+          "response_sha256": "d1819af231667960c1c18688ba392efdde865595ebfa07237866971d1f410a2b"
+        },
+        {
+          "established_tags": [
+            "REPEATED_INEFFECTIVE_PROPOSAL"
+          ],
+          "generation_attempt": 2,
+          "outcome": "REPEATED_PROPOSAL",
+          "rejection": null,
+          "response_sha256": "d1819af231667960c1c18688ba392efdde865595ebfa07237866971d1f410a2b"
+        }
+      ],
+      "case_id": "parameter-pairs",
+      "origin_receipt_sha256": "aa7a144aeb0d69eb6f13cdfd88cb8fac253b111e95be53037172b93730baccda",
+      "runtime_tags": [],
+      "status": "COMPLETED"
+    },
+    {
+      "arm": "SDK_DIAG",
+      "attempts": [
+        {
+          "established_tags": [
+            "DIAGNOSIS_ANCHOR_NOT_IN_EDITS"
+          ],
+          "generation_attempt": 1,
+          "outcome": null,
+          "rejection": "DIAGNOSIS_EDIT_SCOPE",
+          "response_sha256": "abadeec83c268fac16bb41f2ef1743f267f55d4860198ab8c0f0fcfa2f1da0cd"
+        },
+        {
+          "established_tags": [
+            "DIAGNOSIS_ANCHOR_NOT_IN_EDITS"
+          ],
+          "generation_attempt": 2,
+          "outcome": null,
+          "rejection": "DIAGNOSIS_EDIT_SCOPE",
+          "response_sha256": "abadeec83c268fac16bb41f2ef1743f267f55d4860198ab8c0f0fcfa2f1da0cd"
+        }
+      ],
+      "case_id": "parameter-pairs",
+      "origin_receipt_sha256": "5d10b60c0810ef84c2cfb7999bc23e3c08b420b031588e7cb74c164e58b3b820",
+      "runtime_tags": [],
+      "status": "COMPLETED"
+    },
+    {
+      "arm": "EXTERNAL_BASE",
+      "attempts": [
+        {
+          "established_tags": [
+            "SOURCE_VALID_BUT_WRONG_BEHAVIOR"
+          ],
+          "generation_attempt": 1,
+          "outcome": "TEST_FAILED",
+          "rejection": null,
+          "response_sha256": "ee0290d5fc0d1258f9e8ff82c1806b16b983faf8a9d0b8bf99050148e4e9c292"
+        },
+        {
+          "established_tags": [
+            "REPEATED_INEFFECTIVE_PROPOSAL"
+          ],
+          "generation_attempt": 2,
+          "outcome": "REPEATED_PROPOSAL",
+          "rejection": null,
+          "response_sha256": "ee0290d5fc0d1258f9e8ff82c1806b16b983faf8a9d0b8bf99050148e4e9c292"
+        }
+      ],
+      "case_id": "shipment-total",
+      "origin_receipt_sha256": "c8d9e5a04315fb1f56d29363713aa1cf9fa7871ad10e792ba8e91fbcd0e16d9b",
+      "runtime_tags": [],
+      "status": "COMPLETED"
+    },
+    {
+      "arm": "GRANITE_DIAG",
+      "attempts": [],
+      "case_id": "shipment-total",
+      "origin_receipt_sha256": "d62816a92946155acd7de8fe2f88275761ae56ba5c0d94c2726feae456305cbc",
+      "runtime_tags": [
+        "TWO_COMPLETION_REQUESTS_CONSUMED_DURING_FIRST_CONTROLLER_TURN_AFTER_TIMEOUT",
+        "OUTPUT_LIMIT_REACHED"
+      ],
+      "status": "BLOCKED"
+    },
+    {
+      "arm": "SDK_BASE",
+      "attempts": [
+        {
+          "established_tags": [
+            "SOURCE_VALID_BUT_WRONG_BEHAVIOR"
+          ],
+          "generation_attempt": 1,
+          "outcome": "TEST_FAILED",
+          "rejection": null,
+          "response_sha256": "ee0290d5fc0d1258f9e8ff82c1806b16b983faf8a9d0b8bf99050148e4e9c292"
+        },
+        {
+          "established_tags": [
+            "REPEATED_INEFFECTIVE_PROPOSAL"
+          ],
+          "generation_attempt": 2,
+          "outcome": "REPEATED_PROPOSAL",
+          "rejection": null,
+          "response_sha256": "ee0290d5fc0d1258f9e8ff82c1806b16b983faf8a9d0b8bf99050148e4e9c292"
+        }
+      ],
+      "case_id": "shipment-total",
+      "origin_receipt_sha256": "0756718371131e42f356b589d9d72cd2e0a8b5aed198b3a3f820388c7fc899dc",
+      "runtime_tags": [],
+      "status": "COMPLETED"
+    },
+    {
+      "arm": "SDK_DIAG",
+      "attempts": [
+        {
+          "established_tags": [
+            "BASELINE_EQUIVALENT_SOURCE_REJECTED",
+            "SOURCE_VALIDATOR_REJECTION"
+          ],
+          "generation_attempt": 1,
+          "outcome": "SOURCE_REJECTED",
+          "rejection": null,
+          "response_sha256": "fb23beddceff6cf612263a4cbbf3c9b34bbe974e6d8e266faaea352caa29e962"
+        },
+        {
+          "established_tags": [
+            "REPEATED_INEFFECTIVE_PROPOSAL"
+          ],
+          "generation_attempt": 2,
+          "outcome": "REPEATED_PROPOSAL",
+          "rejection": null,
+          "response_sha256": "fb23beddceff6cf612263a4cbbf3c9b34bbe974e6d8e266faaea352caa29e962"
+        }
+      ],
+      "case_id": "shipment-total",
+      "origin_receipt_sha256": "db2f67b6541ee8d800512faa10fcd68c65cb71a597fff94419f7d8edf3d96cea",
+      "runtime_tags": [],
+      "status": "COMPLETED"
+    }
+  ]
+}

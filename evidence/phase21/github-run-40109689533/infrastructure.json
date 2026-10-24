@@ -1,0 +1,120 @@
+{
+  "kind": "PHASE21_EXPERIMENT_INFRASTRUCTURE_STATUS",
+  "complete": false,
+  "cases": [
+    {
+      "case_id": "shipment-total",
+      "arm": "EXTERNAL_BASE",
+      "status": "COMPLETED",
+      "actual_requests": 2,
+      "verified": false
+    },
+    {
+      "case_id": "shipment-total",
+      "arm": "SDK_BASE",
+      "status": "COMPLETED",
+      "actual_requests": 2,
+      "verified": false
+    },
+    {
+      "case_id": "shipment-total",
+      "arm": "SDK_DIAG",
+      "status": "COMPLETED",
+      "actual_requests": 2,
+      "verified": false
+    },
+    {
+      "case_id": "shipment-total",
+      "arm": "GRANITE_DIAG",
+      "status": "BLOCKED",
+      "actual_requests": 2,
+      "verified": false
+    },
+    {
+      "case_id": "cache-refresh",
+      "arm": "EXTERNAL_BASE",
+      "status": "COMPLETED",
+      "actual_requests": 2,
+      "verified": false
+    },
+    {
+      "case_id": "cache-refresh",
+      "arm": "SDK_BASE",
+      "status": "COMPLETED",
+      "actual_requests": 2,
+      "verified": false
+    },
+    {
+      "case_id": "cache-refresh",
+      "arm": "SDK_DIAG",
+      "status": "COMPLETED",
+      "actual_requests": 2,
+      "verified": false
+    },
+    {
+      "case_id": "cache-refresh",
+      "arm": "GRANITE_DIAG",
+      "status": "BLOCKED",
+      "actual_requests": 2,
+      "verified": false
+    },
+    {
+      "case_id": "parameter-pairs",
+      "arm": "EXTERNAL_BASE",
+      "status": "COMPLETED",
+      "actual_requests": 2,
+      "verified": false
+    },
+    {
+      "case_id": "parameter-pairs",
+      "arm": "SDK_BASE",
+      "status": "COMPLETED",
+      "actual_requests": 2,
+      "verified": false
+    },
+    {
+      "case_id": "parameter-pairs",
+      "arm": "SDK_DIAG",
+      "status": "COMPLETED",
+      "actual_requests": 2,
+      "verified": false
+    },
+    {
+      "case_id": "parameter-pairs",
+      "arm": "GRANITE_DIAG",
+      "status": "BLOCKED",
+      "actual_requests": 2,
+      "verified": false
+    },
+    {
+      "case_id": "inventory-adjustments",
+      "arm": "EXTERNAL_BASE",
+      "status": "COMPLETED",
+      "actual_requests": 2,
+      "verified": false
+    },
+    {
+      "case_id": "inventory-adjustments",
+      "arm": "SDK_BASE",
+      "status": "COMPLETED",
+      "actual_requests": 2,
+      "verified": false
+    },
+    {
+      "case_id": "inventory-adjustments",
+      "arm": "SDK_DIAG",
+      "status": "COMPLETED",
+      "actual_requests": 2,
+      "verified": false
+    },
+    {
+      "case_id": "inventory-adjustments",
+      "arm": "GRANITE_DIAG",
+      "status": "COMPLETED",
+      "actual_requests": 2,
+      "verified": false
+    }
+  ],
+  "repair_accuracy_is_not_ci_status": true,
+  "maximum_authorized_requests": 32
+}

@@ -1,5 +1,12 @@
 # Phase21 repair intelligence: engineering and experiment ledger
 
+**Measured outcome: no autonomous repair-accuracy improvement.** On four new owned
+problems, external Qwen, native SDK Qwen and diagnosis-first SDK Qwen each verified
+0/4 with equal two-request limits. Granite verified none: one complete case and
+three incomplete resource/protocol cases. All 32 authorized completion requests
+were used. The default is unchanged; diagnosis remains experimental. A later
+native vocabulary-only test verifies two wire-contract fixes, not new AI repairs.
+
 Baseline: `c21d6c7e0500e27995804e69ae74f1ed9e1c9ad5`, draft PR8.
 New branch: `engineering/phase21-repair-intelligence-20261024`.
 Main and every earlier draft PR are preserved. No deployment, schedule, customer
@@ -136,9 +143,9 @@ runner. Model prompts, tasks, scopes, validators and inference budgets are uncha
 Qwen's official revision is f86cb2c1fa58255f8052cc32aeede1b7482d4361 and its existing
 1,117,320,768-byte artifact SHA remains cc324af0…bb046. No local model is replaced.
 
-The final frozen Qwen plan SHA256 is
+The V2 Qwen plan SHA256 was
 `fb5543a918246dc5f1ab723366393a16c56f60fde92760bb664586c68fc17f3a`;
-the separate Granite plan SHA256 is
+the V2 separate Granite plan SHA256 was
 `cf4fe0e37f8958ca6147036b7efe8f4cec31607a57d1f77e81e8ccb7a510d480`.
 Each binds 46 exact implementation/task files. On the authorized draft PR's first
 opened event only, after model-free regression and actual CPU/memory/disk admission,
@@ -178,3 +185,191 @@ Prompts, tasks, tests, verifier and the 24+8 request ceiling are unchanged. The
 workflow permits exactly one synchronize continuation directly from the verified
 zero-inference head 2576e2f, run attempt 1 only. Later updates/reopens/reruns cannot
 start inference. It never reclaims a spent arm or infers a free provider quota.
+
+## Actual frozen V3 results
+
+Generation source: `112d53842814d26d7b63ec6021869640f144697f`.
+Hosted experiment: https://github.com/Ledgercorp/BountyForge/actions/runs/40109689533
+The regression job passed (838 tests, 829 passed / nine skipped, Node eight).
+The experiment job deliberately remains **FAILED/INCOMPLETE** because three
+Granite cases were blocked. A green model-free regression is not a repair score.
+There was no rerun of these spent experiments.
+
+| Arm | Cases attempted / complete | Source-valid proposals | Verified repairs | First / retry successes | Actual requests |
+|---|---|---:|---:|---|---:|
+| External Qwen baseline | 4 / 4 | 3 | 0/4 | 0 / 0 | 8 |
+| Native SDK Qwen baseline | 4 / 4 | 3 | 0/4 | 0 / 0 | 8 |
+| Native SDK Qwen diagnosis | 4 / 4 | 0 | 0/4 | 0 / 0 | 8 |
+| Native SDK Granite diagnosis | 4 / 1 | 0 | 0 verified; 3 incomplete | 0 / 0 | 8 |
+
+All four tasks used their two-request allowance in each arm. There were six
+source-valid but test-failing proposals, thirteen source/handoff/diagnosis
+rejections and eight repeated proposals among the 27 controller-recorded
+handoffs. Two additional truncated Granite responses were captured at the
+gateway but not admitted as controller handoffs. Three other requests timed out
+without returned usage. These are **32 actual requests / 29 returned model
+responses**, not 32 completed repair attempts or sixteen distinct problems.
+
+The existing no-op and repeated-proposal guards worked; no replacement critic
+or weaker validator was introduced. Qwen still misread conditional logic,
+copied baseline-equivalent code, duplicated branches and repeated ineffective
+edits after feedback. The diagnosis treatment often restated the faulty source
+instead of describing the intended correction. Its parser rejected mismatched
+diagnosis/edit anchors; source gates rejected control characters and control
+flow embedded at an assignment anchor. All Qwen diagnosis replies ended below
+the output cap and context admission ceiling. More tokens alone are not an
+established explanation for those failures.
+
+The treatment also changed system text, dependency facts and anchor presentation
+order relative to the baseline prioritized packet. This is a comparison of the
+implemented treatment, not a causal diagnosis-only ablation. No broad conclusion
+about all structured reasoning or model generalization is warranted.
+
+Granite's three blocked cases included completion-route TimeoutError and
+150-token truncations. In shipment-total and cache-refresh, two requests were
+consumed during the first controller prompt turn after a timeout; the controller
+then refused its strict response-route correlation. In parameter-pairs the first
+proposal was truncated and the second request timed out. Request-budget guards
+prevented further calls. Subsequent cache-hit counters are consistent with cold
+prefill cost, but detailed server-stage timings were not retained. Do not call
+these three runs completed model coding failures or claim a complete 0/4 Granite
+accuracy measurement. The one complete Granite case produced unsafe source and
+then repeated it. Post-turn audits and resource peaks for the three blocked
+runs are missing, not passed or zero.
+
+Source/test, model, response, candidate and verifier hashes are retained in all
+sixteen original JSON receipts. `failure-analysis.json` classifies each observed
+attempt; `model-comparison.json` is reproducible with
+`python -m phase21_measurements --output <json>`. No historical candidate, fixture,
+expected result or frozen partition was edited after inference.
+
+## Usage and resource measurements
+
+| Arm | Returned prompt / completion tokens | Usage missing | Gateway seconds | Complete-case seconds |
+|---|---|---:|---:|---:|
+| External Qwen | 4,891 / 632 | 0 | 85.503 | 138.388 |
+| SDK Qwen | 7,123 / 536 | 0 | 92.593 | 149.979 |
+| SDK Qwen diagnosis | 8,927 / 613 | 0 | 112.359 | 168.579 |
+| SDK Granite diagnosis | 4,695 / 644 known | 3 requests | 284.905 | 352.448 |
+
+All 32 submitted inputs were actually tokenized: **29,029 input tokens**. Returned
+provider usage totals **25,636 prompt / 2,425 completion tokens across 29
+responses**; usage for three timed-out requests is unavailable. Total completion
+usage is therefore unknown, not 2,425 exactly. The local format-only QA,
+simulated protocol responses, post-hoc manual controls and recorded replay add
+zero autonomous-model requests. Supervisor Codex-session usage is not exposed by
+these execution tools and is not invented as zero.
+
+Gateway elapsed time totals 575.360s; measured case wall time totals 809.394s.
+Wall includes reproduction, startup, model use, verification and cleanup;
+verification wall is also recorded per submitted candidate where observed.
+CPU measurements cover contained processes through the final probe, not trusted
+host-verifier CPU. `resources.json` records each observed cgroup total and peak.
+
+Maximum observed Qwen process VmHWM was **2,045,005,824 bytes**; maximum SDK process
+VmHWM was **162,701,312 bytes**, within its unchanged 192 MiB cap. Granite's one
+complete case recorded **4,076,965,888 bytes** model VmHWM and 150.441389 model
+cgroup CPU-seconds. Its other three cases have no completed peak/CPU measurement.
+Cgroup memory.peak and process VmHWM are different; shared file-backed pages can
+be charged outside an observed child cgroup. Never substitute configured caps
+for measured peaks or missing observations for zero.
+
+Actual eligible hosted capacity was four CPUs, 15,255,166,976 bytes available
+memory and 92,088,340,480 free disk bytes before acquisition. Each model still
+ran under its own two-CPU quota; Qwen 3 GiB / Granite 5 GiB, SDK 192 MiB.
+Only the official Granite artifact was a new model variant. The original Qwen
+was restored/acquired with its existing checksum; every model/runtime/library
+asset was hashed before execution. No speculative 4B/7B/9B model downloads,
+paid provider, GPU or new infrastructure were used. Assets were removed at job end.
+
+## Independent replay and contract feasibility
+
+Fresh credential-free Docker replay reproduced all **21 submitted verifier
+receipts**: six failed targeted suites, seven source rejections and eight repeated
+proposal rejections. The six tested failed candidates ran eight methods each;
+none was promoted. Parser/handoff-rejected text was not executed. Replay PASSED
+means original outcomes matched, **not** that the repairs passed. It used zero
+new inference and creates zero new model-generated successes. See
+`local-recorded-replay.json` and the hash-pinned `origins.json`.
+
+After all model requests were finished, four separately labeled **Codex-authored
+manual satisfiability controls** passed 8/8 targeted plus 8/8 fresh tests each
+under the same unchanged source restrictions. Each uses two approved statement
+edits. This establishes that the tasks admit a passing repair; it is **not** a
+Qwen/Granite score, unseen evaluation or model-output correction. No control was
+supplied to a model, added to a frozen fixture, substituted for a model candidate
+or included in the measured results. See `manual-satisfiability-controls.json`.
+
+## Observed wire-contract mismatches and model-free correction
+
+The measured generator allowed JSON containing a diagnosis anchor absent from
+its edits, and control-character escapes that downstream validators rejected.
+These were observed in actual proposals, not invented hypothetical defects.
+`phase21_wire_contract.linked_diagnosis_grammar` is a separate optional generation
+contract: the first edit is linked to the diagnosis anchor, and source strings
+use printable raw characters/printable JSON escapes. Existing bounded newline
+continuations remain available. Literal backslash escapes inside Python strings
+remain expressible. It changes **no** source, binding, capability or test validator.
+Duplicate anchors and Python program semantics still require those validators.
+
+A real pinned llama.cpp C API test loaded **vocabulary only**, with native stderr
+confirming `vocab only - skipping tensors`; it created no model context, computed
+no neural logits/forward passes and made no inference requests. Six neutral
+format witnesses were tokenized and checked by the actual native grammar sampler
+using synthetic candidate logits. Baseline admitted all three invalid witnesses;
+the linked/printable contract rejected all three while retaining three valid
+formats, including literal escapes and a bounded multiline statement.
+
+This ran in the unchanged pinned Docker image with 192 MiB / one CPU / 32 PIDs,
+read-only mounts, no network/credentials/socket, all fourteen OS checks before
+and after, a 35-second host timeout, 30 CPU-second cap and verified cleanup.
+The tokenizer/model digest, every runtime-library byte and libgomp digest were
+checked. The C API ABI derives from pinned b11750 llama.h (MIT), SHA256
+961430f89e2553dbcd99e3e6c59826af9ec143f05911520c74f804d986ff3cd2.
+Peak QA process RSS was 72,749,056 bytes. See `native-wire-contract-qa.json`.
+
+This is a **verified formatting-contract improvement**; live repair accuracy is
+**UNMEASURED**. It was not used to rerun, relabel or improve the frozen benchmark.
+It remains an optional preparation component for a fresh future experiment;
+the existing model/worker default is unchanged. The additional native test ran
+locally on authorized Linux and is not falsely claimed as a hosted rerun. CI
+avoids downloading a full model merely to repeat vocabulary-only QA.
+
+## Final local acceptance and readiness
+
+Full local regression: **845 tests, 836 passed / nine existing skips, zero
+failures** (30.120s). Phase21 focused tests: 21 passed; all eight Node tests passed.
+Actual process-boundary tests reject missing/unauthorized CLI arguments, preserve
+unknown test state, run SIGTERM finally cleanup without refunding reserved usage,
+and reject tampered/inconsistent success receipts. SDK/gateway protocol QA uses
+explicitly simulated responses and contributes no model repair measurements.
+
+All thirteen complete model arms retained recorded pre/post OS controls; their
+SDK sessions recorded actual twelve-tool refusals and normal shutdown. The
+three incomplete Granite runs lack final observations and remain blocked.
+Cleanup is confirmed for every created model/SDK container. The nine skipped
+namespace/rootfs tests remain unresolved security evidence. No hostile/customer
+execution or commercial authorization is inferred from owned Docker admission.
+
+The new routine CI runs full regression and exact recorded replay with **zero
+fresh model calls**. The frozen experiment's failed/incomplete conclusion remains
+published; it is not erased by a later green model-free regression. Later pushes,
+reopens and reruns cannot dispatch the spent experiments. Default model remains
+QWEN_1_5B; no general repair-quality improvement is claimed. There is no production
+deployment, recurring schedule, customer intake/delivery, payment or merge.
+Additional spending and confirmed revenue: **$0**. Commercial/private execution:
+**NOT_ADMITTED**.
+
+Next high-value milestone: evaluate the linked output contract and more compact
+localized feedback on new frozen owned material, with any longer cold-start/
+request/output envelope explicitly bounded and matched across comparison arms
+before inference. Do not retune these four exposed tasks and call them unseen.
+An independently controlled inaccessible evaluation store, stronger hostile-code
+isolation/provenance/privacy evidence, reliable commercial recovery, customer
+rights, approved payment/delivery procedures and explicit owner launch approval
+remain absent. These results do not support accepting paid autonomous work.
+
+Qwen returned syntactically valid JSON in 23/24 responses (external 7/8,
+SDK baseline 8/8, diagnosis 8/8); Granite in 2/5 returned responses. This
+formatting rate is distinct from six source-valid failed proposals and zero
+verified repairs. All these counts exclude timed-out requests with no response.

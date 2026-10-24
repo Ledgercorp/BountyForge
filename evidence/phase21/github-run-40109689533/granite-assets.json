@@ -1,0 +1,26 @@
+{
+  "additional_spending_usd": 0,
+  "files": [
+    {
+      "bytes": 2244011552,
+      "downloaded": true,
+      "file": "granite-4.2-3b-Q4_K_M.gguf",
+      "sha256": "e0406663965846ae22a403456eb826ccce5f450840491f71952f18a7cb78e7d5"
+    },
+    {
+      "bytes": 22240456,
+      "downloaded": false,
+      "file": "llama-b11750-bin-ubuntu-x64.tar.gz",
+      "sha256": "152e33221c9c9d37816a8ee9943f8d87339199197c80cb692559c9756b2027d8"
+    },
+    {
+      "bytes": 115772,
+      "downloaded": false,
+      "file": "libgomp1_12.2.0-14+deb12u1_amd64.deb",
+      "sha256": "48fec46bda7f5b1638b9e959889bfbc20491247d402d120bb152687eb48143d7"
+    }
+  ],
+  "installer_executed": false,
+  "kind": "PHASE21_INERT_PUBLIC_ASSET_ACQUISITION",
+  "model_requests": 0
+}

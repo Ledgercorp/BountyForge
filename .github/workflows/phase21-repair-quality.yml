@@ -41,6 +41,11 @@ jobs:
         run: |
           env -i PATH=/usr/local/bin:/usr/bin:/bin HOME="$HOME" PYTHONDONTWRITEBYTECODE=1 \
             python3 -m phase20_replay --admit-recorded-owned-replay --output evidence-run/phase20-replay.json
+      - name: Phase21 recorded submissions retain their original rejection and test outcomes
+        if: ${{ hashFiles('evidence/phase21/origins.json') != '' }}
+        run: |
+          env -i PATH=/usr/local/bin:/usr/bin:/bin HOME="$HOME" PYTHONDONTWRITEBYTECODE=1 \
+            python3 -m phase21_replay --admit-recorded-quality-replay --output evidence-run/phase21-replay.json
       - name: Small sanitized regression evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

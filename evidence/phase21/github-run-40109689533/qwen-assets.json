@@ -1,0 +1,26 @@
+{
+  "additional_spending_usd": 0,
+  "files": [
+    {
+      "bytes": 1117320768,
+      "downloaded": true,
+      "file": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+      "sha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046"
+    },
+    {
+      "bytes": 22240456,
+      "downloaded": true,
+      "file": "llama-b11750-bin-ubuntu-x64.tar.gz",
+      "sha256": "152e33221c9c9d37816a8ee9943f8d87339199197c80cb692559c9756b2027d8"
+    },
+    {
+      "bytes": 115772,
+      "downloaded": true,
+      "file": "libgomp1_12.2.0-14+deb12u1_amd64.deb",
+      "sha256": "48fec46bda7f5b1638b9e959889bfbc20491247d402d120bb152687eb48143d7"
+    }
+  ],
+  "installer_executed": false,
+  "kind": "PHASE21_INERT_PUBLIC_ASSET_ACQUISITION",
+  "model_requests": 0
+}

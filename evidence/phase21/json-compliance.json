@@ -1,0 +1,17 @@
+{
+  "kind": "PHASE21_JSON_FORMAT_MEASUREMENTS",
+  "new_model_requests": 0,
+  "profiles": {
+    "GRANITE42_3B": {
+      "not_a_source_validity_or_repair_score": true,
+      "returned_responses": 5,
+      "syntactically_valid_json": 2
+    },
+    "QWEN_1_5B": {
+      "not_a_source_validity_or_repair_score": true,
+      "returned_responses": 24,
+      "syntactically_valid_json": 23
+    }
+  },
+  "receipt_sha256": "132ebc343432d44f4af8ab26356fd8f2dfe18c6381b18871551cea0332bcb019"
+}

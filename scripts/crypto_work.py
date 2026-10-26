@@ -6,7 +6,8 @@ from pathlib import Path
 import tempfile
 import hashlib
 import hmac
-from bountyforge.crypto_discovery import CryptoReadOnly
+import sys
+from bountyforge.crypto_discovery import CryptoReadOnly,load_superteam_api_key
 from bountyforge.crypto_opportunities import normalize_superteam,qualify_crypto,profitability,deduplicate,research_work_plan
 from bountyforge.crypto_revenue import (CryptoLedger,CryptoReviewStore,ResearchQueue,submission_preview,verify_owner_review,submit_external)
 from bountyforge.repair_engines import encoded,receipt_hash
@@ -54,15 +55,22 @@ def main(argv=None):
     p=argparse.ArgumentParser(description=__doc__);sub=p.add_subparsers(dest='command',required=True)
     sub.add_parser('status')
     discover=sub.add_parser('discover');discover.add_argument('--admit-public-reads',action='store_true',required=True);discover.add_argument('--output',type=Path,required=True)
+    discover.add_argument('--superteam-key-file',type=Path,help='Owner-provisioned Linux-only 0600 key file; never printed or uploaded')
     simulate=sub.add_parser('rehearse');simulate.add_argument('--admit-owned-simulation',action='store_true',required=True);simulate.add_argument('--state-dir',type=Path);simulate.add_argument('--output',type=Path,required=True)
     args=p.parse_args(argv)
     if args.command=='status':
         print(json.dumps({'commercial_admission':'NOT_ADMITTED','paid_requests_authorized':0,'third_party_execution_authorized':False,
             'live_submissions_implemented':False,'wallet_actions_implemented':False,'scheduling_active':False,'confirmed_project_earnings_usd':'0'}));return 0
     if args.command=='discover':
-        c=CryptoReadOnly();feed=c.discover();github=c.discover_github();algora=c.discover_github(algora_bot=True)
+        try:token=load_superteam_api_key(args.superteam_key_file) if args.superteam_key_file else None
+        except ValueError as exc:
+            print('BountyForge Superteam credential refused: '+str(exc),file=sys.stderr);return 2
+        c=CryptoReadOnly(token=token);feed=c.discover()
+        languages=('python','typescript','javascript')
+        github={(language):c.discover_github(language=language) for language in languages}
+        algora={(language):c.discover_github(algora_bot=True,language=language) for language in languages}
         quotes=[c.market_quote(a) for a in ('SOL','USDC')]
-        sources=(feed,github,algora)
+        sources=(feed,*github.values(),*algora.values())
         source_rows=[x for source in sources for x in (source.get('opportunities') or [])]
         r={'kind':'BOUNTYFORGE_CRYPTO_READ_ONLY_SCAN','feed':feed,'github_search':github,
            'algora_github_search':algora,'quotes':quotes,'opportunities':[],
@@ -73,10 +81,13 @@ def main(argv=None):
             rows.append({**o,'qualification':gate,'research_plan':research_work_plan(o,gate),
                 'profitability':profitability(o,next((q for q in quotes if q['asset']==o['payment_asset']),None),now=now)})
         r['opportunities']=deduplicate(rows)
-        r['source_summary']={'github_candidates':len(github.get('opportunities') or []),
-            'algora_bot_comment_candidates':len(algora.get('opportunities') or []),
+        r['source_summary']={'github_candidates':sum(len(x.get('opportunities') or []) for x in github.values()),
+            'algora_bot_comment_candidates':sum(len(x.get('opportunities') or []) for x in algora.values()),
+            'github_candidates_by_language':{k:len(v.get('opportunities') or []) for k,v in github.items()},
+            'algora_candidates_by_language':{k:len(v.get('opportunities') or []) for k,v in algora.items()},
             'superteam_candidates':len(feed.get('opportunities') or []),
-            'github_authenticated':github.get('authenticated',False) or algora.get('authenticated',False),
+            'github_authenticated':False,'superteam_authenticated':bool(token and feed.get('status')=='OBSERVED'),
+            'superteam_credential_configured':bool(token),
             'all_sources_complete':False,'public_query_is_exhaustive':False}
     else:
         if args.state_dir:r=rehearsal(args.state_dir)

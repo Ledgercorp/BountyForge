@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "kind": "read_only_revenue_prospect_scan",
+  "generated_at": "2026-10-26T11:35:46.761184+00:00",
+  "source": "GitHub public issue metadata",
+  "source_queries": [
+    "is:issue is:open label:bounty",
+    "is:issue is:open \"bounty\" in:title",
+    "is:issue is:open \"reward\" in:title"
+  ],
+  "prospects": [
+    {
+      "issue_url": "https://github.com/alfrexo95/bounty-bot/issues/27",
+      "repository": "alfrexo95/bounty-bot",
+      "title": "\ud83d\udcb0 Bounty Seguro ($$100): [Bounty] \ud83d\udcb0 Bounty Seguro ($$100): [Bounty] USDC-qu",
+      "advertised_reward_usd": 100,
+      "rank_for_research": 85,
+      "updated_at": "2026-10-24T08:02:53+00:00",
+      "qualification": "unverified_research_only",
+      "payout_verified": false,
+      "eligibility_verified": false,
+      "ai_allowed_verified": false,
+      "execution_authorized": false,
+      "external_submission_authorized": false,
+      "reasons": [
+        "GitHub text is not sponsor-funding proof",
+        "Payout, availability, AI policy and eligibility require independent evidence"
+      ],
+      "technical_profile": "PYTHON",
+      "language_evidence": "GITHUB_REPOSITORY_PRIMARY_LANGUAGE"
+    },
+    {
+      "issue_url": "https://github.com/alfrexo95/bounty-bot/issues/28",
+      "repository": "alfrexo95/bounty-bot",
+      "title": "\ud83d\udcb0 Bounty Seguro ($$100): \ud83d\udcb0 Bounty Seguro ($$100): [Bounty] \ud83d\udcb0 Bounty Seguro",
+      "advertised_reward_usd": 100,
+      "rank_for_research": 85,
+      "updated_at": "2026-10-26T07:08:57+00:00",
+      "qualification": "unverified_research_only",
+      "payout_verified": false,
+      "eligibility_verified": false,
+      "ai_allowed_verified": false,
+      "execution_authorized": false,
+      "external_submission_authorized": false,
+      "reasons": [
+        "GitHub text is not sponsor-funding proof",
+        "Payout, availability, AI policy and eligibility require independent evidence"
+      ],
+      "technical_profile": "PYTHON",
+      "language_evidence": "GITHUB_REPOSITORY_PRIMARY_LANGUAGE"
+    },
+    {
+      "issue_url": "https://github.com/vg-json-data/z3-json-data/issues/126",
+      "repository": "vg-json-data/z3-json-data",
+      "title": "Model hidden-reward refills",
+      "advertised_reward_usd": 15,
+      "rank_for_research": 45,
+      "updated_at": "2026-10-22T18:11:45+00:00",
+      "qualification": "unverified_research_only",
+      "payout_verified": false,
+      "eligibility_verified": false,
+      "ai_allowed_verified": false,
+      "execution_authorized": false,
+      "external_submission_authorized": false,
+      "reasons": [
+        "GitHub text is not sponsor-funding proof",
+        "Payout, availability, AI policy and eligibility require independent evidence"
+      ],
+      "technical_profile": "PYTHON",
+      "language_evidence": "GITHUB_REPOSITORY_PRIMARY_LANGUAGE"
+    }
+  ],
+  "prospect_count": 3,
+  "excluded_mirror_or_unsupported_language_count": 11,
+  "excluded_mirror_or_non_python_count": 11,
+  "supported_language_profiles": [
+    "PYTHON",
+    "TYPESCRIPT",
+    "JAVASCRIPT"
+  ],
+  "metadata_lookup_count": 4,
+  "observation_status": "bounded_sample_complete",
+  "metadata_budget_exhausted": false,
+  "unexamined_candidate_count": 0,
+  "commercial_review_ready": 0,
+  "jobs_executed": 0,
+  "model_calls": 0,
+  "paid_inference": false,
+  "external_submissions": 0,
+  "funds_verified_usd": 0,
+  "revenue_received_usd": 0,
+  "notes": "Research only: no payout, escrow, policy, eligibility or execution claims."
+}

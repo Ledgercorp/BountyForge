@@ -1,0 +1,145 @@
+{
+  "candidates": [
+    {
+      "advertised_reward": "USD 100",
+      "ai_agent_eligibility": "UNKNOWN_OWNER_POLICY; issue comments show AI disclosure by a participant but do not establish owner permission",
+      "classification": "LEAD_NOT_QUALIFIED",
+      "competition": "HIGH; existing open PR and numerous attempts/submissions visible through 2026-10-25",
+      "decision": "DO_NOT_START; seek owner confirmation of remaining funded award and competition only after a human review; no contact made",
+      "evidence_urls": [
+        "https://github.com/claude-builders-bounty/claude-builders-bounty/pull/6",
+        "https://docs.opire.dev/rewards/pricing",
+        "https://docs.opire.dev/rewards/lifecycle"
+      ],
+      "funding": "UNVERIFIED",
+      "observed_issue_state": "OPEN",
+      "observed_scope": "Python or Bash hook and tests",
+      "payout": "Opire official docs state creators arrange payment directly after PR review; owner-specific payout route and acceptance are unknown",
+      "rank": 1,
+      "reward_source": "Issue title/body labels and Opire reference; not verified escrow",
+      "source_and_test_rights": "UNKNOWN; repository code was not accessed",
+      "source_url": "https://github.com/claude-builders-bounty/claude-builders-bounty/issues/3",
+      "technical_fit": "Python classification fits, but security-hook correctness is outside the demonstrated narrow repair profile",
+      "title": "Pre-tool-use hook that blocks destructive bash commands",
+      "us_eligibility": "UNKNOWN"
+    },
+    {
+      "advertised_reward": "5000 USDG total / 5000 USDG first prize",
+      "ai_agent_eligibility": "EXPLICITLY_ALLOWED_BY_LISTING",
+      "classification": "CLOSED_AGENT_ELIGIBLE_EXAMPLE",
+      "competition": "122 submissions shown",
+      "decision": "REJECT_CLOSED_AND_OUT_OF_SCOPE",
+      "evidence_urls": [
+        "https://superteam.fun/earn/agents",
+        "https://superteam.fun/earn/listing/open-innovation-track-agents/"
+      ],
+      "funding": "ADVERTISED_BY_SPONSOR_NOT_ESCROW_VERIFIED",
+      "observed_issue_state": "WINNERS_ANNOUNCED",
+      "observed_scope": "Open-ended autonomous AI agent product; meaningful Solana use and open source",
+      "payout": "USDG advertised; operator route/fees not verified",
+      "rank": 2,
+      "source_and_test_rights": "Open-source deliverable required; no repair task or source/tests specified",
+      "source_url": "https://superteam.fun/earn/listing/open-innovation-track-agents/",
+      "technical_fit": "Not a bounded maintenance repair; requires building a new Solana product",
+      "title": "Open Innovation Track: Build Anything on Solana",
+      "us_eligibility": "LISTED_GLOBAL_BUT_CLOSED"
+    },
+    {
+      "advertised_reward": "USD 50 equivalent / USDC on Base claimed in issue activity",
+      "ai_agent_eligibility": "UNKNOWN",
+      "classification": "AMBIGUOUS_COMPETITIVE_LEAD",
+      "competition": "HIGH; many competing attempts and PR references",
+      "decision": "DO_NOT_START; not a dependable first pilot",
+      "evidence_urls": [
+        "https://github.com/lb1192176991-lab/zeroeye/issues/2",
+        "https://docs.opire.dev/rewards/pricing",
+        "https://docs.opire.dev/rewards/lifecycle"
+      ],
+      "funding": "UNVERIFIED_FOR_A_NEW_WORKER; thread contains contradictory funding/claim statements",
+      "observed_issue_state": "OPEN_PAGE_WITH_CONFLICTING_CLAIM_AND_PAYMENT_ACTIVITY",
+      "observed_scope": "Deterministic data-generation behavior; tests described in the issue thread",
+      "payout": "USDC Base claimed in issue text; actual award and owner-controlled receipt unverified",
+      "rank": 3,
+      "source_and_test_rights": "Unknown; no source or tests were fetched or executed",
+      "source_url": "https://github.com/lb1192176991-lab/zeroeye/issues/2",
+      "technical_fit": "Python-adjacent data repair may fit, but availability and task provenance are unresolved",
+      "title": "Kickama deterministic data seed",
+      "us_eligibility": "UNKNOWN"
+    },
+    {
+      "advertised_reward": "USD 10",
+      "ai_agent_eligibility": "UNKNOWN",
+      "classification": "UNFUNDED_UNDER_MINIMUM_AND_UNSUPPORTED_LANGUAGE",
+      "competition": "Several attempts visible",
+      "decision": "REJECT",
+      "evidence_urls": [
+        "https://github.com/Kristywvs22/go-redis/issues/1",
+        "https://docs.opire.dev/rewards/pricing"
+      ],
+      "funding": "NOT_FUNDED; OpireBot states $10 is below its $20 bounty minimum",
+      "observed_issue_state": "OPEN",
+      "observed_scope": "Go client retry behavior",
+      "payout": "No active reward to collect",
+      "rank": 4,
+      "reward_source": "Issue label and OpireBot response",
+      "source_and_test_rights": "Unknown; no source or tests were fetched or executed",
+      "source_url": "https://github.com/Kristywvs22/go-redis/issues/1",
+      "technical_fit": "Go is outside supported language profiles",
+      "title": "Prevent automatic retries of pipelines containing non-idempotent commands on network timeouts",
+      "us_eligibility": "UNKNOWN"
+    },
+    {
+      "advertised_reward": "USD 25 proposed via Algora",
+      "ai_agent_eligibility": "UNKNOWN",
+      "classification": "CLOSED_PROPOSED_BOUNTY",
+      "competition": "Resolved on main; duplicate submissions existed",
+      "decision": "REJECT_CLOSED_AND_UNFUNDED",
+      "evidence_urls": [
+        "https://github.com/BasedHardware/omi/issues/15496",
+        "https://algora.io/terms"
+      ],
+      "funding": "UNVERIFIED_PROPOSED_ONLY",
+      "observed_issue_state": "CLOSED; maintainer says requested file already exists on main",
+      "observed_scope": "Dzongkha localization with preserved code blocks and structure",
+      "payout": "Unknown",
+      "rank": 5,
+      "source_and_test_rights": "Unknown; no source or tests were fetched",
+      "source_url": "https://github.com/BasedHardware/omi/issues/15496",
+      "technical_fit": "Translation is not a demonstrated BountyForge repair capability",
+      "title": "Dzongkha Python CLI agent quickstart guide",
+      "us_eligibility": "UNKNOWN"
+    }
+  ],
+  "commercial_admission": "NOT_ADMITTED",
+  "complete_market_census": false,
+  "confirmed_revenue_usd": "0",
+  "external_submissions": 0,
+  "kind": "PHASE27_PRIMARY_SOURCE_OPPORTUNITY_ASSESSMENT",
+  "market_result": "NO_CURRENTLY_VERIFIED_PAYABLE_AI_ELIGIBLE_US_OPPORTUNITY",
+  "observed_at": "2026-10-26T11:43:49Z",
+  "owner_actions_required": [
+    "Approve or decline Superteam agent identity creation and choose its public name",
+    "If registered, provide an owner-controlled safe credential store on an approved Linux host",
+    "For any candidate pilot, separately authorize paid inference, third-party execution and external submission as applicable"
+  ],
+  "paid_inference_requests": 0,
+  "pilot_candidate": null,
+  "qualified_opportunities": 0,
+  "quarantined_lead": {
+    "action": "NO_SOURCE_FETCH_NO_EXECUTION_NO_CONTACT",
+    "advertised_amount": "USD 100 each; unverified claim",
+    "classification": "QUARANTINED_SUSPECTED_DECEPTIVE_ESCROW_AND_PLACEHOLDER_SOLUTION",
+    "signals": [
+      "No independently verifiable escrow evidence",
+      "One proposed code sample hardcodes verification as true",
+      "Conflicting or unverified payment claims and payout details",
+      "Multiple competing solution proposals"
+    ],
+    "source_urls": [
+      "https://github.com/alfrexo95/bounty-bot/issues/27",
+      "https://github.com/alfrexo95/bounty-bot/issues/28"
+    ]
+  },
+  "ranking_method": "PROXIMITY_TO_GATES_ONLY_NO_FABRICATED_SUCCESS_PROBABILITIES",
+  "schema": 1
+}

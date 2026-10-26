@@ -1,0 +1,102 @@
+{
+  "base_branch": "engineering/phase26-real-bounty-pilot-20261026",
+  "branch": "engineering/phase27-agent-marketplace-20261026",
+  "checks": [
+    {
+      "command": "python3 -m unittest tests.test_language_profiles tests.test_phase27_language_manifest tests.test_crypto_discovery tests.test_crypto_opportunities tests.test_crypto_cli tests.test_revenue_scout -q",
+      "failures": 0,
+      "name": "phase27_focused_python",
+      "status": "PASSED",
+      "tests": 62
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 BOUNTYFORGE_TEST_ROOTFS=<temporary-rootfs> BOUNTYFORGE_PHASE8_DEV_DOCKER=1 BOUNTYFORGE_PHASE8_DEV_EVIDENCE=<temporary-json> python3 -m unittest discover -s tests -q",
+      "failures": 0,
+      "name": "full_python_and_owned_docker_regression",
+      "skips": 0,
+      "status": "PASSED",
+      "tests": 947
+    },
+    {
+      "command": "BOUNTYFORGE_TEST_ROOTFS=<temporary-rootfs> python3 -m unittest tests.test_isolation -q",
+      "failures": 0,
+      "name": "namespace_rootfs_focused",
+      "status": "PASSED",
+      "tests": 8
+    },
+    {
+      "command": "node --test tests/dashboard_state.mjs tests/repair_console.cjs",
+      "failures": 0,
+      "name": "node_dashboard_console",
+      "status": "PASSED",
+      "tests": 8
+    },
+    {
+      "checks_per_subprocess": 2,
+      "command": "python3 -m scripts.phase27_language_smoke",
+      "model_generated_repairs": 0,
+      "name": "typescript_javascript_owned_smoke",
+      "network_isolation_enforced": false,
+      "node_version": "v24.19.0",
+      "status": "PASSED",
+      "subprocesses": 4
+    },
+    {
+      "command": "python3 -m scripts.verify_historical_registry",
+      "inference_requests": 0,
+      "name": "frozen_historical_registry",
+      "repositories": 6,
+      "status": "PASSED",
+      "tasks": 30
+    },
+    {
+      "cases": 6,
+      "customer_execution_admitted": false,
+      "evidence": "existing-owned-fixture-only",
+      "name": "existing_owned_docker_reference_replay",
+      "status": "PASSED"
+    }
+  ],
+  "commercial_admission": "NOT_ADMITTED",
+  "hosted_ci": {
+    "all_other_acceptance_steps": "PASSED",
+    "artifact_upload": "PASSED",
+    "conclusion": "SUCCESS",
+    "python_tests_passed": 939,
+    "python_tests_run": 947,
+    "python_tests_skipped": 8,
+    "run_id": 40317547368,
+    "skips": "Existing namespace/rootfs admission checks; runner did not admit the existing rootfs",
+    "tested_commit": "055ef8a1ba6affafbd161ea769560aff1a06172c",
+    "url": "https://github.com/Ledgercorp/BountyForge/actions/runs/40317547368"
+  },
+  "kind": "BOUNTYFORGE_PHASE27_ENGINEERING_ACCEPTANCE",
+  "main_modified": false,
+  "market": {
+    "bounded_scan_breakdown": {
+      "crypto_scan": 9,
+      "revenue_scout": 7
+    },
+    "bounded_scan_gets": 16,
+    "payments": 0,
+    "pilot_candidate": null,
+    "qualified_opportunities": 0,
+    "revenue_received_usd": "0",
+    "submissions": 0,
+    "superteam_key_retrieved": false,
+    "superteam_registration_attempted": false
+  },
+  "model": {
+    "additional_spend_usd": "0",
+    "deepseek_requests": 0,
+    "other_model_requests": 0,
+    "paid_inference_authorized": 0,
+    "phase22_stop_marker_modified": false
+  },
+  "observed_at": "2026-10-26T11:48:33Z",
+  "phase27_node_fixture_manifest_sha256": "b4bd60bfc60756ac63292c97dd7276d19251e833e8012a4723065e40d32cc116",
+  "phase27_public_discovery_receipt_sha256": "39d6ce6469ce666bd25e7638eee13886dec7441e2c27d183745449d3f502ee9b",
+  "production_deployed": false,
+  "schema": 1,
+  "starting_commit": "9141e89bc57254b2b6534bcadcd252ee86d3e281"
+}

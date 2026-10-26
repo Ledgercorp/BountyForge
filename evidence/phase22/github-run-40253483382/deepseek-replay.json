@@ -1,0 +1,385 @@
+{
+  "cases": [
+    {
+      "attempts": [
+        {
+          "matched_original": true,
+          "original_verifier_receipt_sha256": "114f6ab0d7ee665ccc0e249bb50a82e504fc3630662ef2d92952e3166ec3bc4a",
+          "verification": {
+            "attempt": 1,
+            "candidate": "def item_value(row):\n    if row.get(\"cancelled\") or row[\"quantity\"] <= 0:\n        return 0\n    return row[\"price\"] * row[\"quantity\"]\n\n\ndef checkout_total(items, minimum, rate, tax_rate):\n    subtotal = sum(item_value(row) for row in items)\n    discount = subtotal * rate if subtotal >= minimum else 0\n    tax = (subtotal - discount) * tax_rate\n    return {\"total\": round(subtotal - discount + tax, 2), \"discount\": round(discount, 2), \"tax\": round(tax, 2)}\n",
+            "candidate_sha256": "12dd323c53ce720fb0658add51b6c61923a9dc43fa5406a0d7e3e0b1ed9e5939",
+            "case_id": "discount_checkout",
+            "classification": "OWNED_DEVELOPMENT",
+            "customer_execution_authorized": false,
+            "delivery_authorized": false,
+            "engine": "DEEPSEEK_API",
+            "failure_stage": null,
+            "handoff": {
+              "admission": "UNADMITTED_EXTERNAL_CANDIDATE",
+              "case_id": "discount_checkout",
+              "customer_execution_authorized": false,
+              "delivery_authorized": false,
+              "handoff_kind": "DEEPSEEK_HARNESS_OUTPUT_ONLY",
+              "independently_verified": false,
+              "model_identity_attested": false,
+              "proposal_json": "{\"changes\":[{\"line\":9,\"new\":\"    discount = subtotal * rate if subtotal >= minimum else 0\"},{\"line\":10,\"new\":\"    tax = (subtotal - discount) * tax_rate\"},{\"line\":11,\"new\":\"    return {\\\"total\\\": round(subtotal - discount + tax, 2), \\\"discount\\\": round(discount, 2), \\\"tax\\\": round(tax, 2)}\"}]}",
+              "proposal_sha256": "70eb869e8e6ea515792acc4e74d8b2f99479343dc8dc553d689757d2bbbeb37a",
+              "revision": 0,
+              "schema": 1,
+              "source_sha256": "17c41fdfcadc30a0873bd778299e9b53f9affadc63ea18fc36b306547d54edf1",
+              "task_id": "7892c017f1154b029dbaa8f69205b020",
+              "tests_sha256": "bef9ad2b39cbd542bafefec109f88bf4edbe3328c0db1913b7825cc37541d703"
+            },
+            "independent": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "independent_evaluation": false,
+            "independently_verified": true,
+            "kind": "PHASE22_OWNED_API_VERIFICATION",
+            "outcome": "VERIFIED",
+            "previous_receipt_sha256": null,
+            "proposal": "{\"changes\":[{\"line\":9,\"new\":\"    discount = subtotal * rate if subtotal >= minimum else 0\"},{\"line\":10,\"new\":\"    tax = (subtotal - discount) * tax_rate\"},{\"line\":11,\"new\":\"    return {\\\"total\\\": round(subtotal - discount + tax, 2), \\\"discount\\\": round(discount, 2), \\\"tax\\\": round(tax, 2)}\"}]}",
+            "receipt_sha256": "121a47fa745dbf534989ab70eb6a27b5ad1ae83a15bc3b9cd524013f67686207",
+            "seconds": 0.794,
+            "source_sha256": "17c41fdfcadc30a0873bd778299e9b53f9affadc63ea18fc36b306547d54edf1",
+            "state": "AWAITING_OWNER_APPROVAL",
+            "targeted": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "task_id": "7892c017f1154b029dbaa8f69205b020",
+            "tests_sha256": "bef9ad2b39cbd542bafefec109f88bf4edbe3328c0db1913b7825cc37541d703"
+          }
+        }
+      ],
+      "case_id": "discount_checkout"
+    },
+    {
+      "attempts": [
+        {
+          "matched_original": true,
+          "original_verifier_receipt_sha256": "7c2318ef28087d27047668129816c13a2f05c0829e48e0680ffe4347c56d7804",
+          "verification": {
+            "attempt": 1,
+            "candidate": "def terminal(status):\n    return status == \"cancelled\"\n\n\ndef after_failure(job, limit, base_delay):\n    result = dict(job)\n    if terminal(job[\"status\"]):\n        return result\n    attempts = job[\"attempts\"] + 1\n    exhausted = attempts >= limit\n    delay = base_delay * 2 ** (attempts - 1)\n    result.update(attempts=attempts, status=\"failed\" if exhausted else \"retrying\", delay=0 if exhausted else delay)\n    return result\n",
+            "candidate_sha256": "3329f7e84921dce09f4581e64ae733460ebd3cabd1dfe34baedf2419cb308bcc",
+            "case_id": "retry_state",
+            "classification": "OWNED_DEVELOPMENT",
+            "customer_execution_authorized": false,
+            "delivery_authorized": false,
+            "engine": "DEEPSEEK_API",
+            "failure_stage": null,
+            "handoff": {
+              "admission": "UNADMITTED_EXTERNAL_CANDIDATE",
+              "case_id": "retry_state",
+              "customer_execution_authorized": false,
+              "delivery_authorized": false,
+              "handoff_kind": "DEEPSEEK_HARNESS_OUTPUT_ONLY",
+              "independently_verified": false,
+              "model_identity_attested": false,
+              "proposal_json": "{\"changes\":[{\"line\":10,\"new\":\"    exhausted = attempts >= limit\"},{\"line\":11,\"new\":\"    delay = base_delay * 2 ** (attempts - 1)\"}]}",
+              "proposal_sha256": "142d6d914483b03b5eeb3b7a197d34c40cc6558c49d4e368ab858546ab36eac1",
+              "revision": 0,
+              "schema": 1,
+              "source_sha256": "7308cb1eb74206009e62526e31ad65253d23b56fd16233eecc72be90e9b26981",
+              "task_id": "204b807a111243eebc0dec566e2842b7",
+              "tests_sha256": "19e5cb77c1cd7967713b919d5d8d501375bca093297556afc65ae11591e4e060"
+            },
+            "independent": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "independent_evaluation": false,
+            "independently_verified": true,
+            "kind": "PHASE22_OWNED_API_VERIFICATION",
+            "outcome": "VERIFIED",
+            "previous_receipt_sha256": null,
+            "proposal": "{\"changes\":[{\"line\":10,\"new\":\"    exhausted = attempts >= limit\"},{\"line\":11,\"new\":\"    delay = base_delay * 2 ** (attempts - 1)\"}]}",
+            "receipt_sha256": "17e7c59ff3b9a578280fe3dfc96b7bdd05fa07f02e2eef6cdecec3ca73b698c1",
+            "seconds": 0.791,
+            "source_sha256": "7308cb1eb74206009e62526e31ad65253d23b56fd16233eecc72be90e9b26981",
+            "state": "AWAITING_OWNER_APPROVAL",
+            "targeted": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "task_id": "204b807a111243eebc0dec566e2842b7",
+            "tests_sha256": "19e5cb77c1cd7967713b919d5d8d501375bca093297556afc65ae11591e4e060"
+          }
+        }
+      ],
+      "case_id": "retry_state"
+    },
+    {
+      "attempts": [
+        {
+          "matched_original": true,
+          "original_verifier_receipt_sha256": "5149709dbdb2fb50cc1c1b660ff9c06b602e7445137c724713f306039aa2a9f0",
+          "verification": {
+            "attempt": 1,
+            "candidate": "def copy_record(row):\n    return dict(row)\n\n\ndef latest_records(rows):\n    result = {}\n    for row in rows:\n        if row.get(\"id\") is None:\n            continue\n        key = row[\"id\"]\n        previous = result.get(key)\n        if previous is None or row[\"version\"] > previous[\"version\"]:\n            result[key] = copy_record(row)\n    return result\n",
+            "candidate_sha256": "fcbc47daa04c7a044ff6ac0246eeb0c5fce68d3661f5f5a69606cf5e651d2e27",
+            "case_id": "merge_records",
+            "classification": "OWNED_DEVELOPMENT",
+            "customer_execution_authorized": false,
+            "delivery_authorized": false,
+            "engine": "DEEPSEEK_API",
+            "failure_stage": null,
+            "handoff": {
+              "admission": "UNADMITTED_EXTERNAL_CANDIDATE",
+              "case_id": "merge_records",
+              "customer_execution_authorized": false,
+              "delivery_authorized": false,
+              "handoff_kind": "DEEPSEEK_HARNESS_OUTPUT_ONLY",
+              "independently_verified": false,
+              "model_identity_attested": false,
+              "proposal_json": "{\"changes\":[{\"line\":8,\"new\":\"row.get(\\\"id\\\") is None\"},{\"line\":12,\"new\":\"previous is None or row[\\\"version\\\"] > previous[\\\"version\\\"]\"}]}",
+              "proposal_sha256": "e5e3ad277cba79b2e3e3660b038ede734816b84d5746ccfa560da634950b9877",
+              "revision": 0,
+              "schema": 1,
+              "source_sha256": "0c90b827cde7631c14d3c705322d9537ad0d720bdcb023676a3d906ffeb6ec49",
+              "task_id": "72b314b8f6a9429db87508ce525fbdec",
+              "tests_sha256": "7140120f28f4972750ebd774ea1c8ee5a6b9355bfba8d6b105d38559d780e439"
+            },
+            "independent": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "independent_evaluation": false,
+            "independently_verified": true,
+            "kind": "PHASE22_OWNED_API_VERIFICATION",
+            "outcome": "VERIFIED",
+            "previous_receipt_sha256": null,
+            "proposal": "{\"changes\":[{\"line\":8,\"new\":\"row.get(\\\"id\\\") is None\"},{\"line\":12,\"new\":\"previous is None or row[\\\"version\\\"] > previous[\\\"version\\\"]\"}]}",
+            "receipt_sha256": "cbd44749cb3cb82eba685736f80a5c855507a0e06a57be91ca9bc2c787e8da7c",
+            "seconds": 0.79,
+            "source_sha256": "0c90b827cde7631c14d3c705322d9537ad0d720bdcb023676a3d906ffeb6ec49",
+            "state": "AWAITING_OWNER_APPROVAL",
+            "targeted": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "task_id": "72b314b8f6a9429db87508ce525fbdec",
+            "tests_sha256": "7140120f28f4972750ebd774ea1c8ee5a6b9355bfba8d6b105d38559d780e439"
+          }
+        }
+      ],
+      "case_id": "merge_records"
+    },
+    {
+      "attempts": [
+        {
+          "matched_original": true,
+          "original_verifier_receipt_sha256": "536aa7e17ca04c7698f39bfbd99e87e6e4d754aaf5cdd586c66d5ed211eb03cf",
+          "verification": {
+            "attempt": 1,
+            "candidate": "def copy_items(items):\n    return list(items)\n\n\ndef apply_response(cache, response):\n    result = dict(cache)\n    status = response[\"status\"]\n    if status == 200:\n        payload = response[\"body\"]\n        result[\"items\"] = copy_items(payload[\"items\"] if \"items\" in payload else cache[\"items\"])\n        result[\"cursor\"] = payload.get(\"cursor\", cache[\"cursor\"])\n    elif status == 204:\n        result[\"items\"] = []\n        result[\"cursor\"] = None\n    return result\n",
+            "candidate_sha256": "a8a082896d4868a605e4bb9e9d42132a56be9178e89541eae9f0a6182932c808",
+            "case_id": "response_window",
+            "classification": "OWNED_DEVELOPMENT",
+            "customer_execution_authorized": false,
+            "delivery_authorized": false,
+            "engine": "DEEPSEEK_API",
+            "failure_stage": null,
+            "handoff": {
+              "admission": "UNADMITTED_EXTERNAL_CANDIDATE",
+              "case_id": "response_window",
+              "customer_execution_authorized": false,
+              "delivery_authorized": false,
+              "handoff_kind": "DEEPSEEK_HARNESS_OUTPUT_ONLY",
+              "independently_verified": false,
+              "model_identity_attested": false,
+              "proposal_json": "{\"changes\":[{\"line\":10,\"new\":\"        result[\\\"items\\\"] = copy_items(payload[\\\"items\\\"] if \\\"items\\\" in payload else cache[\\\"items\\\"])\"},{\"line\":13,\"new\":\"        result[\\\"items\\\"] = []\"}]}",
+              "proposal_sha256": "ba9698ee6d9ca10d31640c80b1c2b99918046ffc01e6a4026dc11aa3f6aec69b",
+              "revision": 0,
+              "schema": 1,
+              "source_sha256": "00592fa7cbe0191749df1e57563e3da1bd1fbdfcff9dd7b5fc022ad1811ac617",
+              "task_id": "d4db337d401e4c7da5fd9229ebbdc57b",
+              "tests_sha256": "8886f50ff246b174558f0594eb920dc8321e6e6e761a503b5585faf85e21ff7b"
+            },
+            "independent": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "independent_evaluation": false,
+            "independently_verified": true,
+            "kind": "PHASE22_OWNED_API_VERIFICATION",
+            "outcome": "VERIFIED",
+            "previous_receipt_sha256": null,
+            "proposal": "{\"changes\":[{\"line\":10,\"new\":\"        result[\\\"items\\\"] = copy_items(payload[\\\"items\\\"] if \\\"items\\\" in payload else cache[\\\"items\\\"])\"},{\"line\":13,\"new\":\"        result[\\\"items\\\"] = []\"}]}",
+            "receipt_sha256": "36ad5c40cc3032c7117d189a7235f1ad6ee18473c3cf02058d68919ded99f33c",
+            "seconds": 0.793,
+            "source_sha256": "00592fa7cbe0191749df1e57563e3da1bd1fbdfcff9dd7b5fc022ad1811ac617",
+            "state": "AWAITING_OWNER_APPROVAL",
+            "targeted": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "task_id": "d4db337d401e4c7da5fd9229ebbdc57b",
+            "tests_sha256": "8886f50ff246b174558f0594eb920dc8321e6e6e761a503b5585faf85e21ff7b"
+          }
+        }
+      ],
+      "case_id": "response_window"
+    },
+    {
+      "attempts": [
+        {
+          "matched_original": true,
+          "original_verifier_receipt_sha256": "e994f36d47e2f4b5136547a58be06cfbe5ef61b8f19fda5066e4b4ea818f15f7",
+          "verification": {
+            "attempt": 1,
+            "candidate": "def fits(used, units, capacity):\n    return used + units <= capacity\n\n\ndef apply_events(state, events, capacity):\n    result = dict(state)\n    seen = set(state[\"seen\"])\n    used = state[\"used\"]\n    accepted = 0\n    for event in events:\n        if event[\"id\"] in seen:\n            continue\n        units = event[\"units\"]\n        if event[\"kind\"] == \"acquire\" and fits(used, units, capacity):\n            used += units\n        elif event[\"kind\"] == \"release\" and used >= units:\n            used -= units\n        else:\n            continue\n        seen.add(event[\"id\"])\n        accepted += 1\n    result.update(used=used, seen=seen, accepted=accepted)\n    return result\n",
+            "candidate_sha256": "67a2779c638805019567f766028b506d1f791432f61d834785131c556af52271",
+            "case_id": "lease_capacity",
+            "classification": "OWNED_DEVELOPMENT",
+            "customer_execution_authorized": false,
+            "delivery_authorized": false,
+            "engine": "DEEPSEEK_API",
+            "failure_stage": null,
+            "handoff": {
+              "admission": "UNADMITTED_EXTERNAL_CANDIDATE",
+              "case_id": "lease_capacity",
+              "customer_execution_authorized": false,
+              "delivery_authorized": false,
+              "handoff_kind": "DEEPSEEK_HARNESS_OUTPUT_ONLY",
+              "independently_verified": false,
+              "model_identity_attested": false,
+              "proposal_json": "{\"changes\":[{\"line\":16,\"new\":\"event[\\\"kind\\\"] == \\\"release\\\" and used >= units\"},{\"line\":17,\"new\":\"            used -= units\"}]}",
+              "proposal_sha256": "19d055969146e9ecd61cfe59e129f37ee770028354408cdcf9848b73ff561520",
+              "revision": 0,
+              "schema": 1,
+              "source_sha256": "fef33d7c6086fe0c9fe9f6e870b82452381d6340a71282424842357cc799a058",
+              "task_id": "ac53508e68364ce5b7f7c36d6180d527",
+              "tests_sha256": "148db1adfd1e59af540ed353d7d27a0f49699643c9b0e208ace2ab2981d1565e"
+            },
+            "independent": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "independent_evaluation": false,
+            "independently_verified": true,
+            "kind": "PHASE22_OWNED_API_VERIFICATION",
+            "outcome": "VERIFIED",
+            "previous_receipt_sha256": null,
+            "proposal": "{\"changes\":[{\"line\":16,\"new\":\"event[\\\"kind\\\"] == \\\"release\\\" and used >= units\"},{\"line\":17,\"new\":\"            used -= units\"}]}",
+            "receipt_sha256": "cf496e0913f4c3934107af55ec672a50b3a0853e447592f33a535180b483308a",
+            "seconds": 0.79,
+            "source_sha256": "fef33d7c6086fe0c9fe9f6e870b82452381d6340a71282424842357cc799a058",
+            "state": "AWAITING_OWNER_APPROVAL",
+            "targeted": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "task_id": "ac53508e68364ce5b7f7c36d6180d527",
+            "tests_sha256": "148db1adfd1e59af540ed353d7d27a0f49699643c9b0e208ace2ab2981d1565e"
+          }
+        }
+      ],
+      "case_id": "lease_capacity"
+    },
+    {
+      "attempts": [
+        {
+          "matched_original": true,
+          "original_verifier_receipt_sha256": "45c9bae8b5229d5de2c74a32990536a553b1c6c3b5a4f3c238719ab3c6348fdd",
+          "verification": {
+            "attempt": 1,
+            "candidate": "def accepted_outcome(response):\n    return response.get(\"ok\") is True\n\n\ndef summarize_batch(responses):\n    values = []\n    failures = 0\n    retries = 0\n    for response in responses:\n        if accepted_outcome(response):\n            value = response.get(\"value\")\n            if value is not None:\n                values.append(value)\n        elif response.get(\"retryable\") is True:\n            retries += 1\n        else:\n            failures += 1\n    return {\"values\": values, \"count\": len(values), \"failures\": failures, \"retries\": retries}\n",
+            "candidate_sha256": "63453de6b8519851f4ee73315bb9eed1b1ea4f0ffaaaf7db32d2e3c161f33f36",
+            "case_id": "batch_outcomes",
+            "classification": "OWNED_DEVELOPMENT",
+            "customer_execution_authorized": false,
+            "delivery_authorized": false,
+            "engine": "DEEPSEEK_API",
+            "failure_stage": null,
+            "handoff": {
+              "admission": "UNADMITTED_EXTERNAL_CANDIDATE",
+              "case_id": "batch_outcomes",
+              "customer_execution_authorized": false,
+              "delivery_authorized": false,
+              "handoff_kind": "DEEPSEEK_HARNESS_OUTPUT_ONLY",
+              "independently_verified": false,
+              "model_identity_attested": false,
+              "proposal_json": "{\"changes\":[{\"line\":12,\"new\":\"value is not None\"},{\"line\":14,\"new\":\"response.get(\\\"retryable\\\") is True\"}]}",
+              "proposal_sha256": "58a504c71dafc184df129881032ff01a8eb343469b7c296bba0f8c7c1dbe8331",
+              "revision": 0,
+              "schema": 1,
+              "source_sha256": "fa0898cebcc2559b0be8a66d8853de87123a4ab9636218a50590209ba8191f46",
+              "task_id": "41d6686c0e254b3da626c79f870aa776",
+              "tests_sha256": "0dce4658cc635d49579cce12cefb96727c714799e0dc20da9915fee8b2a751d1"
+            },
+            "independent": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "independent_evaluation": false,
+            "independently_verified": true,
+            "kind": "PHASE22_OWNED_API_VERIFICATION",
+            "outcome": "VERIFIED",
+            "previous_receipt_sha256": null,
+            "proposal": "{\n  \"changes\": [\n    {\"line\": 12, \"new\": \"value is not None\"},\n    {\"line\": 14, \"new\": \"response.get(\\\"retryable\\\") is True\"}\n  ]\n}",
+            "receipt_sha256": "d465b966772991ef5e6d780126aa58d7a65765638b5993de55425c8a8391682e",
+            "seconds": 0.822,
+            "source_sha256": "fa0898cebcc2559b0be8a66d8853de87123a4ab9636218a50590209ba8191f46",
+            "state": "AWAITING_OWNER_APPROVAL",
+            "targeted": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "task_id": "41d6686c0e254b3da626c79f870aa776",
+            "tests_sha256": "0dce4658cc635d49579cce12cefb96727c714799e0dc20da9915fee8b2a751d1"
+          }
+        }
+      ],
+      "case_id": "batch_outcomes"
+    }
+  ],
+  "commercial_admission": "NOT_ADMITTED",
+  "independent_unseen_evaluation": false,
+  "kind": "PHASE22_RECORDED_DEEPSEEK_CANDIDATE_REPLAY",
+  "new_inference_requests": 0,
+  "new_model_generated_repairs": 0,
+  "origin_sha256": "bed6ea807c295632684bcd4a0a9cd6c68f575e52fe7249e971dbe64f0c99d955",
+  "original_unique_developmental_repairs": 6,
+  "receipt_sha256": "194bc9f6619f433413dc85063c3d1af5b6024e911427dce6e586a8bfe2b35d71",
+  "status": "PASSED"
+}

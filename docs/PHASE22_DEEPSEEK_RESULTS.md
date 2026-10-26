@@ -153,7 +153,14 @@ rootfs skips remain unresolved. The five new tests verify evidence integrity;
 they are not five repair results. Existing MCP, queue, SQLite, isolation and
 engine tests remain in the full regression. The routine PR workflow adds exact
 recorded DeepSeek candidate replay without credentials or fresh inference.
-Hosted conclusions will be attached after that model-free run finishes.
+[Hosted model-free run 40253483382](https://github.com/Ledgercorp/BountyForge/actions/runs/40253483382)
+passed on tested commit `2daa4a1ee358dbc77299643f686bdcaf994788d7`:
+**881 Python tests, 872 passed / nine existing skips**, 38.905s, plus **eight
+Node tests**. Fresh hosted targeted + independent Docker executions reproduced
+all six exact DeepSeek candidate hashes and successful outcomes with **zero
+new inference**. Existing SDK negative QA and recorded Phase20 replay also
+passed. Hosted receipts are preserved in
+`evidence/phase22/github-run-40253483382/`. This does not add another six repairs.
 
 ## Recommendation and next milestone
 
@@ -175,3 +182,21 @@ Customer rights/privacy, hostile-code provenance/isolation, durable coordination
 commercial payment/delivery procedures and explicit launch authorization remain
 unresolved. No production deployment, main merge, customer work, payments,
 external submissions or other LeftSock project changes occurred.
+
+## Published changes and final custody
+
+Post-approval additions are `phase22_evidence.py`, its five evidence-integrity
+regressions, the owner/candidate/usage/balance/replay receipts, and the recorded
+DeepSeek replay step in the existing model-free PR workflow. `AGENTS.md`, this
+report, the implementation report and current acceptance ledger record the
+approval and closed trial. The prior model-free acceptance snapshot is retained
+byte-for-byte as `pre-inference-acceptance.json`. The frozen generation modules,
+source files, tests, plan and core validators have **no changes** from the
+pre-inference commit. No model assets or dependencies were added.
+
+Final publication only attaches the observed hosted receipts and documentation,
+using `[skip ci]` to avoid duplicating unchanged regression/replay. All PRs remain
+draft; main remains `22250921eb50b7a72e0f474b0f3ff329f81b55a8`. The private
+nonempty ledger and STOP marker remain; no active Phase22 processes/containers or
+inference listeners remain. No additional billable requests will be made for
+this closed trial.

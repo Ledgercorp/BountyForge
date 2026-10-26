@@ -120,3 +120,19 @@ satisfiability controls as autonomous model successes. No control was supplied
 to the measured models; these cases are now fully exposed development material.
 Keep QWEN_1_5B as default, experimental diagnosis off by default, all PRs draft,
 main unchanged, no private/customer execution or commercial activation.
+
+Phase22 adds an opt-in DeepSeek API broker and six new owned developmental tasks
+through the existing supplemental Catalog API. No default/MCP engine changes.
+All billable generation requires a separate explicit owner spending grant bound
+to the exact frozen plan and credential fingerprint, with recharge disabled,
+existing credits only, <=$2 approved and >=$20 reserve. The user has proposed,
+but has NOT yet approved, that allocation. Never manufacture the grant file.
+No live inference has run at initial publication. Google Drive retrieval and
+read-only metadata checks were explicitly authorized; preserve its permissions.
+Never put the credential in files, env vars, arguments, prompts or GitHub secrets.
+Use a trusted memory-only pipe. CI must stay model-free and credential-free.
+Unknown requests retain full conservative reservations. A persisted nonempty
+ledger blocks automatic experiment replay; do not remove/reset it. Local SQLite
+is not cross-workspace durable account-wide enforcement. Keep the existing
+nine skipped security checks, production/customer denial and all drafts intact.
+See docs/PHASE22_DEEPSEEK_API.md for activation, measured checks and blockers.

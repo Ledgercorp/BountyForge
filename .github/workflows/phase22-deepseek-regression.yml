@@ -1,0 +1,59 @@
+name: Phase22 DeepSeek model-free acceptance
+
+on:
+  pull_request:
+    branches: [engineering/phase21-repair-intelligence-20261024]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase22-model-free-regression
+  cancel-in-progress: false
+
+jobs:
+  regression:
+    if: ${{ github.repository == 'Ledgercorp/BountyForge' && github.event.repository.private == false && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'engineering/phase22-deepseek-api-20261025' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Full Python regression, including process HTTP simulator and budget recovery
+        run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v
+      - name: Preserved owner console
+        run: node --test tests/dashboard_state.mjs tests/repair_console.cjs
+      - name: Existing pinned owned runtime
+        run: docker pull python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590
+      - name: Owned Phase22 baselines, source denials and deliberately incorrect candidate
+        run: |
+          mkdir -p evidence-run
+          env -i PATH=/usr/local/bin:/usr/bin:/bin HOME="$HOME" PYTHONDONTWRITEBYTECODE=1 \
+            python3 -m phase22_acceptance --admit-owned-model-free-checks --output evidence-run/phase22-owned.json
+      - name: Stage existing SDK wheels as inert bytes, no installation
+        run: |
+          mkdir -p "$RUNNER_TEMP/bf22-wheels"
+          python3 -m pip download --only-binary=:all: --no-deps --no-cache-dir \
+            --dest "$RUNNER_TEMP/bf22-wheels" 'deepseek-harness-sdk==0.2.1rc2' 'deepseek-harness-runtime-bin==0.2.1rc2'
+      - name: Preserved SDK negative capability and protocol acceptance, simulated provider only
+        run: |
+          env -i PATH=/usr/local/bin:/usr/bin:/bin HOME="$HOME" PYTHONDONTWRITEBYTECODE=1 \
+            python3 -m phase20_protocol_acceptance --admit-protocol-replay \
+            --wheel-directory "$RUNNER_TEMP/bf22-wheels" --output evidence-run/sdk-protocol.json
+      - name: Previously recorded owned model success and failures, no inference
+        run: |
+          env -i PATH=/usr/local/bin:/usr/bin:/bin HOME="$HOME" PYTHONDONTWRITEBYTECODE=1 \
+            python3 -m phase20_replay --admit-recorded-owned-replay --output evidence-run/recorded-replay.json
+      - name: Small sanitized evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: phase22-model-free-evidence
+          path: evidence-run/*.json
+          retention-days: 1
+          if-no-files-found: ignore
+      - name: Remove disposable inert wheels
+        if: always()
+        run: rm -rf -- "$RUNNER_TEMP/bf22-wheels"

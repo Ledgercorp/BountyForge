@@ -1,0 +1,32 @@
+{
+  "actual_inference_requests": 0,
+  "actual_input_tokens": 0,
+  "actual_output_tokens": 0,
+  "actual_reasoning_tokens": 0,
+  "additional_cash_spending_usd": 0,
+  "approved_requests": 0,
+  "commercial_admission": "NOT_ADMITTED",
+  "deepseek_model": "deepseek-v4-pro",
+  "existing_credit_spending_usd": 0,
+  "first_attempt_successes": null,
+  "frozen_plan_sha256": "a12648b59de913b18d358e94d2cd6abc482c6c86086765871bf52c8bef27b322",
+  "head_to_head_comparable": false,
+  "historical_comparison_limitation": "Different tasks, contexts and output envelope. No fresh DeepSeek repair measurement yet.",
+  "historical_exposed_phase21": {
+    "diagnosis_sdk_qwen": "0/4",
+    "external_qwen": "0/4",
+    "granite": "one complete unsuccessful; three blocked",
+    "native_sdk_qwen": "0/4"
+  },
+  "invalid_model_proposals": null,
+  "kind": "PHASE22_UNMEASURED_MODEL_COMPARISON",
+  "measurement_status": "BLOCKED_EXPLICIT_SPENDING_AUTHORIZATION",
+  "proposed_maximum_requests": 12,
+  "receipt_sha256": "a391e9b9f1b4d753439315649eac6916f9bb395590235b3a974c9b96c2f95db8",
+  "regressive_model_proposals": null,
+  "retry_assisted_successes": null,
+  "tasks_attempted": 0,
+  "tasks_planned": 6,
+  "verified_accuracy": null,
+  "verified_model_repairs": 0
+}

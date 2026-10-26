@@ -1,0 +1,31 @@
+{
+  "kind": "PHASE22_REVIEWED_OFFICIAL_PEAK_PRICE_SNAPSHOT",
+  "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+  "page_sha256": "b856a6e93fa4793ecc8f3fd03a01bb7d8f7572f78a4739da8ce6dbdb09328d66",
+  "checked_at_unix": 1792973789,
+  "units": "USD per million tokens",
+  "input_price_basis": "peak cache miss; no discount assumed",
+  "models": {
+    "deepseek-flash": {
+      "documented_version": "DeepSeek-V4.1-Flash-1017",
+      "input": "0.30",
+      "output": "1.20"
+    },
+    "deepseek-v4-pro": {
+      "documented_version": "DeepSeek-V4-Pro-0813",
+      "input": "1.32",
+      "output": "3.96"
+    }
+  },
+  "output_includes_reasoning": true,
+  "context_window": 1048576,
+  "provider_maximum_output": 393216,
+  "pricing_revalidation_seconds": 86400,
+  "account_billing_controls_exposed": false,
+  "related_sources": [
+    "https://api-docs.deepseek.com/api/create-chat-completion/",
+    "https://api-docs.deepseek.com/guides/thinking_mode/",
+    "https://api-docs.deepseek.com/api/get-user-balance/",
+    "https://api-docs.deepseek.com/api/list-models/"
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "auto_recharge": "NOT_EXPOSED_BY_API",
+  "balance": {
+    "balance_infos": [
+      {
+        "currency": "USD",
+        "granted_balance": "0.00",
+        "topped_up_balance": "22.88",
+        "total_balance": "22.88"
+      }
+    ],
+    "is_available": true
+  },
+  "checked_at_unix": 1792973815,
+  "credential_persisted": false,
+  "credit_expiration": "NOT_EXPOSED_BY_API",
+  "inference_requests": 0,
+  "kind": "PHASE22_READ_ONLY_ACCOUNT_CHECK",
+  "models": {
+    "data": [
+      {
+        "api_capabilities": {
+          "anthropic_messages": {
+            "system_prompt_update": "in-history",
+            "tool_update": "addition-only"
+          }
+        },
+        "context_window": 1048576,
+        "effort": {
+          "default_level": "high",
+          "supported_levels": [
+            "low",
+            "high",
+            "max"
+          ]
+        },
+        "id": "deepseek-flash",
+        "input_modalities": [
+          "text",
+          "image"
+        ],
+        "max_output_tokens": 393216,
+        "name": "DeepSeek-V4.1-Flash",
+        "object": "model",
+        "output_modalities": [
+          "text"
+        ],
+        "owned_by": "deepseek"
+      },
+      {
+        "api_capabilities": {
+          "anthropic_messages": {
+            "system_prompt_update": "leading-only",
+            "tool_update": "leading-only"
+          }
+        },
+        "context_window": 1048576,
+        "effort": {
+          "default_level": "high",
+          "supported_levels": [
+            "low",
+            "high",
+            "max"
+          ]
+        },
+        "id": "deepseek-v4-pro",
+        "input_modalities": [
+          "text"
+        ],
+        "max_output_tokens": 393216,
+        "name": "DeepSeek-V4-Pro",
+        "object": "model",
+        "output_modalities": [
+          "text"
+        ],
+        "owned_by": "deepseek"
+      }
+    ],
+    "object": "list"
+  },
+  "receipt_sha256": "bec2a8eb3e04816ae436da58a1792f7382b477d03d9eb79e0a431dd9f5f9d896"
+}

@@ -201,11 +201,13 @@ execution, no inference, execution not admitted). Sanitized counts and the
 Docker evidence digest are recorded in
 [local acceptance evidence](../evidence/phase26/local_acceptance.json).
 
-The PR-triggered model-free Linux acceptance is pending publication. Its
-workflow explicitly exercises owned Docker fixtures but does not install
-customer dependencies or invoke any model. The next credible step is not a
-bounty claim: an owner must
-first choose a source that has a current, specific AI-agent allowance and a
-narrow Python task, confirm U.S. payout eligibility and account route, and
-authorize a new bounded DeepSeek budget only after all technical/security
-gates are satisfied.
+The PR-triggered model-free Linux acceptance passed in [GitHub Actions run
+40307079411](https://github.com/Ledgercorp/BountyForge/actions/runs/40307079411). Checkout, pinned image admission, Python/Docker regression, registry audit,
+synthetic restart/payment-denial rehearsal, Node regression and the short-lived
+evidence artifact all completed successfully. The artifact digest and run
+identity are recorded in `local_acceptance.json`. The workflow did not install
+customer dependencies or invoke a model. The next credible step is not a bounty
+claim: an owner must first choose a source with a current, explicit AI-agent
+allowance and a narrow Python task, confirm U.S. payout eligibility and account
+route, then authorize a new bounded DeepSeek budget only after all
+technical/security gates are satisfied.

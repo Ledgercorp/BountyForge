@@ -17,6 +17,29 @@
     "passed": 27,
     "tests_run": 27
   },
+  "github_actions": {
+    "artifact": {
+      "expires_at": "2026-10-27T10:24:49Z",
+      "id": 12642648321,
+      "name": "phase26-read-only-acceptance",
+      "sha256": "367b0ed80ed8a8b2d72c00677455563e9cbd9e7f915104adf327b98033247c54",
+      "size_bytes": 5576
+    },
+    "conclusion": "success",
+    "run_id": 40307079411,
+    "status": "completed",
+    "url": "https://github.com/Ledgercorp/BountyForge/actions/runs/40307079411",
+    "verified_steps": [
+      "checkout",
+      "pinned_owned_fixture_image_admission",
+      "full_model_free_python_and_owned_docker_regression",
+      "historical_registry_audit_without_execution",
+      "synthetic_queue_and_payment_denial_restart_rehearsal",
+      "node_console_regression",
+      "evidence_artifact_upload"
+    ],
+    "workflow": "Phase26 read-only discovery acceptance"
+  },
   "historical_registry_audit": {
     "command": "python3 -m scripts.verify_historical_registry",
     "execution_admitted": false,
@@ -118,6 +141,7 @@
     "wall_seconds": 64.977
   },
   "schema": 1,
+  "tested_commit": "3d8f66916132cc7dd4413b45d11217c43d32a09f",
   "tested_source_sha256": {
     "bountyforge/crypto_discovery.py": "7d38ab8da700f4c1b424d5b2299aa988522402434941a5e3e0f21d154ce3862a",
     "bountyforge/crypto_opportunities.py": "a603aa87a2a04f622b8696002080879bddfc21882225710309090d1cf08b7958",

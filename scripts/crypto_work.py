@@ -60,16 +60,24 @@ def main(argv=None):
         print(json.dumps({'commercial_admission':'NOT_ADMITTED','paid_requests_authorized':0,'third_party_execution_authorized':False,
             'live_submissions_implemented':False,'wallet_actions_implemented':False,'scheduling_active':False,'confirmed_project_earnings_usd':'0'}));return 0
     if args.command=='discover':
-        c=CryptoReadOnly();feed=c.discover();quotes=[c.market_quote(a) for a in ('SOL','USDC')]
-        r={'kind':'BOUNTYFORGE_CRYPTO_READ_ONLY_SCAN','feed':feed,'quotes':quotes,'opportunities':None,
+        c=CryptoReadOnly();feed=c.discover();github=c.discover_github();algora=c.discover_github(algora_bot=True)
+        quotes=[c.market_quote(a) for a in ('SOL','USDC')]
+        sources=(feed,github,algora)
+        source_rows=[x for source in sources for x in (source.get('opportunities') or [])]
+        r={'kind':'BOUNTYFORGE_CRYPTO_READ_ONLY_SCAN','feed':feed,'github_search':github,
+           'algora_github_search':algora,'quotes':quotes,'opportunities':[],
            'paid_requests':0,'external_writes':0,'scheduling_active':False,'complete_scan':False,'commercial_admission':'NOT_ADMITTED'}
-        if feed['opportunities'] is not None:
-            now=datetime.now(timezone.utc).isoformat();rows=[]
-            for o in feed['opportunities']:
-                gate=qualify_crypto(o,now=now)
-                rows.append({**o,'qualification':gate,'research_plan':research_work_plan(o,gate),
-                    'profitability':profitability(o,next((q for q in quotes if q['asset']==o['payment_asset']),None),now=now)})
-            r['opportunities']=deduplicate(rows)
+        now=datetime.now(timezone.utc).isoformat();rows=[]
+        for o in source_rows:
+            gate=qualify_crypto(o,now=now)
+            rows.append({**o,'qualification':gate,'research_plan':research_work_plan(o,gate),
+                'profitability':profitability(o,next((q for q in quotes if q['asset']==o['payment_asset']),None),now=now)})
+        r['opportunities']=deduplicate(rows)
+        r['source_summary']={'github_candidates':len(github.get('opportunities') or []),
+            'algora_bot_comment_candidates':len(algora.get('opportunities') or []),
+            'superteam_candidates':len(feed.get('opportunities') or []),
+            'github_authenticated':github.get('authenticated',False) or algora.get('authenticated',False),
+            'all_sources_complete':False,'public_query_is_exhaustive':False}
     else:
         if args.state_dir:r=rehearsal(args.state_dir)
         else:

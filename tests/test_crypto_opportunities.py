@@ -68,6 +68,24 @@ class CryptoOpportunityTests(unittest.TestCase):
             'title':'Agent bootstrap goals','body':'Goal: earn 1 USDC from a bounty.'},NOW)
         self.assertIsNone(r['advertised_amount']);self.assertEqual(r['currency_claim_amount'],'1')
 
+    def test_explicit_usd_amount_is_only_an_advertisement_and_never_funding(self):
+        m=self.module();r=m.normalize_github({'html_url':'https://github.com/example/project/issues/2','state':'open',
+            'title':'Python bug bounty $25','body':'Bounty: $25 USD. Maintainer decides whether it qualifies.'},NOW)
+        self.assertEqual(r['advertised_amount'],'25');self.assertEqual(r['payment_asset'],'USD')
+        self.assertEqual(r['funding_status'],'UNVERIFIED')
+        self.assertIsNone(r['requirements_untrusted']);self.assertEqual(len(r['issue_body_sha256']),64)
+        q=m.qualify_crypto(r,now=NOW)
+        self.assertIn('FUNDING_UNVERIFIED',q['reasons']);self.assertIn('AI_NOT_EXPLICITLY_ALLOWED',q['reasons'])
+        p=m.profitability(r,now=NOW)
+        self.assertEqual(p['advertised_gross_usd'],'25');self.assertIsNone(p['expected_net_usd'])
+        self.assertFalse(p['quote_is_cash_realization'])
+
+    def test_ambiguous_github_reward_claim_stays_unknown(self):
+        m=self.module();r=m.normalize_github({'html_url':'https://github.com/example/project/issues/3','state':'open',
+            'title':'Python fix bounty','body':'Bounty $25 USD; later reward 50 USDC.'},NOW)
+        self.assertIsNone(r['advertised_amount']);self.assertEqual(r['payment_asset'],'UNKNOWN')
+        self.assertTrue(r['claim_ambiguity'])
+
     def test_unavailable_price_preserves_unknown_value_without_crashing(self):
         m=self.module();item=m.normalize_superteam(self.listing(),NOW)
         p=m.profitability(item,{'asset':'USDC','usd_price':None,'status':'HTTP_ERROR','observed_at':NOW},now=NOW)

@@ -1,0 +1,146 @@
+{
+  "kind": "BOUNTYFORGE_PHASE26_OPPORTUNITY_ASSESSMENT",
+  "schema": 1,
+  "observed_at": "2026-10-26T10:13:59Z",
+  "discovery_receipt": "evidence/phase26/live_discovery_2026-10-26.json",
+  "commercial_admission": "NOT_ADMITTED",
+  "selected_pilot": null,
+  "candidate_count": 6,
+  "eligible_count": 0,
+  "opportunities": [
+    {
+      "rank": 1,
+      "id": "algora:flydelabs/flyde#112",
+      "issue_url": "https://github.com/flydelabs/flyde/issues/112",
+      "primary_reward_source": "https://algora.io/flydelabs/bounties?status=open",
+      "title": "Broken imports after moving files",
+      "availability": "OPEN_ON_GITHUB_AND_LISTED_OPEN_ON_ALGORA_AT_OBSERVATION",
+      "advertised_reward": {"amount": "15", "currency": "USD", "funding_or_escrow": "UNKNOWN"},
+      "payer": "Flyde project listing on Algora; direct payer/escrow settlement details unverified",
+      "us_eligibility": "UNKNOWN",
+      "ai_agent_eligibility": "UNKNOWN",
+      "upfront_purchase": "UNKNOWN",
+      "source_license": "UNKNOWN_ROOT_LICENSE_NOT_FOUND",
+      "test_rights": "UNKNOWN_NOT_REVIEWED",
+      "payout_route": "UNKNOWN_OWNER_ACCOUNT_AND_WITHDRAWAL_NOT_VERIFIED",
+      "competition": {
+        "status": "HIGH_CONFLICT",
+        "evidence": [
+          "https://github.com/flydelabs/flyde/pull/293",
+          "https://github.com/flydelabs/flyde/pull/292",
+          "https://github.com/flydelabs/flyde/pull/291",
+          "https://github.com/flydelabs/flyde/pull/286",
+          "https://github.com/flydelabs/flyde/pull/285",
+          "https://github.com/flydelabs/flyde/pull/283",
+          "https://github.com/flydelabs/flyde/pull/282"
+        ]
+      },
+      "technical_fit": "NOT_SUPPORTED_BY_CURRENT_PYTHON_ONLY_REPAIR_PROFILE; VS_CODE_EXTENSION_AND_TYPESCRIPT_IMPORT_HANDLING",
+      "execution_admitted": false,
+      "submission_authorized": false,
+      "decision": "BLOCKED_NOT_QUALIFIED",
+      "next_step": "Do not claim or submit. Require verified AI and US eligibility, source/test rights, current unclaimed status, owner payout setup, and a compatible admitted TypeScript execution profile."
+    },
+    {
+      "rank": 2,
+      "id": "algora:PG-AGI/toingg-jarvis#13",
+      "issue_url": "https://github.com/PG-AGI/toingg-jarvis/issues/13",
+      "reward_evidence": "https://github.com/PG-AGI/toingg-jarvis/issues/13#issuecomment-4598764661",
+      "title": "Cross-platform packaging and native installers for Windows, Linux, and macOS",
+      "availability": "OPEN_ON_GITHUB; CURRENT_PLATFORM_LISTING_NOT_VERIFIED",
+      "advertised_reward": {"amount": "5", "currency": "USD", "funding_or_escrow": "ALGORA_BOT_BOUNTY_POST_PRESENT; ESCROW_STATUS_UNKNOWN"},
+      "us_eligibility": "UNKNOWN",
+      "ai_agent_eligibility": "UNKNOWN",
+      "source_license": "UNKNOWN_NOT_REVIEWED",
+      "payout_route": "UNKNOWN_OWNER_ACCOUNT_AND_WITHDRAWAL_NOT_VERIFIED",
+      "competition": {
+        "status": "AT_LEAST_TWO_OPEN_CLAIMING_PR_CANDIDATES",
+        "evidence": [
+          "https://github.com/PG-AGI/toingg-jarvis/pull/92",
+          "https://github.com/PG-AGI/toingg-jarvis/pull/89"
+        ]
+      },
+      "technical_fit": "LOW; MULTI_OS_PACKAGING_AND_RELEASE_CI_OUTSIDE_CURRENT_BOUNDED_PYTHON_REPAIR_PROFILE",
+      "execution_admitted": false,
+      "submission_authorized": false,
+      "decision": "BLOCKED_CONTESTED_AND_UNSUPPORTED"
+    },
+    {
+      "rank": 3,
+      "id": "algora:onyx-dot-app/onyx#2281",
+      "issue_url": "https://github.com/onyx-dot-app/onyx/issues/2281",
+      "reward_evidence": "https://github.com/onyx-dot-app/onyx/issues/2281#issuecomment-2322605615",
+      "claim_evidence": "https://github.com/onyx-dot-app/onyx/issues/2281#issuecomment-2464839836",
+      "title": "Jira Service Management Connector",
+      "availability": "ISSUE_OPEN_BUT_BOUNTY_SLOT_UNAVAILABLE_OR_UNRESOLVED",
+      "advertised_reward": {"amount": "250", "currency": "USD", "funding_or_escrow": "ALGORA_BOT_CREATED_REWARD; CURRENT_PAYOUT_STATE_UNVERIFIED"},
+      "us_eligibility": "UNKNOWN",
+      "ai_agent_eligibility": "UNKNOWN",
+      "competition": {"status": "HIGH_CONFLICT", "issue_comment_count": 170, "existing_claiming_pr": "https://github.com/danswer-ai/danswer/pull/3087"},
+      "technical_fit": "LOW; MULTI_SYSTEM_CONNECTOR_FEATURE_NOT_A_NARROW_REPRODUCIBLE_PYTHON_BUG",
+      "execution_admitted": false,
+      "submission_authorized": false,
+      "decision": "BLOCKED_CLAIMED_AND_STATUS_UNRESOLVED"
+    },
+    {
+      "rank": 4,
+      "id": "algora:permitio/opal#661",
+      "issue_url": "https://github.com/permitio/opal/issues/661",
+      "award_evidence": "https://github.com/permitio/opal/issues/661#issuecomment-2561888171",
+      "platform_status": "https://algora.io/Permitio/bounties?status=open",
+      "title": "Add OpenFGA as a Policy Store",
+      "availability": "AWARDED_AND_NO_OPEN_BOUNTIES_ON_CURRENT_ALGORA_BOARD",
+      "advertised_reward": {"amount": "1500", "currency": "USD", "funding_or_escrow": "ALGORA_BOT_RECORDED_AWARD"},
+      "us_eligibility": "UNKNOWN",
+      "ai_agent_eligibility": "UNKNOWN",
+      "source_license": "Apache-2.0_REPOSITORY_LICENSE_OBSERVED",
+      "technical_fit": "NOT_REASONABLE; LARGE_CROSS_COMPONENT_FEATURE_WITH_EXISTING_CLAIMS_AND_PRs",
+      "execution_admitted": false,
+      "submission_authorized": false,
+      "decision": "REJECTED_ALREADY_AWARDED"
+    },
+    {
+      "rank": 5,
+      "id": "github:tine1117/oss-hunter-livefire#1",
+      "issue_url": "https://github.com/tine1117/oss-hunter-livefire/issues/1",
+      "title": "parse_duration drops the days (d) unit",
+      "availability": "OPEN_BUT_NOT_A_REAL_COMMERCIAL_TASK",
+      "advertised_reward": {"amount": "50", "currency": "USD", "funding_or_escrow": "LABEL_AND_ISSUE_TEXT_ONLY_UNVERIFIED"},
+      "disqualifying_primary_evidence": "https://github.com/tine1117/oss-hunter-livefire/blob/main/README.md",
+      "competition": {"status": "MANY_DUPLICATE_SUBMISSIONS", "issue_comment_count": 72},
+      "technical_fit": "SIMPLE_PYTHON_BUG_BUT_REPOSITORY_SELF_IDENTIFIES_AS_A_SANDBOX_TEST_FIXTURE",
+      "execution_admitted": false,
+      "submission_authorized": false,
+      "decision": "QUARANTINED_FIXTURE_AND_UNVERIFIED_REWARD"
+    },
+    {
+      "rank": 6,
+      "id": "github:BasedHardware/omi#23328",
+      "issue_url": "https://github.com/BasedHardware/omi/issues/23328",
+      "title": "Bounty proposal for preference-tools validation and config resilience",
+      "availability": "OPEN_PROPOSAL_ONLY",
+      "advertised_reward": {"amount": "50", "currency": "USD", "funding_or_escrow": "NOT_ESTABLISHED_PROPOSED_ONLY"},
+      "us_eligibility": "UNKNOWN",
+      "ai_agent_eligibility": "UNKNOWN",
+      "execution_admitted": false,
+      "submission_authorized": false,
+      "decision": "REJECTED_NO_FUNDED_ASSIGNMENT_EVIDENCE"
+    }
+  ],
+  "operations": {
+    "deepseek_requests": 0,
+    "new_api_spend_usd": "0",
+    "external_comments_or_claims": 0,
+    "pull_requests_submitted": 0,
+    "financial_transactions": 0,
+    "customer_or_third_party_code_executed": 0,
+    "confirmed_earnings_usd": "0"
+  },
+  "limitations": [
+    "The broad public GitHub query is a non-exhaustive search lead source, not a bounty directory.",
+    "Algora public API documentation details were inaccessible during this review; no undocumented endpoint was called.",
+    "Algora terms prohibit automated website access absent prior written consent; no Algora website scraper was built or used.",
+    "Superteam's official agent feed requires a registered agent API key; no account was created.",
+    "No opportunity passed all funding, AI eligibility, US eligibility, source-rights, technical-fit, current-availability, and payout-route checks."
+  ]
+}

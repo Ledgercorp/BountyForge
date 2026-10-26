@@ -1,0 +1,129 @@
+{
+  "base_commit": "4687c57034ae2f82253c8f7a3a44734fa7a59f8d",
+  "branch": "engineering/phase26-real-bounty-pilot-20261026",
+  "commercial_admission": "NOT_ADMITTED",
+  "financial_and_external_activity": {
+    "additional_spend_usd": "0",
+    "confirmed_earnings_usd": "0",
+    "customer_or_third_party_code_executed": 0,
+    "deepseek_requests": 0,
+    "external_comments_or_claims": 0,
+    "financial_transactions": 0,
+    "submitted_pull_requests": 0
+  },
+  "focused_discovery_tests": {
+    "command": "python3 -m unittest tests.test_crypto_discovery tests.test_crypto_opportunities tests.test_crypto_cli -v",
+    "failed": 0,
+    "passed": 27,
+    "tests_run": 27
+  },
+  "historical_registry_audit": {
+    "command": "python3 -m scripts.verify_historical_registry",
+    "execution_admitted": false,
+    "functional_baselines_executed": 0,
+    "inference_requests": 0,
+    "passed": true,
+    "repositories": 6,
+    "tasks": 30,
+    "unseen_accuracy": null
+  },
+  "kind": "BOUNTYFORGE_PHASE26_LOCAL_ACCEPTANCE",
+  "limitations": [
+    "Owned sandbox probes do not certify hostile third-party repository execution.",
+    "No AI-generated repair was produced or counted.",
+    "No opportunity passed the commercial qualification gate."
+  ],
+  "namespace_rootfs_probes": {
+    "failed": 0,
+    "passed": 8,
+    "scope": "owned isolation probes only",
+    "tests_run": 8
+  },
+  "node_regression": {
+    "command": "node --test tests/dashboard_state.mjs tests/repair_console.cjs",
+    "failed": 0,
+    "passed": 8,
+    "tests_run": 8
+  },
+  "observed_at": "2026-10-26",
+  "owned_docker_reference_validation": {
+    "artifact": "temporary runner evidence; sanitized digest and counts retained",
+    "defective_baselines_rejected": 6,
+    "heldout_accuracy_measured": false,
+    "kind": "DEV_ONLY_REFERENCE_VALIDATION",
+    "model_calls": 0,
+    "model_generated_repairs": 0,
+    "preauthored_development_references_passed": 6,
+    "source_evidence_sha256": "01798bdc08ff6335b0f95dedefdf9988b83e97f61395ef696c2558d2d56f4763",
+    "tasks": 6,
+    "tasks_summary": [
+      {
+        "baseline_passed": false,
+        "development_reference_passed": true,
+        "id": "configuration_values"
+      },
+      {
+        "baseline_passed": false,
+        "development_reference_passed": true,
+        "id": "stable_partition"
+      },
+      {
+        "baseline_passed": false,
+        "development_reference_passed": true,
+        "id": "weighted_samples"
+      },
+      {
+        "baseline_passed": false,
+        "development_reference_passed": true,
+        "id": "discount_continuation"
+      },
+      {
+        "baseline_passed": false,
+        "development_reference_passed": true,
+        "id": "canonical_headers"
+      },
+      {
+        "baseline_passed": false,
+        "development_reference_passed": true,
+        "id": "status_priority"
+      }
+    ]
+  },
+  "owned_sandbox_controls": {
+    "capabilities_empty": true,
+    "cleanup_verified": true,
+    "cpu_quota_verified": true,
+    "docker_socket_absent": true,
+    "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+    "memory_limit_enforced": true,
+    "network_denied": true,
+    "no_new_privileges": true,
+    "output_bounded": true,
+    "pid_limit_verified": true,
+    "root_writes_denied": true,
+    "seccomp_active": true,
+    "secrets_absent": true,
+    "source_writes_denied": true,
+    "tmpfs_bounded_noexec": true,
+    "uid_unprivileged": true,
+    "untrusted_execution_certified": false,
+    "wall_clock_enforced": true
+  },
+  "python_regression": {
+    "command": "BOUNTYFORGE_TEST_ROOTFS=/tmp/bf-phase26-full.TQ9hd1/rootfs BOUNTYFORGE_PHASE8_DEV_DOCKER=1 BOUNTYFORGE_PHASE8_DEV_EVIDENCE=/tmp/bf-phase26-final/owned-docker-evidence.json PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v",
+    "failed": 0,
+    "passed": 931,
+    "skipped": 0,
+    "tests_run": 931,
+    "wall_seconds": 64.977
+  },
+  "schema": 1,
+  "tested_source_sha256": {
+    "bountyforge/crypto_discovery.py": "7d38ab8da700f4c1b424d5b2299aa988522402434941a5e3e0f21d154ce3862a",
+    "bountyforge/crypto_opportunities.py": "a603aa87a2a04f622b8696002080879bddfc21882225710309090d1cf08b7958",
+    "scripts/crypto_work.py": "84c4a1a5498aeb3ecb0fde59accc543198ca6b7fff23532ccc0de30f6413a8da",
+    "tests/test_crypto_cli.py": "46cd2db34e80a4e9631337303405c92b12017105184e7aec648a011b8f2c56b6",
+    "tests/test_crypto_discovery.py": "9b71a64aa1dc9780e02b8cfdfdccdbb426a63d236dc631689f35f45d3caed1cd",
+    "tests/test_crypto_opportunities.py": "ecff3f3f8cbf33a7575536763e888aac13694908f1cb133d7e400b1ab556a44d"
+  }
+}

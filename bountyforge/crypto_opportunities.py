@@ -105,15 +105,36 @@ def import_onlydust(row,observed_at):
 
 
 def normalize_github(row,observed_at):
-    url=canonical_url(row.get('html_url'),'github');text=str(row.get('title',''))+' '+str(row.get('body',''))[:12000]
-    matches=re.findall(r'(?i)\b([1-9][0-9]{0,6}(?:\.[0-9]{1,6})?)\s+(USDC|SOL|ETH|BTC)\b',text)
-    if len(set((a,b.upper()) for a,b in matches))!=1:raise ValueError('UNAMBIGUOUS_CRYPTO_REWARD_REQUIRED')
-    value,symbol=matches[0];ident=hashlib.sha256(url.encode()).hexdigest()
-    record=normalize_superteam({'id':ident,'slug':ident,'title':row.get('title',''),'token':symbol,'rewardAmount':value,'description':row.get('body','')},observed_at)
+    url=canonical_url(row.get('html_url'),'github');title=str(row.get('title',''))[:250];body=str(row.get('body',''))[:12000]
+    text=title+'\n'+body
+    crypto=re.findall(r'(?i)\b([1-9][0-9]{0,6}(?:\.[0-9]{1,6})?)\s+(USDC|SOL|ETH|BTC)\b',text)
+    usd=[]
+    # Capture common advertised USD forms only as claims; this does not prove
+    # the issue author funded, escrowed or intends to pay the amount.
+    for pattern in (r'(?i)\b(?:bounty|reward|payment|paid)\b[^\n$]{0,48}\$\s*([1-9][0-9,]{0,8}(?:\.[0-9]{1,2})?)',
+                    r'(?i)\$\s*([1-9][0-9,]{0,8}(?:\.[0-9]{1,2})?)[^\n]{0,48}\b(?:bounty|reward|payment|paid)\b'):
+        usd.extend(x.replace(',','') for x in re.findall(pattern,text))
+    claims={(a.upper(),b.upper()) for a,b in crypto}
+    claims.update((value,'USD') for value in usd)
+    # Preserve ambiguous or missing claims as unknown instead of dropping the
+    # candidate or choosing whichever amount is most attractive.
+    value,symbol=(next(iter(claims)) if len(claims)==1 else (None,'UNKNOWN'))
+    ident=hashlib.sha256(url.encode()).hexdigest()
+    record=normalize_superteam({'id':ident,'slug':ident,'title':title,'token':symbol,
+        'rewardAmount':value,'description':body},observed_at)
     state=row.get('state')
     availability=('OPEN' if state.casefold()=='open' else 'CLOSED' if state.casefold()=='closed' else 'UNKNOWN') if type(state) is str else 'UNKNOWN'
-    record.update(provider='github',source_url=url,github_issue=url,observation_kind='UNVERIFIED_SEARCH_CURRENCY_MATCH',currency_claim_amount=record['advertised_amount'],availability=availability,ai_agent_eligibility='UNKNOWN')
-    if not re.search(r'(?i)\b(bounty|reward|paid (?:fix|task|bug))\b',str(row.get('title',''))):record['advertised_amount']=None
+    labels=row.get('labels',[])
+    if type(labels) is not list:labels=[]
+    record.update(provider='github',source_url=url,github_issue=url,observation_kind='UNVERIFIED_SEARCH_CURRENCY_MATCH',
+        currency_claim_amount=record['advertised_amount'],availability=availability,ai_agent_eligibility='UNKNOWN',
+        issue_created_at=row.get('created_at'),issue_updated_at=row.get('updated_at'),
+        issue_body_sha256=hashlib.sha256(body.encode('utf-8')).hexdigest(),
+        labels=[str(label)[:80] for label in labels[:20]],claim_ambiguity=len(claims)>1)
+    # Discovery artifacts retain a digest and primary URL, not arbitrary issue
+    # prose that could later be mistaken for trusted task instructions.
+    record['requirements_untrusted']=None
+    if not re.search(r'(?i)\b(bounty|reward|paid (?:fix|task|bug)|payment)\b',title):record['advertised_amount']=None
     return record
 
 
@@ -122,7 +143,7 @@ def qualify_crypto(item,*,now=None):
     if item.get('source_risk')=='KNOWN_AGGREGATOR':reasons.append('AGGREGATOR_NOT_PRIMARY_FUNDING_SOURCE')
     if item.get('observation_kind')=='UNVERIFIED_SEARCH_CURRENCY_MATCH':reasons.append('GITHUB_OFFER_ROLE_NOT_INDEPENDENTLY_VERIFIED')
     if item.get('scam_signal'):reasons.append('SCAM_OR_ADVANCE_PAYMENT_SIGNAL')
-    if item.get('payment_asset') not in ('USDC','SOL','ETH','BTC'):reasons.append('UNADMITTED_TOKEN')
+    if item.get('payment_asset') not in ('USD','USDC','SOL','ETH','BTC'):reasons.append('UNADMITTED_TOKEN')
     if item.get('availability')=='CLOSED':reasons.append('CLOSED_OR_EXPIRED')
     elif item.get('availability')!='OPEN':reasons.append('AVAILABILITY_UNVERIFIED')
     try:
@@ -133,7 +154,7 @@ def qualify_crypto(item,*,now=None):
     if item.get('ai_agent_eligibility')!='ALLOWED':reasons.append('AI_NOT_EXPLICITLY_ALLOWED')
     if item.get('us_eligibility')!='VERIFIED_ALLOWED':reasons.append('US_ELIGIBILITY_UNVERIFIED')
     if item.get('upfront_deposit_required') is not False:reasons.append('NO_UPFRONT_PAYMENT_UNVERIFIED')
-    if not asset_identity(item.get('payment_asset'),item.get('payment_chain'),item.get('asset_address')):reasons.append('ASSET_NETWORK_IDENTITY_UNVERIFIED')
+    if item.get('payment_asset')!='USD' and not asset_identity(item.get('payment_asset'),item.get('payment_chain'),item.get('asset_address')):reasons.append('ASSET_NETWORK_IDENTITY_UNVERIFIED')
     if item.get('technical_profile')!='PYTHON':reasons.append('PYTHON_PROFILE_UNVERIFIED')
     if item.get('legal_payout_route')!='OWNER_VERIFIED':reasons.append('OWNER_PAYOUT_ROUTE_REQUIRED')
     # Existing qualification deliberately cannot attest deposited funding from
@@ -148,11 +169,14 @@ def qualify_crypto(item,*,now=None):
 
 def profitability(item,quote=None,*,now=None):
     now=now or datetime.now(timezone.utc).isoformat();gross=None
-    if quote and quote.get('usd_price') is not None and quote.get('asset')==item.get('payment_asset') and fresh(quote.get('observed_at'),now,900) and item.get('advertised_amount') is not None:
+    if item.get('payment_asset')=='USD' and item.get('advertised_amount') is not None:
+        gross=amount(item['advertised_amount'])
+    elif quote and quote.get('usd_price') is not None and quote.get('asset')==item.get('payment_asset') and fresh(quote.get('observed_at'),now,900) and item.get('advertised_amount') is not None:
         gross=amount(Decimal(amount(item['advertised_amount']))*Decimal(amount(quote.get('usd_price'))))
-    return {'advertised_gross_usd':gross,'conversion_observed_at':quote.get('observed_at') if gross else None,
-            'quote_venue':quote.get('venue') if gross else None,'quote_is_cash_realization':False,
-            'liquidity_observation':quote.get('volume_24h') if gross else None,
+    observed=(item.get('observed_at') if item.get('payment_asset')=='USD' else quote.get('observed_at') if gross and quote else None)
+    return {'advertised_gross_usd':gross,'conversion_observed_at':observed,
+            'quote_venue':quote.get('venue') if gross and item.get('payment_asset')!='USD' and quote else ('ADVERTISED_USD_CLAIM' if gross and item.get('payment_asset')=='USD' else None),'quote_is_cash_realization':False,
+            'liquidity_observation':quote.get('volume_24h') if gross and quote else None,
             'completion_probability':None,'acceptance_probability':None,'collection_probability':None,
             'coding_cost_usd':None,'verification_cost_usd':None,'engineering_hours':None,
             'withdrawal_fees_usd':None,'expected_net_usd':None,'guaranteed_income':False,

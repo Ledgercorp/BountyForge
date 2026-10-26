@@ -4,6 +4,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[1]
 
 
@@ -31,3 +32,45 @@ class CryptoProcessTests(unittest.TestCase):
         self.assertEqual(self.call('rehearse').returncode,2)
         r=self.call('status');self.assertEqual(r.returncode,0)
         self.assertFalse(json.loads(r.stdout)['third_party_execution_authorized'])
+
+    def test_read_only_discovery_merges_sources_without_authorizing_candidates(self):
+        from contextlib import redirect_stdout
+        from io import StringIO
+        from datetime import datetime, timezone
+        from bountyforge.crypto_opportunities import normalize_github, normalize_superteam
+        import scripts.crypto_work as work
+        observed=datetime.now(timezone.utc).isoformat()
+        feed=normalize_superteam({'id':'agent-listing','slug':'agent-listing','title':'Python maintenance',
+            'rewardAmount':'10','token':'USDC','skills':['Python'],'status':'OPEN'},observed)
+        github=normalize_github({'html_url':'https://github.com/example/repo/issues/7','title':'Python bug bounty $20',
+            'body':'Advertised only; funding unverified.','state':'open','labels':[]},observed)
+        algora=normalize_github({'html_url':'https://github.com/example/other/issues/8','title':'Reward: $5',
+            'body':'Lead only.','state':'open','labels':[]},observed)
+
+        class Sources:
+            def discover(self):
+                return {'status':'BLOCKED_AUTHENTICATION','opportunities':None,'complete_scan':False}
+            def discover_github(self,*,algora_bot=False):
+                return {'status':'OBSERVED','opportunities':[algora if algora_bot else github],
+                    'complete_scan':False,'authenticated':False}
+            def market_quote(self,asset):
+                return {'asset':asset,'status':'HTTP_ERROR','usd_price':None,'observed_at':observed,
+                    'owner_withdrawal_route_verified':False,'guaranteed_liquidity':False}
+
+        with tempfile.TemporaryDirectory() as directory:
+            output=Path(directory)/'discovery.json'
+            stdout=StringIO()
+            with patch.object(work,'CryptoReadOnly',Sources), redirect_stdout(stdout):
+                code=work.main(['discover','--admit-public-reads','--output',str(output)])
+            self.assertEqual(code,0)
+            result=json.loads(output.read_text())
+        self.assertEqual(result['source_summary']['github_candidates'],1)
+        self.assertEqual(result['source_summary']['algora_bot_comment_candidates'],1)
+        self.assertEqual(result['source_summary']['superteam_candidates'],0)
+        self.assertFalse(result['complete_scan'])
+        self.assertEqual(len(result['opportunities']),2)
+        records=[record for group in result['opportunities'] for record in group['records']]
+        self.assertTrue(all(x['qualification']['execution_authorized'] is False for x in records))
+        self.assertTrue(all(x['qualification']['submission_authorized'] is False for x in records))
+        self.assertEqual(result['paid_requests'],0)
+        self.assertEqual(result['external_writes'],0)

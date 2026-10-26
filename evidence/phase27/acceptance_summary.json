@@ -58,7 +58,18 @@
     }
   ],
   "commercial_admission": "NOT_ADMITTED",
-  "hosted_ci": "PENDING_DRAFT_PR_CREATION",
+  "hosted_ci": {
+    "all_other_acceptance_steps": "PASSED",
+    "artifact_upload": "PASSED",
+    "conclusion": "SUCCESS",
+    "python_tests_passed": 939,
+    "python_tests_run": 947,
+    "python_tests_skipped": 8,
+    "run_id": 40317547368,
+    "skips": "Existing namespace/rootfs admission checks; runner did not admit the existing rootfs",
+    "tested_commit": "055ef8a1ba6affafbd161ea769560aff1a06172c",
+    "url": "https://github.com/Ledgercorp/BountyForge/actions/runs/40317547368"
+  },
   "kind": "BOUNTYFORGE_PHASE27_ENGINEERING_ACCEPTANCE",
   "main_modified": false,
   "market": {
@@ -82,7 +93,7 @@
     "paid_inference_authorized": 0,
     "phase22_stop_marker_modified": false
   },
-  "observed_at": "2026-10-26T11:43:49Z",
+  "observed_at": "2026-10-26T11:48:33Z",
   "phase27_node_fixture_manifest_sha256": "b4bd60bfc60756ac63292c97dd7276d19251e833e8012a4723065e40d32cc116",
   "phase27_public_discovery_receipt_sha256": "39d6ce6469ce666bd25e7638eee13886dec7441e2c27d183745449d3f502ee9b",
   "production_deployed": false,

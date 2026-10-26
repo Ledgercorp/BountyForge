@@ -194,10 +194,15 @@ submission, account or payout setup, or commercial execution.
 ## Verification
 
 The focused Phase 27 adapter/language/scout suite passed 62 tests. The complete
-Python regression passed 947 tests with no failures; eight namespace/rootfs
-checks ran against the existing Linux rootfs and passed. The historical
-development registry check passed for six repositories and 30 tasks. The
-Phase 27 Node smoke used four fixed subprocesses, with two checks in each
+local Python regression passed 947 tests with no failures or skips when run
+with the existing Linux rootfs available; eight namespace/rootfs checks passed
+directly. The hosted model-free acceptance run
+<https://github.com/Ledgercorp/BountyForge/actions/runs/40317547368> passed on
+commit `055ef8a1ba6affafbd161ea769560aff1a06172c`: 947 Python tests ran, 939
+passed, and 8 existing namespace/rootfs tests were skipped because the hosted
+workflow does not admit that rootfs; the other workflow steps passed. The
+historical development registry check passed for six repositories and 30 tasks.
+The Phase 27 Node smoke used four fixed subprocesses, with two checks in each
 baseline/reference suite; all passed. The Node dashboard/console suite passed
 eight tests. The existing owned Docker reference replay also passed its six
 cases and cleanup checks; that is historical owned-fixture evidence, not
@@ -206,7 +211,5 @@ receipts are in `evidence/phase27/`.
 
 No production deployment, merge, external submission, agent registration,
 customer operation, payment, DeepSeek request, or paid API call occurred.
-Confirmed revenue remains $0. The new Phase 27 GitHub Actions acceptance is
-model-free and runs only for this same-repository draft PR. Its hosted result
-is recorded after the PR is opened; it is distinct from the local regression
-above.
+Confirmed revenue remains $0. The Phase 27 GitHub Actions acceptance is
+model-free and runs only for this same-repository draft PR.

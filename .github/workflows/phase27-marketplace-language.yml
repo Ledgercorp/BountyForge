@@ -1,0 +1,58 @@
+name: Phase27 marketplace and language-profile acceptance
+
+on:
+  pull_request:
+    branches: [engineering/phase26-real-bounty-pilot-20261026]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase27-marketplace-language
+  cancel-in-progress: false
+
+jobs:
+  model-free-acceptance:
+    if: ${{ github.repository == 'Ledgercorp/BountyForge' && github.event.repository.private == false && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'engineering/phase27-agent-marketplace-20261026' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.19.0
+          check-latest: false
+      - name: Admit exact existing owned Python Docker fixture image
+        run: docker pull python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590
+      - name: Full Python regression and owned Docker tests
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+          BOUNTYFORGE_PHASE8_DEV_DOCKER: "1"
+          BOUNTYFORGE_PHASE8_DEV_EVIDENCE: ${{ runner.temp }}/phase27-owned-docker.json
+        run: python3 -m unittest discover -s tests -v
+      - name: Verify frozen historical registry without execution
+        run: python3 -m scripts.verify_historical_registry
+      - name: Run owned-only TypeScript and JavaScript baseline/reference checks
+        run: python3 -m scripts.phase27_language_smoke > "$RUNNER_TEMP/phase27-language-smoke.json"
+      - name: Run dashboard and console Node regression
+        run: node --test tests/dashboard_state.mjs tests/repair_console.cjs
+      - name: Rehearse durable synthetic payment denials and restart behavior
+        run: |
+          umask 077
+          mkdir -p "$RUNNER_TEMP/phase27-state" "$RUNNER_TEMP/phase27-evidence"
+          python3 -m scripts.crypto_work rehearse --admit-owned-simulation --state-dir "$RUNNER_TEMP/phase27-state" --output "$RUNNER_TEMP/phase27-evidence/rehearsal-first.json"
+          python3 -m scripts.crypto_work rehearse --admit-owned-simulation --state-dir "$RUNNER_TEMP/phase27-state" --output "$RUNNER_TEMP/phase27-evidence/rehearsal-after-restart.json"
+      - name: Upload bounded model-free evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: phase27-marketplace-language-acceptance
+          path: |
+            ${{ runner.temp }}/phase27-owned-docker.json
+            ${{ runner.temp }}/phase27-language-smoke.json
+            ${{ runner.temp }}/phase27-evidence/*.json
+          retention-days: 1
+          if-no-files-found: ignore

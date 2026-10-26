@@ -7,6 +7,7 @@ from decimal import Decimal,InvalidOperation
 from urllib.parse import urlsplit
 from bountyforge.qualification import qualify
 from bountyforge.opportunities import _github_issue
+from bountyforge.language_profiles import SUPPORTED_LANGUAGE_PROFILES,from_skills
 
 USDC_SOLANA='EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
 ASSET_SOURCES={'USDC':'https://developers.circle.com/stablecoins/usdc-contract-addresses',
@@ -89,7 +90,7 @@ def normalize_superteam(row,observed_at):
         'competition_count':row.get('_count',{}).get('Submission') if type(row.get('_count')) is dict else None,
         'transaction_fees':None,'withdrawal_fees':None,'legal_payout_route':'OWNER_REVIEW_REQUIRED',
         'collection_probability':None,'upfront_deposit_required':None,'scam_signal':bool(SCAM.search(title+' '+description)),
-        'github_issue':None,'technical_profile':'PYTHON' if any('python' in str(s).lower() for s in skills) else 'UNKNOWN'}
+        'github_issue':None,'technical_profile':from_skills(skills)}
 
 
 def import_onlydust(row,observed_at):
@@ -104,7 +105,10 @@ def import_onlydust(row,observed_at):
     return normalized
 
 
-def normalize_github(row,observed_at):
+def normalize_github(row,observed_at,*,language_hint=None):
+    profiles={'python':'PYTHON','typescript':'TYPESCRIPT','javascript':'JAVASCRIPT'}
+    if language_hint is not None and (type(language_hint) is not str or language_hint not in profiles):
+        raise ValueError('SUPPORTED_LANGUAGE_QUERY_REQUIRED')
     url=canonical_url(row.get('html_url'),'github');title=str(row.get('title',''))[:250];body=str(row.get('body',''))[:12000]
     text=title+'\n'+body
     crypto=re.findall(r'(?i)\b([1-9][0-9]{0,6}(?:\.[0-9]{1,6})?)\s+(USDC|SOL|ETH|BTC)\b',text)
@@ -126,11 +130,14 @@ def normalize_github(row,observed_at):
     availability=('OPEN' if state.casefold()=='open' else 'CLOSED' if state.casefold()=='closed' else 'UNKNOWN') if type(state) is str else 'UNKNOWN'
     labels=row.get('labels',[])
     if type(labels) is not list:labels=[]
+    profile=profiles.get(language_hint,'UNKNOWN')
     record.update(provider='github',source_url=url,github_issue=url,observation_kind='UNVERIFIED_SEARCH_CURRENCY_MATCH',
         currency_claim_amount=record['advertised_amount'],availability=availability,ai_agent_eligibility='UNKNOWN',
         issue_created_at=row.get('created_at'),issue_updated_at=row.get('updated_at'),
         issue_body_sha256=hashlib.sha256(body.encode('utf-8')).hexdigest(),
-        labels=[str(label)[:80] for label in labels[:20]],claim_ambiguity=len(claims)>1)
+        labels=[str(label)[:80] for label in labels[:20]],claim_ambiguity=len(claims)>1,
+        technical_profile=profile,
+        language_evidence='GITHUB_SEARCH_LANGUAGE_QUALIFIER' if language_hint else 'UNKNOWN')
     # Discovery artifacts retain a digest and primary URL, not arbitrary issue
     # prose that could later be mistaken for trusted task instructions.
     record['requirements_untrusted']=None
@@ -155,7 +162,7 @@ def qualify_crypto(item,*,now=None):
     if item.get('us_eligibility')!='VERIFIED_ALLOWED':reasons.append('US_ELIGIBILITY_UNVERIFIED')
     if item.get('upfront_deposit_required') is not False:reasons.append('NO_UPFRONT_PAYMENT_UNVERIFIED')
     if item.get('payment_asset')!='USD' and not asset_identity(item.get('payment_asset'),item.get('payment_chain'),item.get('asset_address')):reasons.append('ASSET_NETWORK_IDENTITY_UNVERIFIED')
-    if item.get('technical_profile')!='PYTHON':reasons.append('PYTHON_PROFILE_UNVERIFIED')
+    if item.get('technical_profile') not in SUPPORTED_LANGUAGE_PROFILES:reasons.append('LANGUAGE_PROFILE_UNVERIFIED')
     if item.get('legal_payout_route')!='OWNER_VERIFIED':reasons.append('OWNER_PAYOUT_ROUTE_REQUIRED')
     # Existing qualification deliberately cannot attest deposited funding from
     # a listing. Reuse its independent safety/commercial gate, never bypass it.
@@ -163,7 +170,7 @@ def qualify_crypto(item,*,now=None):
     reasons+=['COMMERCIAL_NOT_ADMITTED','THIRD_PARTY_EXECUTION_NOT_ADMITTED','OWNER_SUBMISSION_APPROVAL_REQUIRED']
     return {'status':'QUARANTINED' if 'SCAM_OR_ADVANCE_PAYMENT_SIGNAL' in reasons or 'UNADMITTED_TOKEN' in reasons else 'BLOCKED',
             'reasons':sorted(set(reasons)),'legacy_gate':legacy.to_dict(),'execution_authorized':False,'submission_authorized':False,
-            'research_priority':0 if item.get('scam_signal') or 'CLOSED_OR_EXPIRED' in reasons else 2 if item.get('technical_profile')=='PYTHON' and item.get('availability')=='OPEN' else 1,
+            'research_priority':0 if item.get('scam_signal') or 'CLOSED_OR_EXPIRED' in reasons else 2 if item.get('technical_profile') in SUPPORTED_LANGUAGE_PROFILES and item.get('availability')=='OPEN' else 1,
             'commercial_admission':'NOT_ADMITTED'}
 
 

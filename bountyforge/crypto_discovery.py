@@ -1,7 +1,9 @@
 """Documented fixed-origin GETs only. No registration, wallet or submission API."""
 import hashlib
+import os
 import re
 import signal
+import stat
 import urllib.error
 import urllib.request
 from urllib.parse import urlencode
@@ -9,6 +11,45 @@ from datetime import datetime,timezone
 from decimal import Decimal
 from bountyforge.repair_engines import strict_json
 from bountyforge.crypto_opportunities import normalize_superteam,normalize_github,amount,fresh
+
+
+def load_superteam_api_key(path):
+    """Read an owner-provisioned Linux secret file without following its leaf symlink.
+
+    The caller owns credential provisioning. This function never creates an
+    identity, writes a secret, or includes the value in an observation.
+    """
+    try:
+        raw_path=os.fspath(path)
+        if type(raw_path) is not str or not raw_path.startswith('/') or len(raw_path)>4096:
+            raise ValueError
+        if os.name!='posix' or not hasattr(os,'O_NOFOLLOW'):
+            raise ValueError
+        flags=os.O_RDONLY|getattr(os,'O_CLOEXEC',0)|os.O_NOFOLLOW|getattr(os,'O_NONBLOCK',0)
+        fd=os.open(raw_path,flags)
+    except (OSError,TypeError,ValueError):
+        raise ValueError('SUPERTEAM_CREDENTIAL_FILE_REJECTED') from None
+    try:
+        info=os.fstat(fd)
+        parent=os.stat(os.path.dirname(raw_path),follow_symlinks=False)
+        if (not stat.S_ISREG(info.st_mode) or info.st_nlink!=1 or info.st_uid!=os.geteuid()
+                or stat.S_IMODE(info.st_mode)!=0o600 or not stat.S_ISDIR(parent.st_mode)
+                or parent.st_uid!=os.geteuid() or stat.S_IMODE(parent.st_mode)&0o077):
+            raise ValueError('SUPERTEAM_CREDENTIAL_FILE_REJECTED')
+        raw=os.read(fd,181)
+    except (OSError,ValueError):
+        raise ValueError('SUPERTEAM_CREDENTIAL_FILE_REJECTED') from None
+    finally:
+        os.close(fd)
+    if raw.endswith(b'\n'):
+        raw=raw[:-1]
+    try:
+        token=raw.decode('ascii')
+    except UnicodeDecodeError:
+        raise ValueError('SUPERTEAM_CREDENTIAL_FORMAT_REJECTED') from None
+    if len(raw)>180 or not re.fullmatch(r'[A-Za-z0-9_-]{16,180}',token):
+        raise ValueError('SUPERTEAM_CREDENTIAL_FORMAT_REJECTED')
+    return token
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -25,11 +66,23 @@ class CryptoReadOnly:
         if provider=='superteam' and operation=='listings':url='https://superteam.fun/api/agents/listings/live?take=20'
         elif provider=='superteam' and operation=='details' and type(slug) is str and re.fullmatch('[a-zA-Z0-9_-]{1,180}',slug):
             url='https://superteam.fun/api/agents/listings/details/'+slug
-        elif provider=='github' and operation in ('search_open_python_bounties','search_algora_python_bounties'):
+        elif provider=='github' and operation in {
+            'search_open_python_bounties','search_algora_python_bounties',
+            'search_open_typescript_bounties','search_algora_typescript_bounties',
+            'search_open_javascript_bounties','search_algora_javascript_bounties'}:
             # Fixed public-search queries: no caller-controlled URL or query.
-            # Three records keep issue bodies within our small response cap.
-            query=('bounty language:python is:open is:issue' if operation=='search_open_python_bounties'
-                   else 'commenter:app/algora-pbc language:python is:open is:issue')
+            # Three records per bounded query keep response bodies small.
+            language={'python':'Python','typescript':'TypeScript','javascript':'JavaScript'}
+            operation_language={'python':'search_open_python_bounties','typescript':'search_open_typescript_bounties',
+                                'javascript':'search_open_javascript_bounties'}
+            bot_language={'python':'search_algora_python_bounties','typescript':'search_algora_typescript_bounties',
+                          'javascript':'search_algora_javascript_bounties'}
+            selected=next((k for k,v in operation_language.items() if v==operation),None)
+            if selected is None:selected=next((k for k,v in bot_language.items() if v==operation),None)
+            if selected is None:raise ValueError('FIXED_LANGUAGE_QUERY_REQUIRED')
+            bot=operation in bot_language.values()
+            query=(f'commenter:app/algora-pbc language:{language[selected]} is:open is:issue' if bot
+                   else f'bounty language:{language[selected]} is:open is:issue')
             params=urlencode({'q':query,'per_page':3,'sort':'updated','order':'desc'})
             url='https://api.github.com/search/issues?'+params
         elif provider=='coinbase' and operation=='ticker' and asset in ('SOL','USDC','ETH','BTC'):
@@ -76,9 +129,14 @@ class CryptoReadOnly:
             except (ValueError,TypeError):rejected+=1
         return {**observation,'opportunities':items,'malformed_records_rejected':rejected,'account_created':False,'complete_scan':False,'page_limit':20}
 
-    def discover_github(self,*,algora_bot=False):
+    def discover_github(self,*,algora_bot=False,language='python'):
         """Read one fixed public GitHub query; every match remains unverified."""
-        operation='search_algora_python_bounties' if algora_bot else 'search_open_python_bounties'
+        operations={'python':('search_open_python_bounties','search_algora_python_bounties'),
+                    'typescript':('search_open_typescript_bounties','search_algora_typescript_bounties'),
+                    'javascript':('search_open_javascript_bounties','search_algora_javascript_bounties')}
+        if type(algora_bot) is not bool or type(language) is not str or language not in operations:
+            raise ValueError('APPROVED_LANGUAGE_QUERY_REQUIRED')
+        operation=operations[language][1 if algora_bot else 0]
         observation=self.request('github',operation)
         if observation['status']!='OBSERVED':
             return {**observation,'opportunities':None,'complete_scan':False,'page_limit':3,
@@ -100,13 +158,14 @@ class CryptoReadOnly:
                 if type(labels) is not list:labels=[]
                 bounded={k:row.get(k) for k in ('html_url','title','body','state','created_at','updated_at')}
                 bounded['labels']=[x.get('name','')[:80] for x in labels[:20] if type(x) is dict]
-                items.append(normalize_github(bounded,observation['observed_at']))
+                items.append(normalize_github(bounded,observation['observed_at'],language_hint=language))
             except (ValueError,TypeError):rejected+=1
         return {**observation,'opportunities':items,'total_matches':payload['total_count'],
                 'incomplete_results':payload['incomplete_results'],'malformed_records_rejected':rejected,
                 'pull_requests_excluded':excluded_pull_requests,'complete_scan':False,'page_limit':3,
                 'source_role':'PUBLIC_SEARCH_LEADS_ONLY','authenticated':False,
-                'query_class':'ALGORA_BOT_COMMENTER' if algora_bot else 'BROAD_BOUNTY_TERM'}
+                'query_class':'ALGORA_BOT_COMMENTER' if algora_bot else 'BROAD_BOUNTY_TERM',
+                'language_profile':language.upper()}
 
     def market_quote(self,asset,*,now=None):
         observation=self.request('coinbase','ticker',asset=asset)

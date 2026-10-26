@@ -45,9 +45,26 @@ class ScoutTests(unittest.TestCase):
         self.assertEqual(report['model_calls'], 0)
 
     def test_dedupe_and_primary_language_filter(self):
-        client = FakeGitHub([issue(), issue(1), issue(2)], 'JavaScript')
+        client = FakeGitHub([issue(), issue(1), issue(2)], 'Rust')
         self.assertEqual(run(client, now=NOW)['prospect_count'], 0)
         self.assertEqual(sum(p.startswith('/repos/') for p, _ in client.calls), 1)
+
+    def test_supported_repository_languages_are_classified_from_primary_metadata(self):
+        for repository_language,expected in [('Python','PYTHON'),('TypeScript','TYPESCRIPT'),('JavaScript','JAVASCRIPT')]:
+            with self.subTest(repository_language=repository_language):
+                report=run(FakeGitHub([issue()],repository_language),now=NOW)
+                self.assertEqual(report['prospect_count'],1)
+                self.assertEqual(report['prospects'][0]['technical_profile'],expected)
+                self.assertEqual(report['prospects'][0]['language_evidence'],'GITHUB_REPOSITORY_PRIMARY_LANGUAGE')
+                self.assertFalse(report['prospects'][0]['ai_allowed_verified'])
+                self.assertFalse(report['prospects'][0]['execution_authorized'])
+
+    def test_unsupported_languages_remain_excluded_and_discovery_is_multilingual(self):
+        report=run(FakeGitHub([issue()], 'Rust'),now=NOW)
+        self.assertEqual(report['prospect_count'],0)
+        self.assertEqual(report['supported_language_profiles'],['PYTHON','TYPESCRIPT','JAVASCRIPT'])
+        self.assertIn('excluded_mirror_or_unsupported_language_count',report)
+        self.assertEqual(report['revenue_received_usd'],0)
 
     def test_untrusted_issue_cannot_become_html_or_a_separate_link(self):
         text = '[Fake](https://evil.test) bounty $100 <script>alert(1)</script>'
@@ -169,7 +186,7 @@ class ScoutTests(unittest.TestCase):
                     return {'items': rows, 'incomplete_results': False,
                             'total_count': len(rows)}
                 self.calls.append((path, params))
-                return {'language': 'Python' if path == '/repos/zzzz/source' else 'TypeScript'}
+                return {'language': 'Python' if path == '/repos/zzzz/source' else 'Rust'}
         client = Limited([])
         report = run(client, now=NOW)
         self.assertEqual(report['prospect_count'], 0)
@@ -196,14 +213,14 @@ class ScoutTests(unittest.TestCase):
             with self.subTest(amount=amount):
                 self.assertEqual(_parse_issue(issue(title='Bounty ' + amount, body=''), NOW)['advertised_reward_usd'], 200)
 
-    def test_reader_disables_environment_proxies_and_installs_redirect_denial(self):
+    def test_reader_honors_runner_proxy_and_installs_redirect_denial(self):
         with patch('bountyforge.revenue_scout.urllib.request.build_opener') as build:
             GitHubReadOnly('test-only-token')
         handlers = build.call_args.args
-        self.assertEqual(handlers[0].proxies, {})
-        self.assertIsInstance(handlers[1], _NoRedirect)
+        self.assertEqual(len(handlers), 1)
+        self.assertIsInstance(handlers[0], _NoRedirect)
         with self.assertRaises(ScoutError):
-            handlers[1].redirect_request(None, None, 302, 'redirect', {}, 'https://evil.invalid')
+            handlers[0].redirect_request(None, None, 302, 'redirect', {}, 'https://evil.invalid')
 
     def test_reader_caps_response_before_json_parsing(self):
         response = io.BytesIO(b' ' * (MAX_RESPONSE_BYTES + 1))

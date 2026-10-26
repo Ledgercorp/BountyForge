@@ -25,6 +25,51 @@ class DiscoveryTests(unittest.TestCase):
     def test_redirects_never_forward_provider_credentials(self):
         m=self.module();self.assertIsNone(m.NoRedirect().redirect_request(None,None,302,'',{},'https://evil.test'))
 
+    def test_owner_key_file_requires_private_single_link_owned_regular_file(self):
+        import os,tempfile
+        from pathlib import Path
+        m=self.module();token='agent_mock_123456789012345678901234'
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'superteam.key';path.write_text(token+'\n');path.chmod(0o600)
+            self.assertEqual(m.load_superteam_api_key(path),token)
+            self.assertNotIn(token,str({'path':str(path)}))
+            path.chmod(0o640)
+            with self.assertRaisesRegex(ValueError,'SUPERTEAM_CREDENTIAL_FILE_REJECTED'):
+                m.load_superteam_api_key(path)
+            path.chmod(0o600)
+            link=Path(directory)/'linked.key';link.symlink_to(path)
+            with self.assertRaisesRegex(ValueError,'SUPERTEAM_CREDENTIAL_FILE_REJECTED'):
+                m.load_superteam_api_key(link)
+            hard=Path(directory)/'hard.key';os.link(path,hard)
+            with self.assertRaisesRegex(ValueError,'SUPERTEAM_CREDENTIAL_FILE_REJECTED'):
+                m.load_superteam_api_key(path)
+
+    def test_authenticated_superteam_get_is_mocked_and_never_echoes_key(self):
+        m=self.module();token='agent_mock_123456789012345678901234';client=m.CryptoReadOnly(token=token);seen=[]
+        from contextlib import contextmanager
+        import json
+        @contextmanager
+        def opened(req,**kwargs):
+            seen.append(req.get_header('Authorization'))
+            class Response:
+                status=200
+                def read(self,n):return json.dumps([]).encode()
+            yield Response()
+        with patch.object(client.opener,'open',side_effect=opened):result=client.discover()
+        self.assertEqual(seen,['Bearer '+token])
+        self.assertEqual(result['status'],'OBSERVED');self.assertEqual(result['opportunities'],[])
+        self.assertNotIn(token,str(result))
+
+    def test_authenticated_superteam_401_fails_closed_without_unauthenticated_retry(self):
+        m=self.module();token='agent_mock_123456789012345678901234';client=m.CryptoReadOnly(token=token);calls=[]
+        import urllib.error
+        def denied(request,**kwargs):
+            calls.append(request.get_header('Authorization'))
+            raise urllib.error.HTTPError(request.full_url,401,'unauthorized',{},None)
+        with patch.object(client.opener,'open',side_effect=denied):result=client.discover()
+        self.assertEqual(calls,['Bearer '+token]);self.assertEqual(result['status'],'BLOCKED_AUTHENTICATION')
+        self.assertIsNone(result['opportunities']);self.assertNotIn(token,str(result))
+
     def test_github_search_is_a_fixed_unauthenticated_public_get(self):
         m=self.module();c=m.CryptoReadOnly();seen={}
         from contextlib import contextmanager
@@ -55,6 +100,28 @@ class DiscoveryTests(unittest.TestCase):
         with patch.object(c.opener,'open',side_effect=urllib.error.HTTPError('url',403,'rate limit',{},None)):
             r=c.discover_github()
         self.assertEqual(r['status'],'RATE_LIMIT_OR_ACCESS_RESTRICTED');self.assertIsNone(r['opportunities'])
+
+    def test_typescript_and_javascript_searches_are_fixed_and_classify_candidates(self):
+        import json
+        from contextlib import contextmanager
+        row={'html_url':'https://github.com/example/project/issues/5','title':'Node bounty $25',
+             'body':'Advertised only; funding and eligibility are unknown.','state':'open','labels':[]}
+        for lang,profile in [('typescript','TYPESCRIPT'),('javascript','JAVASCRIPT')]:
+            client=self.module().CryptoReadOnly();seen=[]
+            @contextmanager
+            def opened(req,**kwargs):
+                seen.append(req.full_url)
+                class Response:
+                    status=200
+                    def read(self,n):return json.dumps({'total_count':1,'incomplete_results':False,'items':[row]}).encode()
+                yield Response()
+            with patch.object(client.opener,'open',side_effect=opened):result=client.discover_github(language=lang)
+            self.assertEqual(result['opportunities'][0]['technical_profile'],profile)
+            self.assertIn('PUBLIC_SEARCH_LEADS_ONLY',result['source_role'])
+            language_label={'python':'Python','typescript':'TypeScript','javascript':'JavaScript'}[lang]
+            self.assertIn('language%3A'+language_label,seen[0])
+        client=self.module().CryptoReadOnly()
+        with self.assertRaises(ValueError):client.discover_github(language='../../secrets')
 
     def test_algora_candidate_search_uses_fixed_official_bot_comment_qualifier(self):
         m=self.module();c=m.CryptoReadOnly();seen={}

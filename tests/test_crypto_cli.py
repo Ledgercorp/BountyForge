@@ -48,9 +48,13 @@ class CryptoProcessTests(unittest.TestCase):
             'body':'Lead only.','state':'open','labels':[]},observed)
 
         class Sources:
+            def __init__(self,token=None):
+                self.token=token
             def discover(self):
                 return {'status':'BLOCKED_AUTHENTICATION','opportunities':None,'complete_scan':False}
-            def discover_github(self,*,algora_bot=False):
+            def discover_github(self,*,algora_bot=False,language='python'):
+                if language!='python':
+                    return {'status':'OBSERVED','opportunities':[],'complete_scan':False,'authenticated':False}
                 return {'status':'OBSERVED','opportunities':[algora if algora_bot else github],
                     'complete_scan':False,'authenticated':False}
             def market_quote(self,asset):
@@ -74,3 +78,35 @@ class CryptoProcessTests(unittest.TestCase):
         self.assertTrue(all(x['qualification']['submission_authorized'] is False for x in records))
         self.assertEqual(result['paid_requests'],0)
         self.assertEqual(result['external_writes'],0)
+
+    def test_superteam_key_file_is_only_consumed_by_trusted_read_client(self):
+        from contextlib import redirect_stdout
+        from io import StringIO
+        from datetime import datetime, timezone
+        from bountyforge.crypto_opportunities import normalize_github
+        import scripts.crypto_work as work
+        token='agent_mock_123456789012345678901234'
+        observed=datetime.now(timezone.utc).isoformat()
+        lead=normalize_github({'html_url':'https://github.com/example/repo/issues/7','title':'Python bug bounty $20',
+            'body':'Advertised only; funding unverified.','state':'open','labels':[]},observed,language_hint='python')
+        class Sources:
+            def __init__(self,token=None):self.token=token
+            def discover(self):return {'status':'BLOCKED_AUTHENTICATION','opportunities':None,'complete_scan':False}
+            def discover_github(self,*,algora_bot=False,language='python'):
+                return {'status':'OBSERVED','opportunities':[lead] if language=='python' and not algora_bot else [],
+                    'complete_scan':False,'authenticated':False}
+            def market_quote(self,asset):return {'asset':asset,'status':'HTTP_ERROR','usd_price':None,
+                'observed_at':observed,'owner_withdrawal_route_verified':False,'guaranteed_liquidity':False}
+        with tempfile.TemporaryDirectory() as directory:
+            output=Path(directory)/'private-discovery.json';credential_path=Path(directory)/'key'
+            out=StringIO()
+            with patch.object(work,'load_superteam_api_key',return_value=token) as load, \
+                 patch.object(work,'CryptoReadOnly',Sources), redirect_stdout(out):
+                code=work.main(['discover','--admit-public-reads','--superteam-key-file',str(credential_path),
+                    '--output',str(output)])
+            self.assertEqual(code,0);load.assert_called_once_with(credential_path)
+            text=output.read_text()+out.getvalue()
+            self.assertNotIn(token,text)
+            result=json.loads(output.read_text())
+            self.assertTrue(result['source_summary']['superteam_credential_configured'])
+            self.assertFalse(result['source_summary']['superteam_authenticated'])

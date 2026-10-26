@@ -10,11 +10,12 @@ import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
+from bountyforge.language_profiles import SUPPORTED_LANGUAGE_PROFILES, from_repository_language
 
 SEARCH_QUERIES = (
-    'is:issue is:open label:bounty language:Python',
-    'is:issue is:open "bounty" in:title language:Python',
-    'is:issue is:open "reward" in:title language:Python',
+    'is:issue is:open label:bounty',
+    'is:issue is:open "bounty" in:title',
+    'is:issue is:open "reward" in:title',
 )
 SEARCH_LIMIT = 20
 PROSPECT_LIMIT = 12
@@ -46,7 +47,11 @@ class GitHubReadOnly:
     """Fixed-origin GET-only API reader; cannot claim, comment, or push."""
     def __init__(self, token: str | None = None):
         self.token = token or ''
-        self.opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoRedirect())
+        # Honor the execution environment's standard HTTPS proxy. Some hosted
+        # runners require it for all egress. Requests still use only the
+        # hard-coded api.github.com origin, certificate validation stays on,
+        # and cross-origin redirects are rejected below.
+        self.opener = urllib.request.build_opener(_NoRedirect())
 
     def get(self, path: str, params: dict | None = None) -> dict:
         if not (path == '/search/issues' or re.fullmatch(
@@ -162,7 +167,7 @@ def run(client: GitHubReadOnly, *, now: datetime | None = None) -> dict:
                 found[candidate['issue_url'].lower()] = candidate
     ordered = sorted(found.values(), key=lambda c: (-c['rank_for_research'], c['issue_url']))
     prospects = []
-    cached_sources: dict[str, bool] = {}
+    cached_sources: dict[str, tuple[str, bool]] = {}
     repo_lookups = 0
     mirror_rejections = 0
     metadata_budget_exhausted = False
@@ -184,19 +189,25 @@ def run(client: GitHubReadOnly, *, now: datetime | None = None) -> dict:
             language = metadata.get('language')
             description = metadata.get('description')
             source_text = repo + ' ' + (description if isinstance(description, str) else '')
-            cached_sources[repo] = (isinstance(language, str)
-                                    and language.lower() == 'python'
+            profile=from_repository_language(language)
+            cached_sources[repo] = (profile, profile in SUPPORTED_LANGUAGE_PROFILES
                                     and not MIRROR_METADATA.search(source_text))
-        if not cached_sources[repo]:
+        profile, allowed=cached_sources[repo]
+        if not allowed:
             mirror_rejections += 1
             continue
+        candidate['technical_profile']=profile
+        candidate['language_evidence']='GITHUB_REPOSITORY_PRIMARY_LANGUAGE'
         prospects.append(candidate)
     return {
         'schema': 1, 'kind': 'read_only_revenue_prospect_scan',
         'generated_at': now.astimezone(timezone.utc).isoformat(),
         'source': 'GitHub public issue metadata', 'source_queries': list(SEARCH_QUERIES),
         'prospects': prospects, 'prospect_count': len(prospects),
+        'excluded_mirror_or_unsupported_language_count': mirror_rejections,
+        # Retained as a compatibility alias for existing dashboard consumers.
         'excluded_mirror_or_non_python_count': mirror_rejections,
+        'supported_language_profiles': list(SUPPORTED_LANGUAGE_PROFILES),
         'metadata_lookup_count': repo_lookups,
         'observation_status': ('incomplete_metadata_budget' if metadata_budget_exhausted
                                else 'bounded_sample_complete'),

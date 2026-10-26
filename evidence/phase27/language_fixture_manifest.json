@@ -1,0 +1,37 @@
+{
+  "cases": [
+    "JAVASCRIPT",
+    "TYPESCRIPT"
+  ],
+  "classification": "DEVELOPMENTAL_EXPOSED",
+  "evaluation_note": "Baseline and preauthored references are exposed owned development fixtures; no model accuracy claim.",
+  "files": {
+    "fixtures/phase27/javascript/retry_delay_buggy.mjs": "7b0eb6929624ce78b6484c48cdd42cf6327b0c8641fcd2787194ecd848af799c",
+    "fixtures/phase27/javascript/retry_delay_reference.mjs": "c0a924afec406243f127a5b9eb1ba6059f13bcadd9a422ae085db24f468e9eb5",
+    "fixtures/phase27/typescript/reservation_buggy.ts": "921e42f77b064c11515fe55ecf68f262181ae0b89042c1af0ba4de058b9aedb1",
+    "fixtures/phase27/typescript/reservation_reference.ts": "7000d27a71a06888494e6dc50d484c56971b508e17bb6fed5a481dca553a126a",
+    "tests/phase27/javascript_baseline.test.mjs": "11b8f8b39b852c4178e0210832df6653ce5ada74277c27811427f6af1f07569b",
+    "tests/phase27/javascript_reference.test.mjs": "3c2218567a2689b109f4b0ba71264e4dab66fc4669bc454f38e6a345ddf975f9",
+    "tests/phase27/typescript_baseline.test.ts": "112bb39880b30a471220ff54aed0ddf63a7325b02689f5dc0a00045432a88f19",
+    "tests/phase27/typescript_reference.test.ts": "11f3b7d0d6165a47940ffa51917e369b3bfec50b409a70376ad5fe558e10fde1"
+  },
+  "javascript_case": {
+    "acceptance": "Preserve zero, parse positive seconds and HTTP dates, use fallback for invalid values",
+    "defect": "Retry-After delta-seconds parser replaces a valid zero delay with fallback"
+  },
+  "kind": "BOUNTYFORGE_PHASE27_OWNED_LANGUAGE_FIXTURES",
+  "limits": {
+    "dependency_installation": false,
+    "network_access_enforced": false,
+    "node_major": 24,
+    "per_process_timeout_seconds": 15,
+    "third_party_source_authorized": false
+  },
+  "model_calls": 0,
+  "reference_repairs_model_generated": false,
+  "schema": 1,
+  "typescript_case": {
+    "acceptance": "Only held reservations release units; state transition is idempotent",
+    "defect": "Expired reservations are incorrectly released and mutate inventory"
+  }
+}

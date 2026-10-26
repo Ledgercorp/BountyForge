@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "kind": "PHASE27_DEEPSEEK_PILOT_GATE",
+  "status": "BLOCKED_NO_QUALIFIED_TASK",
+  "candidate_task": null,
+  "source_and_test_rights_verified": false,
+  "hostile_code_execution_admitted": false,
+  "evaluation_frozen": false,
+  "model": null,
+  "authorized_requests": 0,
+  "actual_requests": 0,
+  "input_tokens": null,
+  "output_tokens": null,
+  "spend_ceiling_usd": null,
+  "balance_rechecked": false,
+  "phase22_stop_marker_modified": false,
+  "phase22_financial_ledger_modified": false,
+  "reason": "No currently verified, available, funded, AI-eligible, U.S.-eligible assignment with safe source/test rights was found; an experiment-specific token and spend ceiling cannot be grounded in an eligible task.",
+  "next_gates": [
+    "Select an eligible primary-source assignment and confirm remaining reward/funding with its owner/platform",
+    "Verify task-specific AI and U.S. eligibility, source/test rights, revisions, and acceptance criteria",
+    "Admit the exact test environment without executing unknown third-party code unsafely",
+    "Check current model identity, price, balance, and automatic billing controls using owner-authorized credentials",
+    "Freeze one-task criteria, two-request maximum, tokens, timeout, dollar ceiling, reserve, and stop conditions",
+    "Obtain new explicit owner approval for paid requests"
+  ],
+  "commercial_admission": "NOT_ADMITTED"
+}

@@ -1,0 +1,88 @@
+{
+  "kind": "PHASE27_PLATFORM_ACCESS_RESEARCH",
+  "network_evidence": {
+    "agent_registration": false,
+    "commercial_admission": "NOT_ADMITTED",
+    "crypto_scan": "evidence/phase27/crypto_scan_live_2026-10-26.json",
+    "external_writes": 0,
+    "github_authentication": false,
+    "paid_requests": 0,
+    "revenue_scout": "evidence/phase27/revenue_scout_live_2026-10-26.json",
+    "superteam_authentication": false
+  },
+  "observed_at": "2026-10-26T11:43:49Z",
+  "owner_action": "Approve or decline Superteam agent identity creation; no other route currently yields an agent-authorized primary listing feed.",
+  "schema": 1,
+  "sources": [
+    {
+      "agent_listing_auth": {
+        "agent_only_listing_visibility": "AGENT_ONLY hidden from normal listing feeds",
+        "endpoint": "https://superteam.fun/api/agents/listings/live?take=20",
+        "method": "GET",
+        "requires_bearer_api_key": true,
+        "unauthenticated_observation": "HTTP_401"
+      },
+      "eligibility_and_claim": {
+        "agent_oauth_wallet_signing_or_kyc": "NOT_REQUIRED_FOR_AGENT_PER_OFFICIAL_SKILL",
+        "eligible_agent_access_values": [
+          "AGENT_ALLOWED",
+          "AGENT_ONLY"
+        ],
+        "human_claim_required_after_win": true,
+        "human_profile_required": true,
+        "payout_asset_network_fees": "LISTING_AND_OWNER_SPECIFIC_UNKNOWN",
+        "us_eligibility": "LISTING_SPECIFIC_UNKNOWN"
+      },
+      "official_agent_page": "https://superteam.fun/earn/agents",
+      "official_skill_url": "https://superteam.fun/skill.md",
+      "platform": "Superteam Earn",
+      "registration": {
+        "body_shape": {
+          "name": "<owner-chosen-public-name>"
+        },
+        "creates_external_identity": true,
+        "endpoint": "https://superteam.fun/api/agents",
+        "fee": "NOT_STATED_IN_DOCUMENTATION; ZERO_COST_NOT_VERIFIED",
+        "method": "POST",
+        "performed": false,
+        "response_contains": [
+          "apiKey",
+          "claimCode",
+          "agentId",
+          "username"
+        ]
+      },
+      "skill_sha256": "f18e68b29d87adb287cd24ad274ba5c43ab68d3708182a4bbb6cb58052cb3f7d",
+      "skill_version": "0.5.1",
+      "submission_or_claim_performed": false
+    },
+    {
+      "adapter_action": "No Algora-site scraper or undocumented API added; public GitHub API queries only locate unverified leads",
+      "api_documentation": "https://api.docs.algora.io/ returned an unavailable response to this session; no undocumented route used",
+      "automated_access_policy": "Official terms prohibit robot, spider, or automated-device/process access to Algora service",
+      "listing_observation": "Sampled organization page showed no open bounties; not a platform-wide census",
+      "official_listing_checked": "https://algora.io/activepieces/bounties",
+      "official_terms": "https://algora.io/terms",
+      "platform": "Algora"
+    },
+    {
+      "adapter_action": "No undocumented endpoint or submission API used",
+      "current_rules_observed": {
+        "bounty_creator_must_be_code_owner": true,
+        "minimum_bounty_usd": 20,
+        "payment_after_pr_review": "Each bounty creator arranges its own payment directly",
+        "payment_automatic": false
+      },
+      "official_lifecycle": "https://docs.opire.dev/rewards/lifecycle",
+      "official_pricing": "https://docs.opire.dev/rewards/pricing",
+      "platform": "Opire",
+      "public_listing_api_and_agent_policy": "NOT_ESTABLISHED_FROM_RETRIEVED_OFFICIAL_DOCS"
+    },
+    {
+      "agent_participation": "NOT_EXPLICITLY_AUTHORIZED_FOR_AUTONOMOUS_AGENT_WORK",
+      "observed_policy": "The page describes support for actual humans, not bots; future AI-assisted collaboration remains human-controlled",
+      "official_policy_source": "https://docs.onlydust.com/overview/vision-and-roadmap",
+      "platform": "OnlyDust"
+    }
+  ]
+}

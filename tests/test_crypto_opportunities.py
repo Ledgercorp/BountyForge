@@ -86,6 +86,22 @@ class CryptoOpportunityTests(unittest.TestCase):
         self.assertIsNone(r['advertised_amount']);self.assertEqual(r['payment_asset'],'UNKNOWN')
         self.assertTrue(r['claim_ambiguity'])
 
+    def test_typescript_and_javascript_classifications_do_not_imply_admission(self):
+        m=self.module()
+        for skills,profile in [(['TypeScript'],'TYPESCRIPT'),(['JavaScript'],'JAVASCRIPT')]:
+            item=m.normalize_superteam({**self.listing(),'skills':skills},NOW)
+            self.assertEqual(item['technical_profile'],profile)
+            gate=m.qualify_crypto(item,now=NOW)
+            self.assertNotIn('LANGUAGE_PROFILE_UNVERIFIED',gate['reasons'])
+            self.assertFalse(gate['execution_authorized'])
+            self.assertFalse(gate['submission_authorized'])
+
+    def test_github_language_profile_is_explicitly_bound_to_fixed_search_hint(self):
+        m=self.module();row={'html_url':'https://github.com/example/project/issues/5','state':'open',
+            'title':'Python bug bounty $25','body':'Advertised only.'}
+        self.assertEqual(m.normalize_github(row,NOW,language_hint='typescript')['technical_profile'],'TYPESCRIPT')
+        with self.assertRaises(ValueError):m.normalize_github(row,NOW,language_hint='../../secret')
+
     def test_unavailable_price_preserves_unknown_value_without_crashing(self):
         m=self.module();item=m.normalize_superteam(self.listing(),NOW)
         p=m.profitability(item,{'asset':'USDC','usd_price':None,'status':'HTTP_ERROR','observed_at':NOW},now=NOW)

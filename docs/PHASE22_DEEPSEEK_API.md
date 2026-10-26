@@ -1,10 +1,16 @@
 # Phase22 — restricted DeepSeek API repair integration
 
-The trusted API broker, bounded credit ledger and owned repair controller are
-implemented. Live authentication and current model discovery passed. **No billable
-completion has been sent, and DeepSeek repair accuracy is UNMEASURED.** The user
-proposed a $2 allocation but explicitly required separate approval before using
-credits; no spending grant has been created. Commercial status: **NOT_ADMITTED**.
+The owner-approved continuation completed **six of six first-attempt DeepSeek
+repairs**, each passing eight targeted tests and eight fresh Docker replay tests.
+Six real completion requests used a conservative $0.048742 credit estimate; the
+latest observed account balance is $22.85. The trial is closed.
+See [PHASE22_DEEPSEEK_RESULTS.md](PHASE22_DEEPSEEK_RESULTS.md) for the actual
+usage, candidates, immutable receipts and evaluation limitations. Commercial
+status remains **NOT_ADMITTED**; no unseen accuracy claim or default change.
+
+The implementation/pre-approval checkpoints below document the original
+model-free acceptance. Statements about absent approval/zero inference describe
+those earlier checkpoints, not the completed owner-approved continuation.
 
 ## Repository and preserved work
 

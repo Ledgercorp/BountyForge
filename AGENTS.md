@@ -125,8 +125,10 @@ Phase22 adds an opt-in DeepSeek API broker and six new owned developmental tasks
 through the existing supplemental Catalog API. No default/MCP engine changes.
 All billable generation requires a separate explicit owner spending grant bound
 to the exact frozen plan and credential fingerprint, with recharge disabled,
-existing credits only, <=$2 approved and >=$20 reserve. The user has proposed,
-but has NOT yet approved, that allocation. Never manufacture the grant file.
+existing credits only, <=$2 approved and >=$20 reserve. The owner subsequently answered Yes to the explicit <=$2 existing-credit
+experiment, >=$20 reserve and auto-recharge-disabled confirmation. That authorizes
+one frozen twelve-request maximum trial, not unlimited inference or recharge.
+Never reset a nonempty ledger or manufacture approval for another experiment.
 No live inference has run at initial publication. Google Drive retrieval and
 read-only metadata checks were explicitly authorized; preserve its permissions.
 Never put the credential in files, env vars, arguments, prompts or GitHub secrets.
@@ -136,3 +138,12 @@ ledger blocks automatic experiment replay; do not remove/reset it. Local SQLite
 is not cross-workspace durable account-wide enforcement. Keep the existing
 nine skipped security checks, production/customer denial and all drafts intact.
 See docs/PHASE22_DEEPSEEK_API.md for activation, measured checks and blockers.
+
+The owner-approved Phase22 Pro trial is now CLOSED: six actual requests,
+six first-attempt developmental repairs, each eight targeted/eight independent
+Docker tests. Do not rerun it or spend unused requests on another task set.
+The original plan/generation code/tasks remain unchanged. Private STOP and the
+nonempty budget ledger prevent a replay. Current read-only evidence/replay is
+phase22_evidence.py; it makes zero inference calls. Latest balance observation
+is $22.85, versus initial $22.88; conservative usage accounting is $0.048742,
+not a provider-invoiced per-request total. Retain the default and NOT_ADMITTED.

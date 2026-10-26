@@ -1,0 +1,22 @@
+{
+  "account_decrease_is_exact_experiment_cost": false,
+  "accounted_peak_usage_upper_microusd": 48742,
+  "additional_cash_spending_usd": 0,
+  "attribution": "Account-wide displayed balances; precision and unrelated activity preclude exact per-request attribution",
+  "auto_recharge_disabled_confirmation": "OWNER_ATTESTED_NOT_API_VERIFIED",
+  "cash_spending_authorized": false,
+  "commercial_admission": "NOT_ADMITTED",
+  "followup_account_receipt_sha256": "d911c3de8b62814d4bfc3ea14dfbf51998b1492a40bcb1a0c40a112ca70c66d5",
+  "followup_displayed_usd": "22.85",
+  "immediate_end_displayed_usd": "22.88",
+  "initial_displayed_usd": "22.88",
+  "kind": "PHASE22_CREDIT_RECONCILIATION",
+  "minimum_reserve_usd": "20.00",
+  "observed_displayed_account_decrease_microusd": 30000,
+  "original_trial_receipt_sha256": "8f2118eb288509e9e9488821efd3b0d191736cee9480f90f36f86b64e328547a",
+  "per_request_provider_invoiced_cost": null,
+  "raw_api_responses_included": false,
+  "receipt_sha256": "f7145a435026d64a6e2d6ebee03b772d31243e9ff11bd3e8e5a5508a91aa931e",
+  "remaining_billable_trial_authority": "CLOSED_NO_FURTHER_REQUESTS",
+  "reserve_satisfied_at_followup": true
+}

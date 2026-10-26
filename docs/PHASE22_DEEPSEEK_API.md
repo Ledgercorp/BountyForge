@@ -239,3 +239,30 @@ usage/candidates and independently replay any successful repair. Unseen evaluati
 customer rights/privacy, hostile-code isolation/provenance, cross-workspace private
 coordination and commercial payment/delivery/launch authorization remain separate
 blockers. Commercial/private execution status remains **NOT_ADMITTED**.
+
+## Final hosted acceptance
+
+Draft [PR10](https://github.com/Ledgercorp/BountyForge/pull/10) preserves PR9 as
+its base. Verified implementation commit:
+`abaa5feb2357a8c3b8d1fae2aa17805e117a0009`.
+[Hosted run 40250087687](https://github.com/Ledgercorp/BountyForge/actions/runs/40250087687)
+completed successfully on a standard public Ubuntu runner: **876 Python tests,
+867 passed / nine existing skips, zero failures**, 41.058s; **eight Node tests
+passed**. All six owned failing baselines and intentional incorrect/repeated/
+unauthorized proposal checks passed their expected acceptance behavior.
+
+The preserved real SDK protocol check passed with simulated provider responses,
+three runtime audits each refusing all twelve forbidden tools, and clean shutdown
+exit 0. The previous recorded Phase20 model candidates reproduced their expected
+positive and negative Docker results; these are replay, not new model repairs.
+Every hosted step was credential-free and made **zero fresh model requests**.
+Hash-bound receipts and run metadata are committed under
+`evidence/phase22/github-run-40250087687/`.
+
+The ending evidence-only follow-up commit uses `[skip ci]` to avoid rerunning
+unchanged code. No frozen generation source, task, test or spending grant changes
+followed the verified implementation. The frozen plan still validates. Main
+remains `22250921eb50b7a72e0f474b0f3ff329f81b55a8`; every earlier PR remains draft.
+No active Phase22 containers remain, no live grant/reservations exist and the
+key remains absent from repository/CI. **Live inference is still blocked by the
+explicit spending/billing gate, not by credential retrieval.**

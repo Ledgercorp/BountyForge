@@ -1,0 +1,117 @@
+{
+  "accounted_peak_cost_upper_microusd": 48742,
+  "actual_http_completion_attempts": 6,
+  "additional_cash_spending_usd": 0,
+  "api_completion_roundtrip_seconds": 89.707,
+  "balance_delta_is_exact_cost": false,
+  "cases": [
+    {
+      "attempts": 1,
+      "case_id": "discount_checkout",
+      "first_attempt_success": true,
+      "retry_assisted_success": false,
+      "source_sha256": "17c41fdfcadc30a0873bd778299e9b53f9affadc63ea18fc36b306547d54edf1",
+      "tests_sha256": "bef9ad2b39cbd542bafefec109f88bf4edbe3328c0db1913b7825cc37541d703",
+      "verified": true
+    },
+    {
+      "attempts": 1,
+      "case_id": "retry_state",
+      "first_attempt_success": true,
+      "retry_assisted_success": false,
+      "source_sha256": "7308cb1eb74206009e62526e31ad65253d23b56fd16233eecc72be90e9b26981",
+      "tests_sha256": "19e5cb77c1cd7967713b919d5d8d501375bca093297556afc65ae11591e4e060",
+      "verified": true
+    },
+    {
+      "attempts": 1,
+      "case_id": "merge_records",
+      "first_attempt_success": true,
+      "retry_assisted_success": false,
+      "source_sha256": "0c90b827cde7631c14d3c705322d9537ad0d720bdcb023676a3d906ffeb6ec49",
+      "tests_sha256": "7140120f28f4972750ebd774ea1c8ee5a6b9355bfba8d6b105d38559d780e439",
+      "verified": true
+    },
+    {
+      "attempts": 1,
+      "case_id": "response_window",
+      "first_attempt_success": true,
+      "retry_assisted_success": false,
+      "source_sha256": "00592fa7cbe0191749df1e57563e3da1bd1fbdfcff9dd7b5fc022ad1811ac617",
+      "tests_sha256": "8886f50ff246b174558f0594eb920dc8321e6e6e761a503b5585faf85e21ff7b",
+      "verified": true
+    },
+    {
+      "attempts": 1,
+      "case_id": "lease_capacity",
+      "first_attempt_success": true,
+      "retry_assisted_success": false,
+      "source_sha256": "fef33d7c6086fe0c9fe9f6e870b82452381d6340a71282424842357cc799a058",
+      "tests_sha256": "148db1adfd1e59af540ed353d7d27a0f49699643c9b0e208ace2ab2981d1565e",
+      "verified": true
+    },
+    {
+      "attempts": 1,
+      "case_id": "batch_outcomes",
+      "first_attempt_success": true,
+      "retry_assisted_success": false,
+      "source_sha256": "fa0898cebcc2559b0be8a66d8853de87123a4ab9636218a50590209ba8191f46",
+      "tests_sha256": "0dce4658cc635d49579cce12cefb96727c714799e0dc20da9915fee8b2a751d1",
+      "verified": true
+    }
+  ],
+  "commercial_admission": "NOT_ADMITTED",
+  "first_attempt_successes": 6,
+  "full_cycle_seconds": 137.623,
+  "historical_comparison_limitation": "Phase21 Qwen/Granite used different tasks and context/output limits; no controlled model superiority estimate.",
+  "historical_head_to_head_comparable": false,
+  "incorrect_tested_proposals": 0,
+  "independent_unseen_evaluation": false,
+  "invalid_proposals": 0,
+  "kind": "PHASE22_REAL_PROVIDER_DEVELOPMENTAL_COMPARISON",
+  "measurement_status": "COMPLETED",
+  "model": "deepseek-v4-pro",
+  "observed_account_balance_delta_microusd": 0,
+  "observed_end_account_balance": {
+    "balance_infos": [
+      {
+        "currency": "USD",
+        "granted_balance": "0.00",
+        "topped_up_balance": "22.88",
+        "total_balance": "22.88"
+      }
+    ],
+    "is_available": true
+  },
+  "observed_initial_account_balance": {
+    "balance_infos": [
+      {
+        "currency": "USD",
+        "granted_balance": "0.00",
+        "topped_up_balance": "22.88",
+        "total_balance": "22.88"
+      }
+    ],
+    "is_available": true
+  },
+  "plan_sha256": "a12648b59de913b18d358e94d2cd6abc482c6c86086765871bf52c8bef27b322",
+  "proposals_with_newly_reported_regressions": 0,
+  "provider_confirmed_per_request_cost": null,
+  "provider_cpu_memory": "NOT_EXPOSED_BY_API",
+  "receipt_sha256": "3de251ae34be200677fb48b584c5690359624d6a73dd0290aaee6a80bda104bf",
+  "repeated_proposals": 0,
+  "retry_assisted_successes": 0,
+  "tasks_attempted": 6,
+  "trusted_controller_cpu_seconds": 0.423,
+  "trusted_controller_peak_rss_bytes": 23592960,
+  "usage": {
+    "completion_tokens": 10647,
+    "prompt_cache_hit_tokens": 1024,
+    "prompt_cache_miss_tokens": 3959,
+    "prompt_tokens": 4983,
+    "reasoning_tokens": 10310
+  },
+  "valid_source_proposals": 6,
+  "verification_seconds": 19.635,
+  "verified_repairs": 6
+}

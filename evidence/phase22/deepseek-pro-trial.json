@@ -1,0 +1,1318 @@
+{
+  "actual_http_completion_attempts": 6,
+  "additional_cash_spending_usd": 0,
+  "after_balance": {
+    "balance_infos": [
+      {
+        "currency": "USD",
+        "granted_balance": "0.00",
+        "topped_up_balance": "22.88",
+        "total_balance": "22.88"
+      }
+    ],
+    "is_available": true
+  },
+  "authorship_basis": "authenticated_provider_response",
+  "balance_delta_attribution": "Account-wide delta; unrelated activity cannot be excluded",
+  "before": {
+    "auto_recharge": "NOT_EXPOSED_BY_API",
+    "balance": {
+      "balance_infos": [
+        {
+          "currency": "USD",
+          "granted_balance": "0.00",
+          "topped_up_balance": "22.88",
+          "total_balance": "22.88"
+        }
+      ],
+      "is_available": true
+    },
+    "credit_expiration": "NOT_EXPOSED_BY_API",
+    "inference_requests": 0,
+    "models": {
+      "data": [
+        {
+          "api_capabilities": {
+            "anthropic_messages": {
+              "system_prompt_update": "in-history",
+              "tool_update": "addition-only"
+            }
+          },
+          "context_window": 1048576,
+          "effort": {
+            "default_level": "high",
+            "supported_levels": [
+              "low",
+              "high",
+              "max"
+            ]
+          },
+          "id": "deepseek-flash",
+          "input_modalities": [
+            "text",
+            "image"
+          ],
+          "max_output_tokens": 393216,
+          "name": "DeepSeek-V4.1-Flash",
+          "object": "model",
+          "output_modalities": [
+            "text"
+          ],
+          "owned_by": "deepseek"
+        },
+        {
+          "api_capabilities": {
+            "anthropic_messages": {
+              "system_prompt_update": "leading-only",
+              "tool_update": "leading-only"
+            }
+          },
+          "context_window": 1048576,
+          "effort": {
+            "default_level": "high",
+            "supported_levels": [
+              "low",
+              "high",
+              "max"
+            ]
+          },
+          "id": "deepseek-v4-pro",
+          "input_modalities": [
+            "text"
+          ],
+          "max_output_tokens": 393216,
+          "name": "DeepSeek-V4-Pro",
+          "object": "model",
+          "output_modalities": [
+            "text"
+          ],
+          "owned_by": "deepseek"
+        }
+      ],
+      "object": "list"
+    }
+  },
+  "budget": {
+    "approved_microusd": 2000000,
+    "committed_microusd": 48742,
+    "provider_enforced_cap": false,
+    "reserve_microusd": 20000000,
+    "reserved_requests": 6,
+    "unknown_requests": 0
+  },
+  "cases": [
+    {
+      "attempts": [
+        {
+          "generation": {
+            "cost_upper_microusd": 11248,
+            "http_completion_dispatched": true,
+            "model": "deepseek-v4-pro",
+            "provider": "https://api.deepseek.com",
+            "provider_confirmed_cost": false,
+            "provider_response_id": "b830ce1c-023b-4a28-a1ab-5c7e6453192b",
+            "reservation": {
+              "attempt": 1,
+              "id": 1,
+              "reserved_microusd": 37848
+            },
+            "returned_candidate": "{\"changes\":[{\"line\":9,\"new\":\"    discount = subtotal * rate if subtotal >= minimum else 0\"},{\"line\":10,\"new\":\"    tax = (subtotal - discount) * tax_rate\"},{\"line\":11,\"new\":\"    return {\\\"total\\\": round(subtotal - discount + tax, 2), \\\"discount\\\": round(discount, 2), \\\"tax\\\": round(tax, 2)}\"}]}",
+            "seconds": 21.208,
+            "status": "RETURNED_CANDIDATE",
+            "usage": {
+              "completion_tokens": 2598,
+              "prompt_cache_hit_tokens": 0,
+              "prompt_cache_miss_tokens": 727,
+              "prompt_tokens": 727,
+              "reasoning_tokens": 2503,
+              "total_tokens": 3325
+            }
+          },
+          "verification": {
+            "attempt": 1,
+            "candidate": "def item_value(row):\n    if row.get(\"cancelled\") or row[\"quantity\"] <= 0:\n        return 0\n    return row[\"price\"] * row[\"quantity\"]\n\n\ndef checkout_total(items, minimum, rate, tax_rate):\n    subtotal = sum(item_value(row) for row in items)\n    discount = subtotal * rate if subtotal >= minimum else 0\n    tax = (subtotal - discount) * tax_rate\n    return {\"total\": round(subtotal - discount + tax, 2), \"discount\": round(discount, 2), \"tax\": round(tax, 2)}\n",
+            "candidate_sha256": "12dd323c53ce720fb0658add51b6c61923a9dc43fa5406a0d7e3e0b1ed9e5939",
+            "case_id": "discount_checkout",
+            "classification": "OWNED_DEVELOPMENT",
+            "customer_execution_authorized": false,
+            "delivery_authorized": false,
+            "engine": "DEEPSEEK_API",
+            "failure_stage": null,
+            "handoff": {
+              "admission": "UNADMITTED_EXTERNAL_CANDIDATE",
+              "case_id": "discount_checkout",
+              "customer_execution_authorized": false,
+              "delivery_authorized": false,
+              "handoff_kind": "DEEPSEEK_HARNESS_OUTPUT_ONLY",
+              "independently_verified": false,
+              "model_identity_attested": false,
+              "proposal_json": "{\"changes\":[{\"line\":9,\"new\":\"    discount = subtotal * rate if subtotal >= minimum else 0\"},{\"line\":10,\"new\":\"    tax = (subtotal - discount) * tax_rate\"},{\"line\":11,\"new\":\"    return {\\\"total\\\": round(subtotal - discount + tax, 2), \\\"discount\\\": round(discount, 2), \\\"tax\\\": round(tax, 2)}\"}]}",
+              "proposal_sha256": "70eb869e8e6ea515792acc4e74d8b2f99479343dc8dc553d689757d2bbbeb37a",
+              "revision": 0,
+              "schema": 1,
+              "source_sha256": "17c41fdfcadc30a0873bd778299e9b53f9affadc63ea18fc36b306547d54edf1",
+              "task_id": "efd5993f771c4a0f85cb5671fbb72c10",
+              "tests_sha256": "bef9ad2b39cbd542bafefec109f88bf4edbe3328c0db1913b7825cc37541d703"
+            },
+            "independent": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "independent_evaluation": false,
+            "independently_verified": true,
+            "kind": "PHASE22_OWNED_API_VERIFICATION",
+            "outcome": "VERIFIED",
+            "previous_receipt_sha256": null,
+            "proposal": "{\"changes\":[{\"line\":9,\"new\":\"    discount = subtotal * rate if subtotal >= minimum else 0\"},{\"line\":10,\"new\":\"    tax = (subtotal - discount) * tax_rate\"},{\"line\":11,\"new\":\"    return {\\\"total\\\": round(subtotal - discount + tax, 2), \\\"discount\\\": round(discount, 2), \\\"tax\\\": round(tax, 2)}\"}]}",
+            "receipt_sha256": "114f6ab0d7ee665ccc0e249bb50a82e504fc3630662ef2d92952e3166ec3bc4a",
+            "seconds": 3.141,
+            "source_sha256": "17c41fdfcadc30a0873bd778299e9b53f9affadc63ea18fc36b306547d54edf1",
+            "state": "AWAITING_OWNER_APPROVAL",
+            "targeted": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "task_id": "efd5993f771c4a0f85cb5671fbb72c10",
+            "tests_sha256": "bef9ad2b39cbd542bafefec109f88bf4edbe3328c0db1913b7825cc37541d703"
+          }
+        }
+      ],
+      "case_id": "discount_checkout",
+      "task": {
+        "approved_file": "subject.py",
+        "baseline_feedback": {
+          "assertions": [
+            "AssertionError: 0 != 10",
+            "AssertionError: 40.0 != 36 within 7 places (4.0 difference)",
+            "AssertionError: 220.0 != 216"
+          ],
+          "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+          "failing_tests": [
+            "test_equal_threshold",
+            "test_tax_after_discount",
+            "test_total"
+          ],
+          "unseen_evaluation": false
+        },
+        "case_id": "discount_checkout",
+        "classification": "OWNED_DEVELOPMENT",
+        "customer_execution_authorized": false,
+        "delivery_authorized": false,
+        "description": "Compute positive noncancelled item subtotal using the helper. Apply the stated percentage discount when subtotal meets or exceeds the minimum. Tax applies to the discounted subtotal. Return rounded total, discount and tax without mutating inputs.",
+        "edit_units": [
+          {
+            "bindings": [
+              "subtotal"
+            ],
+            "end_line": 8,
+            "kind": "statement",
+            "line": 8
+          },
+          {
+            "bindings": [
+              "discount"
+            ],
+            "end_line": 9,
+            "kind": "statement",
+            "line": 9
+          },
+          {
+            "bindings": [
+              "tax"
+            ],
+            "end_line": 10,
+            "kind": "statement",
+            "line": 10
+          },
+          {
+            "bindings": [],
+            "end_line": 11,
+            "kind": "statement",
+            "line": 11
+          }
+        ],
+        "editable_lines": [
+          8,
+          9,
+          10,
+          11
+        ],
+        "engine": "CODEX_AGENT",
+        "independent_evaluation": false,
+        "max_attempts": 2,
+        "proposal_protocol": "ast_statement_v1",
+        "revision": 0,
+        "source": "def item_value(row):\n    if row.get(\"cancelled\") or row[\"quantity\"] <= 0:\n        return 0\n    return row[\"price\"] * row[\"quantity\"]\n\n\ndef checkout_total(items, minimum, rate, tax_rate):\n    subtotal = sum(item_value(row) for row in items)\n    discount = subtotal * rate if subtotal > minimum else 0\n    tax = subtotal * tax_rate\n    return {\"total\": round(subtotal - discount + tax, 2), \"discount\": discount, \"tax\": tax}\n",
+        "source_sha256": "17c41fdfcadc30a0873bd778299e9b53f9affadc63ea18fc36b306547d54edf1",
+        "state": "AWAITING_CODEX_CANDIDATE",
+        "target_symbol": "checkout_total",
+        "task_id": "efd5993f771c4a0f85cb5671fbb72c10",
+        "tests_sha256": "bef9ad2b39cbd542bafefec109f88bf4edbe3328c0db1913b7825cc37541d703"
+      },
+      "verified": true
+    },
+    {
+      "attempts": [
+        {
+          "generation": {
+            "cost_upper_microusd": 5428,
+            "http_completion_dispatched": true,
+            "model": "deepseek-v4-pro",
+            "provider": "https://api.deepseek.com",
+            "provider_confirmed_cost": false,
+            "provider_response_id": "a6cb85e9-a294-4447-acf0-61f12281c3aa",
+            "reservation": {
+              "attempt": 1,
+              "id": 2,
+              "reserved_microusd": 37848
+            },
+            "returned_candidate": "{\"changes\":[{\"line\":10,\"new\":\"    exhausted = attempts >= limit\"},{\"line\":11,\"new\":\"    delay = base_delay * 2 ** (attempts - 1)\"}]}",
+            "seconds": 10.126,
+            "status": "RETURNED_CANDIDATE",
+            "usage": {
+              "completion_tokens": 1106,
+              "prompt_cache_hit_tokens": 0,
+              "prompt_cache_miss_tokens": 794,
+              "prompt_tokens": 794,
+              "reasoning_tokens": 1062,
+              "total_tokens": 1900
+            }
+          },
+          "verification": {
+            "attempt": 1,
+            "candidate": "def terminal(status):\n    return status == \"cancelled\"\n\n\ndef after_failure(job, limit, base_delay):\n    result = dict(job)\n    if terminal(job[\"status\"]):\n        return result\n    attempts = job[\"attempts\"] + 1\n    exhausted = attempts >= limit\n    delay = base_delay * 2 ** (attempts - 1)\n    result.update(attempts=attempts, status=\"failed\" if exhausted else \"retrying\", delay=0 if exhausted else delay)\n    return result\n",
+            "candidate_sha256": "3329f7e84921dce09f4581e64ae733460ebd3cabd1dfe34baedf2419cb308bcc",
+            "case_id": "retry_state",
+            "classification": "OWNED_DEVELOPMENT",
+            "customer_execution_authorized": false,
+            "delivery_authorized": false,
+            "engine": "DEEPSEEK_API",
+            "failure_stage": null,
+            "handoff": {
+              "admission": "UNADMITTED_EXTERNAL_CANDIDATE",
+              "case_id": "retry_state",
+              "customer_execution_authorized": false,
+              "delivery_authorized": false,
+              "handoff_kind": "DEEPSEEK_HARNESS_OUTPUT_ONLY",
+              "independently_verified": false,
+              "model_identity_attested": false,
+              "proposal_json": "{\"changes\":[{\"line\":10,\"new\":\"    exhausted = attempts >= limit\"},{\"line\":11,\"new\":\"    delay = base_delay * 2 ** (attempts - 1)\"}]}",
+              "proposal_sha256": "142d6d914483b03b5eeb3b7a197d34c40cc6558c49d4e368ab858546ab36eac1",
+              "revision": 0,
+              "schema": 1,
+              "source_sha256": "7308cb1eb74206009e62526e31ad65253d23b56fd16233eecc72be90e9b26981",
+              "task_id": "19f9c7e5e19641e691960b73f9a58f26",
+              "tests_sha256": "19e5cb77c1cd7967713b919d5d8d501375bca093297556afc65ae11591e4e060"
+            },
+            "independent": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "independent_evaluation": false,
+            "independently_verified": true,
+            "kind": "PHASE22_OWNED_API_VERIFICATION",
+            "outcome": "VERIFIED",
+            "previous_receipt_sha256": null,
+            "proposal": "{\"changes\":[{\"line\":10,\"new\":\"    exhausted = attempts >= limit\"},{\"line\":11,\"new\":\"    delay = base_delay * 2 ** (attempts - 1)\"}]}",
+            "receipt_sha256": "7c2318ef28087d27047668129816c13a2f05c0829e48e0680ffe4347c56d7804",
+            "seconds": 3.91,
+            "source_sha256": "7308cb1eb74206009e62526e31ad65253d23b56fd16233eecc72be90e9b26981",
+            "state": "AWAITING_OWNER_APPROVAL",
+            "targeted": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "task_id": "19f9c7e5e19641e691960b73f9a58f26",
+            "tests_sha256": "19e5cb77c1cd7967713b919d5d8d501375bca093297556afc65ae11591e4e060"
+          }
+        }
+      ],
+      "case_id": "retry_state",
+      "task": {
+        "approved_file": "subject.py",
+        "baseline_feedback": {
+          "assertions": [
+            "AssertionError: 'retrying' != 'failed'",
+            "AssertionError: 10 != 0",
+            "AssertionError: 15 != 20"
+          ],
+          "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+          "failing_tests": [
+            "test_exact_limit",
+            "test_terminal_delay",
+            "test_third_delay"
+          ],
+          "unseen_evaluation": false
+        },
+        "case_id": "retry_state",
+        "classification": "OWNED_DEVELOPMENT",
+        "customer_execution_authorized": false,
+        "delivery_authorized": false,
+        "description": "Copy job state after one failure. Cancelled jobs remain unchanged. Increment attempts once; mark failed when attempts reaches the positive limit, otherwise retrying. Retrying delay is base_delay times 2 to the power attempts-minus-one; terminal delay is zero. Preserve caller state.",
+        "edit_units": [
+          {
+            "bindings": [
+              "result"
+            ],
+            "end_line": 6,
+            "kind": "statement",
+            "line": 6
+          },
+          {
+            "bindings": [],
+            "end_line": 7,
+            "kind": "condition",
+            "line": 7
+          },
+          {
+            "bindings": [
+              "attempts"
+            ],
+            "end_line": 9,
+            "kind": "statement",
+            "line": 9
+          },
+          {
+            "bindings": [
+              "exhausted"
+            ],
+            "end_line": 10,
+            "kind": "statement",
+            "line": 10
+          },
+          {
+            "bindings": [
+              "delay"
+            ],
+            "end_line": 11,
+            "kind": "statement",
+            "line": 11
+          },
+          {
+            "bindings": [],
+            "end_line": 12,
+            "kind": "statement",
+            "line": 12
+          },
+          {
+            "bindings": [],
+            "end_line": 13,
+            "kind": "statement",
+            "line": 13
+          },
+          {
+            "bindings": [],
+            "end_line": 8,
+            "kind": "statement",
+            "line": 8
+          }
+        ],
+        "editable_lines": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ],
+        "engine": "CODEX_AGENT",
+        "independent_evaluation": false,
+        "max_attempts": 2,
+        "proposal_protocol": "ast_statement_v1",
+        "revision": 0,
+        "source": "def terminal(status):\n    return status == \"cancelled\"\n\n\ndef after_failure(job, limit, base_delay):\n    result = dict(job)\n    if terminal(job[\"status\"]):\n        return result\n    attempts = job[\"attempts\"] + 1\n    exhausted = attempts > limit\n    delay = base_delay * max(1, attempts)\n    result.update(attempts=attempts, status=\"failed\" if exhausted else \"retrying\", delay=0 if exhausted else delay)\n    return result\n",
+        "source_sha256": "7308cb1eb74206009e62526e31ad65253d23b56fd16233eecc72be90e9b26981",
+        "state": "AWAITING_CODEX_CANDIDATE",
+        "target_symbol": "after_failure",
+        "task_id": "19f9c7e5e19641e691960b73f9a58f26",
+        "tests_sha256": "19e5cb77c1cd7967713b919d5d8d501375bca093297556afc65ae11591e4e060"
+      },
+      "verified": true
+    },
+    {
+      "attempts": [
+        {
+          "generation": {
+            "cost_upper_microusd": 5325,
+            "http_completion_dispatched": true,
+            "model": "deepseek-v4-pro",
+            "provider": "https://api.deepseek.com",
+            "provider_confirmed_cost": false,
+            "provider_response_id": "8ea72d6e-df69-4fa3-bd85-fc77475c9178",
+            "reservation": {
+              "attempt": 1,
+              "id": 3,
+              "reserved_microusd": 37848
+            },
+            "returned_candidate": "{\"changes\":[{\"line\":8,\"new\":\"row.get(\\\"id\\\") is None\"},{\"line\":12,\"new\":\"previous is None or row[\\\"version\\\"] > previous[\\\"version\\\"]\"}]}",
+            "seconds": 9.542,
+            "status": "RETURNED_CANDIDATE",
+            "usage": {
+              "completion_tokens": 1099,
+              "prompt_cache_hit_tokens": 256,
+              "prompt_cache_miss_tokens": 481,
+              "prompt_tokens": 737,
+              "reasoning_tokens": 1051,
+              "total_tokens": 1836
+            }
+          },
+          "verification": {
+            "attempt": 1,
+            "candidate": "def copy_record(row):\n    return dict(row)\n\n\ndef latest_records(rows):\n    result = {}\n    for row in rows:\n        if row.get(\"id\") is None:\n            continue\n        key = row[\"id\"]\n        previous = result.get(key)\n        if previous is None or row[\"version\"] > previous[\"version\"]:\n            result[key] = copy_record(row)\n    return result\n",
+            "candidate_sha256": "fcbc47daa04c7a044ff6ac0246eeb0c5fce68d3661f5f5a69606cf5e651d2e27",
+            "case_id": "merge_records",
+            "classification": "OWNED_DEVELOPMENT",
+            "customer_execution_authorized": false,
+            "delivery_authorized": false,
+            "engine": "DEEPSEEK_API",
+            "failure_stage": null,
+            "handoff": {
+              "admission": "UNADMITTED_EXTERNAL_CANDIDATE",
+              "case_id": "merge_records",
+              "customer_execution_authorized": false,
+              "delivery_authorized": false,
+              "handoff_kind": "DEEPSEEK_HARNESS_OUTPUT_ONLY",
+              "independently_verified": false,
+              "model_identity_attested": false,
+              "proposal_json": "{\"changes\":[{\"line\":8,\"new\":\"row.get(\\\"id\\\") is None\"},{\"line\":12,\"new\":\"previous is None or row[\\\"version\\\"] > previous[\\\"version\\\"]\"}]}",
+              "proposal_sha256": "e5e3ad277cba79b2e3e3660b038ede734816b84d5746ccfa560da634950b9877",
+              "revision": 0,
+              "schema": 1,
+              "source_sha256": "0c90b827cde7631c14d3c705322d9537ad0d720bdcb023676a3d906ffeb6ec49",
+              "task_id": "7ca320c81e4744108c0d7a9e98cc7d0f",
+              "tests_sha256": "7140120f28f4972750ebd774ea1c8ee5a6b9355bfba8d6b105d38559d780e439"
+            },
+            "independent": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "independent_evaluation": false,
+            "independently_verified": true,
+            "kind": "PHASE22_OWNED_API_VERIFICATION",
+            "outcome": "VERIFIED",
+            "previous_receipt_sha256": null,
+            "proposal": "{\"changes\":[{\"line\":8,\"new\":\"row.get(\\\"id\\\") is None\"},{\"line\":12,\"new\":\"previous is None or row[\\\"version\\\"] > previous[\\\"version\\\"]\"}]}",
+            "receipt_sha256": "5149709dbdb2fb50cc1c1b660ff9c06b602e7445137c724713f306039aa2a9f0",
+            "seconds": 3.093,
+            "source_sha256": "0c90b827cde7631c14d3c705322d9537ad0d720bdcb023676a3d906ffeb6ec49",
+            "state": "AWAITING_OWNER_APPROVAL",
+            "targeted": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "task_id": "7ca320c81e4744108c0d7a9e98cc7d0f",
+            "tests_sha256": "7140120f28f4972750ebd774ea1c8ee5a6b9355bfba8d6b105d38559d780e439"
+          }
+        }
+      ],
+      "case_id": "merge_records",
+      "task": {
+        "approved_file": "subject.py",
+        "baseline_feedback": {
+          "assertions": [
+            "AssertionError: '' not found in {}",
+            "AssertionError: 1 != 3",
+            "AssertionError: 1 != 3"
+          ],
+          "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+          "failing_tests": [
+            "test_empty_id",
+            "test_newer_wins",
+            "test_older_loses",
+            "test_zero_id"
+          ],
+          "unseen_evaluation": false
+        },
+        "case_id": "merge_records",
+        "classification": "OWNED_DEVELOPMENT",
+        "customer_execution_authorized": false,
+        "delivery_authorized": false,
+        "description": "Retain records with an ID other than None, including ID zero and empty-string IDs. For duplicate IDs select the highest numeric version; preserve first record for equal versions. Return new record dictionaries without changing the rows or helper behavior.",
+        "edit_units": [
+          {
+            "bindings": [
+              "result"
+            ],
+            "end_line": 6,
+            "kind": "statement",
+            "line": 6
+          },
+          {
+            "bindings": [],
+            "end_line": 14,
+            "kind": "statement",
+            "line": 14
+          },
+          {
+            "bindings": [],
+            "end_line": 8,
+            "kind": "condition",
+            "line": 8
+          },
+          {
+            "bindings": [
+              "key"
+            ],
+            "end_line": 10,
+            "kind": "statement",
+            "line": 10
+          },
+          {
+            "bindings": [
+              "previous"
+            ],
+            "end_line": 11,
+            "kind": "statement",
+            "line": 11
+          },
+          {
+            "bindings": [],
+            "end_line": 12,
+            "kind": "condition",
+            "line": 12
+          },
+          {
+            "bindings": [],
+            "end_line": 13,
+            "kind": "statement",
+            "line": 13
+          }
+        ],
+        "editable_lines": [
+          6,
+          8,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "engine": "CODEX_AGENT",
+        "independent_evaluation": false,
+        "max_attempts": 2,
+        "proposal_protocol": "ast_statement_v1",
+        "revision": 0,
+        "source": "def copy_record(row):\n    return dict(row)\n\n\ndef latest_records(rows):\n    result = {}\n    for row in rows:\n        if not row.get(\"id\"):\n            continue\n        key = row[\"id\"]\n        previous = result.get(key)\n        if previous is None or row[\"version\"] < previous[\"version\"]:\n            result[key] = copy_record(row)\n    return result\n",
+        "source_sha256": "0c90b827cde7631c14d3c705322d9537ad0d720bdcb023676a3d906ffeb6ec49",
+        "state": "AWAITING_CODEX_CANDIDATE",
+        "target_symbol": "latest_records",
+        "task_id": "7ca320c81e4744108c0d7a9e98cc7d0f",
+        "tests_sha256": "7140120f28f4972750ebd774ea1c8ee5a6b9355bfba8d6b105d38559d780e439"
+      },
+      "verified": true
+    },
+    {
+      "attempts": [
+        {
+          "generation": {
+            "cost_upper_microusd": 13557,
+            "http_completion_dispatched": true,
+            "model": "deepseek-v4-pro",
+            "provider": "https://api.deepseek.com",
+            "provider_confirmed_cost": false,
+            "provider_response_id": "46e35be8-123f-4bfc-8bda-b5320008b457",
+            "reservation": {
+              "attempt": 1,
+              "id": 4,
+              "reserved_microusd": 37848
+            },
+            "returned_candidate": "{\"changes\":[{\"line\":10,\"new\":\"        result[\\\"items\\\"] = copy_items(payload[\\\"items\\\"] if \\\"items\\\" in payload else cache[\\\"items\\\"])\"},{\"line\":13,\"new\":\"        result[\\\"items\\\"] = []\"}]}",
+            "seconds": 24.721,
+            "status": "RETURNED_CANDIDATE",
+            "usage": {
+              "completion_tokens": 3144,
+              "prompt_cache_hit_tokens": 256,
+              "prompt_cache_miss_tokens": 582,
+              "prompt_tokens": 838,
+              "reasoning_tokens": 3083,
+              "total_tokens": 3982
+            }
+          },
+          "verification": {
+            "attempt": 1,
+            "candidate": "def copy_items(items):\n    return list(items)\n\n\ndef apply_response(cache, response):\n    result = dict(cache)\n    status = response[\"status\"]\n    if status == 200:\n        payload = response[\"body\"]\n        result[\"items\"] = copy_items(payload[\"items\"] if \"items\" in payload else cache[\"items\"])\n        result[\"cursor\"] = payload.get(\"cursor\", cache[\"cursor\"])\n    elif status == 204:\n        result[\"items\"] = []\n        result[\"cursor\"] = None\n    return result\n",
+            "candidate_sha256": "a8a082896d4868a605e4bb9e9d42132a56be9178e89541eae9f0a6182932c808",
+            "case_id": "response_window",
+            "classification": "OWNED_DEVELOPMENT",
+            "customer_execution_authorized": false,
+            "delivery_authorized": false,
+            "engine": "DEEPSEEK_API",
+            "failure_stage": null,
+            "handoff": {
+              "admission": "UNADMITTED_EXTERNAL_CANDIDATE",
+              "case_id": "response_window",
+              "customer_execution_authorized": false,
+              "delivery_authorized": false,
+              "handoff_kind": "DEEPSEEK_HARNESS_OUTPUT_ONLY",
+              "independently_verified": false,
+              "model_identity_attested": false,
+              "proposal_json": "{\"changes\":[{\"line\":10,\"new\":\"        result[\\\"items\\\"] = copy_items(payload[\\\"items\\\"] if \\\"items\\\" in payload else cache[\\\"items\\\"])\"},{\"line\":13,\"new\":\"        result[\\\"items\\\"] = []\"}]}",
+              "proposal_sha256": "ba9698ee6d9ca10d31640c80b1c2b99918046ffc01e6a4026dc11aa3f6aec69b",
+              "revision": 0,
+              "schema": 1,
+              "source_sha256": "00592fa7cbe0191749df1e57563e3da1bd1fbdfcff9dd7b5fc022ad1811ac617",
+              "task_id": "072b7ecb32414053bd93089e99489847",
+              "tests_sha256": "8886f50ff246b174558f0594eb920dc8321e6e6e761a503b5585faf85e21ff7b"
+            },
+            "independent": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "independent_evaluation": false,
+            "independently_verified": true,
+            "kind": "PHASE22_OWNED_API_VERIFICATION",
+            "outcome": "VERIFIED",
+            "previous_receipt_sha256": null,
+            "proposal": "{\"changes\":[{\"line\":10,\"new\":\"        result[\\\"items\\\"] = copy_items(payload[\\\"items\\\"] if \\\"items\\\" in payload else cache[\\\"items\\\"])\"},{\"line\":13,\"new\":\"        result[\\\"items\\\"] = []\"}]}",
+            "receipt_sha256": "536aa7e17ca04c7698f39bfbd99e87e6e4d754aaf5cdd586c66d5ed211eb03cf",
+            "seconds": 3.21,
+            "source_sha256": "00592fa7cbe0191749df1e57563e3da1bd1fbdfcff9dd7b5fc022ad1811ac617",
+            "state": "AWAITING_OWNER_APPROVAL",
+            "targeted": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "task_id": "072b7ecb32414053bd93089e99489847",
+            "tests_sha256": "8886f50ff246b174558f0594eb920dc8321e6e6e761a503b5585faf85e21ff7b"
+          }
+        }
+      ],
+      "case_id": "response_window",
+      "task": {
+        "approved_file": "subject.py",
+        "baseline_feedback": {
+          "assertions": [
+            "AssertionError: Lists differ: [1] != []",
+            "AssertionError: Lists differ: [1] != []"
+          ],
+          "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+          "failing_tests": [
+            "test_empty_items_explicit",
+            "test_no_content_clears"
+          ],
+          "unseen_evaluation": false
+        },
+        "case_id": "response_window",
+        "classification": "OWNED_DEVELOPMENT",
+        "customer_execution_authorized": false,
+        "delivery_authorized": false,
+        "description": "Copy cache. HTTP 200 uses items when the key exists, preserving an explicit empty list; otherwise preserve old items. Use cursor when present, including null or zero. HTTP 204 clears items and cursor. Other statuses preserve cache. Do not mutate inputs; helper copies item lists.",
+        "edit_units": [
+          {
+            "bindings": [
+              "result"
+            ],
+            "end_line": 6,
+            "kind": "statement",
+            "line": 6
+          },
+          {
+            "bindings": [
+              "status"
+            ],
+            "end_line": 7,
+            "kind": "statement",
+            "line": 7
+          },
+          {
+            "bindings": [],
+            "end_line": 8,
+            "kind": "condition",
+            "line": 8
+          },
+          {
+            "bindings": [],
+            "end_line": 15,
+            "kind": "statement",
+            "line": 15
+          },
+          {
+            "bindings": [
+              "payload"
+            ],
+            "end_line": 9,
+            "kind": "statement",
+            "line": 9
+          },
+          {
+            "bindings": [],
+            "end_line": 10,
+            "kind": "statement",
+            "line": 10
+          },
+          {
+            "bindings": [],
+            "end_line": 11,
+            "kind": "statement",
+            "line": 11
+          },
+          {
+            "bindings": [],
+            "end_line": 12,
+            "kind": "condition",
+            "line": 12
+          },
+          {
+            "bindings": [],
+            "end_line": 13,
+            "kind": "statement",
+            "line": 13
+          },
+          {
+            "bindings": [],
+            "end_line": 14,
+            "kind": "statement",
+            "line": 14
+          }
+        ],
+        "editable_lines": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "engine": "CODEX_AGENT",
+        "independent_evaluation": false,
+        "max_attempts": 2,
+        "proposal_protocol": "ast_statement_v1",
+        "revision": 0,
+        "source": "def copy_items(items):\n    return list(items)\n\n\ndef apply_response(cache, response):\n    result = dict(cache)\n    status = response[\"status\"]\n    if status == 200:\n        payload = response[\"body\"]\n        result[\"items\"] = copy_items(payload.get(\"items\") or cache[\"items\"])\n        result[\"cursor\"] = payload.get(\"cursor\", cache[\"cursor\"])\n    elif status == 204:\n        result[\"items\"] = copy_items(cache[\"items\"])\n        result[\"cursor\"] = None\n    return result\n",
+        "source_sha256": "00592fa7cbe0191749df1e57563e3da1bd1fbdfcff9dd7b5fc022ad1811ac617",
+        "state": "AWAITING_CODEX_CANDIDATE",
+        "target_symbol": "apply_response",
+        "task_id": "072b7ecb32414053bd93089e99489847",
+        "tests_sha256": "8886f50ff246b174558f0594eb920dc8321e6e6e761a503b5585faf85e21ff7b"
+      },
+      "verified": true
+    },
+    {
+      "attempts": [
+        {
+          "generation": {
+            "cost_upper_microusd": 6036,
+            "http_completion_dispatched": true,
+            "model": "deepseek-v4-pro",
+            "provider": "https://api.deepseek.com",
+            "provider_confirmed_cost": false,
+            "provider_response_id": "7a4c2ccf-9f5b-4d7f-bfd5-87fef6fe4db2",
+            "reservation": {
+              "attempt": 1,
+              "id": 5,
+              "reserved_microusd": 37848
+            },
+            "returned_candidate": "{\"changes\":[{\"line\":16,\"new\":\"event[\\\"kind\\\"] == \\\"release\\\" and used >= units\"},{\"line\":17,\"new\":\"            used -= units\"}]}",
+            "seconds": 11.395,
+            "status": "RETURNED_CANDIDATE",
+            "usage": {
+              "completion_tokens": 1189,
+              "prompt_cache_hit_tokens": 256,
+              "prompt_cache_miss_tokens": 749,
+              "prompt_tokens": 1005,
+              "reasoning_tokens": 1149,
+              "total_tokens": 2194
+            }
+          },
+          "verification": {
+            "attempt": 1,
+            "candidate": "def fits(used, units, capacity):\n    return used + units <= capacity\n\n\ndef apply_events(state, events, capacity):\n    result = dict(state)\n    seen = set(state[\"seen\"])\n    used = state[\"used\"]\n    accepted = 0\n    for event in events:\n        if event[\"id\"] in seen:\n            continue\n        units = event[\"units\"]\n        if event[\"kind\"] == \"acquire\" and fits(used, units, capacity):\n            used += units\n        elif event[\"kind\"] == \"release\" and used >= units:\n            used -= units\n        else:\n            continue\n        seen.add(event[\"id\"])\n        accepted += 1\n    result.update(used=used, seen=seen, accepted=accepted)\n    return result\n",
+            "candidate_sha256": "67a2779c638805019567f766028b506d1f791432f61d834785131c556af52271",
+            "case_id": "lease_capacity",
+            "classification": "OWNED_DEVELOPMENT",
+            "customer_execution_authorized": false,
+            "delivery_authorized": false,
+            "engine": "DEEPSEEK_API",
+            "failure_stage": null,
+            "handoff": {
+              "admission": "UNADMITTED_EXTERNAL_CANDIDATE",
+              "case_id": "lease_capacity",
+              "customer_execution_authorized": false,
+              "delivery_authorized": false,
+              "handoff_kind": "DEEPSEEK_HARNESS_OUTPUT_ONLY",
+              "independently_verified": false,
+              "model_identity_attested": false,
+              "proposal_json": "{\"changes\":[{\"line\":16,\"new\":\"event[\\\"kind\\\"] == \\\"release\\\" and used >= units\"},{\"line\":17,\"new\":\"            used -= units\"}]}",
+              "proposal_sha256": "19d055969146e9ecd61cfe59e129f37ee770028354408cdcf9848b73ff561520",
+              "revision": 0,
+              "schema": 1,
+              "source_sha256": "fef33d7c6086fe0c9fe9f6e870b82452381d6340a71282424842357cc799a058",
+              "task_id": "c73ec27c897d4eec806de0a7aaffb51d",
+              "tests_sha256": "148db1adfd1e59af540ed353d7d27a0f49699643c9b0e208ace2ab2981d1565e"
+            },
+            "independent": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "independent_evaluation": false,
+            "independently_verified": true,
+            "kind": "PHASE22_OWNED_API_VERIFICATION",
+            "outcome": "VERIFIED",
+            "previous_receipt_sha256": null,
+            "proposal": "{\"changes\":[{\"line\":16,\"new\":\"event[\\\"kind\\\"] == \\\"release\\\" and used >= units\"},{\"line\":17,\"new\":\"            used -= units\"}]}",
+            "receipt_sha256": "e994f36d47e2f4b5136547a58be06cfbe5ef61b8f19fda5066e4b4ea818f15f7",
+            "seconds": 3.119,
+            "source_sha256": "fef33d7c6086fe0c9fe9f6e870b82452381d6340a71282424842357cc799a058",
+            "state": "AWAITING_OWNER_APPROVAL",
+            "targeted": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "task_id": "c73ec27c897d4eec806de0a7aaffb51d",
+            "tests_sha256": "148db1adfd1e59af540ed353d7d27a0f49699643c9b0e208ace2ab2981d1565e"
+          }
+        }
+      ],
+      "case_id": "lease_capacity",
+      "task": {
+        "approved_file": "subject.py",
+        "baseline_feedback": {
+          "assertions": [
+            "AssertionError: 0 != 1",
+            "AssertionError: 0 != 2",
+            "AssertionError: 2 != 0"
+          ],
+          "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+          "failing_tests": [
+            "test_count",
+            "test_latest_usage",
+            "test_release_exact_usage"
+          ],
+          "unseen_evaluation": false
+        },
+        "case_id": "lease_capacity",
+        "classification": "OWNED_DEVELOPMENT",
+        "customer_execution_authorized": false,
+        "delivery_authorized": false,
+        "description": "Process ordered capacity events on a copied state. Ignore already seen event IDs. Accept acquire only when units fits remaining capacity, including exact fit; accept release only when units fits current usage. Every accepted event changes latest usage, records its ID, and increments accepted count. Rejected events are not recorded. Inputs have positive integer units. Preserve caller state, events and helper behavior.",
+        "edit_units": [
+          {
+            "bindings": [
+              "result"
+            ],
+            "end_line": 6,
+            "kind": "statement",
+            "line": 6
+          },
+          {
+            "bindings": [
+              "seen"
+            ],
+            "end_line": 7,
+            "kind": "statement",
+            "line": 7
+          },
+          {
+            "bindings": [
+              "used"
+            ],
+            "end_line": 8,
+            "kind": "statement",
+            "line": 8
+          },
+          {
+            "bindings": [
+              "accepted"
+            ],
+            "end_line": 9,
+            "kind": "statement",
+            "line": 9
+          },
+          {
+            "bindings": [],
+            "end_line": 22,
+            "kind": "statement",
+            "line": 22
+          },
+          {
+            "bindings": [],
+            "end_line": 23,
+            "kind": "statement",
+            "line": 23
+          },
+          {
+            "bindings": [],
+            "end_line": 11,
+            "kind": "condition",
+            "line": 11
+          },
+          {
+            "bindings": [
+              "units"
+            ],
+            "end_line": 13,
+            "kind": "statement",
+            "line": 13
+          },
+          {
+            "bindings": [],
+            "end_line": 14,
+            "kind": "condition",
+            "line": 14
+          },
+          {
+            "bindings": [],
+            "end_line": 20,
+            "kind": "statement",
+            "line": 20
+          },
+          {
+            "bindings": [
+              "accepted"
+            ],
+            "end_line": 21,
+            "kind": "statement",
+            "line": 21
+          },
+          {
+            "bindings": [
+              "used"
+            ],
+            "end_line": 15,
+            "kind": "statement",
+            "line": 15
+          },
+          {
+            "bindings": [],
+            "end_line": 16,
+            "kind": "condition",
+            "line": 16
+          },
+          {
+            "bindings": [
+              "used"
+            ],
+            "end_line": 17,
+            "kind": "statement",
+            "line": 17
+          }
+        ],
+        "editable_lines": [
+          6,
+          7,
+          8,
+          9,
+          11,
+          13,
+          14,
+          15,
+          16,
+          17,
+          20,
+          21,
+          22,
+          23
+        ],
+        "engine": "CODEX_AGENT",
+        "independent_evaluation": false,
+        "max_attempts": 2,
+        "proposal_protocol": "ast_statement_v1",
+        "revision": 0,
+        "source": "def fits(used, units, capacity):\n    return used + units <= capacity\n\n\ndef apply_events(state, events, capacity):\n    result = dict(state)\n    seen = set(state[\"seen\"])\n    used = state[\"used\"]\n    accepted = 0\n    for event in events:\n        if event[\"id\"] in seen:\n            continue\n        units = event[\"units\"]\n        if event[\"kind\"] == \"acquire\" and fits(used, units, capacity):\n            used += units\n        elif event[\"kind\"] == \"release\" and used > units:\n            used = state[\"used\"] - units\n        else:\n            continue\n        seen.add(event[\"id\"])\n        accepted += 1\n    result.update(used=used, seen=seen, accepted=accepted)\n    return result\n",
+        "source_sha256": "fef33d7c6086fe0c9fe9f6e870b82452381d6340a71282424842357cc799a058",
+        "state": "AWAITING_CODEX_CANDIDATE",
+        "target_symbol": "apply_events",
+        "task_id": "c73ec27c897d4eec806de0a7aaffb51d",
+        "tests_sha256": "148db1adfd1e59af540ed353d7d27a0f49699643c9b0e208ace2ab2981d1565e"
+      },
+      "verified": true
+    },
+    {
+      "attempts": [
+        {
+          "generation": {
+            "cost_upper_microusd": 7148,
+            "http_completion_dispatched": true,
+            "model": "deepseek-v4-pro",
+            "provider": "https://api.deepseek.com",
+            "provider_confirmed_cost": false,
+            "provider_response_id": "1a79eeb3-7f74-4895-bc5e-260b6575e1ea",
+            "reservation": {
+              "attempt": 1,
+              "id": 6,
+              "reserved_microusd": 37848
+            },
+            "returned_candidate": "{\n  \"changes\": [\n    {\"line\": 12, \"new\": \"value is not None\"},\n    {\"line\": 14, \"new\": \"response.get(\\\"retryable\\\") is True\"}\n  ]\n}",
+            "seconds": 12.715,
+            "status": "RETURNED_CANDIDATE",
+            "usage": {
+              "completion_tokens": 1511,
+              "prompt_cache_hit_tokens": 256,
+              "prompt_cache_miss_tokens": 626,
+              "prompt_tokens": 882,
+              "reasoning_tokens": 1462,
+              "total_tokens": 2393
+            }
+          },
+          "verification": {
+            "attempt": 1,
+            "candidate": "def accepted_outcome(response):\n    return response.get(\"ok\") is True\n\n\ndef summarize_batch(responses):\n    values = []\n    failures = 0\n    retries = 0\n    for response in responses:\n        if accepted_outcome(response):\n            value = response.get(\"value\")\n            if value is not None:\n                values.append(value)\n        elif response.get(\"retryable\") is True:\n            retries += 1\n        else:\n            failures += 1\n    return {\"values\": values, \"count\": len(values), \"failures\": failures, \"retries\": retries}\n",
+            "candidate_sha256": "63453de6b8519851f4ee73315bb9eed1b1ea4f0ffaaaf7db32d2e3c161f33f36",
+            "case_id": "batch_outcomes",
+            "classification": "OWNED_DEVELOPMENT",
+            "customer_execution_authorized": false,
+            "delivery_authorized": false,
+            "engine": "DEEPSEEK_API",
+            "failure_stage": null,
+            "handoff": {
+              "admission": "UNADMITTED_EXTERNAL_CANDIDATE",
+              "case_id": "batch_outcomes",
+              "customer_execution_authorized": false,
+              "delivery_authorized": false,
+              "handoff_kind": "DEEPSEEK_HARNESS_OUTPUT_ONLY",
+              "independently_verified": false,
+              "model_identity_attested": false,
+              "proposal_json": "{\"changes\":[{\"line\":12,\"new\":\"value is not None\"},{\"line\":14,\"new\":\"response.get(\\\"retryable\\\") is True\"}]}",
+              "proposal_sha256": "58a504c71dafc184df129881032ff01a8eb343469b7c296bba0f8c7c1dbe8331",
+              "revision": 0,
+              "schema": 1,
+              "source_sha256": "fa0898cebcc2559b0be8a66d8853de87123a4ab9636218a50590209ba8191f46",
+              "task_id": "3b5ed7862a7144d4ade59ce7ec4dadfc",
+              "tests_sha256": "0dce4658cc635d49579cce12cefb96727c714799e0dc20da9915fee8b2a751d1"
+            },
+            "independent": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "independent_evaluation": false,
+            "independently_verified": true,
+            "kind": "PHASE22_OWNED_API_VERIFICATION",
+            "outcome": "VERIFIED",
+            "previous_receipt_sha256": null,
+            "proposal": "{\n  \"changes\": [\n    {\"line\": 12, \"new\": \"value is not None\"},\n    {\"line\": 14, \"new\": \"response.get(\\\"retryable\\\") is True\"}\n  ]\n}",
+            "receipt_sha256": "45c9bae8b5229d5de2c74a32990536a553b1c6c3b5a4f3c238719ab3c6348fdd",
+            "seconds": 3.162,
+            "source_sha256": "fa0898cebcc2559b0be8a66d8853de87123a4ab9636218a50590209ba8191f46",
+            "state": "AWAITING_OWNER_APPROVAL",
+            "targeted": {
+              "exit_code": 0,
+              "output_sha256": "090bc7523f5dd6d3499c371d202d764402d61938493e95933ef5eff4f1bcf894",
+              "passed": true,
+              "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges",
+              "tests_run": 8
+            },
+            "task_id": "3b5ed7862a7144d4ade59ce7ec4dadfc",
+            "tests_sha256": "0dce4658cc635d49579cce12cefb96727c714799e0dc20da9915fee8b2a751d1"
+          }
+        }
+      ],
+      "case_id": "batch_outcomes",
+      "task": {
+        "approved_file": "subject.py",
+        "baseline_feedback": {
+          "assertions": [
+            "AssertionError: Lists differ: [] != ['']",
+            "AssertionError: 0 != 1",
+            "AssertionError: 0 != 1"
+          ],
+          "classification": "OWNED_DEVELOPMENT_FEEDBACK",
+          "failing_tests": [
+            "test_empty_string",
+            "test_false_preserved",
+            "test_non_boolean_retryable",
+            "test_zero_preserved"
+          ],
+          "unseen_evaluation": false
+        },
+        "case_id": "batch_outcomes",
+        "classification": "OWNED_DEVELOPMENT",
+        "customer_execution_authorized": false,
+        "delivery_authorized": false,
+        "description": "Summarize outcome dictionaries. Successful outcomes have ok exactly True, accept non-None value including zero, false and empty strings. Return accepted values and their count. For unsuccessful outcomes with retryable exactly True increment retries; other unsuccessful outcomes increment failures. Return independent result without mutating responses.",
+        "edit_units": [
+          {
+            "bindings": [
+              "values"
+            ],
+            "end_line": 6,
+            "kind": "statement",
+            "line": 6
+          },
+          {
+            "bindings": [
+              "failures"
+            ],
+            "end_line": 7,
+            "kind": "statement",
+            "line": 7
+          },
+          {
+            "bindings": [
+              "retries"
+            ],
+            "end_line": 8,
+            "kind": "statement",
+            "line": 8
+          },
+          {
+            "bindings": [],
+            "end_line": 18,
+            "kind": "statement",
+            "line": 18
+          },
+          {
+            "bindings": [],
+            "end_line": 10,
+            "kind": "condition",
+            "line": 10
+          },
+          {
+            "bindings": [
+              "value"
+            ],
+            "end_line": 11,
+            "kind": "statement",
+            "line": 11
+          },
+          {
+            "bindings": [],
+            "end_line": 12,
+            "kind": "condition",
+            "line": 12
+          },
+          {
+            "bindings": [],
+            "end_line": 14,
+            "kind": "condition",
+            "line": 14
+          },
+          {
+            "bindings": [],
+            "end_line": 13,
+            "kind": "statement",
+            "line": 13
+          },
+          {
+            "bindings": [
+              "retries"
+            ],
+            "end_line": 15,
+            "kind": "statement",
+            "line": 15
+          },
+          {
+            "bindings": [
+              "failures"
+            ],
+            "end_line": 17,
+            "kind": "statement",
+            "line": 17
+          }
+        ],
+        "editable_lines": [
+          6,
+          7,
+          8,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          17,
+          18
+        ],
+        "engine": "CODEX_AGENT",
+        "independent_evaluation": false,
+        "max_attempts": 2,
+        "proposal_protocol": "ast_statement_v1",
+        "revision": 0,
+        "source": "def accepted_outcome(response):\n    return response.get(\"ok\") is True\n\n\ndef summarize_batch(responses):\n    values = []\n    failures = 0\n    retries = 0\n    for response in responses:\n        if accepted_outcome(response):\n            value = response.get(\"value\")\n            if value:\n                values.append(value)\n        elif response.get(\"retryable\"):\n            retries += 1\n        else:\n            failures += 1\n    return {\"values\": values, \"count\": len(values), \"failures\": failures, \"retries\": retries}\n",
+        "source_sha256": "fa0898cebcc2559b0be8a66d8853de87123a4ab9636218a50590209ba8191f46",
+        "state": "AWAITING_CODEX_CANDIDATE",
+        "target_symbol": "summarize_batch",
+        "task_id": "3b5ed7862a7144d4ade59ce7ec4dadfc",
+        "tests_sha256": "0dce4658cc635d49579cce12cefb96727c714799e0dc20da9915fee8b2a751d1"
+      },
+      "verified": true
+    }
+  ],
+  "classification": "OWNED_DEVELOPMENT",
+  "commercial_admission": "NOT_ADMITTED",
+  "credit_consumption_usd": null,
+  "customer_execution_authorized": false,
+  "delivery_authorized": false,
+  "elapsed_seconds": 137.623,
+  "independent_evaluation": false,
+  "inference_requests_reserved": 6,
+  "kind": "PHASE22_DEEPSEEK_OWNED_EXPERIMENT",
+  "model": "deepseek-v4-pro",
+  "observed_account_balance_delta_microusd": 0,
+  "plan_sha256": "a12648b59de913b18d358e94d2cd6abc482c6c86086765871bf52c8bef27b322",
+  "provider": "https://api.deepseek.com",
+  "provider_confirmed_cost": false,
+  "provider_cpu_memory": "NOT_EXPOSED_BY_API",
+  "receipt_sha256": "8f2118eb288509e9e9488821efd3b0d191736cee9480f90f36f86b64e328547a",
+  "runtime_admission": {
+    "capabilities_empty": true,
+    "cleanup_verified": true,
+    "cpu_pressure_enforced": true,
+    "cpu_pressure_used_seconds": 3.08,
+    "cpu_pressure_wall_seconds": 3.064,
+    "cpu_quota_verified": true,
+    "cpu_throttled_periods": 31,
+    "docker_socket_absent": true,
+    "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+    "loopback_inference_unreachable": true,
+    "memory_limit_enforced": true,
+    "network_denied": true,
+    "no_new_privileges": true,
+    "output_bounded": true,
+    "pid_current_at_denial": 64,
+    "pid_denial_events": 1,
+    "pid_limit_verified": true,
+    "pid_pressure_enforced": true,
+    "probe_threads": 63,
+    "root_writes_denied": true,
+    "seccomp_active": true,
+    "secrets_absent": true,
+    "source_writes_denied": true,
+    "swap_disabled": true,
+    "tmpfs_bounded_noexec": true,
+    "uid_unprivileged": true,
+    "untrusted_execution_certified": false,
+    "wall_clock_enforced": true
+  },
+  "status": "COMPLETED",
+  "trusted_controller_cpu_seconds": 0.423,
+  "trusted_controller_peak_rss_bytes": 23592960
+}

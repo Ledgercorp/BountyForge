@@ -1,0 +1,10 @@
+{
+  "plan_sha256": "OWNER_APPROVED_FROZEN_PLAN_SHA256",
+  "account_sha256": "TRUSTED_BROKER_CREDENTIAL_FINGERPRINT_SHA256",
+  "approved_usd": "2.00",
+  "reserve_usd": "20.00",
+  "existing_credits_only": false,
+  "no_auto_recharge_confirmed": false,
+  "owner_authorized": false,
+  "expires_unix": 0
+}

@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "kind": "sealed_owned_python_maintenance_supplement",
+  "provenance": {
+    "owner": "BountyForge / LeftSock Labs",
+    "license": "MIT",
+    "reference_repairs_supplied": false,
+    "core_freeze_commit": "48ce3f15a134ba06846d7eda8fe4ac2e594e7563",
+    "author": "Codex Phase22 engineering session",
+    "classification": "OWNED_DEVELOPMENT_NOT_UNSEEN"
+  },
+  "tasks": [
+    {
+      "id": "discount_checkout",
+      "file": "subject.py",
+      "symbol": "checkout_total",
+      "description": "Compute positive noncancelled item subtotal using the helper. Apply the stated percentage discount when subtotal meets or exceeds the minimum. Tax applies to the discounted subtotal. Return rounded total, discount and tax without mutating inputs.",
+      "tests": 8,
+      "sha256": {
+        "subject.py": "17c41fdfcadc30a0873bd778299e9b53f9affadc63ea18fc36b306547d54edf1",
+        "tests/test_regression.py": "bef9ad2b39cbd542bafefec109f88bf4edbe3328c0db1913b7825cc37541d703"
+      }
+    },
+    {
+      "id": "retry_state",
+      "file": "subject.py",
+      "symbol": "after_failure",
+      "description": "Copy job state after one failure. Cancelled jobs remain unchanged. Increment attempts once; mark failed when attempts reaches the positive limit, otherwise retrying. Retrying delay is base_delay times 2 to the power attempts-minus-one; terminal delay is zero. Preserve caller state.",
+      "tests": 8,
+      "sha256": {
+        "subject.py": "7308cb1eb74206009e62526e31ad65253d23b56fd16233eecc72be90e9b26981",
+        "tests/test_regression.py": "19e5cb77c1cd7967713b919d5d8d501375bca093297556afc65ae11591e4e060"
+      }
+    },
+    {
+      "id": "merge_records",
+      "file": "subject.py",
+      "symbol": "latest_records",
+      "description": "Retain records with an ID other than None, including ID zero and empty-string IDs. For duplicate IDs select the highest numeric version; preserve first record for equal versions. Return new record dictionaries without changing the rows or helper behavior.",
+      "tests": 8,
+      "sha256": {
+        "subject.py": "0c90b827cde7631c14d3c705322d9537ad0d720bdcb023676a3d906ffeb6ec49",
+        "tests/test_regression.py": "7140120f28f4972750ebd774ea1c8ee5a6b9355bfba8d6b105d38559d780e439"
+      }
+    },
+    {
+      "id": "response_window",
+      "file": "subject.py",
+      "symbol": "apply_response",
+      "description": "Copy cache. HTTP 200 uses items when the key exists, preserving an explicit empty list; otherwise preserve old items. Use cursor when present, including null or zero. HTTP 204 clears items and cursor. Other statuses preserve cache. Do not mutate inputs; helper copies item lists.",
+      "tests": 8,
+      "sha256": {
+        "subject.py": "00592fa7cbe0191749df1e57563e3da1bd1fbdfcff9dd7b5fc022ad1811ac617",
+        "tests/test_regression.py": "8886f50ff246b174558f0594eb920dc8321e6e6e761a503b5585faf85e21ff7b"
+      }
+    },
+    {
+      "id": "lease_capacity",
+      "file": "subject.py",
+      "symbol": "apply_events",
+      "description": "Process ordered capacity events on a copied state. Ignore already seen event IDs. Accept acquire only when units fits remaining capacity, including exact fit; accept release only when units fits current usage. Every accepted event changes latest usage, records its ID, and increments accepted count. Rejected events are not recorded. Inputs have positive integer units. Preserve caller state, events and helper behavior.",
+      "tests": 8,
+      "sha256": {
+        "subject.py": "fef33d7c6086fe0c9fe9f6e870b82452381d6340a71282424842357cc799a058",
+        "tests/test_regression.py": "148db1adfd1e59af540ed353d7d27a0f49699643c9b0e208ace2ab2981d1565e"
+      }
+    },
+    {
+      "id": "batch_outcomes",
+      "file": "subject.py",
+      "symbol": "summarize_batch",
+      "description": "Summarize outcome dictionaries. Successful outcomes have ok exactly True, accept non-None value including zero, false and empty strings. Return accepted values and their count. For unsuccessful outcomes with retryable exactly True increment retries; other unsuccessful outcomes increment failures. Return independent result without mutating responses.",
+      "tests": 8,
+      "sha256": {
+        "subject.py": "fa0898cebcc2559b0be8a66d8853de87123a4ab9636218a50590209ba8191f46",
+        "tests/test_regression.py": "0dce4658cc635d49579cce12cefb96727c714799e0dc20da9915fee8b2a751d1"
+      }
+    }
+  ]
+}

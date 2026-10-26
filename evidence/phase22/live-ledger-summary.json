@@ -1,0 +1,101 @@
+{
+  "approved_microusd": 2000000,
+  "kind": "PHASE22_SANITIZED_CREDIT_LEDGER_EXPORT",
+  "minimum_reserve_microusd": 20000000,
+  "plan_sha256": "a12648b59de913b18d358e94d2cd6abc482c6c86086765871bf52c8bef27b322",
+  "private_grant_exported": false,
+  "provider_enforced_cap": false,
+  "receipt_sha256": "a19a4aa6dd1f3cb9d9f1ad47e8d833297a28c3351084da7455662c055efa1cef",
+  "requests": [
+    {
+      "accounted_upper_microusd": 11248,
+      "attempt": 1,
+      "case_id": "discount_checkout",
+      "id": 1,
+      "reserved_microusd": 37848,
+      "usage": {
+        "completion_tokens": 2598,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 727,
+        "prompt_tokens": 727,
+        "reasoning_tokens": 2503,
+        "total_tokens": 3325
+      }
+    },
+    {
+      "accounted_upper_microusd": 5428,
+      "attempt": 1,
+      "case_id": "retry_state",
+      "id": 2,
+      "reserved_microusd": 37848,
+      "usage": {
+        "completion_tokens": 1106,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 794,
+        "prompt_tokens": 794,
+        "reasoning_tokens": 1062,
+        "total_tokens": 1900
+      }
+    },
+    {
+      "accounted_upper_microusd": 5325,
+      "attempt": 1,
+      "case_id": "merge_records",
+      "id": 3,
+      "reserved_microusd": 37848,
+      "usage": {
+        "completion_tokens": 1099,
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 481,
+        "prompt_tokens": 737,
+        "reasoning_tokens": 1051,
+        "total_tokens": 1836
+      }
+    },
+    {
+      "accounted_upper_microusd": 13557,
+      "attempt": 1,
+      "case_id": "response_window",
+      "id": 4,
+      "reserved_microusd": 37848,
+      "usage": {
+        "completion_tokens": 3144,
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 582,
+        "prompt_tokens": 838,
+        "reasoning_tokens": 3083,
+        "total_tokens": 3982
+      }
+    },
+    {
+      "accounted_upper_microusd": 6036,
+      "attempt": 1,
+      "case_id": "lease_capacity",
+      "id": 5,
+      "reserved_microusd": 37848,
+      "usage": {
+        "completion_tokens": 1189,
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 749,
+        "prompt_tokens": 1005,
+        "reasoning_tokens": 1149,
+        "total_tokens": 2194
+      }
+    },
+    {
+      "accounted_upper_microusd": 7148,
+      "attempt": 1,
+      "case_id": "batch_outcomes",
+      "id": 6,
+      "reserved_microusd": 37848,
+      "usage": {
+        "completion_tokens": 1511,
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 626,
+        "prompt_tokens": 882,
+        "reasoning_tokens": 1462,
+        "total_tokens": 2393
+      }
+    }
+  ]
+}

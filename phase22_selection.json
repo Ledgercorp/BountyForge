@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "novelty": "Phase22 new owned developmental cases. Engineering agent can read tests; not independently unseen. No reference fixes supplied.",
+  "manifests": [
+    {
+      "path": "benchmarks/phase8/phase22_development/manifest.json",
+      "sha256": "8a355977834b6848f0818ffb60cdb237b377c9d9f3579cbc6d91c60a8203a639",
+      "case_ids": "all"
+    }
+  ]
+}

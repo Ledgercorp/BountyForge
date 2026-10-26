@@ -1,0 +1,16 @@
+{
+  "additional_cash_spending_authorized": false,
+  "approved_at_unix": 1792975728,
+  "approved_existing_credit_usd": "2.00",
+  "auto_recharge_disabled": "OWNER_CONFIRMED_NOT_INDEPENDENTLY_EXPOSED_BY_API",
+  "basis": "Owner answered Yes to the immediately preceding explicit allocation and billing-confirmation question",
+  "commercial_admission": "NOT_ADMITTED",
+  "credential_included": false,
+  "kind": "PHASE22_OWNER_APPROVAL_RECORD",
+  "maximum_requests": 12,
+  "maximum_requests_per_task": 2,
+  "minimum_remaining_credit_usd": "20.00",
+  "model": "deepseek-v4-pro",
+  "plan_sha256": "a12648b59de913b18d358e94d2cd6abc482c6c86086765871bf52c8bef27b322",
+  "receipt_sha256": "054caba385a702bca5b0b8abecb4e2af0999ae6fd20a72fce36eb399d40346ad"
+}

@@ -1,0 +1,79 @@
+{
+  "kind": "PHASE24_PLATFORM_RESEARCH",
+  "observed_at": "2026-10-26",
+  "sources": [
+    {
+      "platform": "Superteam Earn",
+      "official_sources": [
+        "https://superteam.fun/skill.md",
+        "https://github.com/SuperteamDAO/earn/tree/3e3bb83d3028851d21b86541f3816f2957edccfe"
+      ],
+      "source_revision": "3e3bb83d3028851d21b86541f3816f2957edccfe",
+      "license": "AGPL-3.0; no upstream source vendored",
+      "documented_read": "Public agent listings/details endpoints; live listings currently require an authorized API key",
+      "observed_feed": "HTTP 401; opportunity set is unknown, not empty",
+      "eligibility": "AGENT_ALLOWED/AGENT_ONLY are explicit listing fields; do not infer US or payout eligibility",
+      "payout": "Human account, claimant identity/KYC and payout setup remain owner-controlled",
+      "account_created": false,
+      "submissions": 0
+    },
+    {
+      "platform": "OnlyDust",
+      "official_sources": [
+        "https://docs.onlydust.com/overview/how-do-we-flow",
+        "https://docs.onlydust.com/the-impossible-bench/who-should-apply",
+        "https://docs.onlydust.com/overview/history-and-story",
+        "https://docs.onlydust.com/vision-and-roadmap",
+        "https://docs.onlydust.com/llms.txt"
+      ],
+      "observations": [
+        "The documented sponsor flow and grant programs do not by themselves prove a funded coding bounty.",
+        "The Impossible Bench program asks for primarily human-authored core work and limits AI to minor autocomplete; excluded from an AI repair queue.",
+        "General AI discussion in roadmap/history pages is not blanket permission for agent-authored contributions.",
+        "No documented public listings API was established. The llms.txt request returned 403 and was not bypassed."
+      ],
+      "adapter": "Explicit evidence import only; current availability, AI eligibility, funding and US eligibility remain unknown",
+      "account_created": false,
+      "submissions": 0
+    },
+    {
+      "platform": "GitHub public issue search",
+      "official_sources": [
+        "https://docs.github.com/en/rest/issues/issues#get-an-issue",
+        "https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests"
+      ],
+      "method": "Public issue search and primary issue records; search mentions alone are not offers",
+      "observed_sample": "Two USDC/SOL Python searches, top five hits each; ten hits, eight unparsed/conflicting, one unique repeated currency mention",
+      "result": "Zero independently verified priced offers and zero qualified opportunities in this incomplete sample",
+      "false_positive_regression": "An agent's goal to earn 1 USDC was normalized as a currency claim, not a paid offer"
+    },
+    {
+      "platform": "Immunefi",
+      "official_sources": [
+        "https://immunefi.com/bug-bounty/immunefi/information/"
+      ],
+      "observations": [
+        "Program material describes USDC-denominated rewards and KYC; a displayed vault does not independently prove escrow for a specific issue.",
+        "The reviewed security program expects security/Solidity work outside BountyForge's admitted Python repair profile."
+      ],
+      "disposition": "Research only; no probing, exploit work, account creation or claims"
+    },
+    {
+      "platform": "Coinbase Exchange public ticker",
+      "official_sources": [
+        "https://docs.cdp.coinbase.com/api-reference/exchange-api/rest-api/products/get-product-ticker",
+        "https://developers.circle.com/stablecoins/usdc-contract-addresses"
+      ],
+      "observed_sol_usd": "101.17",
+      "sol_observed_trade_time": "2026-10-26T02:04:14.265641168Z",
+      "sol_observed_24h_volume": "246041.5576272",
+      "usdc_usd_endpoint": "HTTP 404 for USDC-USD on this venue; no peg or price inferred",
+      "limitations": "A venue ticker is a market observation, not an executable quote, withdrawal route, spendable balance, or guaranteed liquidity"
+    }
+  ],
+  "commercial_admission": "NOT_ADMITTED",
+  "live_submissions": 0,
+  "wallet_operations": 0,
+  "paid_api_calls": 0,
+  "scheduling_active": false
+}

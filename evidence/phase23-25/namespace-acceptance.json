@@ -1,0 +1,16 @@
+{
+  "kind": "PHASE23_REAL_OWNED_NAMESPACE_ACCEPTANCE",
+  "rootfs_built_offline": true,
+  "actual_exit_code": 0,
+  "log_sha256": "cb839403446944c6f9bc0add4d8660a9fb4963328ab025ec1377e330a7c00af5",
+  "source_code_unchanged": true,
+  "owned_probes_only": true,
+  "private_execution_admitted": false,
+  "customer_code_executed": false,
+  "upstream_repositories_executed": false,
+  "tests_executed": 8,
+  "tests_passed": 8,
+  "skips": 0,
+  "log_path": "namespace-tests.log",
+  "claim": "Eight previously skipped owned namespace/rootfs probes passed locally; no hostile-code certification"
+}

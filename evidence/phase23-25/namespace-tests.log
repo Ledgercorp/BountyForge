@@ -1,0 +1,13 @@
+test_failing_test_is_failure (test_isolation.BoundaryTests.test_failing_test_is_failure) ... ok
+test_invalid_time_bound (test_isolation.BoundaryTests.test_invalid_time_bound) ... ok
+test_isolation_probes (test_isolation.BoundaryTests.test_isolation_probes) ... ok
+test_named_secret_tree_blocked (test_isolation.BoundaryTests.test_named_secret_tree_blocked) ... ok
+test_rootfs_is_read_only_including_owner_chmod (test_isolation.BoundaryTests.test_rootfs_is_read_only_including_owner_chmod) ... ok
+test_runner_missing_or_invalid (test_isolation.BoundaryTests.test_runner_missing_or_invalid) ... ok
+test_symlinks_blocked (test_isolation.BoundaryTests.test_symlinks_blocked) ... ok
+test_timeout_is_failure (test_isolation.BoundaryTests.test_timeout_is_failure) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 2.699s
+
+OK

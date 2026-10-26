@@ -1,0 +1,12 @@
+{
+  "kind": "PHASE23_NAMESPACE_FEASIBILITY",
+  "checked_at_unix": 1792981388,
+  "rootfs_provisioned": false,
+  "checks_weakened": false,
+  "customer_execution_admitted": false,
+  "unshare_exit_code": 0,
+  "unshare_diagnostic": "",
+  "/proc/sys/kernel/unprivileged_userns_clone": "unavailable",
+  "/proc/sys/kernel/apparmor_restrict_unprivileged_userns": "unavailable",
+  "distro_python313_available": true
+}

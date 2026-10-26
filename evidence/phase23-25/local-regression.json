@@ -1,0 +1,18 @@
+{
+  "additional_model_requests": 0,
+  "additional_spending_usd": 0,
+  "all_eight_namespace_tests_enabled_and_passed": true,
+  "child_maximum_rss_kib": 42132,
+  "child_test_process_cpu_seconds": 26.213,
+  "kind": "PHASE23_25_LOCAL_FINAL_REGRESSION",
+  "node_failures": 0,
+  "node_tests_passed": 8,
+  "opt_in_owned_docker_fixture_suite_enabled": true,
+  "python_failures": 0,
+  "python_skips": 0,
+  "python_suite_seconds": 63.551,
+  "python_tests_executed": 924,
+  "python_tests_passed": 924,
+  "receipt_sha256": "41d36210e45d8511cd7d0fb0e37a3a52259d9124e0fdd94b6799d1ade5ed9038",
+  "suite_wall_seconds": 63.913
+}

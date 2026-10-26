@@ -1,0 +1,51 @@
+name: Phase23-25 model-free readiness
+
+on:
+  pull_request:
+    branches: [engineering/phase22-deepseek-api-20261025]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase23-25-readiness
+  cancel-in-progress: false
+
+jobs:
+  readiness:
+    if: ${{ github.repository == 'Ledgercorp/BountyForge' && github.event.repository.private == false && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'engineering/phase23-25-readiness-20261026' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Admit exact existing owned Docker image
+        run: docker pull python@sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590
+      - name: Full Python regression with opt-in owned Docker fixture checks
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+          BOUNTYFORGE_PHASE8_DEV_DOCKER: "1"
+          BOUNTYFORGE_PHASE8_DEV_EVIDENCE: ${{ runner.temp }}/phase23-25-owned-controls.json
+        run: python3 -m unittest discover -s tests -v
+      - name: Verify frozen Phase23 historical metadata without execution
+        run: python3 -m scripts.verify_historical_registry
+      - name: Rehearse private durable crypto ledger, SQLite restart and submission denial
+        run: |
+          umask 077
+          mkdir -p "$RUNNER_TEMP/bf25-state" "$RUNNER_TEMP/bf25-evidence"
+          python3 -m scripts.crypto_work rehearse --admit-owned-simulation --state-dir "$RUNNER_TEMP/bf25-state" --output "$RUNNER_TEMP/bf25-evidence/rehearsal-first.json"
+          python3 -m scripts.crypto_work rehearse --admit-owned-simulation --state-dir "$RUNNER_TEMP/bf25-state" --output "$RUNNER_TEMP/bf25-evidence/rehearsal-after-restart.json"
+      - name: Node console regression
+        run: node --test tests/dashboard_state.mjs tests/repair_console.cjs
+      - name: Upload small model-free acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: phase23-25-readiness
+          path: |
+            ${{ runner.temp }}/phase23-25-owned-controls.json
+            ${{ runner.temp }}/bf25-evidence/*.json
+          retention-days: 1
+          if-no-files-found: ignore

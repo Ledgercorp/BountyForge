@@ -1,0 +1,176 @@
+{
+  "kind": "DEV_ONLY_REFERENCE_VALIDATION",
+  "model_calls": 0,
+  "model_generated_repairs": 0,
+  "heldout_accuracy_measured": false,
+  "sandbox_preflight": {
+    "network_denied": true,
+    "loopback_inference_unreachable": true,
+    "source_writes_denied": true,
+    "root_writes_denied": true,
+    "secrets_absent": true,
+    "uid_unprivileged": true,
+    "capabilities_empty": true,
+    "no_new_privileges": true,
+    "seccomp_active": true,
+    "memory_limit_enforced": true,
+    "swap_disabled": true,
+    "cpu_quota_verified": true,
+    "pid_limit_verified": true,
+    "tmpfs_bounded_noexec": true,
+    "wall_clock_enforced": true,
+    "cleanup_verified": true,
+    "output_bounded": true,
+    "docker_socket_absent": true,
+    "image_digest": "sha256:8a00ecb83ed9d0864dfd102a1bdb2067fda907ceb30bb86d09da9ee558b19590",
+    "untrusted_execution_certified": false,
+    "pid_pressure_enforced": true,
+    "pid_current_at_denial": 64,
+    "pid_denial_events": 1,
+    "probe_threads": 63,
+    "cpu_pressure_enforced": true,
+    "cpu_pressure_wall_seconds": 3.003,
+    "cpu_pressure_used_seconds": 3.022,
+    "cpu_throttled_periods": 30
+  },
+  "tasks": [
+    {
+      "id": "configuration_values",
+      "baseline": {
+        "passed": false,
+        "returncode": 1,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 1.459,
+        "output": "======================================================================\nERROR: test_colons_in_value (test_regression.ConfigurationTests.test_colons_in_value)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 6, in test_colons_in_value\n    self.assertEqual(parse_configuration(['endpoint: https://example.test:8443/api']),\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/subject.py\", line 9, in parse_configuration\n    key, value = parts\n    ^^^^^^^^^^\nValueError: too many values to unpack (expected 2)\n\n----------------------------------------------------------------------\nRan 6 tests in 0.000s\n\nFAILED (errors=1)\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "development_reference": {
+        "passed": true,
+        "returncode": 0,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 0.994,
+        "output": "----------------------------------------------------------------------\nRan 6 tests in 0.000s\n\nOK\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      }
+    },
+    {
+      "id": "stable_partition",
+      "baseline": {
+        "passed": false,
+        "returncode": 1,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 1.027,
+        "output": "======================================================================\nFAIL: test_both_orders (test_regression.PartitionTests.test_both_orders)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 6, in test_both_orders\n    self.assertEqual(stable_partition([1, 2, 3, 4], {2, 4}), ([2, 4], [1, 3]))\nAssertionError: Tuples differ: ([2, 4], [3, 1]) != ([2, 4], [1, 3])\n\nFirst differing element 1:\n[3, 1]\n[1, 3]\n\n- ([2, 4], [3, 1])\n?            ---\n\n+ ([2, 4], [1, 3])\n?           +++\n\n\n======================================================================\nFAIL: test_nothing_selected (test_regression.PartitionTests.test_nothing_selected)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 10, in test_nothing_selected\n    self.assertEqual(stable_partition([0, 2, 1], set()), ([], [0, 2, 1]))\nAssertionError: Tuples differ: ([], [1, 2, 0]) != ([], [0, 2, 1])\n\nFirst differing element 1:\n[1, 2, 0]\n[0, 2, 1]\n\n- ([], [1, 2, 0])\n?       ^     ^\n\n+ ([], [0, 2, 1])\n?       ^     ^\n\n\n----------------------------------------------------------------------\nRan 6 tests in 0.001s\n\nFAILED (failures=2)\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "development_reference": {
+        "passed": true,
+        "returncode": 0,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 1.118,
+        "output": "----------------------------------------------------------------------\nRan 6 tests in 0.000s\n\nOK\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      }
+    },
+    {
+      "id": "weighted_samples",
+      "baseline": {
+        "passed": false,
+        "returncode": 1,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 1.788,
+        "output": "======================================================================\nFAIL: test_all_zero (test_regression.WeightedTests.test_all_zero)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 7, in test_all_zero\n    def test_all_zero(self): self.assertIsNone(weighted_mean([(3, 0), (9, 0)]))\n                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 6.0 is not None\n\n======================================================================\nFAIL: test_different_weights (test_regression.WeightedTests.test_different_weights)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 5, in test_different_weights\n    def test_different_weights(self): self.assertAlmostEqual(weighted_mean([(2, 1), (8, 3)]), 6.5)\n                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 5.0 != 6.5 within 7 places (1.5 difference)\n\n======================================================================\nFAIL: test_negative_value (test_regression.WeightedTests.test_negative_value)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 10, in test_negative_value\n    def test_negative_value(self): self.assertAlmostEqual(weighted_mean([(-2, 3), (6, 1)]), 0.0)\n                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 2.0 != 0.0 within 7 places (2.0 difference)\n\n======================================================================\nFAIL: test_zero_weight_ignored (test_regression.WeightedTests.test_zero_weight_ignored)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 6, in test_zero_weight_ignored\n    def test_zero_weight_ignored(self): self.assertAlmostEqual(weighted_mean([(100, 0), (4, 2)]), 4.0)\n                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 52.0 != 4.0 within 7 places (48.0 difference)\n\n----------------------------------------------------------------------\nRan 7 tests in 0.001s\n\nFAILED (failures=4)\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "development_reference": {
+        "passed": true,
+        "returncode": 0,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 1.393,
+        "output": "----------------------------------------------------------------------\nRan 7 tests in 0.000s\n\nOK\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      }
+    },
+    {
+      "id": "discount_continuation",
+      "baseline": {
+        "passed": false,
+        "returncode": 1,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 1.48,
+        "output": "======================================================================\nFAIL: test_full_discount (test_regression.DiscountTests.test_full_discount)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 7, in test_full_discount\n    def test_full_discount(self): self.assertEqual(discounted_total([4, 6], 100), 0)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 10.0 != 0\n\n======================================================================\nFAIL: test_no_discount (test_regression.DiscountTests.test_no_discount)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 6, in test_no_discount\n    def test_no_discount(self): self.assertEqual(discounted_total([4, 6], 0), 10)\n                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 0.0 != 10\n\n======================================================================\nFAIL: test_partial_discount (test_regression.DiscountTests.test_partial_discount)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 5, in test_partial_discount\n    def test_partial_discount(self): self.assertEqual(discounted_total([40, 60], 25), 75)\n                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 25.0 != 75\n\n======================================================================\nFAIL: test_rounding (test_regression.DiscountTests.test_rounding)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 8, in test_rounding\n    def test_rounding(self): self.assertEqual(discounted_total([19.99], 10), 17.99)\n                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 2.0 != 17.99\n\n----------------------------------------------------------------------\nRan 7 tests in 0.001s\n\nFAILED (failures=4)\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "development_reference": {
+        "passed": true,
+        "returncode": 0,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 1.005,
+        "output": "----------------------------------------------------------------------\nRan 7 tests in 0.000s\n\nOK\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      }
+    },
+    {
+      "id": "canonical_headers",
+      "baseline": {
+        "passed": false,
+        "returncode": 1,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 1.06,
+        "output": "======================================================================\nFAIL: test_leading_and_trailing_separators (test_regression.HeaderTests.test_leading_and_trailing_separators)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 6, in test_leading_and_trailing_separators\n    def test_leading_and_trailing_separators(self): self.assertEqual(canonical_header('--X-Id-'), 'x_id')\n                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '__x_id_' != 'x_id'\n- __x_id_\n? --    -\n+ x_id\n\n\n======================================================================\nFAIL: test_only_separators (test_regression.HeaderTests.test_only_separators)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 7, in test_only_separators\n    def test_only_separators(self): self.assertEqual(canonical_header('---'), '')\n                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '___' != ''\n- ___\n+ \n\n\n======================================================================\nFAIL: test_repeated_separators (test_regression.HeaderTests.test_repeated_separators)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 5, in test_repeated_separators\n    def test_repeated_separators(self): self.assertEqual(canonical_header('X--Trace---Id'), 'x_trace_id')\n                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'x__trace___id' != 'x_trace_id'\n- x__trace___id\n?  -       --\n+ x_trace_id\n\n\n----------------------------------------------------------------------\nRan 6 tests in 0.001s\n\nFAILED (failures=3)\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "development_reference": {
+        "passed": true,
+        "returncode": 0,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 1.569,
+        "output": "----------------------------------------------------------------------\nRan 6 tests in 0.000s\n\nOK\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      }
+    },
+    {
+      "id": "status_priority",
+      "baseline": {
+        "passed": false,
+        "returncode": 1,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 0.998,
+        "output": "======================================================================\nFAIL: test_unknown_is_rejected_even_at_limit (test_regression.StatusTests.test_unknown_is_rejected_even_at_limit)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/tests/test_regression.py\", line 5, in test_unknown_is_rejected_even_at_limit\n    def test_unknown_is_rejected_even_at_limit(self): self.assertEqual(classify_status('invalid', 3, 3), 'rejected')\n                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'held' != 'rejected'\n- held\n+ rejected\n\n\n----------------------------------------------------------------------\nRan 7 tests in 0.000s\n\nFAILED (failures=1)\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      },
+      "development_reference": {
+        "passed": true,
+        "returncode": 0,
+        "timeout": false,
+        "error": null,
+        "elapsed_seconds": 0.968,
+        "output": "----------------------------------------------------------------------\nRan 7 tests in 0.000s\n\nOK\n",
+        "untrusted_execution_certified": false,
+        "sandbox": "digest_pinned_docker_no_network_read_only_no_privileges"
+      }
+    }
+  ]
+}

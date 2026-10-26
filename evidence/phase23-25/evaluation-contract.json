@@ -1,0 +1,34 @@
+{
+  "agent_context_fields": [
+    "description",
+    "source",
+    "source_sha256",
+    "approved_file",
+    "editable_lines"
+  ],
+  "backend_default_changed": false,
+  "commercial_admission": "NOT_ADMITTED",
+  "contamination": "Public historical training overlap unknown; known exposed astropy case excluded",
+  "frozen_files": {
+    "bountyforge/evaluation_control.py": "8ed7d3452c3ff4648b60f74a30a1c912c90ad28dd97a4246706b3875d8cc2904",
+    "scripts/prepare_historical_registry.py": "d4f6e30e253d858ccb2cc037cc77ce3cec85ca22f7f142ec9625360e73d6008f",
+    "scripts/verify_historical_registry.py": "039c486746d2682336af553701db3e2b2c9645c563ab653f91ebb356ed6d8614"
+  },
+  "functional_baselines_run": 0,
+  "heldout_store_boundary": "NOT_ENFORCEABLE_AGAINST_PRIVILEGED_ENGINEERING_SESSION",
+  "historical_registry_sha256": "df6fa62011735f2d53f745964ced8618f98ea77e250c5a59aab36bc3fff782d5",
+  "independent_unseen_evaluation": false,
+  "kind": "PHASE23_FROZEN_EVALUATION_PREPARATION",
+  "paid_requests_authorized": 0,
+  "reference_fields_forbidden": [
+    "patch",
+    "test_patch",
+    "hints_text",
+    "reference",
+    "FAIL_TO_PASS",
+    "PASS_TO_PASS"
+  ],
+  "required_acceptance": "All required tests and independent fresh regression must pass without skips/errors; baseline must reproduce expected failures",
+  "source_authorization": "NOT_ADMITTED_THIRD_PARTY_EXECUTION",
+  "task_count": 30
+}

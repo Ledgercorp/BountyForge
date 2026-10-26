@@ -1,0 +1,99 @@
+{
+  "actual_inference_requests": 0,
+  "application_review_is_simulated": true,
+  "commercial_admission": "NOT_ADMITTED",
+  "duplicate_payment_prevented": true,
+  "duplicate_queue_entry_prevented": true,
+  "earnings": {
+    "actual_operating_cost_usd": null,
+    "actual_submissions_verified": 0,
+    "commercial_admission": "NOT_ADMITTED",
+    "confirmed_real_earnings_usd": "0",
+    "cost_observations": [],
+    "local_storage_cross_workspace_durable": false,
+    "mode": "SIMULATED",
+    "net_realized_usd": null,
+    "owner_withdrawal_route_verified": false,
+    "received_assets": {},
+    "reported_awards": {
+      "USDC": "100"
+    },
+    "simulated_received_assets": {
+      "USDC": "1"
+    },
+    "spendable_usd": null,
+    "wallet_balance_verified": false
+  },
+  "external_submission_refused": true,
+  "kind": "PHASE25_OWNED_COMMERCIAL_REHEARSAL",
+  "network_requests": 0,
+  "opportunity_is_fictional": true,
+  "qualification": {
+    "commercial_admission": "NOT_ADMITTED",
+    "execution_authorized": false,
+    "legacy_gate": {
+      "can_submit": false,
+      "external_execution_authorized": false,
+      "funding_tier": "C",
+      "priority": 0,
+      "reasons": [
+        "Funding has no independently verified escrow or binding commitment",
+        "No independently supported current monetary offer",
+        "Original GitHub issue not independently open",
+        "Platform reward availability unverified",
+        "Prior payment/claim unresolved",
+        "AI assistance permission unverified",
+        "US participation eligibility unverified",
+        "Payout terms unresolved",
+        "No-fee participation unverified",
+        "No bounded reproducible target tests",
+        "Arbitrary third-party repository execution not safely admitted",
+        "Five-issue comparable benchmark incomplete"
+      ],
+      "status": "blocked"
+    },
+    "reasons": [
+      "ASSET_NETWORK_IDENTITY_UNVERIFIED",
+      "COMMERCIAL_NOT_ADMITTED",
+      "FUNDING_UNVERIFIED",
+      "NO_UPFRONT_PAYMENT_UNVERIFIED",
+      "OWNER_PAYOUT_ROUTE_REQUIRED",
+      "OWNER_SUBMISSION_APPROVAL_REQUIRED",
+      "THIRD_PARTY_EXECUTION_NOT_ADMITTED",
+      "US_ELIGIBILITY_UNVERIFIED"
+    ],
+    "research_priority": 2,
+    "status": "BLOCKED",
+    "submission_authorized": false
+  },
+  "real_payments": 0,
+  "real_submissions": 0,
+  "receipt_sha256": "0aa881bad28816efd3d7bb15311ff7877222250f437bdc93bf530b79286dc65b",
+  "restarted_existing_state": false,
+  "signature_is_simulated": true,
+  "simulation_only": true,
+  "stale_lease_finish_refused": true,
+  "status": "PASSED",
+  "submission_preview": {
+    "actual_submission_count": 0,
+    "authorship_preserved_without_relabeling": true,
+    "blockers": [
+      "COMMERCIAL_NOT_ADMITTED",
+      "HOSTILE_CODE_EXECUTION_NOT_ADMITTED",
+      "OWNER_SUBMISSION_APPROVAL_REQUIRED",
+      "OWNED_FIXTURE_IS_NOT_REAL_ASSIGNMENT"
+    ],
+    "commercial_admission": "NOT_ADMITTED",
+    "external_dispatch_implemented": false,
+    "kind": "CRYPTO_SUBMISSION_DRY_RUN",
+    "opportunity_id": "owned-simulation",
+    "opportunity_snapshot_sha256": "cf9581c030284b96ce602182b82fda874d91696becb6ec4bf71a45536a1a16db",
+    "package_sha256": "eaaced6d41e869484692da0bce1baf78eee4792e87f87fe139e5620d4bfe9e7b",
+    "provider": "superteam",
+    "repair_receipt_sha256": null,
+    "source_url": "https://superteam.fun/earn/listing/owned-simulation",
+    "state": "PREPARED_DRY_RUN_NOT_SUBMITTABLE",
+    "submission_authorized": false
+  },
+  "wallet_actions": 0
+}

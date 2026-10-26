@@ -1,0 +1,142 @@
+{
+  "actual_inference_requests": 0,
+  "identified_priced_primary_offers": 0,
+  "kind": "PHASE24_SEARCH_NORMALIZATION",
+  "qualified": 0,
+  "receipt_sha256": "85555c19ed6ebfdf4ffc9932b16e0e2be6a5a57278134fb2b8b37c61677ceec6",
+  "received_earnings_usd": "0",
+  "records": [
+    {
+      "coordination_key": "4d6ec7b6c529aefc569c410cc360abd5ce03d34151f06d88478e31b16489480f",
+      "coordination_status": "UNIQUE",
+      "duplicate_observations": 2,
+      "records": [
+        {
+          "acceptance_conditions": "SPONSOR_JUDGMENT_UNVERIFIED",
+          "advertised_amount": null,
+          "advertised_max": null,
+          "advertised_min": null,
+          "ai_agent_eligibility": "UNKNOWN",
+          "asset_address": null,
+          "availability": "UNKNOWN",
+          "collection_probability": null,
+          "compensation_type": "fixed",
+          "competition_count": null,
+          "complexity": "UNKNOWN",
+          "currency_claim_amount": "1",
+          "deadline": null,
+          "eligibility_evidence": [],
+          "funding_evidence": [],
+          "funding_status": "UNVERIFIED",
+          "github_issue": "https://github.com/scottonchain/microcredit-agent-testbed/issues/17",
+          "id": "4d6ec7b6c529aefc569c410cc360abd5ce03d34151f06d88478e31b16489480f",
+          "legal_payout_route": "OWNER_REVIEW_REQUIRED",
+          "observation_kind": "UNVERIFIED_SEARCH_CURRENCY_MATCH",
+          "observed_at": "2026-10-26T02:40:45.207230+00:00",
+          "payment_asset": "USDC",
+          "payment_chain": null,
+          "provider": "github",
+          "qualification": {
+            "commercial_admission": "NOT_ADMITTED",
+            "execution_authorized": false,
+            "legacy_gate": {
+              "can_submit": false,
+              "external_execution_authorized": false,
+              "funding_tier": "C",
+              "priority": 0,
+              "reasons": [
+                "Funding has no independently verified escrow or binding commitment",
+                "No independently supported current monetary offer",
+                "Original GitHub issue not independently open",
+                "Platform reward availability unverified",
+                "Prior payment/claim unresolved",
+                "AI assistance permission unverified",
+                "US participation eligibility unverified",
+                "Payout terms unresolved",
+                "No-fee participation unverified",
+                "Outside verified Python capability",
+                "No bounded reproducible target tests",
+                "Arbitrary third-party repository execution not safely admitted",
+                "Five-issue comparable benchmark incomplete"
+              ],
+              "status": "blocked"
+            },
+            "reasons": [
+              "AI_NOT_EXPLICITLY_ALLOWED",
+              "ASSET_NETWORK_IDENTITY_UNVERIFIED",
+              "AVAILABILITY_UNVERIFIED",
+              "COMMERCIAL_NOT_ADMITTED",
+              "DEADLINE_UNVERIFIED",
+              "FUNDING_UNVERIFIED",
+              "GITHUB_OFFER_ROLE_NOT_INDEPENDENTLY_VERIFIED",
+              "NO_UPFRONT_PAYMENT_UNVERIFIED",
+              "OWNER_PAYOUT_ROUTE_REQUIRED",
+              "OWNER_SUBMISSION_APPROVAL_REQUIRED",
+              "PYTHON_PROFILE_UNVERIFIED",
+              "THIRD_PARTY_EXECUTION_NOT_ADMITTED",
+              "US_ELIGIBILITY_UNVERIFIED"
+            ],
+            "research_priority": 1,
+            "status": "BLOCKED",
+            "submission_authorized": false
+          },
+          "required_skills": [],
+          "requirements_untrusted": "Not retained; full independent requirements review required.",
+          "scam_signal": false,
+          "schema": 1,
+          "source_risk": "UNVERIFIED_SEARCH_MATCH",
+          "source_url": "https://github.com/scottonchain/microcredit-agent-testbed/issues/17",
+          "submission_requirements": "DETAILS_REVIEW_REQUIRED",
+          "technical_profile": "UNKNOWN",
+          "title": "BOOTSTRAP-001: paid AI work and resource access, then human earnings",
+          "transaction_fees": null,
+          "upfront_deposit_required": null,
+          "us_eligibility": "UNKNOWN",
+          "withdrawal_fees": null
+        }
+      ]
+    }
+  ],
+  "rejected": [
+    {
+      "reason": "No unambiguous bounded crypto reward in sampled claims",
+      "source_url": "https://github.com/drexthealpha/Knos/issues/17"
+    },
+    {
+      "reason": "No unambiguous bounded crypto reward in sampled claims",
+      "source_url": "https://github.com/scottonchain/microcredit-agent-testbed/issues/15"
+    },
+    {
+      "reason": "No unambiguous bounded crypto reward in sampled claims",
+      "source_url": "https://github.com/Emmanuel-Evenzur/syetem_prompt/issues/17"
+    },
+    {
+      "reason": "No unambiguous bounded crypto reward in sampled claims",
+      "source_url": "https://github.com/maksimp6/Chat/issues/1413"
+    },
+    {
+      "reason": "No unambiguous bounded crypto reward in sampled claims",
+      "source_url": "https://github.com/drexthealpha/Knos/issues/17"
+    },
+    {
+      "reason": "No unambiguous bounded crypto reward in sampled claims",
+      "source_url": "https://github.com/scottonchain/microcredit-agent-testbed/issues/15"
+    },
+    {
+      "reason": "No unambiguous bounded crypto reward in sampled claims",
+      "source_url": "https://github.com/peleduri/zero-day-pulse/issues/7"
+    },
+    {
+      "reason": "No unambiguous bounded crypto reward in sampled claims",
+      "source_url": "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/4114"
+    }
+  ],
+  "sampled_search_hits": 10,
+  "state_correction": {
+    "classification": "UNKNOWN",
+    "observed_input_state": null,
+    "previous_false_closure_removed": true,
+    "rows_updated": 1
+  },
+  "unique_currency_claim_records": 1
+}

@@ -1,0 +1,124 @@
+{
+  "commercial_admission": "NOT_ADMITTED",
+  "commercial_workflow": {
+    "actual_payments": 0,
+    "external_dispatch_implemented": false,
+    "owned_rehearsal": "PASSED_SIMULATION_ONLY",
+    "real_confirmed_revenue_usd": "0",
+    "real_submissions": 0,
+    "simulated_received_assets": {
+      "USDC": "1"
+    },
+    "wallet_operations": 0
+  },
+  "crypto_discovery": {
+    "qualified_candidates": 0,
+    "sampled_github_search_hits": 10,
+    "schedule_active": false,
+    "sol_quote_usd": "101.17",
+    "superteam_feed": "BLOCKED_AUTHENTICATION",
+    "unique_verified_priced_offers": 0,
+    "usdc_usd_quote": "HTTP_ERROR_404_UNKNOWN"
+  },
+  "deepseek": {
+    "additional_credit_spend_usd": "0",
+    "paid_requests_this_phase": 0,
+    "phase22_budget_reused": false
+  },
+  "evidence": {
+    "evaluation-contract.json": {
+      "bytes": 1399,
+      "sha256": "cf75b055e54842f3ebfc6883dcde1efd796ee899c7998153d69667f6ae2a996a"
+    },
+    "github-crypto-search.json": {
+      "bytes": 3832,
+      "sha256": "371b056027c5ed108dcbf7a35443f3c112d1fe8b4af0be26a0d8dac25e2549b6"
+    },
+    "github-normalized.json": {
+      "bytes": 5797,
+      "sha256": "a0be2d13b787329b00da5ac5ace892aa44b0dd47019fe1fad8098bf5074b6ee8"
+    },
+    "historical-initial-license-rejections.json": {
+      "bytes": 489554,
+      "sha256": "5a0de59e6ad97522a0969cc1ad9593b52116bef2998b4523b894a58dac057694"
+    },
+    "historical-registry.json": {
+      "bytes": 584846,
+      "sha256": "df6fa62011735f2d53f745964ced8618f98ea77e250c5a59aab36bc3fff782d5"
+    },
+    "legacy-owned-docker-controls.json": {
+      "bytes": 15515,
+      "sha256": "5913e167b66582cd1a18248f99887ba00c75075c943063fbea449d885ee3b30f"
+    },
+    "live-public-discovery.json": {
+      "bytes": 1559,
+      "sha256": "0a766df1572a08318f630c4af04a280701d747e4e7d31bc312795c451f57f383"
+    },
+    "local-regression.json": {
+      "bytes": 612,
+      "sha256": "6b4492ce270ab6699260ef0936ba81a1fc6cdbdf2153043d60bdefa0c12e9bcf"
+    },
+    "namespace-acceptance.json": {
+      "bytes": 586,
+      "sha256": "1a67a40787688066c0ae97d06569a576af12f59e22cdc6e03d8f10487cd8e86b"
+    },
+    "namespace-feasibility.json": {
+      "bytes": 408,
+      "sha256": "472c06a4587265f18db24ec17c261f1e822d3f2b9e8fd4b9ac95368c465be40f"
+    },
+    "namespace-tests.log": {
+      "bytes": 862,
+      "sha256": "cb839403446944c6f9bc0add4d8660a9fb4963328ab025ec1377e330a7c00af5"
+    },
+    "owned-commercial-rehearsal.json": {
+      "bytes": 3491,
+      "sha256": "ca763c5a73259297f4ca3715dc60f272382b145fa6ae002f22b7c86208ee8658"
+    },
+    "platform-research.json": {
+      "bytes": 4141,
+      "sha256": "a57206969f8d4e07f5d3f8db26b377a0cf3723df82e81c4a351135c3f03ed342"
+    },
+    "rpc-health.json": {
+      "bytes": 169,
+      "sha256": "88b3fded1ba55637f0a500cd4181771b70fee54041a54f8e3f6b4538b584d8bc"
+    }
+  },
+  "existing_drafts_modified": false,
+  "historical_evaluation_preparation": {
+    "accuracy": null,
+    "baselines_executed": 0,
+    "independent_unseen": false,
+    "paid_requests": 0,
+    "repositories": 6,
+    "rights_and_execution": "NOT_ADMITTED",
+    "tasks": 30
+  },
+  "kind": "PHASE23_25_MODEL_FREE_ACCEPTANCE",
+  "local_regression": {
+    "additional_model_requests": 0,
+    "additional_spending_usd": 0,
+    "all_eight_namespace_tests_enabled_and_passed": true,
+    "child_maximum_rss_kib": 42132,
+    "child_test_process_cpu_seconds": 26.213,
+    "kind": "PHASE23_25_LOCAL_FINAL_REGRESSION",
+    "node_failures": 0,
+    "node_tests_passed": 8,
+    "opt_in_owned_docker_fixture_suite_enabled": true,
+    "python_failures": 0,
+    "python_skips": 0,
+    "python_suite_seconds": 63.551,
+    "python_tests_executed": 924,
+    "python_tests_passed": 924,
+    "receipt_sha256": "41d36210e45d8511cd7d0fb0e37a3a52259d9124e0fdd94b6799d1ade5ed9038",
+    "suite_wall_seconds": 63.913
+  },
+  "main_modified": false,
+  "receipt_sha256": "28da5b3cb9cbfb2e3728a4772d66c2cae6db8e36e48e4f5c84c9b3840c74cba6",
+  "security": {
+    "customer_code_executed": false,
+    "owned_rootfs_checks_passed": 8,
+    "private_execution_admitted": false,
+    "untrusted_execution_certified": false
+  },
+  "starting_commit": "ed983408b49713c4079b38e2b1763fad7c1ce24b"
+}

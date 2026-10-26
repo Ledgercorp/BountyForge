@@ -86,6 +86,11 @@ def run_owned_fixture(task_id, *, reference=False):
         if reference:
             (work / task['file']).write_text(reference_content(task))
         verified = verify_owned_copy(work, task_id, reference=reference)
+        # Normalize only exact, hash-validated disposable owned bytes. Private
+        # checkout modes must not prevent the unchanged guest UID reading tests.
+        # The guest mount remains read-only; no checkout permission is changed.
+        for path in (verified, *verified.rglob('*')):
+            path.chmod(0o755 if path.is_dir() else 0o644)
         result = _execute(verified, None, 12)
         result['passed'] = (result['passed']
                             and re.search(r'Ran [1-9][0-9]* tests?', result['output']) is not None

@@ -1,0 +1,109 @@
+{
+  "kind": "PHASE24_PUBLIC_GITHUB_CRYPTO_SEARCH",
+  "queries": [
+    "is:public is:issue is:open \"bounty\" \"USDC\" language:Python -org:Ledgercorp",
+    "is:public is:issue is:open \"bounty\" \"SOL\" language:Python -org:Ledgercorp"
+  ],
+  "topn_per_query": 5,
+  "rows": [
+    {
+      "query_index": 0,
+      "source_url": "https://github.com/drexthealpha/Knos/issues/17",
+      "title": "Knos relay log",
+      "state": null,
+      "advertised_claims": [],
+      "body_persisted": false,
+      "source_risk": "UNVERIFIED_SEARCH_MATCH"
+    },
+    {
+      "query_index": 0,
+      "source_url": "https://github.com/scottonchain/microcredit-agent-testbed/issues/15",
+      "title": "Central message board — Hermes, Claude, Codex and operator coordination",
+      "state": null,
+      "advertised_claims": [],
+      "body_persisted": false,
+      "source_risk": "UNVERIFIED_SEARCH_MATCH"
+    },
+    {
+      "query_index": 0,
+      "source_url": "https://github.com/scottonchain/microcredit-agent-testbed/issues/17",
+      "title": "BOOTSTRAP-001: paid AI work and resource access, then human earnings",
+      "state": null,
+      "advertised_claims": [
+        "1 USDC"
+      ],
+      "body_persisted": false,
+      "source_risk": "UNVERIFIED_SEARCH_MATCH"
+    },
+    {
+      "query_index": 0,
+      "source_url": "https://github.com/Emmanuel-Evenzur/syetem_prompt/issues/17",
+      "title": "argilla-1.25.0-py3-none-any.whl: 57 vulnerabilities (highest severity is: 10.0) [main] (reachable)",
+      "state": null,
+      "advertised_claims": [],
+      "body_persisted": false,
+      "source_risk": "UNVERIFIED_SEARCH_MATCH"
+    },
+    {
+      "query_index": 0,
+      "source_url": "https://github.com/maksimp6/Chat/issues/1413",
+      "title": "Суд над запусками Логоса — единое дело и архитектура критики",
+      "state": null,
+      "advertised_claims": [],
+      "body_persisted": false,
+      "source_risk": "UNVERIFIED_SEARCH_MATCH"
+    },
+    {
+      "query_index": 1,
+      "source_url": "https://github.com/drexthealpha/Knos/issues/17",
+      "title": "Knos relay log",
+      "state": null,
+      "advertised_claims": [],
+      "body_persisted": false,
+      "source_risk": "UNVERIFIED_SEARCH_MATCH"
+    },
+    {
+      "query_index": 1,
+      "source_url": "https://github.com/scottonchain/microcredit-agent-testbed/issues/15",
+      "title": "Central message board — Hermes, Claude, Codex and operator coordination",
+      "state": null,
+      "advertised_claims": [],
+      "body_persisted": false,
+      "source_risk": "UNVERIFIED_SEARCH_MATCH"
+    },
+    {
+      "query_index": 1,
+      "source_url": "https://github.com/scottonchain/microcredit-agent-testbed/issues/17",
+      "title": "BOOTSTRAP-001: paid AI work and resource access, then human earnings",
+      "state": null,
+      "advertised_claims": [
+        "1 USDC"
+      ],
+      "body_persisted": false,
+      "source_risk": "UNVERIFIED_SEARCH_MATCH"
+    },
+    {
+      "query_index": 1,
+      "source_url": "https://github.com/peleduri/zero-day-pulse/issues/7",
+      "title": "🚨 Zero Day Pulse — Active Vulnerability Tracker",
+      "state": null,
+      "advertised_claims": [],
+      "body_persisted": false,
+      "source_risk": "UNVERIFIED_SEARCH_MATCH"
+    },
+    {
+      "query_index": 1,
+      "source_url": "https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/4114",
+      "title": "[Bounty] [STEAM VAULT] 🎮 Exchange 100,000 DOOM ($wDOOM) for a $10 Steam Digital Gift Card",
+      "state": null,
+      "advertised_claims": [],
+      "body_persisted": false,
+      "source_risk": "KNOWN_AGGREGATOR"
+    }
+  ],
+  "private_repositories_searched": false,
+  "issue_bodies_persisted": false,
+  "external_messages_sent": 0,
+  "opportunities_qualified": 0,
+  "complete_scan": false
+}

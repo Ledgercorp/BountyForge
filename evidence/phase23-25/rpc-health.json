@@ -1,0 +1,8 @@
+{
+  "kind": "PHASE25_READ_ONLY_RPC_HEALTH",
+  "wallet_queried": false,
+  "transactions_sent": 0,
+  "payment_verified": false,
+  "status": "OBSERVED",
+  "health": "ok"
+}

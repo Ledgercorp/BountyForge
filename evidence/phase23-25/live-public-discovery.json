@@ -1,0 +1,46 @@
+{
+  "actual_inference_requests": 0,
+  "commercial_admission": "NOT_ADMITTED",
+  "kind": "PHASE24_ACTUAL_READ_ONLY_DISCOVERY",
+  "market_quotes": [
+    {
+      "asset": "SOL",
+      "guaranteed_liquidity": false,
+      "http_status": 200,
+      "market_trade_at": "2026-10-26T02:04:14.265641168Z",
+      "method": "GET",
+      "observed_at": "2026-10-26T02:04:17.430683+00:00",
+      "owner_withdrawal_route_verified": false,
+      "response_sha256": "568e322f29ce56b334e38bf1eb31505dea25e8006956abd017704f107a455726",
+      "source_url": "https://api.exchange.coinbase.com/products/SOL-USD/ticker",
+      "status": "OBSERVED",
+      "usd_price": "101.17",
+      "venue": "Coinbase Exchange public ticker",
+      "volume_24h": "246041.5576272"
+    },
+    {
+      "asset": "USDC",
+      "http_status": 404,
+      "method": "GET",
+      "observed_at": "2026-10-26T02:04:17.755384+00:00",
+      "source_url": "https://api.exchange.coinbase.com/products/USDC-USD/ticker",
+      "status": "HTTP_ERROR",
+      "usd_price": null
+    }
+  ],
+  "platform_accounts_created": 0,
+  "posts_or_submissions": 0,
+  "receipt_sha256": "e488899689cc8745a6a5f560f4442e9c81195d8aa7625a4889bc43a96d1e236d",
+  "scheduling_active": false,
+  "superteam": {
+    "account_created": false,
+    "complete_scan": false,
+    "http_status": 401,
+    "method": "GET",
+    "observed_at": "2026-10-26T02:04:16.644267+00:00",
+    "opportunities": null,
+    "source_url": "https://superteam.fun/api/agents/listings/live?take=20",
+    "status": "BLOCKED_AUTHENTICATION"
+  },
+  "wallet_actions": 0
+}
